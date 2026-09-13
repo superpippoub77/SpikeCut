@@ -1,0 +1,115 @@
+EDITOR VETTORIALE — LIBRERIA PROGETTI (API PHP)
+=================================================
+
+COSA CONTIENE QUESTO PACCHETTO
+- editor-vettoriale.html   → l'editor, apribile in qualunque browser
+- api/                     → le 5 pagine PHP che gestiscono la libreria
+- library/                 → cartella dove verranno salvati i progetti
+                              (contiene già .htaccess e un indice vuoto)
+
+COME METTERLO ONLINE (es. hosting Aruba o simile con supporto PHP)
+1. Carica TUTTO il contenuto di questo pacchetto (file e cartelle incluse)
+   nella stessa cartella sul server, mantenendo questa struttura:
+
+     /qualunque-cartella/
+       editor-vettoriale.html
+       api/
+         config.php
+         common.php
+         save.php
+         list.php
+         load.php
+         delete.php
+       library/
+         .htaccess
+         index.json
+
+2. Verifica che la cartella "library/" sia scrivibile dal server web
+   (permessi tipici: 775; se il tuo hosting è restrittivo, il pannello
+   di controllo di solito permette di impostarli, oppure lo fa da solo
+   il provider — su Aruba di norma non serve toccare nulla).
+
+3. Apri "editor-vettoriale.html" dal browser passando dall'indirizzo
+   del sito (es. https://tuosito.it/editor-vettoriale.html), NON aprendo
+   il file in locale con doppio clic: le chiamate all'API PHP funzionano
+   solo quando la pagina è servita da un vero server web.
+
+4. Nel menu "Esporta / Salva" del programma trovi ora:
+   - Salva in libreria (server)   → salva il progetto sul server
+   - Apri dalla libreria (server) → elenca ed apre i progetti salvati
+
+PROTEGGERE LA LIBRERIA CON UNA CHIAVE (opzionale ma consigliato se il
+sito è pubblico, perché di default chiunque trovi l'indirizzo può
+salvare/leggere/cancellare progetti)
+1. Apri api/config.php e imposta una password a piacere:
+     $API_KEY = 'una-password-lunga-e-difficile';
+2. Apri editor-vettoriale.html con un editor di testo, cerca la riga:
+     const API_BASE = 'api/';
+   e subito sotto aggiungi:
+     const API_KEY = 'una-password-lunga-e-difficile'; // stessa di config.php
+   poi cerca la funzione apiFetch e aggiungi l'header, ad esempio:
+     opts = opts || {};
+     opts.headers = Object.assign({'X-Api-Key': API_KEY}, opts.headers || {});
+   (se preferisci, chiedi pure di farlo fare direttamente nell'editor
+   la prossima volta che ne parliamo).
+
+NOTE
+- Non serve alcun database: ogni progetto è un file .json nella cartella
+  "library/", con un piccolo indice (library/index.json) per l'elenco.
+- La cartella "library/" è protetta da accesso diretto via URL
+  (.htaccess con "Require all denied"): si può leggere/scrivere solo
+  passando dalle pagine PHP dell'API.
+- Se il tuo hosting usa Apache senza mod_authz_core (versioni vecchie),
+  l'.htaccess generato include anche la riga "Deny from all" per
+  compatibilità con Apache 2.2.
+
+
+APRIRE FILE DA GOOGLE DRIVE (opzionale)
+========================================
+Nel menu "Esporta / Salva" c'è la voce "Apri da Google Drive": apre
+il selettore ufficiale di Google, e permette di caricare direttamente
+un file .svg o un progetto .json salvato su Drive (sola lettura, non
+scrive né modifica nulla su Drive).
+
+Per motivi di sicurezza Google richiede che OGNI sito che usa questa
+funzione abbia le proprie credenziali collegate al proprio dominio:
+non esiste una chiave "universale" che io possa mettere già pronta
+nel file. Vanno create una volta sola, sono gratuite, e servono due
+valori da incollare nel file HTML.
+
+1. Vai su https://console.cloud.google.com/ e crea un progetto
+   (o usane uno che hai già).
+
+2. Nel menu "API e servizi" → "Libreria", attiva:
+   - Google Drive API
+   - Google Picker API
+
+3. Vai su "API e servizi" → "Schermata di consenso OAuth":
+   - Tipo utente: Esterno (va bene anche se l'app resta "in fase di
+     test": basta aggiungere il tuo indirizzo email Google tra gli
+     "utenti di test" per poterla usare tu stesso senza revisione
+     da parte di Google).
+
+4. Vai su "API e servizi" → "Credenziali" → "Crea credenziali":
+   a) "ID client OAuth" → tipo "Applicazione web" → in
+      "Origini JavaScript autorizzate" inserisci l'indirizzo esatto
+      da cui apri il programma (es. https://tuosito.it, SENZA slash
+      finale e senza il nome del file). Copia l'ID client generato
+      (una stringa che finisce in ".apps.googleusercontent.com").
+   b) "Chiave API" → copiala così com'è (per sicurezza puoi
+      restringerla, in "Limitazioni API", alla sola "Google Picker
+      API").
+
+5. Apri editor-vettoriale.html con un editor di testo, cerca:
+     const GOOGLE_CLIENT_ID = '';
+     const GOOGLE_API_KEY = '';
+   e incolla i due valori ottenuti al punto 4, tra gli apici, es.:
+     const GOOGLE_CLIENT_ID = '123456789-abc...apps.googleusercontent.com';
+     const GOOGLE_API_KEY = 'AIzaSy...';
+
+6. Salva il file e ricaricalo dal browser (sempre dall'indirizzo del
+   sito, non in locale). Alla prima apertura da Drive, Google chiederà
+   di autorizzare l'accesso in sola lettura ai tuoi file.
+
+Se lasci i due valori vuoti, la voce di menu resta presente ma avvisa
+che l'integrazione non è configurata, senza generare errori altrove.
