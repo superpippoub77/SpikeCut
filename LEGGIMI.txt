@@ -2,7 +2,7 @@ EDITOR VETTORIALE — LIBRERIA PROGETTI (API PHP)
 =================================================
 
 COSA CONTIENE QUESTO PACCHETTO
-- editor-vettoriale.html   → l'editor, apribile in qualunque browser
+- index.html   → l'editor, apribile in qualunque browser
 - api/                     → le 5 pagine PHP che gestiscono la libreria
 - library/                 → cartella dove verranno salvati i progetti
                               (contiene già .htaccess e un indice vuoto)
@@ -12,7 +12,7 @@ COME METTERLO ONLINE (es. hosting Aruba o simile con supporto PHP)
    nella stessa cartella sul server, mantenendo questa struttura:
 
      /qualunque-cartella/
-       editor-vettoriale.html
+       index.html
        api/
          config.php
          common.php
@@ -29,10 +29,11 @@ COME METTERLO ONLINE (es. hosting Aruba o simile con supporto PHP)
    di controllo di solito permette di impostarli, oppure lo fa da solo
    il provider — su Aruba di norma non serve toccare nulla).
 
-3. Apri "editor-vettoriale.html" dal browser passando dall'indirizzo
-   del sito (es. https://tuosito.it/editor-vettoriale.html), NON aprendo
-   il file in locale con doppio clic: le chiamate all'API PHP funzionano
-   solo quando la pagina è servita da un vero server web.
+3. Apri il sito dal browser passando dall'indirizzo web reale
+   (es. https://tuosito.it/projects/spikecut/ — essendo index.html
+   si apre automaticamente senza scrivere il nome del file), NON
+   aprendo il file in locale con doppio clic: le chiamate all'API PHP
+   funzionano solo quando la pagina è servita da un vero server web.
 
 4. Nel menu "Esporta / Salva" del programma trovi ora:
    - Salva in libreria (server)   → salva il progetto sul server
@@ -43,7 +44,7 @@ sito è pubblico, perché di default chiunque trovi l'indirizzo può
 salvare/leggere/cancellare progetti)
 1. Apri api/config.php e imposta una password a piacere:
      $API_KEY = 'una-password-lunga-e-difficile';
-2. Apri editor-vettoriale.html con un editor di testo, cerca la riga:
+2. Apri index.html con un editor di testo, cerca la riga:
      const API_BASE = 'api/';
    e subito sotto aggiungi:
      const API_KEY = 'una-password-lunga-e-difficile'; // stessa di config.php
@@ -100,7 +101,7 @@ valori da incollare nel file HTML.
       restringerla, in "Limitazioni API", alla sola "Google Picker
       API").
 
-5. Apri editor-vettoriale.html con un editor di testo, cerca:
+5. Apri index.html con un editor di testo, cerca:
      const GOOGLE_CLIENT_ID = '';
      const GOOGLE_API_KEY = '';
    e incolla i due valori ottenuti al punto 4, tra gli apici, es.:
