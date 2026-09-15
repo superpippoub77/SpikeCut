@@ -1180,6 +1180,20 @@ function renderMarquee(){
   }
 }
 
+function renderPageResizeHandle(){
+  const x = state.page.w*state.scale, y = state.page.h*state.scale;
+  const size = 14;
+  layerOverlay.appendChild(el('path', {
+    d:`M ${x} ${y-size} L ${x} ${y} L ${x-size} ${y} Z`,
+    fill:'rgba(201,151,63,0.16)', stroke:'var(--brass)', 'stroke-width':1.3,
+    'data-page-resize':'1', style:'cursor:nwse-resize;'
+  }));
+  layerOverlay.appendChild(el('path', {
+    d:`M ${x-9} ${y-2} L ${x-2} ${y-9} M ${x-5} ${y-2} L ${x-2} ${y-5}`,
+    stroke:'var(--brass)', 'stroke-width':1.1, fill:'none', 'pointer-events':'none'
+  }));
+}
+
 function dimLabel(p1, p2){
   const len = dist(p1,p2);
   if(len < 0.05) return;
@@ -1443,6 +1457,7 @@ function renderCanvasOnly(){
   renderSelectionHandles();
   renderDraft();
   renderMarquee();
+  renderPageResizeHandle();
   renderDimensions();
   renderPermanentDimensions();
   renderEndpointMarkers();
@@ -1518,6 +1533,20 @@ function setTool(id){
 ============================================================ */
 let mouseDownPt = null;
 let dragMode = null; // 'move-shape' | 'move-vertex' | 'resize' | 'draw'
+let pageResizeDrag = null;
+window.addEventListener('mousemove', (e)=>{
+  if(!pageResizeDrag) return;
+  const dxMM = (e.clientX - pageResizeDrag.startClientX) / state.scale;
+  const dyMM = (e.clientY - pageResizeDrag.startClientY) / state.scale;
+  state.page = {
+    w: Math.max(5, Math.min(5000, pageResizeDrag.startW + dxMM)),
+    h: Math.max(5, Math.min(5000, pageResizeDrag.startH + dyMM))
+  };
+  renderAll();
+});
+window.addEventListener('mouseup', ()=>{
+  if(pageResizeDrag){ pageResizeDrag = null; syncPageSizeSelect(); }
+});
 
 stage.addEventListener('mousemove', (e)=>{
   const mm = clientToMM(e.clientX, e.clientY);
@@ -1528,6 +1557,11 @@ stage.addEventListener('mousemove', (e)=>{
 stage.addEventListener('mousedown', (e)=>{
   const ae = document.activeElement;
   if(ae && ['INPUT','SELECT','TEXTAREA'].includes(ae.tagName)) ae.blur();
+  if(e.target && e.target.dataset && e.target.dataset.pageResize){
+    e.preventDefault();
+    pageResizeDrag = { startClientX:e.clientX, startClientY:e.clientY, startW: state.page.w, startH: state.page.h };
+    return;
+  }
   handleMouseDown(clientToMM(e.clientX,e.clientY), e);
 });
 window.addEventListener('mouseup', (e)=>{ handleMouseUp(clientToMM(e.clientX,e.clientY), e); });
