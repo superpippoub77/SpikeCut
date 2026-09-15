@@ -1525,7 +1525,11 @@ stage.addEventListener('mousemove', (e)=>{
   document.getElementById('coord').textContent = `x: ${mmToUnit(mm[0]).toFixed(u.decimals)}  y: ${mmToUnit(mm[1]).toFixed(u.decimals)} ${u.label}`;
   handleMouseMove(mm, e);
 });
-stage.addEventListener('mousedown', (e)=>{ handleMouseDown(clientToMM(e.clientX,e.clientY), e); });
+stage.addEventListener('mousedown', (e)=>{
+  const ae = document.activeElement;
+  if(ae && ['INPUT','SELECT','TEXTAREA'].includes(ae.tagName)) ae.blur();
+  handleMouseDown(clientToMM(e.clientX,e.clientY), e);
+});
 window.addEventListener('mouseup', (e)=>{ handleMouseUp(clientToMM(e.clientX,e.clientY), e); });
 stage.addEventListener('dblclick', (e)=>{ handleDblClick(clientToMM(e.clientX,e.clientY), e); });
 
