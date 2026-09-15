@@ -272,6 +272,28 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 .modal-body .layerrow button{width:auto;padding:4px 8px;font-size:11px;border:1px solid var(--line);border-radius:5px;margin-left:6px;}
 .modal-body .layerrow button:hover{border-color:var(--brass-dim);color:var(--ink);}
 
+#tabBar{
+  height:34px;flex:none;background:var(--bg-0);border-bottom:1px solid var(--line);
+  display:flex;align-items:flex-end;padding:0 8px;gap:3px;overflow-x:auto;overflow-y:hidden;
+}
+#docTabsList{display:flex;align-items:flex-end;gap:3px;min-width:0;}
+.doctab{
+  display:flex;align-items:center;gap:7px;padding:6px 8px 6px 12px;background:var(--bg-1);
+  border:1px solid var(--line);border-bottom:none;border-radius:7px 7px 0 0;
+  font-size:12px;color:var(--ink-dim);cursor:pointer;max-width:180px;flex:none;
+  position:relative;top:1px;
+}
+.doctab.active{background:var(--bg-2);color:var(--ink);border-color:var(--brass-dim);}
+.doctab .name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;outline:none;max-width:130px;}
+.doctab .name[contenteditable="true"]{cursor:text;background:var(--bg-0);border-radius:3px;padding:0 3px;}
+.doctab .close{color:var(--ink-dim);font-size:12px;line-height:1;padding:2px 4px;border-radius:4px;flex:none;}
+.doctab .close:hover{background:var(--bg-0);color:var(--cut);}
+#addTabBtn{
+  flex:none;width:26px;height:26px;margin-bottom:4px;border-radius:6px;border:1px solid var(--line);
+  background:var(--bg-1);color:var(--ink-dim);cursor:pointer;font-size:14px;
+}
+#addTabBtn:hover{color:var(--ink);border-color:var(--brass-dim);}
+
 /* scrollbar "overlay": invisibili a riposo, sottili e visibili solo al passaggio del mouse */
 #stage-scroll, .tabpage, .modal-body, #rail{
   scrollbar-width: thin;
@@ -380,6 +402,11 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
       <button data-action="scale-drawing">Scala / Proporziona disegno…</button>
     </div>
   </div>
+</div>
+
+<div id="tabBar">
+  <div id="docTabsList"></div>
+  <button id="addTabBtn" title="Nuova scheda (nuovo disegno)">＋</button>
 </div>
 
 <div id="body">
@@ -2066,7 +2093,7 @@ async function saveToLibrary(){
       method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
     });
     state.libraryId = data.id;
-    document.getElementById('filename').value = name;
+    renameActiveTab(name);
     const info = document.getElementById('saveInfo');
     info.textContent = 'salvato in libreria';
     setTimeout(()=>{ if(info.textContent==='salvato in libreria') info.textContent=''; }, 2500);
@@ -2113,7 +2140,7 @@ async function loadFromLibrary(id){
     state.refImage = proj.refImage || null;
     state.selection.clear();
     state.libraryId = id;
-    if(proj.name) document.getElementById('filename').value = proj.name;
+    if(proj.name) renameActiveTab(proj.name);
     syncPageSizeSelect();
     pushHistory(); renderAll(); refreshImageTabPreview();
     closeLibraryModal();
@@ -2208,10 +2235,12 @@ async function onGoogleDriveFilePicked(data){
       state.refImage = proj.refImage || null;
       state.selection.clear();
       syncPageSizeSelect();
+      renameActiveTab(proj.name || file.name.replace(/\.json$/i, ''));
       pushHistory(); renderAll(); refreshImageTabPreview();
       showToast('Progetto caricato da Google Drive.', false);
     } else {
       importSVGString(text);
+      renameActiveTab(file.name.replace(/\.svg$/i, ''));
     }
   }catch(err){
     showToast('Errore nel caricamento da Google Drive: ' + err.message, true);
@@ -2231,6 +2260,7 @@ function openProjectFilePicker(){
   const inp = document.createElement('input'); inp.type='file'; inp.accept='.json,application/json';
   inp.onchange = ()=>{
     if(!inp.files[0]) return;
+    const fileName = inp.files[0].name.replace(/\.json$/i, '');
     const r = new FileReader();
     r.onload = ()=>{
       try{
@@ -2240,6 +2270,7 @@ function openProjectFilePicker(){
         state.refImage = data.refImage || null;
         state.selection.clear();
         syncPageSizeSelect();
+        renameActiveTab(fileName);
         pushHistory(); renderAll(); refreshImageTabPreview();
       }catch(err){ showToast('File di progetto non valido o corrotto.', true); }
     };
@@ -3249,22 +3280,25 @@ async function autoFitImportedShapes(newShapes){
   showToast(`Importati ${newShapes.length} elementi — dimensioni originali mantenute (${bw.toFixed(1)}×${bh.toFixed(1)} mm).${weldNote}`, false);
 }
 let pendingSVGImportText = null;
+let pendingSVGImportName = null;
 function openSVGFilePicker(){
   const inp = document.createElement('input'); inp.type='file'; inp.accept='.svg,image/svg+xml';
   inp.onchange = ()=>{
     if(!inp.files[0]) return;
+    const fileName = inp.files[0].name.replace(/\.svg$/i, '');
     const r = new FileReader();
     r.onload = ()=>{
       const text = r.result;
-      if(state.shapes.length > 0) openImportChoiceModal(text);
-      else importSVGString(text);
+      if(state.shapes.length > 0) openImportChoiceModal(text, fileName);
+      else { importSVGString(text); renameActiveTab(fileName); }
     };
     r.readAsText(inp.files[0]);
   };
   inp.click();
 }
-function openImportChoiceModal(text){
+function openImportChoiceModal(text, fileName){
   pendingSVGImportText = text;
+  pendingSVGImportName = fileName;
   document.getElementById('importChoiceModal').classList.add('open');
 }
 function closeImportChoiceModal(){
@@ -3278,19 +3312,21 @@ document.getElementById('importChoiceMerge').onclick = ()=>{
   if(text) importSVGString(text);
 };
 document.getElementById('importChoiceReplace').onclick = ()=>{
-  const text = pendingSVGImportText; closeImportChoiceModal();
+  const text = pendingSVGImportText, fileName = pendingSVGImportName; closeImportChoiceModal();
   if(!text) return;
   state.shapes = []; state.selection.clear(); state.refImage = null; state.gapMarkers = [];
   renderAll();
   importSVGString(text);
+  if(fileName) renameActiveTab(fileName);
 };
 document.getElementById('importChoiceSaveReplace').onclick = ()=>{
-  const text = pendingSVGImportText; closeImportChoiceModal();
+  const text = pendingSVGImportText, fileName = pendingSVGImportName; closeImportChoiceModal();
   if(!text) return;
   saveProjectFile();
   state.shapes = []; state.selection.clear(); state.refImage = null; state.gapMarkers = [];
   renderAll();
   importSVGString(text);
+  if(fileName) renameActiveTab(fileName);
 };
 document.getElementById('btnImportSVGTop').onclick = openSVGFilePicker;
 
@@ -3736,7 +3772,8 @@ function scheduleAutosave(){
 async function doAutosave(){
   try{
     if(!window.storage) return;
-    const payload = JSON.stringify({shapes:state.shapes, page:state.page, refImage:state.refImage});
+    snapshotActiveDocument();
+    const payload = JSON.stringify({documents, activeDocId});
     await window.storage.set('fustella-project', payload, false);
     document.getElementById('saveInfo').textContent = 'salvato';
     setTimeout(()=>document.getElementById('saveInfo').textContent='', 1500);
@@ -3744,18 +3781,143 @@ async function doAutosave(){
 }
 async function tryRestore(){
   try{
-    if(!window.storage) return;
+    if(!window.storage) return false;
     const res = await window.storage.get('fustella-project', false);
     if(res && res.value){
       const data = JSON.parse(res.value);
+      if(Array.isArray(data.documents) && data.documents.length){
+        documents = data.documents;
+        activeDocId = data.activeDocId && documents.some(d=>d.id===data.activeDocId) ? data.activeDocId : documents[0].id;
+        return true;
+      }
+      // formato precedente (una sola bozza salvata, senza schede)
       if(data.shapes && data.shapes.length){
-        state.shapes = data.shapes;
-        state.page = data.page || state.page;
-        state.refImage = data.refImage || null;
+        const doc = makeNewDocument('Disegno');
+        doc.shapes = data.shapes; doc.page = data.page || doc.page; doc.refImage = data.refImage || null;
+        doc.history = [JSON.stringify(doc.shapes)]; doc.histIndex = 0;
+        documents = [doc]; activeDocId = doc.id;
+        return true;
       }
     }
   }catch(err){ /* no previous project, ignore */ }
+  return false;
 }
+
+/* ============================================================
+   SCHEDE DOCUMENTO — più disegni aperti contemporaneamente,
+   ognuno col proprio nome, foglio, storico e libreria.
+============================================================ */
+let documents = [];
+let activeDocId = null;
+
+function makeNewDocument(name){
+  return {
+    id: uid(), name: name || 'Disegno',
+    shapes: [], page: {w:210,h:297}, refImage: null,
+    history: [JSON.stringify([])], histIndex: 0, libraryId: null
+  };
+}
+function snapshotActiveDocument(){
+  const doc = documents.find(d=>d.id===activeDocId);
+  if(!doc) return;
+  doc.shapes = state.shapes;
+  doc.page = state.page;
+  doc.refImage = state.refImage;
+  doc.history = state.history;
+  doc.histIndex = state.histIndex;
+  doc.libraryId = state.libraryId;
+}
+function loadDocumentIntoState(doc){
+  state.shapes = doc.shapes;
+  state.page = doc.page;
+  state.refImage = doc.refImage;
+  state.history = doc.history;
+  state.histIndex = doc.histIndex;
+  state.libraryId = doc.libraryId;
+  state.selection = new Set();
+  state.gapMarkers = [];
+  state.draft = null;
+  document.getElementById('filename').value = doc.name;
+  syncPageSizeSelect();
+  refreshImageTabPreview();
+  updateUndoRedoButtons();
+  renderAll();
+}
+function switchToDocument(id){
+  if(id===activeDocId) return;
+  snapshotActiveDocument();
+  activeDocId = id;
+  loadDocumentIntoState(documents.find(d=>d.id===id));
+  renderTabBar();
+}
+function addNewDocumentTab(){
+  snapshotActiveDocument();
+  const doc = makeNewDocument('Disegno ' + (documents.length+1));
+  documents.push(doc);
+  activeDocId = doc.id;
+  loadDocumentIntoState(doc);
+  renderTabBar();
+}
+async function closeDocumentTab(id){
+  if(documents.length<=1){ showToast('Non puoi chiudere l\'unica scheda aperta.', true); return; }
+  const idx = documents.findIndex(d=>d.id===id);
+  if(idx<0) return;
+  const hasContent = (id===activeDocId ? state.shapes : documents[idx].shapes || []).length > 0;
+  if(hasContent){
+    const ok = await showConfirm(`Chiudere la scheda "${documents[idx].name}"? Le modifiche non salvate andranno perse.`, 'Chiudi scheda');
+    if(!ok) return;
+  }
+  if(id===activeDocId) snapshotActiveDocument();
+  documents.splice(idx,1);
+  if(activeDocId===id){
+    const next = documents[Math.max(0, idx-1)] || documents[0];
+    activeDocId = next.id;
+    loadDocumentIntoState(next);
+  }
+  renderTabBar();
+}
+function renameDocument(id, name){
+  const doc = documents.find(d=>d.id===id);
+  if(!doc) return;
+  doc.name = (name||'').trim() || doc.name;
+  if(id===activeDocId) document.getElementById('filename').value = doc.name;
+  renderTabBar();
+}
+function renameActiveTab(name){ renameDocument(activeDocId, name); }
+function renderTabBar(){
+  const host = document.getElementById('docTabsList');
+  host.innerHTML = '';
+  documents.forEach(doc=>{
+    const tab = document.createElement('div');
+    tab.className = 'doctab' + (doc.id===activeDocId ? ' active' : '');
+    const nameEl = document.createElement('span'); nameEl.className='name'; nameEl.textContent = doc.name;
+    nameEl.title = 'Doppio clic per rinominare';
+    nameEl.ondblclick = (e)=>{
+      e.stopPropagation();
+      nameEl.contentEditable = 'true';
+      nameEl.focus();
+      const range = document.createRange(); range.selectNodeContents(nameEl);
+      const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+    };
+    nameEl.addEventListener('blur', ()=>{
+      nameEl.contentEditable = 'false';
+      renameDocument(doc.id, nameEl.textContent);
+    });
+    nameEl.addEventListener('keydown', (e)=>{
+      e.stopPropagation();
+      if(e.key==='Enter'){ e.preventDefault(); nameEl.blur(); }
+      if(e.key==='Escape'){ nameEl.textContent = doc.name; nameEl.blur(); }
+    });
+    const closeBtn = document.createElement('span'); closeBtn.className='close'; closeBtn.textContent='✕';
+    closeBtn.title = 'Chiudi scheda';
+    closeBtn.onclick = (e)=>{ e.stopPropagation(); closeDocumentTab(doc.id); };
+    tab.appendChild(nameEl); tab.appendChild(closeBtn);
+    tab.onclick = ()=> switchToDocument(doc.id);
+    host.appendChild(tab);
+  });
+}
+document.getElementById('addTabBtn').onclick = addNewDocumentTab;
+document.getElementById('filename').addEventListener('change', (e)=> renameDocument(activeDocId, e.target.value));
 
 /* ============================================================
    INIT
@@ -3764,12 +3926,13 @@ async function init(){
   buildRail();
   buildImageTab();
   updateStatusToggles();
-  await tryRestore();
-  syncPageSizeSelect();
-  refreshImageTabPreview();
-  state.history=[]; state.histIndex=-1;
-  pushHistory();
-  renderAll();
+  const restored = await tryRestore();
+  if(!restored){
+    const doc = makeNewDocument('Disegno 1');
+    documents = [doc]; activeDocId = doc.id;
+  }
+  loadDocumentIntoState(documents.find(d=>d.id===activeDocId));
+  renderTabBar();
 }
 init();
 
