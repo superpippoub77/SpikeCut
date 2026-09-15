@@ -376,6 +376,8 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
       <div class="menu-sep"></div>
       <button data-action="weld-points">Salda punti vicini…</button>
       <button data-action="close-all-paths">Chiudi tutti i percorsi aperti</button>
+      <div class="menu-sep"></div>
+      <button data-action="scale-drawing">Scala / Proporziona disegno…</button>
     </div>
   </div>
 </div>
@@ -476,6 +478,42 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
       <button class="btn" id="importChoiceMerge">Aggiungi al disegno attuale</button>
       <button class="btn" id="importChoiceReplace" style="margin-top:6px;">Cancella il disegno attuale e importa</button>
       <button class="btn primary" id="importChoiceSaveReplace" style="margin-top:6px;">Salva il disegno attuale, poi cancella e importa</button>
+    </div>
+  </div>
+</div>
+
+<div id="scaleModal" class="modal-overlay">
+  <div class="modal-box" style="width:340px;">
+    <div class="modal-head">
+      <h3>Scala / Proporziona disegno</h3>
+      <button class="iconbtn" id="scaleModalClose" title="Chiudi">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="tabs" style="margin:0 0 12px;border-radius:6px;overflow:hidden;border:1px solid var(--line);">
+        <button class="tabtrig active" data-scaletab="percent" style="padding:8px 0;">Percentuale</button>
+        <button class="tabtrig" data-scaletab="calibrate" style="padding:8px 0;">Calibra da una misura</button>
+      </div>
+      <div class="scaletabpage" data-scaletab="percent">
+        <div class="field"><label>Fattore di scala (%)</label><input type="number" id="scalePercent" value="100" step="1" min="0.1"></div>
+        <div class="hint">100% = dimensione invariata. Es. 150 = ingrandisce del 50%, 50 = dimezza.</div>
+      </div>
+      <div class="scaletabpage" data-scaletab="calibrate" style="display:none;">
+        <div class="hint" id="calibrateHint" style="margin-bottom:8px;">Seleziona una linea/percorso di riferimento sul disegno (strumento Selezione), poi apri questa finestra.</div>
+        <div class="row">
+          <div class="field"><label>Lunghezza attuale (<span id="calUnit1">mm</span>)</label><input type="number" id="calCurrent" readonly></div>
+          <div class="field"><label>Lunghezza desiderata (<span id="calUnit2">mm</span>)</label><input type="number" id="calTarget"></div>
+        </div>
+        <button class="btn" id="calRefresh" style="margin-top:2px;">🔄 Aggiorna dalla selezione</button>
+      </div>
+      <hr class="sep">
+      <div class="field">
+        <label>Applica a</label>
+        <select id="scaleScope">
+          <option value="all">Tutto il disegno</option>
+          <option value="selection">Solo la selezione corrente</option>
+        </select>
+      </div>
+      <button class="btn primary" id="scaleApply">Applica scala</button>
     </div>
   </div>
 </div>
@@ -1958,6 +1996,7 @@ document.getElementById('fileMenu').addEventListener('click', (e)=>{
   else if(action==='cut-preview') openCutPreview();
   else if(action==='weld-points') openWeldModal();
   else if(action==='close-all-paths') closeAllOpenPaths();
+  else if(action==='scale-drawing') openScaleModal();
   document.getElementById('fileMenu').classList.remove('open');
 });
 
@@ -3367,6 +3406,76 @@ function closeAllOpenPaths(){
   if(count>0){ pushHistory(); renderAll(); }
   showToast(count>0 ? `${count} percorsi sono stati chiusi.` : 'Non ci sono percorsi aperti da chiudere (o sono tutti esclusi).', count===0);
 }
+
+/* ============================================================
+   SCALA / PROPORZIONA DISEGNO — utile quando un SVG importato
+   non ha misure reali: si riporta a scala corretta per percentuale
+   o calibrando da una lunghezza nota.
+============================================================ */
+let scaleModalMode = 'percent';
+function setScaleModalMode(mode){
+  scaleModalMode = mode;
+  document.querySelectorAll('.tabtrig[data-scaletab]').forEach(b=> b.classList.toggle('active', b.dataset.scaletab===mode));
+  document.querySelectorAll('.scaletabpage[data-scaletab]').forEach(p=> p.style.display = p.dataset.scaletab===mode ? '' : 'none');
+  if(mode==='calibrate') refreshScaleCalibration();
+}
+function refreshScaleCalibration(){
+  const u = UNITS[state.unit];
+  document.getElementById('calUnit1').textContent = u.label;
+  document.getElementById('calUnit2').textContent = u.label;
+  const ids = [...state.selection];
+  if(ids.length===1){
+    const s = state.shapes.find(x=>x.id===ids[0]);
+    if(s && s.points && s.points.length>=2){
+      const len = dist(s.points[0], s.points[s.points.length-1]);
+      document.getElementById('calCurrent').value = mmToUnit(len).toFixed(u.decimals);
+      document.getElementById('calibrateHint').textContent = 'Lunghezza attuale rilevata dal tratto selezionato (dal primo all\'ultimo punto).';
+      return;
+    }
+  }
+  document.getElementById('calCurrent').value = '';
+  document.getElementById('calibrateHint').textContent = 'Seleziona una linea/percorso di riferimento sul disegno (strumento Selezione), poi premi "Aggiorna dalla selezione".';
+}
+function openScaleModal(){
+  document.getElementById('scaleModal').classList.add('open');
+  setScaleModalMode('percent');
+}
+document.querySelectorAll('.tabtrig[data-scaletab]').forEach(b=> b.onclick = ()=> setScaleModalMode(b.dataset.scaletab));
+document.getElementById('calRefresh').onclick = refreshScaleCalibration;
+document.getElementById('scaleModalClose').onclick = ()=> document.getElementById('scaleModal').classList.remove('open');
+document.getElementById('scaleModal').addEventListener('click', (e)=>{ if(e.target.id==='scaleModal') document.getElementById('scaleModal').classList.remove('open'); });
+document.getElementById('scaleApply').onclick = ()=>{
+  let factor;
+  if(scaleModalMode==='percent'){
+    const pct = parseFloat(document.getElementById('scalePercent').value);
+    if(isNaN(pct) || pct<=0){ showToast('Inserisci una percentuale valida maggiore di 0.', true); return; }
+    factor = pct/100;
+  } else {
+    const cur = parseFloat(document.getElementById('calCurrent').value);
+    const tgt = parseFloat(document.getElementById('calTarget').value);
+    if(isNaN(cur) || cur<=0 || isNaN(tgt) || tgt<=0){ showToast('Seleziona un tratto di riferimento e inserisci una lunghezza desiderata valida.', true); return; }
+    factor = tgt/cur;
+  }
+  const scope = document.getElementById('scaleScope').value;
+  const targets = scope==='selection' ? state.shapes.filter(s=>state.selection.has(s.id)) : state.shapes;
+  if(!targets.length){ showToast('Nessun elemento da scalare.', true); return; }
+  const boxes = targets.map(shapeBBox);
+  const minX=Math.min(...boxes.map(b=>b.x)), minY=Math.min(...boxes.map(b=>b.y));
+  const maxX=Math.max(...boxes.map(b=>b.x+b.w)), maxY=Math.max(...boxes.map(b=>b.y+b.h));
+  const pivot = [(minX+maxX)/2, (minY+maxY)/2];
+  const fn = (p)=> [pivot[0]+(p[0]-pivot[0])*factor, pivot[1]+(p[1]-pivot[1])*factor];
+  targets.forEach(s=>{
+    if(s.points) s.points = s.points.map(fn);
+    if(s.x!=null){ const np=fn([s.x,s.y]); s.x=np[0]; s.y=np[1]; if(s.w!=null){ s.w*=factor; s.h*=factor; } }
+    if(s.type==='text') s.fontSize = (s.fontSize||6)*factor;
+    if(s.style && s.style.strokeWidth) s.style.strokeWidth *= factor;
+    if(s.smooth) s.smooth = s.smooth.map(v=>v*factor);
+  });
+  pushHistory();
+  renderAll();
+  document.getElementById('scaleModal').classList.remove('open');
+  showToast(`Scala applicata: fattore ${factor.toFixed(4)} (${(factor*100).toFixed(1)}%) su ${targets.length} elementi.`, false);
+};
 
 /* ============================================================
    ANTEPRIMA TAGLIO (fustella) — senza piegature
