@@ -1191,6 +1191,11 @@ function shapeToNode(s){
   } else if(s.type==='text'){
     node = el('text', Object.assign({x:s.x*state.scale, y:s.y*state.scale, 'font-size':(s.fontSize||6)*state.scale, 'font-family': resolveFontFamily(s.fontFamily), stroke:'none', fill: st.stroke}, {'data-id':s.id,'data-role':st.role}));
     node.textContent = s.text||'';
+    if(s.rotation){
+      const bbox = shapeBBox(s);
+      const cx = (bbox.x+bbox.w/2)*state.scale, cy = (bbox.y+bbox.h/2)*state.scale;
+      node.setAttribute('transform', `rotate(${s.rotation} ${cx} ${cy})`);
+    }
   } else if(s.type==='tracedpath'){
     node = el('g', {'data-id':s.id, 'data-role':st.role, transform:`translate(${s.x*state.scale},${s.y*state.scale}) scale(${(s.w*state.scale)/s.srcW},${(s.h*state.scale)/s.srcH})`});
     for(const sub of s.paths){
@@ -1232,10 +1237,30 @@ function renderSelectionHandles(){
     } else if(s.type==='rect' || s.type==='ellipse' || s.type==='image' || s.type==='tracedpath'){
       drawBBox(s.x, s.y, s.w, s.h, true, s.id);
     } else if(s.type==='text'){
-      const w = (s.text||'').length * (s.fontSize||6) * 0.55;
-      drawBBox(s.x, s.y-(s.fontSize||6), w, (s.fontSize||6)*1.3, false);
+      renderTextHandles(s, state.selection.size===1);
     }
   }
+}
+function rotatePointAround(p, center, angleDeg){
+  const rad = angleDeg*Math.PI/180;
+  const dx = p[0]-center[0], dy = p[1]-center[1];
+  return [center[0] + dx*Math.cos(rad) - dy*Math.sin(rad), center[1] + dx*Math.sin(rad) + dy*Math.cos(rad)];
+}
+function renderTextHandles(s, interactive){
+  const bbox = shapeBBox(s);
+  const {x,y,w,h} = bbox;
+  const cx = x+w/2, cy = y+h/2;
+  const rot = s.rotation||0;
+  const corners = [[x,y],[x+w,y],[x+w,y+h],[x,y+h]].map(p=>rotatePointAround(p,[cx,cy],rot));
+  const pts = corners.map(p=>`${p[0]*state.scale},${p[1]*state.scale}`).join(' ');
+  layerOverlay.appendChild(el('polygon', {points:pts, fill:'none', stroke:'var(--brass)', 'stroke-width':1, 'stroke-dasharray':'4,3', 'pointer-events':'none'}));
+  if(!interactive) return;
+  const br = corners[2];
+  layerOverlay.appendChild(el('rect', {x:br[0]*state.scale-4, y:br[1]*state.scale-4, width:8, height:8, fill:'#fff', stroke:'var(--brass)', 'stroke-width':1.5, 'data-resize':'text-scale', 'data-shape':s.id, style:'cursor:nwse-resize'}));
+  const topCenter = rotatePointAround([cx,y], [cx,cy], rot);
+  const handlePt = rotatePointAround([cx, y-(16/state.scale)], [cx,cy], rot);
+  layerOverlay.appendChild(el('line', {x1:topCenter[0]*state.scale, y1:topCenter[1]*state.scale, x2:handlePt[0]*state.scale, y2:handlePt[1]*state.scale, stroke:'var(--brass)', 'stroke-width':1, 'pointer-events':'none'}));
+  layerOverlay.appendChild(el('circle', {cx:handlePt[0]*state.scale, cy:handlePt[1]*state.scale, r:5.5, fill:'#fff', stroke:'var(--brass)', 'stroke-width':1.5, 'data-rotate':'1', 'data-shape':s.id, style:'cursor:grab'}));
 }
 
 function drawBBox(x,y,w,h, withHandles, shapeId){
@@ -1745,8 +1770,10 @@ function hitTest(s, mm){
     return v<=1.15 && v>=(s.style.fill&&s.style.fill!=='none'?0:0.7);
   }
   if(s.type==='text'){
-    const w=(s.text||'').length*(s.fontSize||6)*0.55;
-    return mm[0]>=s.x && mm[0]<=s.x+w && mm[1]>=s.y-(s.fontSize||6) && mm[1]<=s.y+2;
+    const bbox = shapeBBox(s);
+    const cx = bbox.x+bbox.w/2, cy = bbox.y+bbox.h/2;
+    const p = s.rotation ? rotatePointAround(mm, [cx,cy], -s.rotation) : mm;
+    return p[0]>=bbox.x && p[0]<=bbox.x+bbox.w && p[1]>=bbox.y && p[1]<=bbox.y+bbox.h;
   }
   return false;
 }
@@ -1773,6 +1800,26 @@ function handleMouseDown(mm, e){
   if(state.tool==='select'){
     if(target.dataset && target.dataset.vertex!==undefined){
       dragMode='move-vertex'; state.drag={shapeId:target.dataset.shape, vertex:+target.dataset.vertex, start:mm};
+      return;
+    }
+    if(target.dataset && target.dataset.rotate){
+      const s = state.shapes.find(x=>x.id===target.dataset.shape);
+      if(s){
+        const bbox = shapeBBox(s);
+        const center = [bbox.x+bbox.w/2, bbox.y+bbox.h/2];
+        dragMode='rotate-shape';
+        state.drag = {shapeId:s.id, center, startRotation:s.rotation||0, startAngle: Math.atan2(mm[1]-center[1], mm[0]-center[0])};
+      }
+      return;
+    }
+    if(target.dataset && target.dataset.resize === 'text-scale'){
+      const s = state.shapes.find(x=>x.id===target.dataset.shape);
+      if(s){
+        const bbox = shapeBBox(s);
+        const center = [bbox.x+bbox.w/2, bbox.y+bbox.h/2];
+        dragMode='resize-text';
+        state.drag = {shapeId:s.id, center, startFontSize:s.fontSize||6, startDist: Math.max(0.1, dist(mm, center))};
+      }
       return;
     }
     if(target.dataset && target.dataset.resize){
@@ -1884,6 +1931,28 @@ function handleMouseMove(mm, e){
     }
     return;
   }
+  if(dragMode==='resize-text' && state.drag){
+    const s = state.shapes.find(x=>x.id===state.drag.shapeId);
+    if(s){
+      const d = Math.max(0.1, dist(mm, state.drag.center));
+      const factor = d / state.drag.startDist;
+      s.fontSize = Math.max(0.5, state.drag.startFontSize * factor);
+      renderAll();
+    }
+    return;
+  }
+  if(dragMode==='rotate-shape' && state.drag){
+    const s = state.shapes.find(x=>x.id===state.drag.shapeId);
+    if(s){
+      const curAngle = Math.atan2(mm[1]-state.drag.center[1], mm[0]-state.drag.center[0]);
+      const deltaDeg = (curAngle - state.drag.startAngle) * 180/Math.PI;
+      let newRot = state.drag.startRotation + deltaDeg;
+      if(e.shiftKey) newRot = Math.round(newRot/15)*15; // aggancio a step di 15° tenendo premuto Shift
+      s.rotation = newRot;
+      renderAll();
+    }
+    return;
+  }
   if(dragMode==='rubberband' && state.drag){
     state.drag.current = mm;
     renderAll();
@@ -1901,7 +1970,7 @@ function handleMouseUp(mm, e){
       commitShapeDraft(d);
     }
     state.draft=null;
-  } else if(dragMode==='move-shape' || dragMode==='move-vertex' || dragMode==='resize'){
+  } else if(dragMode==='move-shape' || dragMode==='move-vertex' || dragMode==='resize' || dragMode==='resize-text' || dragMode==='rotate-shape'){
     pushHistory();
   } else if(dragMode==='rubberband'){
     if(state.drag && state.drag.current){
@@ -2713,6 +2782,17 @@ function renderPropPanel(){
     });
     sizeInp.addEventListener('change', ()=>{ pushHistory(); renderPropPanel(); });
     sizeRow.appendChild(sizeInp); host.appendChild(sizeRow);
+
+    const rotRow = document.createElement('div'); rotRow.className='field'; rotRow.style.marginTop='8px';
+    rotRow.innerHTML = `<label>Rotazione (gradi)</label>`;
+    const rotInp = document.createElement('input'); rotInp.type='number'; rotInp.step='1';
+    rotInp.value = Math.round(s.rotation||0);
+    rotInp.addEventListener('input', ()=>{
+      const v = parseFloat(rotInp.value);
+      if(!isNaN(v)){ s.rotation = v; renderCanvasOnly(); }
+    });
+    rotInp.addEventListener('change', ()=>{ pushHistory(); renderPropPanel(); });
+    rotRow.appendChild(rotInp); host.appendChild(rotRow);
 
     const ff = document.createElement('div'); ff.className='field'; ff.style.marginTop='8px';
     ff.innerHTML = `<label>Font</label>`;
@@ -4118,7 +4198,15 @@ function exportNode(s){
   }
   if(s.type==='rect') return `<rect x="${sN(s.x)}" y="${sN(s.y)}" width="${sN(s.w)}" height="${sN(s.h)}" ${common}/>`;
   if(s.type==='ellipse') return `<ellipse cx="${sN(s.x+s.w/2)}" cy="${sN(s.y+s.h/2)}" rx="${sN(Math.abs(s.w/2))}" ry="${sN(Math.abs(s.h/2))}" ${common}/>`;
-  if(s.type==='text') return `<text x="${sN(s.x)}" y="${sN(s.y)}" font-size="${sN(s.fontSize||6)}" font-family="${resolveFontFamily(s.fontFamily)}" fill="${st.stroke}">${escapeXML(s.text||'')}</text>`;
+  if(s.type==='text'){
+    let rotAttr = '';
+    if(s.rotation){
+      const bbox = shapeBBox(s);
+      const cx = bbox.x+bbox.w/2, cy = bbox.y+bbox.h/2;
+      rotAttr = ` transform="rotate(${sN(s.rotation)} ${sN(cx)} ${sN(cy)})"`;
+    }
+    return `<text x="${sN(s.x)}" y="${sN(s.y)}" font-size="${sN(s.fontSize||6)}" font-family="${resolveFontFamily(s.fontFamily)}" fill="${st.stroke}"${rotAttr}>${escapeXML(s.text||'')}</text>`;
+  }
   if(s.type==='tracedpath'){
     const sx=s.w/s.srcW, sy=s.h/s.srcH;
     const compW = (st.strokeWidth||1) / (sx||1);
