@@ -1189,7 +1189,7 @@ function shapeToNode(s){
   } else if(s.type==='ellipse'){
     node = el('ellipse', Object.assign({cx:(s.x+s.w/2)*state.scale, cy:(s.y+s.h/2)*state.scale, rx:Math.abs(s.w/2)*state.scale, ry:Math.abs(s.h/2)*state.scale}, common));
   } else if(s.type==='text'){
-    node = el('text', Object.assign({x:s.x*state.scale, y:s.y*state.scale, 'font-size':(s.fontSize||6)*state.scale, 'font-family': s.fontFamily ? `'${s.fontFamily}', Inter, sans-serif` : 'Inter, sans-serif', stroke:'none', fill: st.stroke}, {'data-id':s.id,'data-role':st.role}));
+    node = el('text', Object.assign({x:s.x*state.scale, y:s.y*state.scale, 'font-size':(s.fontSize||6)*state.scale, 'font-family': resolveFontFamily(s.fontFamily), stroke:'none', fill: st.stroke}, {'data-id':s.id,'data-role':st.role}));
     node.textContent = s.text||'';
   } else if(s.type==='tracedpath'){
     node = el('g', {'data-id':s.id, 'data-role':st.role, transform:`translate(${s.x*state.scale},${s.y*state.scale}) scale(${(s.w*state.scale)/s.srcW},${(s.h*state.scale)/s.srcH})`});
@@ -2702,22 +2702,45 @@ function renderPropPanel(){
     inp.onchange = ()=>pushHistory();
     f.appendChild(inp); host.appendChild(f);
 
+    const sizeRow = document.createElement('div'); sizeRow.className='field'; sizeRow.style.marginTop='8px';
+    sizeRow.innerHTML = `<label>Dimensione testo (${unitLabel()})</label>`;
+    const u = UNITS[state.unit];
+    const sizeInp = document.createElement('input'); sizeInp.type='number'; sizeInp.step=String(u.step); sizeInp.min='0.1';
+    sizeInp.value = Math.round(mmToUnit(s.fontSize||6)*Math.pow(10,u.decimals))/Math.pow(10,u.decimals);
+    sizeInp.addEventListener('input', ()=>{
+      const v = parseFloat(sizeInp.value);
+      if(!isNaN(v) && v>0){ s.fontSize = unitToMm(v); renderCanvasOnly(); }
+    });
+    sizeInp.addEventListener('change', ()=>{ pushHistory(); renderPropPanel(); });
+    sizeRow.appendChild(sizeInp); host.appendChild(sizeRow);
+
     const ff = document.createElement('div'); ff.className='field'; ff.style.marginTop='8px';
     ff.innerHTML = `<label>Font</label>`;
     const fontSel = document.createElement('select');
     const optDefault = document.createElement('option'); optDefault.value=''; optDefault.textContent='Predefinito (Inter)';
     if(!s.fontFamily) optDefault.selected = true;
     fontSel.appendChild(optDefault);
-    state.customFonts.forEach(font=>{
-      const opt = document.createElement('option'); opt.value = cssFontName(font); opt.textContent = font.name;
-      if(s.fontFamily===cssFontName(font)) opt.selected = true;
-      fontSel.appendChild(opt);
+    const builtinGroup = document.createElement('optgroup'); builtinGroup.label = 'Font di sistema';
+    BUILTIN_FONTS.forEach(bf=>{
+      const opt = document.createElement('option'); opt.value = 'builtin:'+bf.css; opt.textContent = bf.name;
+      if(s.fontFamily===opt.value) opt.selected = true;
+      builtinGroup.appendChild(opt);
     });
+    fontSel.appendChild(builtinGroup);
+    if(state.customFonts.length){
+      const customGroup = document.createElement('optgroup'); customGroup.label = 'Font personalizzati';
+      state.customFonts.forEach(font=>{
+        const opt = document.createElement('option'); opt.value = cssFontName(font); opt.textContent = font.name;
+        if(s.fontFamily===cssFontName(font)) opt.selected = true;
+        customGroup.appendChild(opt);
+      });
+      fontSel.appendChild(customGroup);
+    }
     fontSel.onchange = ()=>{ s.fontFamily = fontSel.value || null; pushHistory(); renderAll(); };
     ff.appendChild(fontSel);
     if(!state.customFonts.length){
       const hint = document.createElement('div'); hint.className='hint';
-      hint.textContent = 'Nessun font personalizzato caricato. Menu File → "Gestisci font personalizzati…" per aggiungerne.';
+      hint.textContent = 'Per usare un font tuo: menu File → "Gestisci font personalizzati…".';
       ff.appendChild(hint);
     }
     host.appendChild(ff);
@@ -3815,6 +3838,20 @@ document.getElementById('scaleApply').onclick = ()=>{
    FONT PERSONALIZZATI — file diretto, zip, o link
 ============================================================ */
 const FONT_FORMATS = { ttf:'truetype', otf:'opentype', woff:'woff', woff2:'woff2' };
+const BUILTIN_FONTS = [
+  {name:'Sans-serif', css:'Inter, Arial, Helvetica, sans-serif'},
+  {name:'Serif (Georgia)', css:'Georgia, "Times New Roman", serif'},
+  {name:'Times New Roman', css:'"Times New Roman", Times, serif'},
+  {name:'Arial', css:'Arial, Helvetica, sans-serif'},
+  {name:'Verdana', css:'Verdana, Geneva, sans-serif'},
+  {name:'Monospace (Courier)', css:'"Courier New", Courier, monospace'},
+  {name:'Impact (titoli)', css:'Impact, Haettenschweiler, sans-serif'}
+];
+function resolveFontFamily(fontFamily){
+  if(!fontFamily) return 'Inter, sans-serif';
+  if(fontFamily.startsWith('builtin:')) return fontFamily.slice(8);
+  return `'${fontFamily}', Inter, sans-serif`;
+}
 const FONT_MIME = { ttf:'font/ttf', otf:'font/otf', woff:'font/woff', woff2:'font/woff2' };
 function fontFormatFromName(name){
   const ext = (name.split('.').pop()||'').toLowerCase();
@@ -4081,7 +4118,7 @@ function exportNode(s){
   }
   if(s.type==='rect') return `<rect x="${sN(s.x)}" y="${sN(s.y)}" width="${sN(s.w)}" height="${sN(s.h)}" ${common}/>`;
   if(s.type==='ellipse') return `<ellipse cx="${sN(s.x+s.w/2)}" cy="${sN(s.y+s.h/2)}" rx="${sN(Math.abs(s.w/2))}" ry="${sN(Math.abs(s.h/2))}" ${common}/>`;
-  if(s.type==='text') return `<text x="${sN(s.x)}" y="${sN(s.y)}" font-size="${sN(s.fontSize||6)}" font-family="${s.fontFamily ? `'${s.fontFamily}', sans-serif` : 'sans-serif'}" fill="${st.stroke}">${escapeXML(s.text||'')}</text>`;
+  if(s.type==='text') return `<text x="${sN(s.x)}" y="${sN(s.y)}" font-size="${sN(s.fontSize||6)}" font-family="${resolveFontFamily(s.fontFamily)}" fill="${st.stroke}">${escapeXML(s.text||'')}</text>`;
   if(s.type==='tracedpath'){
     const sx=s.w/s.srcW, sy=s.h/s.srcH;
     const compW = (st.strokeWidth||1) / (sx||1);
