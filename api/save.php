@@ -27,12 +27,14 @@ foreach ($index as $entry) {
 }
 
 $project = [
-    'name'     => $name,
-    'page'     => $body['page'] ?? null,
-    'shapes'   => $body['shapes'] ?? [],
-    'refImage' => $body['refImage'] ?? null,
-    'created'  => $existing['created'] ?? $now,
-    'updated'  => $now,
+    'name'          => $name,
+    'page'          => $body['page'] ?? null,
+    'shapes'        => $body['shapes'] ?? [],
+    'refImage'      => $body['refImage'] ?? null,
+    'layers'        => $body['layers'] ?? null,
+    'activeLayerId' => $body['activeLayerId'] ?? null,
+    'created'       => $existing['created'] ?? $now,
+    'updated'       => $now,
 ];
 
 if (file_put_contents(project_path($id), json_encode($project, JSON_UNESCAPED_UNICODE)) === false) {

@@ -202,6 +202,19 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 .layerrow button{background:none;border:none;color:var(--ink-dim);cursor:pointer;width:20px;}
 .layerrow button:hover{color:var(--ink);}
 .grouphead{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-dim);margin:12px 0 6px;}
+.layerhead{
+  display:flex;align-items:center;gap:5px;padding:7px 6px;border-radius:6px;
+  border:1px solid transparent;margin-bottom:2px;cursor:pointer;background:var(--bg-2);
+}
+.layerhead.active{border-color:rgba(201,151,63,.5);}
+.layerhead.dragover{border-top:2px solid var(--brass);}
+.layerhead .drag{cursor:grab;color:var(--ink-dim);flex:none;font-size:11px;letter-spacing:-2px;}
+.layerhead .name{flex:1;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;outline:none;min-width:0;}
+.layerhead .name[contenteditable="true"]{background:var(--bg-0);border-radius:3px;padding:0 3px;cursor:text;}
+.layerhead button{background:none;border:none;color:var(--ink-dim);cursor:pointer;width:18px;flex:none;font-size:11px;padding:0;}
+.layerhead button:hover{color:var(--ink);}
+.layerhead button:disabled{opacity:.25;cursor:default;}
+.layer-shapes{margin:0 0 10px 16px;}
 .grouphead:first-child{margin-top:0;}
 
 /* status bar */
@@ -736,7 +749,8 @@ const ROLE_STYLE = {
   design:  { stroke:'#111111', dash:'none',    label:'Disegno' },
   cut:     { stroke:'#d1402c', dash:'none',    label:'Taglio (linea di taglio)' },
   fold:    { stroke:'#3572d6', dash:'6,4',     label:'Piega (cordonatura)' },
-  diecut:  { stroke:'#2f9e5a', dash:'8,3,2,3', label:'Fustella speciale' }
+  diecut:  { stroke:'#2f9e5a', dash:'8,3,2,3', label:'Fustella speciale' },
+  glue:    { stroke:'#a3651e', dash:'1,2',     label:'Incollaggio (aletta/zona di colla)' }
 };
 const DASH_OPTIONS = [
   {v:'none', l:'Continua'},
@@ -777,8 +791,10 @@ const state = {
   magnetPx: 10,                // screen px radius for magnet
   draft: null,                 // in-progress drawing object
   drag: null,                  // active drag operation
-  refImage: null,              // {dataUrl, x,y,w,h, opacity, img}
+  refImage: null,              // {dataUrl, x,y,w,h, opacity, img, layerId, hidden}
   libraryId: null,             // id del progetto in libreria, se caricato/salvato da lì
+  layers: [{id:'layer-1', name:'Livello 1', visible:true, locked:false}], // ordine: indice 0 = fondo, ultimo = cima
+  activeLayerId: 'layer-1',    // livello in cui vanno le forme appena create
   gapMarkers: [],               // punti liberi trovati dall'ultima verifica chiusure
   showEndpoints: true,          // mostra sempre gli estremi liberi/collegati dei percorsi aperti
   showDimensions: false,        // mostra le quote permanenti del disegno e del foglio
@@ -788,6 +804,45 @@ const state = {
 };
 
 function pageKey(){ return state.page.w+'x'+state.page.h; }
+
+/* ============================================================
+   LIVELLI — helper di visibilità e ordinamento (indipendenti dal
+   "ruolo" di stampa, che resta per lo stile taglio/piega/colla)
+============================================================ */
+function getLayerIndex(layerId){
+  const idx = state.layers.findIndex(l=>l.id===layerId);
+  return idx<0 ? 0 : idx;
+}
+function isLayerVisible(layerId){
+  const l = state.layers.find(x=>x.id===layerId);
+  return !l || l.visible !== false; // livello non trovato (dati vecchi): considera visibile
+}
+function isLayerLocked(layerId){
+  const l = state.layers.find(x=>x.id===layerId);
+  return !!(l && l.locked);
+}
+function isShapeEffVisible(s){
+  return s.visible !== false && isLayerVisible(s.layerId);
+}
+function shapesInZOrder(){
+  return state.shapes.slice().sort((a,b)=> getLayerIndex(a.layerId) - getLayerIndex(b.layerId));
+}
+function ensureActiveLayer(){
+  if(!state.layers.length){ state.layers = [{id:uid(), name:'Livello 1', visible:true, locked:false}]; }
+  if(!state.layers.some(l=>l.id===state.activeLayerId)) state.activeLayerId = state.layers[state.layers.length-1].id;
+}
+function restoreLayersFromProject(proj){
+  if(proj.layers && proj.layers.length){
+    state.layers = proj.layers;
+    state.activeLayerId = (proj.activeLayerId && proj.layers.some(l=>l.id===proj.activeLayerId)) ? proj.activeLayerId : proj.layers[proj.layers.length-1].id;
+  } else {
+    const dl = {id:uid(), name:'Livello 1', visible:true, locked:false};
+    state.layers = [dl]; state.activeLayerId = dl.id;
+    state.shapes.forEach(s=>{ if(!s.layerId) s.layerId = dl.id; });
+    if(state.refImage && !state.refImage.layerId) state.refImage.layerId = dl.id;
+  }
+  ensureActiveLayer();
+}
 
 /* ============================================================
    SVG STAGE SETUP
@@ -912,7 +967,7 @@ function tracedpathWorldEndpoints(s){
 function collectConnectionPoints(){
   const pts = [];
   for(const s of state.shapes){
-    if(s.visible===false) continue;
+    if(!isShapeEffVisible(s)) continue;
     if(s.points){
       s.points.forEach((p, idx)=> pts.push({shapeId:s.id, kind:'vertex', idx, pt:p}));
     } else if(s.type==='tracedpath'){
@@ -977,7 +1032,7 @@ function moveShapesBy(ids, dx, dy){
    HISTORY (undo/redo)
 ============================================================ */
 function pushHistory(){
-  const snap = JSON.stringify(state.shapes);
+  const snap = JSON.stringify({shapes:state.shapes, layers:state.layers});
   state.history = state.history.slice(0, state.histIndex+1);
   state.history.push(snap);
   if(state.history.length>120) state.history.shift();
@@ -988,14 +1043,18 @@ function pushHistory(){
 function undo(){
   if(state.histIndex<=0) return;
   state.histIndex--;
-  state.shapes = JSON.parse(state.history[state.histIndex]);
+  const data = JSON.parse(state.history[state.histIndex]);
+  state.shapes = data.shapes; state.layers = data.layers || state.layers;
+  ensureActiveLayer();
   state.selection.clear();
   renderAll();
 }
 function redo(){
   if(state.histIndex>=state.history.length-1) return;
   state.histIndex++;
-  state.shapes = JSON.parse(state.history[state.histIndex]);
+  const data = JSON.parse(state.history[state.histIndex]);
+  state.shapes = data.shapes; state.layers = data.layers || state.layers;
+  ensureActiveLayer();
   state.selection.clear();
   renderAll();
 }
@@ -1012,7 +1071,7 @@ function newStyle(role){
   return { stroke:r.stroke, fill:'none', strokeWidth: role==='design'?1.2:0.8, dash:r.dash, role: role };
 }
 function makeShape(type, extra){
-  const shape = Object.assign({ id: uid(), type, style:newStyle(state.activeRole), visible:true, locked:false }, extra);
+  const shape = Object.assign({ id: uid(), type, style:newStyle(state.activeRole), visible:true, locked:false, layerId: state.activeLayerId }, extra);
   if(shape.points && !shape.smooth) shape.smooth = shape.points.map(()=>0);
   return shape;
 }
@@ -1101,13 +1160,13 @@ function shapeToNode(s){
         'stroke-linejoin':'round','stroke-linecap':'round','fill-rule':'evenodd'}));
     }
   }
-  if(s.visible===false) node.setAttribute('display','none');
+  if(!isShapeEffVisible(s)) node.setAttribute('display','none');
   return node;
 }
 
 function renderShapes(){
   layerArt.innerHTML='';
-  for(const s of state.shapes){
+  for(const s of shapesInZOrder()){
     layerArt.appendChild(shapeToNode(s));
   }
 }
@@ -1192,7 +1251,7 @@ function renderDraft(){
 function renderRefImage(){
   layerRef.innerHTML='';
   const r = state.refImage;
-  if(!r) return;
+  if(!r || r.hidden || !isLayerVisible(r.layerId)) return;
   const img = el('image', {href:r.dataUrl, x:r.x*state.scale, y:r.y*state.scale, width:r.w*state.scale, height:r.h*state.scale, opacity:r.opacity, 'data-ref':'1'});
   img.setAttributeNS('http://www.w3.org/1999/xlink','href', r.dataUrl);
   layerRef.appendChild(img);
@@ -1226,8 +1285,22 @@ function dimLabel(p1, p2){
   if(len < 0.05) return;
   const mx=(p1[0]+p2[0])/2, my=(p1[1]+p2[1])/2;
   const ang = Math.atan2(p2[1]-p1[1], p2[0]-p1[0]);
-  const offMM = 6/state.scale;
+  const offMM = 6/state.scale; // quanto la linea di quota si scosta dal tratto reale, per non sovrapporvisi
   const ox = Math.sin(ang)*offMM, oy = -Math.cos(ang)*offMM;
+  const q1 = [p1[0]+ox, p1[1]+oy], q2 = [p2[0]+ox, p2[1]+oy];
+
+  // linea di quota con freccette "da - a", spezzata a metà per lasciare spazio al testo
+  const gapMM = Math.min(len*0.4, (14/state.scale));
+  const dirx = (p2[0]-p1[0])/len, diry = (p2[1]-p1[1])/len;
+  const halfGap = [dirx*gapMM/2, diry*gapMM/2];
+  const segA2 = [mx+ox-halfGap[0], my+oy-halfGap[1]];
+  const segB1 = [mx+ox+halfGap[0], my+oy+halfGap[1]];
+  layerOverlay.appendChild(el('line', {x1:q1[0]*state.scale, y1:q1[1]*state.scale, x2:segA2[0]*state.scale, y2:segA2[1]*state.scale, stroke:'var(--brass)', 'stroke-width':0.8, opacity:0.9, 'pointer-events':'none'}));
+  layerOverlay.appendChild(el('line', {x1:segB1[0]*state.scale, y1:segB1[1]*state.scale, x2:q2[0]*state.scale, y2:q2[1]*state.scale, stroke:'var(--brass)', 'stroke-width':0.8, opacity:0.9, 'pointer-events':'none'}));
+  const arrowSizeMM = 3/state.scale;
+  arrowHead(q1, segA2, arrowSizeMM, '#c9973f');
+  arrowHead(q2, segB1, arrowSizeMM, '#c9973f');
+
   const lx=(mx+ox)*state.scale, ly=(my+oy)*state.scale;
   const txtStr = fmtUnit(len);
   const w = Math.max(30, txtStr.length*6.6), h=15;
@@ -1372,7 +1445,7 @@ function renderEndpointMarkers(){
   if(!state.showEndpoints) return;
   const allPoints = collectConnectionPoints();
   for(const s of state.shapes){
-    if(!s.points || s.visible===false || s.closed) continue;
+    if(!s.points || !isShapeEffVisible(s) || s.closed) continue;
     if(s.points.length<2) continue;
     [0, s.points.length-1].forEach(idx=>{
       const p = s.points[idx];
@@ -1384,7 +1457,7 @@ function renderEndpointMarkers(){
     });
   }
   for(const s of state.shapes){
-    if(s.type!=='tracedpath' || s.visible===false) continue;
+    if(s.type!=='tracedpath' || !isShapeEffVisible(s)) continue;
     tracedpathWorldEndpoints(s).forEach(e=>{
       const hasMatch = allPoints.some(o => !(o.shapeId===s.id && o.kind==='tracedend' && o.subIdx===e.subIdx && o.which===e.which) && pointsEqual(o.pt, e.pt));
       layerOverlay.appendChild(el('circle', {
@@ -1409,14 +1482,14 @@ function extLine(a, b){
     stroke:'#8a8a8a', 'stroke-width':0.6, 'stroke-dasharray':'2,2', 'pointer-events':'none'
   }));
 }
-function arrowHead(tip, fromDir, size){
+function arrowHead(tip, fromDir, size, color){
   // piccola punta a freccia triangolare orientata da fromDir verso tip
   const ang = Math.atan2(tip[1]-fromDir[1], tip[0]-fromDir[0]);
   const s = size;
   const p1 = [tip[0]*state.scale, tip[1]*state.scale];
   const p2 = [(tip[0]-Math.cos(ang-0.35)*s)*state.scale, (tip[1]-Math.sin(ang-0.35)*s)*state.scale];
   const p3 = [(tip[0]-Math.cos(ang+0.35)*s)*state.scale, (tip[1]-Math.sin(ang+0.35)*s)*state.scale];
-  layerOverlay.appendChild(el('polygon', {points:`${p1[0]},${p1[1]} ${p2[0]},${p2[1]} ${p3[0]},${p3[1]}`, fill:'#8a8a8a', 'pointer-events':'none'}));
+  layerOverlay.appendChild(el('polygon', {points:`${p1[0]},${p1[1]} ${p2[0]},${p2[1]} ${p3[0]},${p3[1]}`, fill:color||'#8a8a8a', 'pointer-events':'none'}));
 }
 function technicalDim(p1, p2){
   layerOverlay.appendChild(el('line', {
@@ -1439,7 +1512,7 @@ function renderPageDimensions(){
 }
 function renderAllShapeDimensions(){
   for(const s of state.shapes){
-    if(!s.points || s.visible===false || s.points.length<2) continue;
+    if(!s.points || !isShapeEffVisible(s) || s.points.length<2) continue;
     for(let i=0;i<s.points.length-1;i++) dimLabel(s.points[i], s.points[i+1]);
     if(s.closed && s.points.length>2) dimLabel(s.points[s.points.length-1], s.points[0]);
   }
@@ -1595,10 +1668,11 @@ window.addEventListener('mouseup', (e)=>{ handleMouseUp(clientToMM(e.clientX,e.c
 stage.addEventListener('dblclick', (e)=>{ handleDblClick(clientToMM(e.clientX,e.clientY), e); });
 
 function topShapeAt(mm){
-  // hit test from topmost to bottom
-  for(let i=state.shapes.length-1;i>=0;i--){
-    const s = state.shapes[i];
-    if(s.visible===false || s.locked) continue;
+  // hit test dal più in cima al più in fondo, rispettando l'ordine dei livelli
+  const ordered = shapesInZOrder();
+  for(let i=ordered.length-1;i>=0;i--){
+    const s = ordered[i];
+    if(!isShapeEffVisible(s) || s.locked || isLayerLocked(s.layerId)) continue;
     if(hitTest(s, mm)) return s;
   }
   return null;
@@ -1791,7 +1865,7 @@ function handleMouseUp(mm, e){
       const y1=Math.max(state.drag.start[1], state.drag.current[1]);
       if((x1-x0) > 1.5/state.scale || (y1-y0) > 1.5/state.scale){
         for(const s of state.shapes){
-          if(s.visible===false || s.locked) continue;
+          if(!isShapeEffVisible(s) || s.locked) continue;
           const b = shapeBBox(s);
           const intersects = !(b.x>x1 || b.x+b.w<x0 || b.y>y1 || b.y+b.h<y0);
           if(intersects) state.selection.add(s.id);
@@ -1873,7 +1947,7 @@ function commitArcDraft(pts){
       id: uid(), type:'tracedpath',
       x:bbox.x, y:bbox.y, w:bbox.w, h:bbox.h, srcW:bbox.w, srcH:bbox.h,
       paths:[{ d:shifted[0].d, fill:'none', stroke: style.stroke }],
-      style, visible:true, locked:false
+      style, visible:true, locked:false, layerId: state.activeLayerId
     };
   }
   state.shapes.push(shape);
@@ -2088,7 +2162,7 @@ async function saveToLibrary(){
   const name = prompt('Nome del progetto in libreria:', defaultName);
   if(!name) return;
   try{
-    const payload = { id: state.libraryId || null, name, page: state.page, shapes: state.shapes, refImage: state.refImage };
+    const payload = { id: state.libraryId || null, name, page: state.page, shapes: state.shapes, refImage: state.refImage, layers: state.layers, activeLayerId: state.activeLayerId };
     const data = await apiFetch('save.php', {
       method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
     });
@@ -2138,6 +2212,7 @@ async function loadFromLibrary(id){
     state.shapes = proj.shapes || [];
     state.page = proj.page || state.page;
     state.refImage = proj.refImage || null;
+    restoreLayersFromProject(proj);
     state.selection.clear();
     state.libraryId = id;
     if(proj.name) renameActiveTab(proj.name);
@@ -2233,6 +2308,7 @@ async function onGoogleDriveFilePicked(data){
       state.shapes = proj.shapes || [];
       state.page = proj.page || state.page;
       state.refImage = proj.refImage || null;
+      restoreLayersFromProject(proj);
       state.selection.clear();
       syncPageSizeSelect();
       renameActiveTab(proj.name || file.name.replace(/\.json$/i, ''));
@@ -2248,7 +2324,7 @@ async function onGoogleDriveFilePicked(data){
 }
 
 function saveProjectFile(){
-  const payload = JSON.stringify({shapes:state.shapes, page:state.page, refImage:state.refImage});
+  const payload = JSON.stringify({shapes:state.shapes, page:state.page, refImage:state.refImage, layers:state.layers, activeLayerId:state.activeLayerId});
   const blob = new Blob([payload], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -2268,6 +2344,7 @@ function openProjectFilePicker(){
         state.shapes = data.shapes || [];
         state.page = data.page || state.page;
         state.refImage = data.refImage || null;
+        restoreLayersFromProject(data);
         state.selection.clear();
         syncPageSizeSelect();
         renameActiveTab(fileName);
@@ -2342,7 +2419,7 @@ function buildProofSVG(l){
   let body = `<rect x="0" y="0" width="${sN(l.pw)}" height="${sN(l.ph)}" fill="#ffffff"/>`;
   body += `<g transform="translate(${sN(offX)},${sN(offY)}) scale(${sN(l.scale)})">`;
   body += `<rect x="0" y="0" width="${sN(l.dw)}" height="${sN(l.dh)}" fill="#ffffff" stroke="#cfcfcf" stroke-width="${sN(0.4/l.scale)}"/>`;
-  const groups = {design:[],cut:[],fold:[],diecut:[]};
+  const groups = {design:[],cut:[],fold:[],diecut:[],glue:[]};
   state.shapes.forEach(s=>{ if(s.visible!==false) (groups[s.style.role]||groups.design).push(s); });
   Object.keys(ROLE_STYLE).forEach(roleKey=> groups[roleKey].forEach(s=> body += exportNode(s)));
   body += `</g>`;
@@ -2490,7 +2567,8 @@ function renderPropPanel(){
     const r = ROLE_STYLE[roleKey];
     const btn = document.createElement('button');
     btn.className='rolebtn'+((ids.length? (allSelectedHaveRole(ids,roleKey)) : state.activeRole===roleKey)?' active':'');
-    btn.innerHTML = `<span class="sw" style="border-top-color:${r.stroke};border-top-style:${roleKey==='fold'?'dashed':(roleKey==='diecut'?'dotted':'solid')}"></span>${r.label.split(' (')[0]}`;
+    const swStyle = roleKey==='fold' ? 'dashed' : (roleKey==='diecut' || roleKey==='glue' ? 'dotted' : 'solid');
+    btn.innerHTML = `<span class="sw" style="border-top-color:${r.stroke};border-top-style:${swStyle}"></span>${r.label.split(' (')[0]}`;
     btn.onclick = ()=>{
       if(ids.length){
         ids.forEach(id=>{
@@ -2684,33 +2762,143 @@ function addColorField(host, label, value, onChange, disabled){
 /* ---------- LAYERS TAB ---------- */
 function renderLayersPanel(){
   const host = document.getElementById('tab-layers');
-  host.innerHTML='';
-  if(state.shapes.length===0){
-    host.innerHTML = '<div class="emptystate">Ancora nessun elemento.\nGli oggetti che disegni compariranno qui, raggruppati per ruolo (disegno, taglio, piega, fustella).</div>';
-    return;
-  }
-  const groups = {design:[],cut:[],fold:[],diecut:[]};
-  state.shapes.forEach(s=> (groups[s.style.role]||groups.design).push(s));
-  Object.keys(ROLE_STYLE).forEach(roleKey=>{
-    const list = groups[roleKey];
-    if(!list.length) return;
-    const h = document.createElement('div'); h.className='grouphead'; h.textContent = ROLE_STYLE[roleKey].label+' · '+list.length;
-    host.appendChild(h);
-    list.slice().reverse().forEach(s=>{
+  host.innerHTML = '';
+
+  const addBtn = document.createElement('button');
+  addBtn.className = 'btn'; addBtn.textContent = '＋ Nuovo livello'; addBtn.style.marginBottom = '10px';
+  addBtn.onclick = ()=>{
+    const layer = {id:uid(), name:'Livello '+(state.layers.length+1), visible:true, locked:false};
+    state.layers.push(layer);
+    state.activeLayerId = layer.id;
+    pushHistory(); renderAll();
+  };
+  host.appendChild(addBtn);
+
+  const orderedLayers = state.layers.slice().reverse(); // in cima alla lista = in cima alla pila
+
+  orderedLayers.forEach((layer)=>{
+    const head = document.createElement('div');
+    head.className = 'layerhead' + (layer.id===state.activeLayerId ? ' active' : '');
+    head.draggable = true;
+    head.title = 'Clic per impostarlo come livello attivo (dove vanno le nuove forme)';
+
+    const drag = document.createElement('span'); drag.className='drag'; drag.textContent='⋮⋮'; drag.title='Trascina per riordinare';
+    const eyeBtn = document.createElement('button'); eyeBtn.textContent = layer.visible===false ? '○' : '●';
+    eyeBtn.title = 'Mostra/nascondi livello';
+    eyeBtn.onclick = (e)=>{ e.stopPropagation(); layer.visible = layer.visible===false; pushHistory(); renderAll(); };
+    const lockBtn = document.createElement('button'); lockBtn.textContent = layer.locked ? '🔒' : '🔓';
+    lockBtn.title = 'Blocca/sblocca livello';
+    lockBtn.onclick = (e)=>{ e.stopPropagation(); layer.locked = !layer.locked; pushHistory(); renderAll(); };
+
+    const nameEl = document.createElement('span'); nameEl.className='name'; nameEl.textContent = layer.name;
+    nameEl.title = 'Doppio clic per rinominare';
+    nameEl.ondblclick = (e)=>{
+      e.stopPropagation();
+      nameEl.contentEditable = 'true'; nameEl.focus();
+      const range = document.createRange(); range.selectNodeContents(nameEl);
+      const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+    };
+    nameEl.addEventListener('blur', ()=>{
+      nameEl.contentEditable = 'false';
+      layer.name = nameEl.textContent.trim() || layer.name;
+      pushHistory(); renderLayersPanel();
+    });
+    nameEl.addEventListener('keydown', (e)=>{
+      e.stopPropagation();
+      if(e.key==='Enter'){ e.preventDefault(); nameEl.blur(); }
+      if(e.key==='Escape'){ nameEl.textContent = layer.name; nameEl.blur(); }
+    });
+
+    const realIdx = state.layers.findIndex(l=>l.id===layer.id);
+    const upBtn = document.createElement('button'); upBtn.textContent='▲'; upBtn.title='Sposta più in alto (in cima alla pila)';
+    upBtn.disabled = realIdx>=state.layers.length-1;
+    upBtn.onclick = (e)=>{ e.stopPropagation(); moveLayer(layer.id, 1); };
+    const downBtn = document.createElement('button'); downBtn.textContent='▼'; downBtn.title='Sposta più in basso';
+    downBtn.disabled = realIdx<=0;
+    downBtn.onclick = (e)=>{ e.stopPropagation(); moveLayer(layer.id, -1); };
+    const delBtn = document.createElement('button'); delBtn.textContent='🗑'; delBtn.title='Elimina livello';
+    delBtn.onclick = (e)=>{ e.stopPropagation(); deleteLayer(layer.id); };
+
+    head.appendChild(drag); head.appendChild(eyeBtn); head.appendChild(lockBtn);
+    head.appendChild(nameEl);
+    head.appendChild(upBtn); head.appendChild(downBtn); head.appendChild(delBtn);
+    head.onclick = ()=>{ state.activeLayerId = layer.id; renderLayersPanel(); };
+
+    head.addEventListener('dragstart', (e)=>{ e.dataTransfer.setData('text/plain', layer.id); e.dataTransfer.effectAllowed='move'; head.style.opacity='0.4'; });
+    head.addEventListener('dragend', ()=> head.style.opacity='');
+    head.addEventListener('dragover', (e)=>{ e.preventDefault(); e.dataTransfer.dropEffect='move'; head.classList.add('dragover'); });
+    head.addEventListener('dragleave', ()=> head.classList.remove('dragover'));
+    head.addEventListener('drop', (e)=>{
+      e.preventDefault(); head.classList.remove('dragover');
+      const draggedId = e.dataTransfer.getData('text/plain');
+      if(draggedId===layer.id) return;
+      const from = state.layers.findIndex(l=>l.id===draggedId);
+      const to = state.layers.findIndex(l=>l.id===layer.id);
+      if(from<0||to<0) return;
+      const [moved] = state.layers.splice(from,1);
+      state.layers.splice(to,0,moved);
+      pushHistory(); renderAll();
+    });
+
+    host.appendChild(head);
+
+    const shapesWrap = document.createElement('div'); shapesWrap.className='layer-shapes';
+    let hasAny = false;
+    if(state.refImage && state.refImage.layerId===layer.id){
+      hasAny = true;
+      const row = document.createElement('div'); row.className='layerrow';
+      row.innerHTML = `<span class="sw" style="background:#9c7a3c"></span><span class="lbl">🖼 Immagine di riferimento</span>`;
+      const visBtn = document.createElement('button'); visBtn.textContent = state.refImage.hidden ? '○' : '●';
+      visBtn.title = 'Mostra/nascondi immagine';
+      visBtn.onclick = ()=>{ state.refImage.hidden = !state.refImage.hidden; renderAll(); };
+      row.appendChild(visBtn);
+      shapesWrap.appendChild(row);
+    }
+    state.shapes.filter(s=>s.layerId===layer.id).slice().reverse().forEach(s=>{
+      hasAny = true;
       const row = document.createElement('div');
-      row.className='layerrow'+(state.selection.has(s.id)?' selected':'');
+      row.className = 'layerrow' + (state.selection.has(s.id) ? ' selected' : '');
       row.innerHTML = `<span class="sw" style="background:${s.style.stroke}"></span><span class="lbl">${labelFor(s)}</span>`;
       row.onclick = (ev)=>{ if(ev.target.tagName==='BUTTON') return; state.selection = new Set([s.id]); renderAll(); };
-      const visBtn = document.createElement('button'); visBtn.textContent = s.visible===false?'○':'●';
-      visBtn.title='Mostra/nascondi';
-      visBtn.onclick=()=>{ s.visible = s.visible===false; renderAll(); };
-      const lockBtn = document.createElement('button'); lockBtn.textContent = s.locked?'🔒':'🔓';
-      lockBtn.title='Blocca/sblocca';
-      lockBtn.onclick=()=>{ s.locked=!s.locked; renderAll(); };
-      row.appendChild(visBtn); row.appendChild(lockBtn);
-      host.appendChild(row);
+      const visBtn = document.createElement('button'); visBtn.textContent = s.visible===false ? '○' : '●';
+      visBtn.title = 'Mostra/nascondi';
+      visBtn.onclick = ()=>{ s.visible = s.visible===false; renderAll(); };
+      const lockBtn2 = document.createElement('button'); lockBtn2.textContent = s.locked ? '🔒' : '🔓';
+      lockBtn2.title = 'Blocca/sblocca';
+      lockBtn2.onclick = ()=>{ s.locked = !s.locked; renderAll(); };
+      row.appendChild(visBtn); row.appendChild(lockBtn2);
+      shapesWrap.appendChild(row);
     });
+    if(!hasAny){
+      const empty = document.createElement('div'); empty.className='hint'; empty.style.padding='2px 4px 8px';
+      empty.textContent = 'Vuoto.';
+      shapesWrap.appendChild(empty);
+    }
+    host.appendChild(shapesWrap);
   });
+}
+function moveLayer(id, dir){
+  const idx = state.layers.findIndex(l=>l.id===id);
+  const newIdx = idx+dir;
+  if(idx<0 || newIdx<0 || newIdx>=state.layers.length) return;
+  const tmp = state.layers[idx]; state.layers[idx] = state.layers[newIdx]; state.layers[newIdx] = tmp;
+  pushHistory(); renderAll();
+}
+async function deleteLayer(id){
+  if(state.layers.length<=1){ showToast('Non puoi eliminare l\'unico livello.', true); return; }
+  const idx = state.layers.findIndex(l=>l.id===id);
+  if(idx<0) return;
+  const contentCount = state.shapes.filter(s=>s.layerId===id).length + ((state.refImage && state.refImage.layerId===id) ? 1 : 0);
+  if(contentCount>0){
+    const ok = await showConfirm(`Il livello "${state.layers[idx].name}" contiene ${contentCount} elemento/i. Verranno spostati nel livello sottostante invece di essere eliminati. Continuare?`, 'Elimina livello');
+    if(!ok) return;
+  }
+  const fallback = state.layers[idx-1] || state.layers.find(l=>l.id!==id);
+  state.shapes.forEach(s=>{ if(s.layerId===id) s.layerId = fallback.id; });
+  if(state.refImage && state.refImage.layerId===id) state.refImage.layerId = fallback.id;
+  state.layers.splice(idx,1);
+  if(state.activeLayerId===id) state.activeLayerId = fallback.id;
+  pushHistory(); renderAll();
 }
 function labelFor(s){
   if(s.type==='text') return '“'+(s.text||'').slice(0,18)+'”';
@@ -2783,7 +2971,7 @@ function loadRefImage(file){
       const maxW = state.page.w*0.9;
       let w = img.width/6, h = img.height/6; // rough mm guess
       if(w>maxW){ const r=maxW/w; w*=r; h*=r; }
-      state.refImage = { dataUrl: reader.result, x:(state.page.w-w)/2, y:(state.page.h-h)/2, w, h, opacity:0.5, srcW:img.width, srcH:img.height };
+      state.refImage = { dataUrl: reader.result, x:(state.page.w-w)/2, y:(state.page.h-h)/2, w, h, opacity:0.5, srcW:img.width, srcH:img.height, layerId: state.activeLayerId, hidden:false };
       renderAll();
       refreshImageTabPreview();
     };
@@ -3008,7 +3196,7 @@ function hexToRGB(hex){
 function roleFromColor(c){
   const rgb = hexToRGB(c); if(!rgb) return 'design';
   let best='design', bd=90;
-  for(const k of ['cut','fold','diecut']){
+  for(const k of ['cut','fold','diecut','glue']){
     const t = hexToRGB(ROLE_STYLE[k].stroke);
     const dd = Math.hypot(rgb[0]-t[0],rgb[1]-t[1],rgb[2]-t[2]);
     if(dd<bd){ bd=dd; best=k; }
@@ -3107,12 +3295,12 @@ function importSVGString(text){
     if(points.length<2) return;
     newShapes.push({ id:uid(), type:'path', points, closed:!!closed, smooth: points.map(()=>0),
       style:{stroke:styleObj.stroke, fill:styleObj.fill, fillOpacity:styleObj.fillOpacity, strokeWidth:styleObj.strokeWidth, dash:styleObj.dash, role:styleObj.role},
-      visible:true, locked:false });
+      visible:true, locked:false, layerId: state.activeLayerId });
   }
   function pushTraced(bbox, paths, styleObj){
     newShapes.push({ id:uid(), type:'tracedpath', x:bbox.x, y:bbox.y, w:bbox.w, h:bbox.h, srcW:bbox.w, srcH:bbox.h, paths,
       style:{stroke:styleObj.stroke, fill:styleObj.fill, fillOpacity:styleObj.fillOpacity, strokeWidth:styleObj.strokeWidth, dash:styleObj.dash, role:styleObj.role},
-      visible:true, locked:false });
+      visible:true, locked:false, layerId: state.activeLayerId });
   }
 
   function handlePathEl(node, mat, styleObj){
@@ -3141,7 +3329,7 @@ function importSVGString(text){
       if(axisAligned){
         const p1=applyMat(mat,[x,y]), p2=applyMat(mat,[x+w,y+h]);
         const rx=Math.min(p1[0],p2[0]), ry=Math.min(p1[1],p2[1]);
-        newShapes.push({id:uid(), type:'rect', x:rx, y:ry, w:Math.abs(p2[0]-p1[0]), h:Math.abs(p2[1]-p1[1]), style:styleObj, visible:true, locked:false});
+        newShapes.push({id:uid(), type:'rect', x:rx, y:ry, w:Math.abs(p2[0]-p1[0]), h:Math.abs(p2[1]-p1[1]), style:styleObj, visible:true, locked:false, layerId: state.activeLayerId});
       } else {
         const corners=[[x,y],[x+w,y],[x+w,y+h],[x,y+h]].map(p=>applyMat(mat,p));
         pushPath(corners, true, styleObj);
@@ -3154,7 +3342,7 @@ function importSVGString(text){
       if(axisAligned){
         const c = applyMat(mat,[cx,cy]);
         const nrx = rx*Math.abs(mat[0]), nry = ry*Math.abs(mat[3]);
-        newShapes.push({id:uid(), type:'ellipse', x:c[0]-nrx, y:c[1]-nry, w:nrx*2, h:nry*2, style:styleObj, visible:true, locked:false});
+        newShapes.push({id:uid(), type:'ellipse', x:c[0]-nrx, y:c[1]-nry, w:nrx*2, h:nry*2, style:styleObj, visible:true, locked:false, layerId: state.activeLayerId});
       } else {
         const N=48, pts=[];
         for(let i=0;i<N;i++){ const a=(i/N)*Math.PI*2; pts.push(applyMat(mat,[cx+Math.cos(a)*rx, cy+Math.sin(a)*ry])); }
@@ -3172,7 +3360,7 @@ function importSVGString(text){
       const txt = (node.textContent||'').trim();
       if(txt){
         const fs = (parseFloat(node.getAttribute('font-size'))||6) * avgScaleOfMat(mat);
-        newShapes.push({id:uid(), type:'text', x:p[0], y:p[1], text:txt, fontSize:fs, style:styleObj, visible:true, locked:false});
+        newShapes.push({id:uid(), type:'text', x:p[0], y:p[1], text:txt, fontSize:fs, style:styleObj, visible:true, locked:false, layerId: state.activeLayerId});
       }
     }
   }
@@ -3337,7 +3525,7 @@ function findOpenIssues(){
   const allPoints = collectConnectionPoints();
   const issues = [];
   for(const s of state.shapes){
-    if(!s.points || s.visible===false || s.closed || s.locked) continue;
+    if(!s.points || !isShapeEffVisible(s) || s.closed || s.locked) continue;
     if(s.points.length<2) continue;
     [0, s.points.length-1].forEach(idx=>{
       const p = s.points[idx];
@@ -3346,7 +3534,7 @@ function findOpenIssues(){
     });
   }
   for(const s of state.shapes){
-    if(s.type!=='tracedpath' || s.visible===false || s.locked) continue;
+    if(s.type!=='tracedpath' || !isShapeEffVisible(s) || s.locked) continue;
     tracedpathWorldEndpoints(s).forEach(e=>{
       const hasMatch = allPoints.some(o => !(o.shapeId===s.id && o.kind==='tracedend' && o.subIdx===e.subIdx && o.which===e.which) && pointsEqual(o.pt, e.pt));
       if(!hasMatch) issues.push({shapeId:s.id, pt:e.pt});
@@ -3372,7 +3560,7 @@ function checkClosures(){
 function autoWeldPoints(toleranceMM){
   const all = [];
   for(const s of state.shapes){
-    if(!s.points || s.locked || s.visible===false || s.excludeAutoFix) continue;
+    if(!s.points || s.locked || !isShapeEffVisible(s) || s.excludeAutoFix) continue;
     s.points.forEach((p, idx)=> all.push({s, idx}));
   }
   const used = new Set();
@@ -3402,7 +3590,7 @@ function autoWeldPoints(toleranceMM){
   // Qui agganciamo ad essi i vertici di linee ancora liberi entro la tolleranza, invece di ignorarli.
   const fixedEnds = [];
   for(const s of state.shapes){
-    if(s.type!=='tracedpath' || s.locked || s.visible===false || s.excludeAutoFix) continue;
+    if(s.type!=='tracedpath' || s.locked || !isShapeEffVisible(s) || s.excludeAutoFix) continue;
     tracedpathWorldEndpoints(s).forEach(e=> fixedEnds.push(e.pt));
   }
   if(fixedEnds.length){
@@ -3575,7 +3763,7 @@ function buildCutPreview(){
   const cutClosed = [];
   const cutOpenIssues = [];
   for(const s of state.shapes){
-    if(s.visible===false || !s.style || s.style.role!=='cut') continue;
+    if(!isShapeEffVisible(s) || !s.style || s.style.role!=='cut') continue;
     if(s.type==='rect' || s.type==='ellipse' || (s.points && s.closed && s.points.length>=3)){
       const pts = shapePolygonPoints(s);
       if(pts) cutClosed.push({shape:s, pts, area: polygonArea(pts)});
@@ -3627,7 +3815,7 @@ function openCutPreview(){
     svg.appendChild(el('path', {d:pathD(pts,true), fill: p.isHole ? '#232427' : '#dcc79a', stroke:'#7a5c2e', 'stroke-width':0.6}));
   });
   state.shapes.forEach(s=>{
-    if(s.visible===false || !s.style || s.style.role==='cut') return;
+    if(!isShapeEffVisible(s) || !s.style || s.style.role==='cut') return;
     let pts=null, closed=false;
     if(s.points){ pts=s.points; closed=!!s.closed; } else { pts = shapePolygonPoints(s); closed=true; }
     if(!pts || pts.length<2) return;
@@ -3653,7 +3841,7 @@ document.getElementById('cutPreviewModal').addEventListener('click', (e)=>{ if(e
 function buildExportSVG(){
   const w = state.page.w, h = state.page.h;
   let body = `<rect x="0" y="0" width="${w}" height="${h}" fill="#ffffff"/>\n`;
-  const groups = {design:[],cut:[],fold:[],diecut:[]};
+  const groups = {design:[],cut:[],fold:[],diecut:[],glue:[]};
   state.shapes.forEach(s=>{ if(s.visible!==false) (groups[s.style.role]||groups.design).push(s); });
   Object.keys(ROLE_STYLE).forEach(roleKey=>{
     const list = groups[roleKey];
@@ -3722,7 +3910,9 @@ function clearAll(){
   });
 }
 function doClearAll(){
+  const dl = {id:uid(), name:'Livello 1', visible:true, locked:false};
   state.shapes=[]; state.selection.clear(); state.refImage=null;
+  state.layers=[dl]; state.activeLayerId=dl.id;
   pushHistory(); renderAll(); refreshImageTabPreview();
 }
 document.getElementById('btnNew').onclick = clearAll;
@@ -3787,6 +3977,13 @@ async function tryRestore(){
       const data = JSON.parse(res.value);
       if(Array.isArray(data.documents) && data.documents.length){
         documents = data.documents;
+        documents.forEach(doc=>{
+          if(!doc.layers || !doc.layers.length){
+            const dl = {id:uid(), name:'Livello 1', visible:true, locked:false};
+            doc.layers = [dl]; doc.activeLayerId = dl.id;
+            (doc.shapes||[]).forEach(s=>{ if(!s.layerId) s.layerId = dl.id; });
+          }
+        });
         activeDocId = data.activeDocId && documents.some(d=>d.id===data.activeDocId) ? data.activeDocId : documents[0].id;
         return true;
       }
@@ -3794,7 +3991,8 @@ async function tryRestore(){
       if(data.shapes && data.shapes.length){
         const doc = makeNewDocument('Disegno');
         doc.shapes = data.shapes; doc.page = data.page || doc.page; doc.refImage = data.refImage || null;
-        doc.history = [JSON.stringify(doc.shapes)]; doc.histIndex = 0;
+        doc.shapes.forEach(s=>{ if(!s.layerId) s.layerId = doc.activeLayerId; });
+        doc.history = [JSON.stringify({shapes:doc.shapes, layers:doc.layers})]; doc.histIndex = 0;
         documents = [doc]; activeDocId = doc.id;
         return true;
       }
@@ -3811,10 +4009,12 @@ let documents = [];
 let activeDocId = null;
 
 function makeNewDocument(name){
+  const defaultLayer = {id:uid(), name:'Livello 1', visible:true, locked:false};
   return {
     id: uid(), name: name || 'Disegno',
     shapes: [], page: {w:210,h:297}, refImage: null,
-    history: [JSON.stringify([])], histIndex: 0, libraryId: null
+    layers: [defaultLayer], activeLayerId: defaultLayer.id,
+    history: [JSON.stringify({shapes:[], layers:[defaultLayer]})], histIndex: 0, libraryId: null
   };
 }
 function snapshotActiveDocument(){
@@ -3823,6 +4023,8 @@ function snapshotActiveDocument(){
   doc.shapes = state.shapes;
   doc.page = state.page;
   doc.refImage = state.refImage;
+  doc.layers = state.layers;
+  doc.activeLayerId = state.activeLayerId;
   doc.history = state.history;
   doc.histIndex = state.histIndex;
   doc.libraryId = state.libraryId;
@@ -3831,6 +4033,9 @@ function loadDocumentIntoState(doc){
   state.shapes = doc.shapes;
   state.page = doc.page;
   state.refImage = doc.refImage;
+  state.layers = doc.layers && doc.layers.length ? doc.layers : [{id:uid(), name:'Livello 1', visible:true, locked:false}];
+  state.activeLayerId = doc.activeLayerId;
+  ensureActiveLayer();
   state.history = doc.history;
   state.histIndex = doc.histIndex;
   state.libraryId = doc.libraryId;
