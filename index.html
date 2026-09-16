@@ -394,7 +394,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
     <button class="iconbtn" id="btnHelp" title="Comandi da tastiera">?</button>
   </div>
   <div class="grp menuwrap">
-    <button class="btn primary" style="width:auto;margin:0;padding:7px 14px;" id="btnFileMenu">Esporta / Salva ▾</button>
+    <button class="btn primary" style="width:auto;margin:0;padding:7px 14px;" id="btnFileMenu">File ▾</button>
     <div class="dropdown-menu" id="fileMenu">
       <button data-action="export-svg">Esporta SVG (taglio/stampa)</button>
       <button data-action="export-pdf">Esporta PDF</button>
@@ -2006,7 +2006,7 @@ function placeTextInput(mm){
   input.style.fontSize = (6*state.scale)+'px';
   input.placeholder='Testo…';
   holder.appendChild(input);
-  input.focus();
+  setTimeout(()=> input.focus(), 0);
   function commit(){
     const val = input.value.trim();
     holder.removeChild(input);
