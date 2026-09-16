@@ -1696,14 +1696,19 @@ stage.addEventListener('mousemove', (e)=>{
   handleMouseMove(mm, e);
 });
 stage.addEventListener('mousedown', (e)=>{
-  const ae = document.activeElement;
-  if(ae && ['INPUT','SELECT','TEXTAREA'].includes(ae.tagName)) ae.blur();
-  if(e.target && e.target.dataset && e.target.dataset.pageResize){
-    e.preventDefault();
-    pageResizeDrag = { startClientX:e.clientX, startClientY:e.clientY, startW: state.page.w, startH: state.page.h };
-    return;
+  try{
+    const ae = document.activeElement;
+    if(ae && ['INPUT','SELECT','TEXTAREA'].includes(ae.tagName)) ae.blur();
+    if(e.target && e.target.dataset && e.target.dataset.pageResize){
+      e.preventDefault();
+      pageResizeDrag = { startClientX:e.clientX, startClientY:e.clientY, startW: state.page.w, startH: state.page.h };
+      return;
+    }
+    handleMouseDown(clientToMM(e.clientX,e.clientY), e);
+  }catch(err){
+    showToast('Errore imprevisto: ' + err.message, true);
+    console.error(err);
   }
-  handleMouseDown(clientToMM(e.clientX,e.clientY), e);
 });
 window.addEventListener('mouseup', (e)=>{ handleMouseUp(clientToMM(e.clientX,e.clientY), e); });
 stage.addEventListener('dblclick', (e)=>{ handleDblClick(clientToMM(e.clientX,e.clientY), e); });
@@ -2003,6 +2008,8 @@ function placeTextInput(mm){
   input.className='floating-text-input';
   input.style.left = mm[0]*state.scale + 'px';
   input.style.top = (mm[1]*state.scale - 14) + 'px';
+  input.style.minWidth = '120px';
+  input.style.zIndex = '999';
   input.style.fontSize = (6*state.scale)+'px';
   input.placeholder='Testo…';
   holder.appendChild(input);
