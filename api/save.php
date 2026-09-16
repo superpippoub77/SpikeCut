@@ -33,6 +33,7 @@ $project = [
     'refImage'      => $body['refImage'] ?? null,
     'layers'        => $body['layers'] ?? null,
     'activeLayerId' => $body['activeLayerId'] ?? null,
+    'customFonts'   => $body['customFonts'] ?? null,
     'created'       => $existing['created'] ?? $now,
     'updated'       => $now,
 ];

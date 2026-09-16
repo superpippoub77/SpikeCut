@@ -7,6 +7,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://apis.google.com/js/api.js"></script>
 <script src="https://accounts.google.com/gsi/client"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
 :root{
   --ink:#e9e6df;
@@ -413,6 +414,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
       <button data-action="close-all-paths">Chiudi tutti i percorsi aperti</button>
       <div class="menu-sep"></div>
       <button data-action="scale-drawing">Scala / Proporziona disegno…</button>
+      <button data-action="manage-fonts">Gestisci font personalizzati…</button>
     </div>
   </div>
 </div>
@@ -518,6 +520,35 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
       <button class="btn" id="importChoiceMerge">Aggiungi al disegno attuale</button>
       <button class="btn" id="importChoiceReplace" style="margin-top:6px;">Cancella il disegno attuale e importa</button>
       <button class="btn primary" id="importChoiceSaveReplace" style="margin-top:6px;">Salva il disegno attuale, poi cancella e importa</button>
+    </div>
+  </div>
+</div>
+
+<div id="fontModal" class="modal-overlay">
+  <div class="modal-box" style="width:380px;">
+    <div class="modal-head">
+      <h3>Font personalizzati</h3>
+      <button class="iconbtn" id="fontModalClose" title="Chiudi">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Carica un file font (.ttf, .otf, .woff, .woff2)</label>
+        <div class="dropzone" id="dropzoneFont">Clicca per scegliere un file font</div>
+      </div>
+      <div class="field">
+        <label>Oppure carica un file .zip con uno o più font</label>
+        <div class="dropzone" id="dropzoneFontZip">Clicca per scegliere uno .zip</div>
+      </div>
+      <div class="field">
+        <label>Oppure incolla il link diretto a un file font</label>
+        <div class="row">
+          <input type="text" id="fontUrlInput" placeholder="https://.../font.woff2" style="flex:1;">
+          <button class="btn" id="fontUrlAdd" style="width:auto;margin:0;">Aggiungi</button>
+        </div>
+        <div class="hint">Se il file è scaricabile, viene incorporato nel disegno (funziona anche offline ed è incluso nell'export). Se il sito blocca il download da script, verrà usato il link diretto: funziona solo online e non è incluso nei file esportati.</div>
+      </div>
+      <hr class="sep">
+      <div id="fontList"></div>
     </div>
   </div>
 </div>
@@ -795,6 +826,7 @@ const state = {
   libraryId: null,             // id del progetto in libreria, se caricato/salvato da lì
   layers: [{id:'layer-1', name:'Livello 1', visible:true, locked:false}], // ordine: indice 0 = fondo, ultimo = cima
   activeLayerId: 'layer-1',    // livello in cui vanno le forme appena create
+  customFonts: [],             // {id, name, dataUrl, format, external}
   gapMarkers: [],               // punti liberi trovati dall'ultima verifica chiusure
   showEndpoints: true,          // mostra sempre gli estremi liberi/collegati dei percorsi aperti
   showDimensions: false,        // mostra le quote permanenti del disegno e del foglio
@@ -842,6 +874,15 @@ function restoreLayersFromProject(proj){
     if(state.refImage && !state.refImage.layerId) state.refImage.layerId = dl.id;
   }
   ensureActiveLayer();
+}
+function restoreFontsFromProject(proj){
+  const incoming = proj.customFonts || [];
+  incoming.forEach(font=>{
+    if(!state.customFonts.some(f=>f.id===font.id)){
+      state.customFonts.push(font);
+      injectFontFace(font);
+    }
+  });
 }
 
 /* ============================================================
@@ -1148,7 +1189,7 @@ function shapeToNode(s){
   } else if(s.type==='ellipse'){
     node = el('ellipse', Object.assign({cx:(s.x+s.w/2)*state.scale, cy:(s.y+s.h/2)*state.scale, rx:Math.abs(s.w/2)*state.scale, ry:Math.abs(s.h/2)*state.scale}, common));
   } else if(s.type==='text'){
-    node = el('text', Object.assign({x:s.x*state.scale, y:s.y*state.scale, 'font-size':(s.fontSize||6)*state.scale, 'font-family':'Inter, sans-serif', stroke:'none', fill: st.stroke}, {'data-id':s.id,'data-role':st.role}));
+    node = el('text', Object.assign({x:s.x*state.scale, y:s.y*state.scale, 'font-size':(s.fontSize||6)*state.scale, 'font-family': s.fontFamily ? `'${s.fontFamily}', Inter, sans-serif` : 'Inter, sans-serif', stroke:'none', fill: st.stroke}, {'data-id':s.id,'data-role':st.role}));
     node.textContent = s.text||'';
   } else if(s.type==='tracedpath'){
     node = el('g', {'data-id':s.id, 'data-role':st.role, transform:`translate(${s.x*state.scale},${s.y*state.scale}) scale(${(s.w*state.scale)/s.srcW},${(s.h*state.scale)/s.srcH})`});
@@ -2136,6 +2177,7 @@ document.getElementById('fileMenu').addEventListener('click', (e)=>{
   else if(action==='weld-points') openWeldModal();
   else if(action==='close-all-paths') closeAllOpenPaths();
   else if(action==='scale-drawing') openScaleModal();
+  else if(action==='manage-fonts') openFontModal();
   document.getElementById('fileMenu').classList.remove('open');
 });
 
@@ -2162,7 +2204,7 @@ async function saveToLibrary(){
   const name = prompt('Nome del progetto in libreria:', defaultName);
   if(!name) return;
   try{
-    const payload = { id: state.libraryId || null, name, page: state.page, shapes: state.shapes, refImage: state.refImage, layers: state.layers, activeLayerId: state.activeLayerId };
+    const payload = { id: state.libraryId || null, name, page: state.page, shapes: state.shapes, refImage: state.refImage, layers: state.layers, activeLayerId: state.activeLayerId, customFonts: state.customFonts };
     const data = await apiFetch('save.php', {
       method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
     });
@@ -2213,6 +2255,7 @@ async function loadFromLibrary(id){
     state.page = proj.page || state.page;
     state.refImage = proj.refImage || null;
     restoreLayersFromProject(proj);
+    restoreFontsFromProject(proj);
     state.selection.clear();
     state.libraryId = id;
     if(proj.name) renameActiveTab(proj.name);
@@ -2309,6 +2352,7 @@ async function onGoogleDriveFilePicked(data){
       state.page = proj.page || state.page;
       state.refImage = proj.refImage || null;
       restoreLayersFromProject(proj);
+    restoreFontsFromProject(proj);
       state.selection.clear();
       syncPageSizeSelect();
       renameActiveTab(proj.name || file.name.replace(/\.json$/i, ''));
@@ -2324,7 +2368,7 @@ async function onGoogleDriveFilePicked(data){
 }
 
 function saveProjectFile(){
-  const payload = JSON.stringify({shapes:state.shapes, page:state.page, refImage:state.refImage, layers:state.layers, activeLayerId:state.activeLayerId});
+  const payload = JSON.stringify({shapes:state.shapes, page:state.page, refImage:state.refImage, layers:state.layers, activeLayerId:state.activeLayerId, customFonts:state.customFonts});
   const blob = new Blob([payload], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -2345,6 +2389,7 @@ function openProjectFilePicker(){
         state.page = data.page || state.page;
         state.refImage = data.refImage || null;
         restoreLayersFromProject(data);
+        restoreFontsFromProject(data);
         state.selection.clear();
         syncPageSizeSelect();
         renameActiveTab(fileName);
@@ -2416,11 +2461,11 @@ function updateProofInfo(){
 function buildProofSVG(l){
   const offX = (l.pw - l.dw*l.scale)/2;
   const offY = (l.ph - 6 - l.dh*l.scale)/2;
-  let body = `<rect x="0" y="0" width="${sN(l.pw)}" height="${sN(l.ph)}" fill="#ffffff"/>`;
+  let body = `<style>${buildFontFaceCSS()}</style><rect x="0" y="0" width="${sN(l.pw)}" height="${sN(l.ph)}" fill="#ffffff"/>`;
   body += `<g transform="translate(${sN(offX)},${sN(offY)}) scale(${sN(l.scale)})">`;
   body += `<rect x="0" y="0" width="${sN(l.dw)}" height="${sN(l.dh)}" fill="#ffffff" stroke="#cfcfcf" stroke-width="${sN(0.4/l.scale)}"/>`;
   const groups = {design:[],cut:[],fold:[],diecut:[],glue:[]};
-  state.shapes.forEach(s=>{ if(s.visible!==false) (groups[s.style.role]||groups.design).push(s); });
+  state.shapes.forEach(s=>{ if(isShapeEffVisible(s)) (groups[s.style.role]||groups.design).push(s); });
   Object.keys(ROLE_STYLE).forEach(roleKey=> groups[roleKey].forEach(s=> body += exportNode(s)));
   body += `</g>`;
   const orientLabel = l.orientation==='portrait' ? 'verticale' : 'orizzontale';
@@ -2649,6 +2694,26 @@ function renderPropPanel(){
     inp.oninput = ()=>{ s.text=inp.value; renderCanvasOnly(); };
     inp.onchange = ()=>pushHistory();
     f.appendChild(inp); host.appendChild(f);
+
+    const ff = document.createElement('div'); ff.className='field'; ff.style.marginTop='8px';
+    ff.innerHTML = `<label>Font</label>`;
+    const fontSel = document.createElement('select');
+    const optDefault = document.createElement('option'); optDefault.value=''; optDefault.textContent='Predefinito (Inter)';
+    if(!s.fontFamily) optDefault.selected = true;
+    fontSel.appendChild(optDefault);
+    state.customFonts.forEach(font=>{
+      const opt = document.createElement('option'); opt.value = cssFontName(font); opt.textContent = font.name;
+      if(s.fontFamily===cssFontName(font)) opt.selected = true;
+      fontSel.appendChild(opt);
+    });
+    fontSel.onchange = ()=>{ s.fontFamily = fontSel.value || null; pushHistory(); renderAll(); };
+    ff.appendChild(fontSel);
+    if(!state.customFonts.length){
+      const hint = document.createElement('div'); hint.className='hint';
+      hint.textContent = 'Nessun font personalizzato caricato. Menu File → "Gestisci font personalizzati…" per aggiungerne.';
+      ff.appendChild(hint);
+    }
+    host.appendChild(ff);
   }
 
   host.appendChild(document.createElement('hr')).className='sep';
@@ -3740,6 +3805,140 @@ document.getElementById('scaleApply').onclick = ()=>{
 };
 
 /* ============================================================
+   FONT PERSONALIZZATI — file diretto, zip, o link
+============================================================ */
+const FONT_FORMATS = { ttf:'truetype', otf:'opentype', woff:'woff', woff2:'woff2' };
+const FONT_MIME = { ttf:'font/ttf', otf:'font/otf', woff:'font/woff', woff2:'font/woff2' };
+function fontFormatFromName(name){
+  const ext = (name.split('.').pop()||'').toLowerCase();
+  return FONT_FORMATS[ext] || null;
+}
+function cssFontName(font){ return `cf-${font.id}`; }
+function injectFontFace(font){
+  const old = document.getElementById('fontface-'+font.id);
+  if(old) old.remove();
+  const style = document.createElement('style');
+  style.id = 'fontface-'+font.id;
+  const src = font.external ? `url('${font.dataUrl}')` : `url('${font.dataUrl}') format('${font.format||"woff2"}')`;
+  style.textContent = `@font-face{ font-family:'${cssFontName(font)}'; src:${src}; font-display:swap; }`;
+  document.head.appendChild(style);
+}
+function addCustomFont(name, dataUrl, format, external){
+  const font = { id:uid(), name: name.replace(/\.[^.]+$/,''), dataUrl, format, external:!!external };
+  state.customFonts.push(font);
+  injectFontFace(font);
+  renderFontList();
+  renderPropPanel();
+  return font;
+}
+function removeCustomFont(id){
+  const idx = state.customFonts.findIndex(f=>f.id===id);
+  if(idx<0) return;
+  const font = state.customFonts[idx];
+  const styleEl = document.getElementById('fontface-'+font.id);
+  if(styleEl) styleEl.remove();
+  const cssName = cssFontName(font);
+  state.shapes.forEach(s=>{ if(s.fontFamily===cssName) s.fontFamily = null; });
+  state.customFonts.splice(idx,1);
+  pushHistory(); renderFontList(); renderPropPanel();
+}
+function renderFontList(){
+  const host = document.getElementById('fontList');
+  if(!host) return;
+  host.innerHTML = '';
+  if(!state.customFonts.length){ host.innerHTML = '<div class="hint">Nessun font personalizzato caricato.</div>'; return; }
+  state.customFonts.forEach(font=>{
+    const row = document.createElement('div'); row.className='layerrow';
+    const lbl = document.createElement('span'); lbl.className='lbl'; lbl.style.fontFamily = `'${cssFontName(font)}'`;
+    lbl.textContent = font.name + (font.external ? ' (link esterno)' : '');
+    row.appendChild(lbl);
+    const delBtn = document.createElement('button'); delBtn.textContent='🗑'; delBtn.title='Rimuovi';
+    delBtn.onclick = ()=> removeCustomFont(font.id);
+    row.appendChild(delBtn);
+    host.appendChild(row);
+  });
+}
+function fileToDataURL(file){
+  return new Promise((resolve,reject)=>{
+    const r = new FileReader();
+    r.onload = ()=> resolve(r.result);
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
+function buildFontFaceCSS(){
+  const used = new Set();
+  state.shapes.forEach(s=>{ if(s.type==='text' && s.fontFamily) used.add(s.fontFamily); });
+  let css = '';
+  state.customFonts.forEach(font=>{
+    if(!used.has(cssFontName(font))) return;
+    const src = font.external ? `url('${font.dataUrl}')` : `url('${font.dataUrl}') format('${font.format||"woff2"}')`;
+    css += `@font-face{font-family:'${cssFontName(font)}';src:${src};}`;
+  });
+  return css;
+}
+function openFontModal(){ renderFontList(); document.getElementById('fontModal').classList.add('open'); }
+document.getElementById('fontModalClose').onclick = ()=> document.getElementById('fontModal').classList.remove('open');
+document.getElementById('fontModal').addEventListener('click', (e)=>{ if(e.target.id==='fontModal') document.getElementById('fontModal').classList.remove('open'); });
+document.getElementById('dropzoneFont').onclick = ()=>{
+  const inp = document.createElement('input'); inp.type='file'; inp.accept='.ttf,.otf,.woff,.woff2';
+  inp.onchange = async ()=>{
+    const file = inp.files[0]; if(!file) return;
+    const format = fontFormatFromName(file.name);
+    if(!format){ showToast('Formato non riconosciuto: usa .ttf, .otf, .woff o .woff2.', true); return; }
+    const dataUrl = await fileToDataURL(file);
+    addCustomFont(file.name, dataUrl, format, false);
+    showToast(`Font "${file.name}" aggiunto.`, false);
+  };
+  inp.click();
+};
+document.getElementById('dropzoneFontZip').onclick = ()=>{
+  const inp = document.createElement('input'); inp.type='file'; inp.accept='.zip';
+  inp.onchange = async ()=>{
+    const file = inp.files[0]; if(!file) return;
+    if(typeof JSZip==='undefined'){ showToast('Libreria ZIP non disponibile: verifica la connessione a Internet e riprova.', true); return; }
+    try{
+      const zip = await JSZip.loadAsync(file);
+      let count = 0;
+      for(const relPath of Object.keys(zip.files)){
+        const entry = zip.files[relPath];
+        if(entry.dir) continue;
+        const format = fontFormatFromName(relPath);
+        if(!format) continue;
+        const base64 = await entry.async('base64');
+        const ext = relPath.split('.').pop().toLowerCase();
+        const dataUrl = `data:${FONT_MIME[ext]};base64,${base64}`;
+        addCustomFont(relPath.split('/').pop(), dataUrl, format, false);
+        count++;
+      }
+      if(count===0) showToast('Nessun file font (.ttf/.otf/.woff/.woff2) trovato nello zip.', true);
+      else showToast(`${count} font aggiunti dallo zip.`, false);
+    }catch(err){ showToast('Errore nella lettura dello zip: ' + err.message, true); }
+  };
+  inp.click();
+};
+document.getElementById('fontUrlAdd').onclick = async ()=>{
+  const url = document.getElementById('fontUrlInput').value.trim();
+  if(!url){ showToast('Incolla prima un link diretto a un file font.', true); return; }
+  const format = fontFormatFromName(url.split('?')[0]);
+  const niceName = url.split('/').pop().split('?')[0] || 'font';
+  try{
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('risposta ' + res.status);
+    const blob = await res.blob();
+    const dataUrl = await new Promise((resolve,reject)=>{
+      const r = new FileReader(); r.onload=()=>resolve(r.result); r.onerror=reject; r.readAsDataURL(blob);
+    });
+    addCustomFont(niceName, dataUrl, format, false);
+    showToast('Font scaricato e incorporato nel disegno.', false);
+  }catch(err){
+    addCustomFont(niceName, url, format, true);
+    showToast('Non sono riuscito a scaricare il font (blocco CORS del sito?): userò il link diretto — funziona online ma non sarà incluso nei file esportati.', true);
+  }
+  document.getElementById('fontUrlInput').value = '';
+};
+
+/* ============================================================
    ANTEPRIMA TAGLIO (fustella) — senza piegature
 ============================================================ */
 function shapePolygonPoints(s){
@@ -3840,9 +4039,9 @@ document.getElementById('cutPreviewModal').addEventListener('click', (e)=>{ if(e
 ============================================================ */
 function buildExportSVG(){
   const w = state.page.w, h = state.page.h;
-  let body = `<rect x="0" y="0" width="${w}" height="${h}" fill="#ffffff"/>\n`;
+  let body = `<style>${buildFontFaceCSS()}</style><rect x="0" y="0" width="${w}" height="${h}" fill="#ffffff"/>\n`;
   const groups = {design:[],cut:[],fold:[],diecut:[],glue:[]};
-  state.shapes.forEach(s=>{ if(s.visible!==false) (groups[s.style.role]||groups.design).push(s); });
+  state.shapes.forEach(s=>{ if(isShapeEffVisible(s)) (groups[s.style.role]||groups.design).push(s); });
   Object.keys(ROLE_STYLE).forEach(roleKey=>{
     const list = groups[roleKey];
     if(!list.length) return;
@@ -3875,7 +4074,7 @@ function exportNode(s){
   }
   if(s.type==='rect') return `<rect x="${sN(s.x)}" y="${sN(s.y)}" width="${sN(s.w)}" height="${sN(s.h)}" ${common}/>`;
   if(s.type==='ellipse') return `<ellipse cx="${sN(s.x+s.w/2)}" cy="${sN(s.y+s.h/2)}" rx="${sN(Math.abs(s.w/2))}" ry="${sN(Math.abs(s.h/2))}" ${common}/>`;
-  if(s.type==='text') return `<text x="${sN(s.x)}" y="${sN(s.y)}" font-size="${sN(s.fontSize||6)}" font-family="sans-serif" fill="${st.stroke}">${escapeXML(s.text||'')}</text>`;
+  if(s.type==='text') return `<text x="${sN(s.x)}" y="${sN(s.y)}" font-size="${sN(s.fontSize||6)}" font-family="${s.fontFamily ? `'${s.fontFamily}', sans-serif` : 'sans-serif'}" fill="${st.stroke}">${escapeXML(s.text||'')}</text>`;
   if(s.type==='tracedpath'){
     const sx=s.w/s.srcW, sy=s.h/s.srcH;
     const compW = (st.strokeWidth||1) / (sx||1);
@@ -3963,7 +4162,7 @@ async function doAutosave(){
   try{
     if(!window.storage) return;
     snapshotActiveDocument();
-    const payload = JSON.stringify({documents, activeDocId});
+    const payload = JSON.stringify({documents, activeDocId, customFonts:state.customFonts});
     await window.storage.set('fustella-project', payload, false);
     document.getElementById('saveInfo').textContent = 'salvato';
     setTimeout(()=>document.getElementById('saveInfo').textContent='', 1500);
@@ -3985,6 +4184,8 @@ async function tryRestore(){
           }
         });
         activeDocId = data.activeDocId && documents.some(d=>d.id===data.activeDocId) ? data.activeDocId : documents[0].id;
+        state.customFonts = data.customFonts || [];
+        state.customFonts.forEach(injectFontFace);
         return true;
       }
       // formato precedente (una sola bozza salvata, senza schede)
