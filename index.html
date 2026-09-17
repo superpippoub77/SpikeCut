@@ -486,6 +486,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="toggle on" id="toggleMagnet" title="Calamita (M)">🧲 calamita</span>
   <span class="toggle on" id="toggleEndpoints" title="Mostra i punti liberi (arancio) e collegati (verde) di ogni percorso aperto">● punti</span>
   <span class="toggle" id="toggleDimensions" title="Mostra/nascondi le quote del disegno e del foglio">📐 quote</span>
+  <span class="toggle" id="toggleTileGuides" title="Mostra sul foglio dove cadrebbero i tagli dell'esportazione PDF multi-pagina (usa le impostazioni correnti di quella finestra)">✂ pagine</span>
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
@@ -1035,6 +1036,7 @@ const state = {
   gapMarkers: [],               // punti liberi trovati dall'ultima verifica chiusure
   showEndpoints: true,          // mostra sempre gli estremi liberi/collegati dei percorsi aperti
   showDimensions: false,        // mostra le quote permanenti del disegno e del foglio
+  showTileGuides: false,        // mostra sul foglio le linee di taglio dell'export PDF multi-pagina
   history: [],
   histIndex: -1,
   autosaveTimer: null
@@ -1148,8 +1150,9 @@ const layerBg   = el('g', {id:'layer-bg'});
 const layerGrid = el('g', {id:'layer-grid'});
 const layerRef  = el('g', {id:'layer-ref'});
 const layerArt  = el('g', {id:'layer-art'});
+const layerTileGuides = el('g', {id:'layer-tile-guides', style:'pointer-events:none;'});
 const layerOverlay = el('g', {id:'layer-overlay'});
-stage.append(layerBg, layerGrid, layerRef, layerArt, layerOverlay);
+stage.append(layerBg, layerGrid, layerRef, layerArt, layerTileGuides, layerOverlay);
 
 function mmToPx(mm){ return mm * state.scale; }
 
@@ -1961,6 +1964,7 @@ function renderCanvasOnly(){
   renderPermanentDimensions();
   renderEndpointMarkers();
   renderGapMarkers();
+  renderTileGuidesOverlay();
   drawRulers();
   updateDrawHint();
 }
@@ -2558,6 +2562,7 @@ function updateStatusToggles(){
   document.getElementById('toggleMagnet').classList.toggle('on', state.snapMagnet);
   document.getElementById('toggleEndpoints').classList.toggle('on', state.showEndpoints);
   document.getElementById('toggleDimensions').classList.toggle('on', state.showDimensions);
+  document.getElementById('toggleTileGuides').classList.toggle('on', state.showTileGuides);
 }
 document.getElementById('toggleGrid').onclick = toggleGrid;
 document.getElementById('toggleMagnet').onclick = toggleMagnet;
@@ -2568,6 +2573,11 @@ document.getElementById('toggleEndpoints').onclick = ()=>{
 };
 document.getElementById('toggleDimensions').onclick = ()=>{
   state.showDimensions = !state.showDimensions;
+  updateStatusToggles();
+  renderCanvasOnly();
+};
+document.getElementById('toggleTileGuides').onclick = ()=>{
+  state.showTileGuides = !state.showTileGuides;
   updateStatusToggles();
   renderCanvasOnly();
 };
@@ -5087,9 +5097,13 @@ document.getElementById('tileFormat').addEventListener('change', ()=>{
   document.getElementById('tileCustomWrap').style.display = isCustom ? '' : 'none';
   document.getElementById('tileOrientWrap').style.display = isCustom ? 'none' : '';
   updateTileInfo();
+  if(state.showTileGuides) renderCanvasOnly();
 });
 ['tileOrientation','tileDirection','tileOverlap','tileMargin','tileCustomW','tileCustomH'].forEach(id=>{
-  document.getElementById(id).addEventListener('input', updateTileInfo);
+  document.getElementById(id).addEventListener('input', ()=>{
+    updateTileInfo();
+    if(state.showTileGuides) renderCanvasOnly();
+  });
 });
 
 function computeTileLayout(){
@@ -5120,6 +5134,41 @@ function computeTileLayout(){
   // esattamente al bordo destro del disegno, e l'avanzo finisce sul più a sinistra.
   const offsetX = direction==='rtl' ? (dw - usableW - (cols-1)*stepW) : 0;
   return { sheetW, sheetH, margin, usableW, usableH, overlap, stepW, stepH, cols, rows, dw, dh, offsetX };
+}
+function renderTileGuidesOverlay(){
+  layerTileGuides.innerHTML = '';
+  if(!state.showTileGuides) return;
+  // Se la finestra non è mai stata aperta, i campi hanno comunque i valori di
+  // default definiti nell'HTML: l'anteprima funziona anche senza averla aperta.
+  const l = computeTileLayout();
+  const direction = document.getElementById('tileDirection').value;
+  const total = l.rows*l.cols;
+  for(let r=0; r<l.rows; r++){
+    for(let c=0; c<l.cols; c++){
+      const tileX = c*l.stepW + (l.offsetX||0), tileY = r*l.stepH;
+      const logicalC = direction==='rtl' ? (l.cols-1-c) : c;
+      const idx = r*l.cols + logicalC + 1;
+      // bordo fisico del foglio (dove taglia la stampante/l'assemblaggio)
+      layerTileGuides.appendChild(el('rect', {
+        x: tileX*state.scale, y: tileY*state.scale, width: l.sheetW*state.scale, height: l.sheetH*state.scale,
+        fill:'none', stroke:'var(--brass)', 'stroke-width':1.2, 'stroke-dasharray':'6,4'
+      }));
+      // area effettivamente stampabile (esclude il margine di sicurezza dai bordi)
+      if(l.margin>0){
+        layerTileGuides.appendChild(el('rect', {
+          x:(tileX+l.margin)*state.scale, y:(tileY+l.margin)*state.scale, width:l.usableW*state.scale, height:l.usableH*state.scale,
+          fill:'none', stroke:'var(--brass)', 'stroke-width':0.6, 'stroke-dasharray':'2,3', opacity:0.55
+        }));
+      }
+      const label = `${idx}/${total}`;
+      const t = el('text', {
+        x:(tileX+l.margin+2)*state.scale, y:(tileY+l.margin+9)*state.scale,
+        'font-size':10, 'font-family':'sans-serif', fill:'var(--brass)', opacity:0.85
+      });
+      t.textContent = label;
+      layerTileGuides.appendChild(t);
+    }
+  }
 }
 function updateTileInfo(){
   const l = computeTileLayout();
