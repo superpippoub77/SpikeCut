@@ -5127,7 +5127,7 @@ function buildTileSVG(l, r, c){
   const label = `Foglio ${idx}/${total} — riga ${r+1}, colonna ${c+1}`;
   extra += `<text x="${sN(tileX+3)}" y="${sN(tileY+l.sheetH-3)}" font-size="3" font-family="sans-serif" fill="#999999">${escapeXML(label)}</text>\n`;
   const body = extra + groupsBody;
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${sN(l.sheetW)}mm" height="${sN(l.sheetH)}mm" viewBox="${sN(tileX)} ${sN(tileY)} ${sN(l.sheetW)} ${sN(l.sheetH)}">\n${body}\n</svg>`;
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="${sN(l.sheetW)}mm" height="${sN(l.sheetH)}mm" viewBox="${sN(tileX)} ${sN(tileY)} ${sN(l.sheetW)} ${sN(l.sheetH)}">\n${body}\n</svg>`;
 }
 function rasterizeSVGToDataURL(svgStr, wmm, hmm){
   return new Promise((resolve, reject)=>{
