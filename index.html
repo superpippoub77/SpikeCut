@@ -675,6 +675,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
         Ctrl+S: esporta SVG<br>
         G: griglia &nbsp; M: calamita<br>
         Ctrl + rotella: zoom centrato sul cursore<br>
+        Ctrl+] / Ctrl+[: avanti/indietro di un livello &nbsp; Ctrl+Shift+]/[: primo/secondo piano<br>
         + / - / 0: zoom avanti / indietro / reimposta
         <hr class="sep">
         La calamita aggancia i nuovi punti a estremi già esistenti entro un piccolo raggio, così le linee si uniscono senza lasciare spazi vuoti.
@@ -860,6 +861,56 @@ function isShapeEffVisible(s){
 function shapesInZOrder(){
   return state.shapes.slice().sort((a,b)=> getLayerIndex(a.layerId) - getLayerIndex(b.layerId));
 }
+
+/* ============================================================
+   ORDINE DI SOVRAPPOSIZIONE ENTRO LO STESSO LIVELLO
+   (come "porta avanti/indietro" nei classici programmi di disegno)
+============================================================ */
+function bringToFront(shapeId){
+  const idx = state.shapes.findIndex(s=>s.id===shapeId);
+  if(idx<0) return;
+  const s = state.shapes[idx];
+  let lastSameLayer = -1;
+  state.shapes.forEach((sh,i)=>{ if(sh.layerId===s.layerId) lastSameLayer=i; });
+  if(idx===lastSameLayer) return; // già in cima al suo livello
+  state.shapes.splice(idx,1);
+  let insertAt = -1;
+  state.shapes.forEach((sh,i)=>{ if(sh.layerId===s.layerId) insertAt=i; });
+  state.shapes.splice(insertAt+1, 0, s);
+  pushHistory(); renderAll();
+}
+function sendToBack(shapeId){
+  const idx = state.shapes.findIndex(s=>s.id===shapeId);
+  if(idx<0) return;
+  const s = state.shapes[idx];
+  const firstSameLayer = state.shapes.findIndex(sh=>sh.layerId===s.layerId);
+  if(idx===firstSameLayer) return; // già in fondo al suo livello
+  state.shapes.splice(idx,1);
+  const insertAt = Math.max(0, state.shapes.findIndex(sh=>sh.layerId===s.layerId));
+  state.shapes.splice(insertAt, 0, s);
+  pushHistory(); renderAll();
+}
+function bringForward(shapeId){
+  const idx = state.shapes.findIndex(s=>s.id===shapeId);
+  if(idx<0) return;
+  const s = state.shapes[idx];
+  let nextIdx = -1;
+  for(let i=idx+1;i<state.shapes.length;i++){ if(state.shapes[i].layerId===s.layerId){ nextIdx=i; break; } }
+  if(nextIdx<0) return; // già in cima al suo livello
+  [state.shapes[idx], state.shapes[nextIdx]] = [state.shapes[nextIdx], state.shapes[idx]];
+  pushHistory(); renderAll();
+}
+function sendBackward(shapeId){
+  const idx = state.shapes.findIndex(s=>s.id===shapeId);
+  if(idx<0) return;
+  const s = state.shapes[idx];
+  let prevIdx = -1;
+  for(let i=idx-1;i>=0;i--){ if(state.shapes[i].layerId===s.layerId){ prevIdx=i; break; } }
+  if(prevIdx<0) return; // già in fondo al suo livello
+  [state.shapes[idx], state.shapes[prevIdx]] = [state.shapes[prevIdx], state.shapes[idx]];
+  pushHistory(); renderAll();
+}
+
 function ensureActiveLayer(){
   if(!state.layers.length){ state.layers = [{id:uid(), name:'Livello 1', visible:true, locked:false}]; }
   if(!state.layers.some(l=>l.id===state.activeLayerId)) state.activeLayerId = state.layers[state.layers.length-1].id;
@@ -1187,8 +1238,16 @@ function shapeToNode(s){
     node = el('path', Object.assign({d: pathD(s.points, !!s.closed, s.smooth)}, common));
   } else if(s.type==='rect'){
     node = el('rect', Object.assign({x:s.x*state.scale,y:s.y*state.scale,width:s.w*state.scale,height:s.h*state.scale}, common));
+    if(s.rotation){
+      const cx=(s.x+s.w/2)*state.scale, cy=(s.y+s.h/2)*state.scale;
+      node.setAttribute('transform', `rotate(${s.rotation} ${cx} ${cy})`);
+    }
   } else if(s.type==='ellipse'){
     node = el('ellipse', Object.assign({cx:(s.x+s.w/2)*state.scale, cy:(s.y+s.h/2)*state.scale, rx:Math.abs(s.w/2)*state.scale, ry:Math.abs(s.h/2)*state.scale}, common));
+    if(s.rotation){
+      const cx=(s.x+s.w/2)*state.scale, cy=(s.y+s.h/2)*state.scale;
+      node.setAttribute('transform', `rotate(${s.rotation} ${cx} ${cy})`);
+    }
   } else if(s.type==='text'){
     node = el('text', Object.assign({x:s.x*state.scale, y:s.y*state.scale, 'font-size':(s.fontSize||6)*state.scale, 'font-family': resolveFontFamily(s.fontFamily), stroke:'none', fill: st.stroke}, {'data-id':s.id,'data-role':st.role}));
     node.textContent = s.text||'';
@@ -1205,6 +1264,12 @@ function shapeToNode(s){
         'stroke-width': (st.strokeWidth||1) / ((s.w*state.scale)/s.srcW || 1),
         'stroke-dasharray': st.dash && st.dash!=='none' ? st.dash : '',
         'stroke-linejoin':'round','stroke-linecap':'round','fill-rule':'evenodd'}));
+    }
+    if(s.rotation){
+      const cx=(s.x+s.w/2)*state.scale, cy=(s.y+s.h/2)*state.scale;
+      const outer = el('g', {transform:`rotate(${s.rotation} ${cx} ${cy})`});
+      outer.appendChild(node);
+      node = outer;
     }
   }
   if(!isShapeEffVisible(s)) node.setAttribute('display','none');
@@ -1244,16 +1309,22 @@ function renderSelectionHandles(){
     if(s.points){
       // bounding box
       const xs=s.points.map(p=>p[0]), ys=s.points.map(p=>p[1]);
-      drawBBox(Math.min(...xs), Math.min(...ys), Math.max(...xs)-Math.min(...xs), Math.max(...ys)-Math.min(...ys), false);
+      const bx=Math.min(...xs), by=Math.min(...ys), bw=Math.max(...xs)-bx, bh=Math.max(...ys)-by;
+      drawBBox(bx, by, bw, bh, false);
       // vertex handles (only editable in select tool & single selection)
       if(state.selection.size===1){
         s.points.forEach((p, idx)=>{
           const h = el('circle', {cx:p[0]*state.scale, cy:p[1]*state.scale, r:4.5, fill:'#fff', stroke:'var(--brass)', 'stroke-width':1.6, 'data-vertex':idx, 'data-shape':s.id, style:'cursor:move'});
           layerOverlay.appendChild(h);
         });
+        // maniglia di rotazione: ruota l'intera linea/percorso attorno al centro del suo riquadro
+        const rcx=bx+bw/2;
+        const handlePt = [rcx, by-(16/state.scale)];
+        layerOverlay.appendChild(el('line', {x1:rcx*state.scale, y1:by*state.scale, x2:handlePt[0]*state.scale, y2:handlePt[1]*state.scale, stroke:'var(--brass)', 'stroke-width':1, 'pointer-events':'none'}));
+        layerOverlay.appendChild(el('circle', {cx:handlePt[0]*state.scale, cy:handlePt[1]*state.scale, r:5.5, fill:'#fff', stroke:'var(--brass)', 'stroke-width':1.5, 'data-rotate':'1', 'data-shape':s.id, style:'cursor:grab'}));
       }
     } else if(s.type==='rect' || s.type==='ellipse' || s.type==='image' || s.type==='tracedpath'){
-      drawBBox(s.x, s.y, s.w, s.h, true, s.id);
+      renderBBoxHandles(s, state.selection.size===1);
     } else if(s.type==='text'){
       renderTextHandles(s, state.selection.size===1);
     }
@@ -1263,6 +1334,22 @@ function rotatePointAround(p, center, angleDeg){
   const rad = angleDeg*Math.PI/180;
   const dx = p[0]-center[0], dy = p[1]-center[1];
   return [center[0] + dx*Math.cos(rad) - dy*Math.sin(rad), center[1] + dx*Math.sin(rad) + dy*Math.cos(rad)];
+}
+function renderBBoxHandles(s, interactive){
+  const x=s.x, y=s.y, w=s.w, h=s.h;
+  const cx=x+w/2, cy=y+h/2, rot=s.rotation||0;
+  const cornerPos = ['nw','ne','se','sw'];
+  const corners = [[x,y],[x+w,y],[x+w,y+h],[x,y+h]].map(p=>rotatePointAround(p,[cx,cy],rot));
+  const pts = corners.map(p=>`${p[0]*state.scale},${p[1]*state.scale}`).join(' ');
+  layerOverlay.appendChild(el('polygon', {points:pts, fill:'none', stroke:'var(--brass)', 'stroke-width':1, 'stroke-dasharray':'4,3', 'pointer-events':'none'}));
+  if(!interactive) return;
+  corners.forEach((c,i)=>{
+    layerOverlay.appendChild(el('rect', {x:c[0]*state.scale-4, y:c[1]*state.scale-4, width:8, height:8, fill:'#fff', stroke:'var(--brass)', 'stroke-width':1.5, 'data-resize':cornerPos[i], 'data-shape':s.id, style:'cursor:nwse-resize'}));
+  });
+  const topCenter = rotatePointAround([cx,y], [cx,cy], rot);
+  const handlePt = rotatePointAround([cx, y-(16/state.scale)], [cx,cy], rot);
+  layerOverlay.appendChild(el('line', {x1:topCenter[0]*state.scale, y1:topCenter[1]*state.scale, x2:handlePt[0]*state.scale, y2:handlePt[1]*state.scale, stroke:'var(--brass)', 'stroke-width':1, 'pointer-events':'none'}));
+  layerOverlay.appendChild(el('circle', {cx:handlePt[0]*state.scale, cy:handlePt[1]*state.scale, r:5.5, fill:'#fff', stroke:'var(--brass)', 'stroke-width':1.5, 'data-rotate':'1', 'data-shape':s.id, style:'cursor:grab'}));
 }
 function renderTextHandles(s, interactive){
   const bbox = shapeBBox(s);
@@ -1803,14 +1890,17 @@ function hitTest(s, mm){
     return false;
   }
   if(s.type==='rect'||s.type==='image'||s.type==='tracedpath'){
-    return mm[0]>=s.x-tol && mm[0]<=s.x+s.w+tol && mm[1]>=s.y-tol && mm[1]<=s.y+s.h+tol && (
+    const cx=s.x+s.w/2, cy=s.y+s.h/2;
+    const p = s.rotation ? rotatePointAround(mm, [cx,cy], -s.rotation) : mm;
+    return p[0]>=s.x-tol && p[0]<=s.x+s.w+tol && p[1]>=s.y-tol && p[1]<=s.y+s.h+tol && (
       (s.style && s.style.fill && s.style.fill!=='none') ||
-      mm[0]<=s.x+tol || mm[0]>=s.x+s.w-tol || mm[1]<=s.y+tol || mm[1]>=s.y+s.h-tol || s.type!=='rect'
+      p[0]<=s.x+tol || p[0]>=s.x+s.w-tol || p[1]<=s.y+tol || p[1]>=s.y+s.h-tol || s.type!=='rect'
     );
   }
   if(s.type==='ellipse'){
     const cx=s.x+s.w/2, cy=s.y+s.h/2, rx=Math.abs(s.w/2)||0.01, ry=Math.abs(s.h/2)||0.01;
-    const v = ((mm[0]-cx)/rx)**2 + ((mm[1]-cy)/ry)**2;
+    const p = s.rotation ? rotatePointAround(mm, [cx,cy], -s.rotation) : mm;
+    const v = ((p[0]-cx)/rx)**2 + ((p[1]-cy)/ry)**2;
     return v<=1.15 && v>=(s.style.fill&&s.style.fill!=='none'?0:0.7);
   }
   if(s.type==='text'){
@@ -1863,7 +1953,7 @@ function handleMouseDown(mm, e){
         const bbox = shapeBBox(s);
         const center = [bbox.x+bbox.w/2, bbox.y+bbox.h/2];
         dragMode='rotate-shape';
-        state.drag = {shapeId:s.id, center, startRotation:s.rotation||0, startAngle: Math.atan2(mm[1]-center[1], mm[0]-center[0])};
+        state.drag = {shapeId:s.id, center, startRotation:s.rotation||0, startAngle: Math.atan2(mm[1]-center[1], mm[0]-center[0]), startPoints: s.points ? s.points.map(p=>[p[0],p[1]]) : null};
       }
       return;
     }
@@ -1984,11 +2074,16 @@ function handleMouseMove(mm, e){
   if(dragMode==='resize' && state.drag){
     const s = state.shapes.find(x=>x.id===state.drag.shapeId);
     if(s){
+      let lm = mm;
+      if(s.rotation){
+        const cx=s.x+s.w/2, cy=s.y+s.h/2;
+        lm = rotatePointAround(mm, [cx,cy], -s.rotation);
+      }
       const c = state.drag.corner;
-      if(c.includes('e')) s.w = Math.max(1, mm[0]-s.x);
-      if(c.includes('s')) s.h = Math.max(1, mm[1]-s.y);
-      if(c.includes('w')){ const nx=mm[0]; s.w = Math.max(1, s.x+s.w-nx); s.x=nx; }
-      if(c.includes('n')){ const ny=mm[1]; s.h = Math.max(1, s.y+s.h-ny); s.y=ny; }
+      if(c.includes('e')) s.w = Math.max(1, lm[0]-s.x);
+      if(c.includes('s')) s.h = Math.max(1, lm[1]-s.y);
+      if(c.includes('w')){ const nx=lm[0]; s.w = Math.max(1, s.x+s.w-nx); s.x=nx; }
+      if(c.includes('n')){ const ny=lm[1]; s.h = Math.max(1, s.y+s.h-ny); s.y=ny; }
       renderAll();
     }
     return;
@@ -2007,10 +2102,13 @@ function handleMouseMove(mm, e){
     const s = state.shapes.find(x=>x.id===state.drag.shapeId);
     if(s){
       const curAngle = Math.atan2(mm[1]-state.drag.center[1], mm[0]-state.drag.center[0]);
-      const deltaDeg = (curAngle - state.drag.startAngle) * 180/Math.PI;
-      let newRot = state.drag.startRotation + deltaDeg;
-      if(e.shiftKey) newRot = Math.round(newRot/15)*15; // aggancio a step di 15° tenendo premuto Shift
-      s.rotation = newRot;
+      let deltaDeg = (curAngle - state.drag.startAngle) * 180/Math.PI;
+      if(e.shiftKey) deltaDeg = Math.round(deltaDeg/15)*15; // aggancio a step di 15° tenendo premuto Shift
+      if(state.drag.startPoints){
+        s.points = state.drag.startPoints.map(p=>rotatePointAround(p, state.drag.center, deltaDeg));
+      } else {
+        s.rotation = state.drag.startRotation + deltaDeg;
+      }
       renderAll();
     }
     return;
@@ -2207,6 +2305,13 @@ window.addEventListener('keydown', (e)=>{
   if((e.ctrlKey||e.metaKey) && k==='z' && !e.shiftKey){ e.preventDefault(); undo(); return; }
   if((e.ctrlKey||e.metaKey) && (k==='y' || (k==='z'&&e.shiftKey))){ e.preventDefault(); redo(); return; }
   if((e.ctrlKey||e.metaKey) && k==='s'){ e.preventDefault(); exportSVG(); return; }
+  if((e.ctrlKey||e.metaKey) && (k===']' || k==='[') && state.selection.size===1){
+    e.preventDefault();
+    const id = [...state.selection][0];
+    if(k===']') e.shiftKey ? bringToFront(id) : bringForward(id);
+    else e.shiftKey ? sendToBack(id) : sendBackward(id);
+    return;
+  }
   if((e.ctrlKey||e.metaKey)) return; // avoid clobbering other browser shortcuts
   const map = {v:'select',p:'pen',l:'line',r:'rect',o:'ellipse',a:'arc',b:'freehand',t:'text'};
   if(map[k]){ setTool(map[k]); return; }
@@ -2840,6 +2945,23 @@ function renderPropPanel(){
   f2.appendChild(sel); row.appendChild(f2);
   host.appendChild(row);
 
+  if(ids.length===1){
+    const orderField = document.createElement('div'); orderField.className='field';
+    orderField.innerHTML = `<label>Ordine nel livello</label>`;
+    const orderGrid = document.createElement('div');
+    orderGrid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:6px;';
+    const mkOrderBtn = (label, title, fn)=>{
+      const b = document.createElement('button'); b.className='btn'; b.style.margin='0'; b.textContent=label; b.title=title;
+      b.onclick = ()=> fn(s.id);
+      return b;
+    };
+    orderGrid.appendChild(mkOrderBtn('⤒ Primo piano', 'Porta in primo piano nel livello', bringToFront));
+    orderGrid.appendChild(mkOrderBtn('⤓ Secondo piano', 'Porta in fondo nel livello', sendToBack));
+    orderGrid.appendChild(mkOrderBtn('▲ Avanti', 'Porta avanti di una posizione', bringForward));
+    orderGrid.appendChild(mkOrderBtn('▼ Indietro', 'Porta indietro di una posizione', sendBackward));
+    orderField.appendChild(orderGrid);
+    host.appendChild(orderField);
+  }
   if(ids.length===1) renderGeometrySection(host, s);
 
   if(s.points && ids.length===1){
@@ -4376,8 +4498,14 @@ function exportNode(s){
     const d = buildSmoothPathD(s.points, !!s.closed, s.smooth, 1);
     return `<path d="${d}" ${common}/>`;
   }
-  if(s.type==='rect') return `<rect x="${sN(s.x)}" y="${sN(s.y)}" width="${sN(s.w)}" height="${sN(s.h)}" ${common}/>`;
-  if(s.type==='ellipse') return `<ellipse cx="${sN(s.x+s.w/2)}" cy="${sN(s.y+s.h/2)}" rx="${sN(Math.abs(s.w/2))}" ry="${sN(Math.abs(s.h/2))}" ${common}/>`;
+  if(s.type==='rect'){
+    const rotAttr = s.rotation ? ` transform="rotate(${sN(s.rotation)} ${sN(s.x+s.w/2)} ${sN(s.y+s.h/2)})"` : '';
+    return `<rect x="${sN(s.x)}" y="${sN(s.y)}" width="${sN(s.w)}" height="${sN(s.h)}" ${common}${rotAttr}/>`;
+  }
+  if(s.type==='ellipse'){
+    const rotAttr = s.rotation ? ` transform="rotate(${sN(s.rotation)} ${sN(s.x+s.w/2)} ${sN(s.y+s.h/2)})"` : '';
+    return `<ellipse cx="${sN(s.x+s.w/2)}" cy="${sN(s.y+s.h/2)}" rx="${sN(Math.abs(s.w/2))}" ry="${sN(Math.abs(s.h/2))}" ${common}${rotAttr}/>`;
+  }
   if(s.type==='text'){
     let rotAttr = '';
     if(s.rotation){
@@ -4394,6 +4522,10 @@ function exportNode(s){
     let g = `<g transform="translate(${sN(s.x)},${sN(s.y)}) scale(${sN(sx)},${sN(sy)})">`;
     s.paths.forEach(p=> g += `<path d="${p.d}" fill="${p.fill||'none'}" fill-opacity="${fo}" stroke="${p.stroke||'none'}" stroke-width="${sN(compW)}" ${st.dash&&st.dash!=='none'?`stroke-dasharray="${st.dash}"`:''} stroke-linejoin="round" stroke-linecap="round" fill-rule="evenodd"/>`);
     g += `</g>`;
+    if(s.rotation){
+      const cx=s.x+s.w/2, cy=s.y+s.h/2;
+      g = `<g transform="rotate(${sN(s.rotation)} ${sN(cx)} ${sN(cy)})">${g}</g>`;
+    }
     return g;
   }
   return '';
