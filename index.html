@@ -3771,6 +3771,7 @@ function importSVGString(text){
     const roleSrc = (st.stroke && st.stroke!=='none') ? st.stroke : st.fill;
     return {
       stroke: (st.stroke && st.stroke!=='none') ? st.stroke : (st.fill && st.fill!=='none' ? st.fill : '#111111'),
+      hasRealStroke: !!(st.stroke && st.stroke!=='none'), // vero contorno dichiarato nel file, non un fallback dal riempimento
       fill: st.fill || 'none',
       fillOpacity: st.fillOpacity!=null ? st.fillOpacity : 1,
       strokeWidth: Math.max(0.05, (st.strokeWidth||1) * factor),
@@ -3781,12 +3782,12 @@ function importSVGString(text){
   function pushPath(points, closed, styleObj){
     if(points.length<2) return;
     newShapes.push({ id:uid(), type:'path', points, closed:!!closed, smooth: points.map(()=>0),
-      style:{stroke:styleObj.stroke, fill:styleObj.fill, fillOpacity:styleObj.fillOpacity, strokeWidth:styleObj.strokeWidth, dash:styleObj.dash, role:styleObj.role},
+      style:{stroke:styleObj.stroke, fill:styleObj.fill, fillOpacity:styleObj.fillOpacity, strokeWidth:styleObj.strokeWidth, dash:styleObj.dash, role:styleObj.role, hasRealStroke:styleObj.hasRealStroke},
       visible:true, locked:false, layerId: state.activeLayerId });
   }
   function pushTraced(bbox, paths, styleObj){
     newShapes.push({ id:uid(), type:'tracedpath', x:bbox.x, y:bbox.y, w:bbox.w, h:bbox.h, srcW:bbox.w, srcH:bbox.h, paths,
-      style:{stroke:styleObj.stroke, fill:styleObj.fill, fillOpacity:styleObj.fillOpacity, strokeWidth:styleObj.strokeWidth, dash:styleObj.dash, role:styleObj.role},
+      style:{stroke:styleObj.stroke, fill:styleObj.fill, fillOpacity:styleObj.fillOpacity, strokeWidth:styleObj.strokeWidth, dash:styleObj.dash, role:styleObj.role, hasRealStroke:styleObj.hasRealStroke},
       visible:true, locked:false, layerId: state.activeLayerId });
   }
 
@@ -3889,9 +3890,10 @@ function dedupeImportedShapes(shapes){
   });
   const result = [];
   for(const group of groups.values()){
-    if(group.length===1){ result.push(group[0]); continue; }
+    if(group.length===1){ result.push(stripImportFlags(group[0])); continue; }
     const withFill = group.find(s => s.style.fill && s.style.fill!=='none' && (s.style.fillOpacity==null || s.style.fillOpacity>0));
-    const withStroke = group.find(s => s.style.stroke && s.style.stroke!=='none');
+    // un vero contorno dichiarato nel file (non un fallback sintetizzato dal riempimento quando l'originale non ha stroke)
+    const withStroke = group.find(s => s.style.hasRealStroke && s.style.stroke && s.style.stroke!=='none');
     const base = withStroke || withFill || group[0];
     const merged = JSON.parse(JSON.stringify(base));
     if(withStroke){
@@ -3910,9 +3912,20 @@ function dedupeImportedShapes(shapes){
       merged.style.fill = 'none';
       merged.style.stroke = 'none';
     }
-    result.push(merged);
+    // per i tracciati vettorizzati (tracedpath) il colore effettivo a schermo viene dai singoli
+    // sotto-percorsi in .paths, non dallo stile di primo livello: li riallineo alla scelta appena fatta
+    if(merged.type==='tracedpath' && Array.isArray(merged.paths)){
+      merged.paths = merged.paths.map(p=>({ d:p.d,
+        fill: merged.style.fill!=='none' ? merged.style.fill : 'none',
+        stroke: merged.style.fill==='none' ? merged.style.stroke : 'none' }));
+    }
+    result.push(stripImportFlags(merged));
   }
   return result;
+}
+function stripImportFlags(s){
+  if(s.style) delete s.style.hasRealStroke;
+  return s;
 }
 function shapeBBox(s){
   if(s.points){ const xs=s.points.map(p=>p[0]), ys=s.points.map(p=>p[1]); return {x:Math.min(...xs),y:Math.min(...ys),w:(Math.max(...xs)-Math.min(...xs))||0.01,h:(Math.max(...ys)-Math.min(...ys))||0.01}; }
