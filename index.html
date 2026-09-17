@@ -551,6 +551,18 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   </div>
 </div>
 
+<div id="versionsModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Cronologia versioni</h3>
+      <button class="iconbtn" id="versionsModalClose" title="Chiudi">✕</button>
+    </div>
+    <div id="versionsList" class="modal-body">
+      <div class="emptystate">Caricamento…</div>
+    </div>
+  </div>
+</div>
+
 <div id="libraryModal" class="modal-overlay">
   <div class="modal-box">
     <div class="modal-head">
@@ -2646,7 +2658,9 @@ async function loadLibraryList(){
         lbl.innerHTML = `${escapeHTML(it.name)}${it.shared?' 🌐':''}<br><span style="color:var(--ink-dim);font-size:10.5px;">${escapeHTML(when)}${ownerLine}</span>`;
         const loadBtn = document.createElement('button'); loadBtn.textContent='Apri';
         loadBtn.onclick = ()=> loadFromLibrary(it.id);
-        row.appendChild(lbl); row.appendChild(loadBtn);
+        const versBtn = document.createElement('button'); versBtn.textContent='Versioni';
+        versBtn.onclick = ()=> openVersionsModal(it.id);
+        row.appendChild(lbl); row.appendChild(loadBtn); row.appendChild(versBtn);
         if(it.mine){
           const delBtn = document.createElement('button'); delBtn.textContent='Elimina';
           delBtn.onclick = ()=> deleteFromLibrary(it.id);
@@ -2688,6 +2702,81 @@ async function deleteFromLibrary(id){
     if(state.libraryId===id) state.libraryId = null;
     loadLibraryList();
   }catch(err){ showToast('Errore nell\'eliminazione: ' + err.message, true); }
+}
+
+/* ============================================================
+   CRONOLOGIA VERSIONI — ogni salvataggio successivo al primo
+   conserva lo stato precedente: si può riaprire "in sola lettura"
+   in una scheda separata, oppure ripristinarlo (solo proprietario).
+============================================================ */
+let versionsModalProjectId = null;
+function openVersionsModal(id){
+  versionsModalProjectId = id;
+  document.getElementById('versionsModal').classList.add('open');
+  loadVersionsList(id);
+}
+function closeVersionsModal(){ document.getElementById('versionsModal').classList.remove('open'); }
+document.getElementById('versionsModalClose').onclick = closeVersionsModal;
+document.getElementById('versionsModal').addEventListener('click', (e)=>{ if(e.target.id==='versionsModal') closeVersionsModal(); });
+
+async function loadVersionsList(id){
+  const host = document.getElementById('versionsList');
+  host.innerHTML = '<div class="emptystate">Caricamento…</div>';
+  try{
+    const data = await apiFetch('versions.php?id=' + encodeURIComponent(id), {method:'GET'});
+    const items = data.items || [];
+    if(!items.length){
+      host.innerHTML = '<div class="emptystate">Ancora nessuna versione precedente: la cronologia si riempie dal secondo salvataggio in poi.</div>';
+      return;
+    }
+    host.innerHTML = '';
+    items.forEach(it=>{
+      const row = document.createElement('div'); row.className='layerrow';
+      const when = it.savedAt ? new Date(it.savedAt).toLocaleString() : '';
+      const lbl = document.createElement('span'); lbl.className='lbl';
+      lbl.innerHTML = `${escapeHTML(it.name||'(senza nome)')}<br><span style="color:var(--ink-dim);font-size:10.5px;">${escapeHTML(when)}</span>`;
+      const openBtn = document.createElement('button'); openBtn.textContent='Apri qui';
+      openBtn.title = 'Carica questa versione in una scheda separata, senza modificare quella salvata';
+      openBtn.onclick = ()=> loadSpecificVersion(id, it.file);
+      row.appendChild(lbl); row.appendChild(openBtn);
+      if(data.mine){
+        const restoreBtn = document.createElement('button'); restoreBtn.textContent='Ripristina';
+        restoreBtn.title = 'Rendi questa la versione attuale salvata in libreria';
+        restoreBtn.onclick = ()=> restoreSpecificVersion(id, it.file);
+        row.appendChild(restoreBtn);
+      }
+      host.appendChild(row);
+    });
+  }catch(err){
+    host.innerHTML = `<div class="emptystate">${escapeHTML(err.message)}</div>`;
+  }
+}
+async function loadSpecificVersion(id, file){
+  try{
+    const data = await apiFetch('load_version.php?id=' + encodeURIComponent(id) + '&file=' + encodeURIComponent(file), {method:'GET'});
+    const proj = data.project || {};
+    state.shapes = proj.shapes || [];
+    state.page = proj.page || state.page;
+    state.refImage = proj.refImage || null;
+    restoreLayersFromProject(proj);
+    restoreFontsFromProject(proj);
+    state.selection.clear();
+    state.libraryId = null; // versione storica: salvarla crea un progetto nuovo, non sovrascrive quello attuale
+    if(proj.name) renameActiveTab(proj.name + ' (versione precedente)');
+    syncPageSizeSelect();
+    pushHistory(); renderAll(); refreshImageTabPreview();
+    closeVersionsModal(); closeLibraryModal();
+    showToast('Versione precedente caricata: salvandola in libreria creerai un progetto separato, senza toccare quello originale.', false);
+  }catch(err){ showToast('Errore nel caricamento della versione: ' + err.message, true); }
+}
+async function restoreSpecificVersion(id, file){
+  const ok = await showConfirm('Ripristinare questa versione come stato attuale del progetto? Lo stato di adesso viene comunque salvato nella cronologia, quindi resta recuperabile in seguito.', 'Ripristina versione');
+  if(!ok) return;
+  try{
+    await apiFetch('restore_version.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, file})});
+    showToast('Versione ripristinata in libreria.', false);
+    loadVersionsList(id);
+  }catch(err){ showToast('Errore nel ripristino: ' + err.message, true); }
 }
 
 /* ============================================================

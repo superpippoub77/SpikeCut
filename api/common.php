@@ -88,6 +88,49 @@ function project_path($id) {
     return LIBRARY_DIR . '/' . $id . '.json';
 }
 
+/* ============================================================
+   CRONOLOGIA VERSIONI — ad ogni salvataggio che sovrascrive un
+   progetto esistente, lo stato precedente viene conservato qui
+   prima di essere sostituito, così si può tornare indietro.
+============================================================ */
+
+function versions_dir($id) {
+    return LIBRARY_DIR . '/versions/' . $id;
+}
+
+function ensure_versions_dir($id) {
+    $dir = versions_dir($id);
+    if (!is_dir($dir)) {
+        if (!mkdir($dir, 0775, true) && !is_dir($dir)) {
+            json_error('Impossibile creare la cronologia versioni sul server.', 500);
+        }
+    }
+}
+
+// Salva $projectData (lo stato PRECEDENTE al salvataggio in corso) come
+// nuova voce della cronologia, e pota le versioni più vecchie oltre il
+// limite configurato.
+function snapshot_version($id, $projectData) {
+    ensure_versions_dir($id);
+    $fname = ((int) round(microtime(true) * 1000)) . '_' . bin2hex(random_bytes(2)) . '.json';
+    file_put_contents(versions_dir($id) . '/' . $fname, json_encode($projectData, JSON_UNESCAPED_UNICODE));
+
+    $files = glob(versions_dir($id) . '/*.json');
+    if ($files === false) return $fname;
+    sort($files); // i nomi iniziano col timestamp: ordine cronologico crescente
+    $excess = count($files) - MAX_VERSIONS_PER_PROJECT;
+    for ($i = 0; $i < $excess; $i++) {
+        @unlink($files[$i]);
+    }
+    return $fname;
+}
+
+// Accetta solo nomi di file versione generati da snapshot_version(): evita
+// path traversal tramite il parametro passato dal client.
+function safe_version_file($f) {
+    return is_string($f) && preg_match('/^[0-9]+_[a-f0-9]{4}\.json$/', $f) === 1;
+}
+
 function read_json_body() {
     $raw = file_get_contents('php://input');
     if (strlen($raw) > MAX_PAYLOAD_BYTES) {

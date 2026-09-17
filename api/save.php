@@ -34,6 +34,15 @@ if (!$existing) {
 }
 
 $now = date('c');
+if ($existing) {
+    // sto sovrascrivendo un progetto già esistente: ne conservo lo stato
+    // attuale nella cronologia versioni prima di sostituirlo.
+    $oldRaw = @file_get_contents(project_path($id));
+    $oldData = $oldRaw !== false ? json_decode($oldRaw, true) : null;
+    if (is_array($oldData)) {
+        snapshot_version($id, $oldData);
+    }
+}
 $project = [
     'name'          => $name,
     'page'          => $body['page'] ?? null,

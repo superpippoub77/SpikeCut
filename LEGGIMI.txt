@@ -89,6 +89,31 @@ allo stesso livello del server, utile ad es. contro robot automatici)
    (se preferisci, chiedi pure di farlo fare direttamente nell'editor
    la prossima volta che ne parliamo).
 
+CRONOLOGIA VERSIONI
+====================
+- Ogni volta che salvi in libreria un progetto già esistente (stesso
+  nome/id), lo stato precedente NON viene perso: resta conservato
+  nella cronologia di quel progetto.
+- Nella finestra "Libreria progetti", ogni riga ha ora un pulsante
+  "Versioni" che apre l'elenco delle versioni precedenti con data e
+  ora di salvataggio.
+- Da lì puoi:
+  - "Apri qui" → carica quella versione in una scheda separata, senza
+    toccare in alcun modo il progetto salvato in libreria (se poi la
+    salvi, crea un progetto nuovo, non sovrascrive l'originale).
+  - "Ripristina" (visibile solo se il progetto è tuo) → rende quella
+    versione lo stato ATTUALE salvato in libreria. Anche questa
+    operazione è sicura: lo stato di prima del ripristino viene a sua
+    volta conservato nella cronologia, quindi puoi tornare indietro
+    anche da un ripristino fatto per sbaglio.
+- Per non far crescere la libreria all'infinito, vengono conservate al
+  massimo le ultime 30 versioni per ciascun progetto (le più vecchie
+  oltre questo numero vengono eliminate automaticamente); il numero è
+  regolabile in api/config.php (costante MAX_VERSIONS_PER_PROJECT).
+- Chi ha accesso a un progetto condiviso può vedere e aprire le sue
+  versioni precedenti, ma solo il proprietario può ripristinarle.
+
+
 NOTE
 - Non serve alcun database: ogni progetto è un file .json nella cartella
   "library/", con un piccolo indice (library/index.json) per l'elenco;

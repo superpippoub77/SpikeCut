@@ -28,6 +28,11 @@ define('USERS_INDEX_FILE', USERS_DIR . '/index.json');
 // di allegare immagini di riferimento grandi.
 define('MAX_PAYLOAD_BYTES', 15 * 1024 * 1024); // 15 MB
 
+// Quante versioni precedenti di ciascun progetto restano conservate nella
+// cronologia (le più vecchie oltre questo numero vengono eliminate ad ogni
+// nuovo salvataggio, per non far crescere la libreria all'infinito).
+define('MAX_VERSIONS_PER_PROJECT', 30);
+
 // Nome del cookie di sessione (puoi lasciarlo così).
 define('SESSION_COOKIE_NAME', 'spikecut_session');
 
