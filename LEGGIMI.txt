@@ -1,10 +1,12 @@
-EDITOR VETTORIALE — LIBRERIA PROGETTI (API PHP)
-=================================================
+EDITOR VETTORIALE — LIBRERIA PROGETTI E ACCOUNT UTENTE (API PHP)
+=================================================================
 
 COSA CONTIENE QUESTO PACCHETTO
 - index.html   → l'editor, apribile in qualunque browser
-- api/                     → le 5 pagine PHP che gestiscono la libreria
+- api/                     → le pagine PHP che gestiscono account e libreria
 - library/                 → cartella dove verranno salvati i progetti
+                              (contiene già .htaccess e un indice vuoto)
+- users/                    → cartella dove vengono salvati gli account
                               (contiene già .htaccess e un indice vuoto)
 
 COME METTERLO ONLINE (es. hosting Aruba o simile con supporto PHP)
@@ -16,6 +18,12 @@ COME METTERLO ONLINE (es. hosting Aruba o simile con supporto PHP)
        api/
          config.php
          common.php
+         register.php
+         login.php
+         logout.php
+         me.php
+         forgot_password.php
+         reset_password.php
          save.php
          list.php
          load.php
@@ -23,25 +31,52 @@ COME METTERLO ONLINE (es. hosting Aruba o simile con supporto PHP)
        library/
          .htaccess
          index.json
+       users/
+         .htaccess
+         index.json
 
-2. Verifica che la cartella "library/" sia scrivibile dal server web
-   (permessi tipici: 775; se il tuo hosting è restrittivo, il pannello
-   di controllo di solito permette di impostarli, oppure lo fa da solo
-   il provider — su Aruba di norma non serve toccare nulla).
+2. Verifica che le cartelle "library/" e "users/" siano scrivibili dal
+   server web (permessi tipici: 775; su Aruba di norma non serve
+   toccare nulla).
 
 3. Apri il sito dal browser passando dall'indirizzo web reale
    (es. https://tuosito.it/projects/spikecut/ — essendo index.html
    si apre automaticamente senza scrivere il nome del file), NON
    aprendo il file in locale con doppio clic: le chiamate all'API PHP
-   funzionano solo quando la pagina è servita da un vero server web.
+   (e quindi login e libreria) funzionano solo quando la pagina è
+   servita da un vero server web.
 
-4. Nel menu "Esporta / Salva" del programma trovi ora:
-   - Salva in libreria (server)   → salva il progetto sul server
-   - Apri dalla libreria (server) → elenca ed apre i progetti salvati
+4. Nella topbar in alto trovi ora il pulsante "👤 Accedi": da lì ci si
+   registra, si accede, e si recupera la password. Una volta collegati,
+   il menu "File ▾" → "Salva in libreria (server)" chiede anche se
+   condividere il progetto con tutti gli utenti oppure tenerlo privato.
 
-PROTEGGERE LA LIBRERIA CON UNA CHIAVE (opzionale ma consigliato se il
-sito è pubblico, perché di default chiunque trovi l'indirizzo può
-salvare/leggere/cancellare progetti)
+
+ACCOUNT UTENTE E LIBRERIA CONDIVISA
+====================================
+- Ogni persona che vuole salvare progetti deve creare un proprio
+  account (pulsante "👤 Accedi" → "Registrati"): nome utente, email
+  e password. Nessun database: gli account sono salvati in un unico
+  file in users/index.json, con le password sempre cifrate (mai in
+  chiaro).
+- Quando si salva un progetto in libreria, si può scegliere se
+  tenerlo PRIVATO (visibile solo a chi lo ha creato) oppure
+  CONDIVIDERLO nella libreria comune (visibile e apribile da tutti
+  gli utenti registrati). Solo il proprietario può modificare o
+  eliminare un proprio progetto, anche se condiviso; chi apre un
+  progetto condiviso altrui e lo salva ne crea automaticamente una
+  copia personale, senza toccare l'originale.
+- "Password dimenticata?" nella schermata di accesso invia
+  un'email con un link valido un'ora per sceglierne una nuova.
+  IMPORTANTE: l'invio usa la funzione mail() di PHP, inclusa in
+  quasi tutti gli hosting condivisi (Aruba compreso) ma con
+  consegna non garantita al 100% — controlla anche nello spam.
+  Se sul tuo hosting mail() non funziona affatto, va configurato un
+  vero servizio SMTP lato server (chiedi pure supporto se serve).
+
+PROTEGGERE ULTERIORMENTE L'API CON UNA CHIAVE (opzionale; il login
+utente già protegge la libreria, questa è una barriera aggiuntiva
+allo stesso livello del server, utile ad es. contro robot automatici)
 1. Apri api/config.php e imposta una password a piacere:
      $API_KEY = 'una-password-lunga-e-difficile';
 2. Apri index.html con un editor di testo, cerca la riga:
@@ -56,13 +91,18 @@ salvare/leggere/cancellare progetti)
 
 NOTE
 - Non serve alcun database: ogni progetto è un file .json nella cartella
-  "library/", con un piccolo indice (library/index.json) per l'elenco.
-- La cartella "library/" è protetta da accesso diretto via URL
-  (.htaccess con "Require all denied"): si può leggere/scrivere solo
-  passando dalle pagine PHP dell'API.
+  "library/", con un piccolo indice (library/index.json) per l'elenco;
+  stesso principio per gli account in "users/".
+- Le cartelle "library/" e "users/" sono protette da accesso diretto
+  via URL (.htaccess con "Require all denied"): si può leggere/scrivere
+  solo passando dalle pagine PHP dell'API.
 - Se il tuo hosting usa Apache senza mod_authz_core (versioni vecchie),
   l'.htaccess generato include anche la riga "Deny from all" per
   compatibilità con Apache 2.2.
+- Se ridistribuisci il progetto via GitHub Actions come da workflow
+  incluso, sia "library/**" che "users/**" sono esclusi dal deploy
+  automatico: un nuovo push non cancella mai progetti o account già
+  presenti sul server.
 
 
 APRIRE FILE DA GOOGLE DRIVE (opzionale)

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/common.php';
 check_api_key();
+$user = require_login();
 
 $id = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -18,6 +19,10 @@ if (!safe_id($id)) {
 
 $path = project_path($id);
 if (file_exists($path)) {
+    $project = json_decode(file_get_contents($path), true);
+    if (is_array($project) && ($project['ownerId'] ?? null) !== $user['id']) {
+        json_error('Non puoi eliminare un progetto che non ti appartiene.', 403);
+    }
     unlink($path);
 }
 

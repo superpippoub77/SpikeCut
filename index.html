@@ -393,6 +393,9 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
     <button class="iconbtn" id="btnImportSVGTop" title="Importa un file SVG esistente da modificare">⇪</button>
     <button class="iconbtn" id="btnHelp" title="Comandi da tastiera">?</button>
   </div>
+  <div class="grp" id="accountArea">
+    <button class="iconbtn" id="btnAccount" title="Account">👤 Accedi</button>
+  </div>
   <div class="grp menuwrap">
     <button class="btn primary" style="width:auto;margin:0;padding:7px 14px;" id="btnFileMenu">File ▾</button>
     <div class="dropdown-menu" id="fileMenu">
@@ -472,6 +475,80 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
   <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026</span>
+</div>
+
+<div id="accountModal" class="modal-overlay">
+  <div class="modal-box" style="width:340px;">
+    <div class="modal-head">
+      <h3 id="accountModalTitle">Accedi</h3>
+      <button class="iconbtn" id="accountModalClose" title="Chiudi">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div id="acctViewLogin">
+        <div class="field"><label>Nome utente o email</label><input type="text" id="loginIdentifier" autocomplete="username"></div>
+        <div class="field"><label>Password</label><input type="password" id="loginPassword" autocomplete="current-password"></div>
+        <div id="loginError" class="hint" style="color:var(--cut);display:none;"></div>
+        <button class="btn primary" id="loginSubmit">Accedi</button>
+        <div class="hint" style="margin-top:10px;">
+          <a href="#" id="linkGotoForgot">Password dimenticata?</a><br>
+          Non hai un account? <a href="#" id="linkGotoRegister">Registrati</a>
+        </div>
+      </div>
+
+      <div id="acctViewRegister" style="display:none;">
+        <div class="field"><label>Nome utente</label><input type="text" id="regUsername" autocomplete="username"></div>
+        <div class="field"><label>Email</label><input type="email" id="regEmail" autocomplete="email"></div>
+        <div class="field"><label>Password (almeno 6 caratteri)</label><input type="password" id="regPassword" autocomplete="new-password"></div>
+        <div id="registerError" class="hint" style="color:var(--cut);display:none;"></div>
+        <button class="btn primary" id="registerSubmit">Crea account</button>
+        <div class="hint" style="margin-top:10px;">Hai già un account? <a href="#" id="linkGotoLogin1">Accedi</a></div>
+      </div>
+
+      <div id="acctViewForgot" style="display:none;">
+        <div class="hint" style="margin-bottom:8px;">Inserisci l'email del tuo account: se registrata, riceverai un link per reimpostare la password.</div>
+        <div class="field"><label>Email</label><input type="email" id="forgotEmail" autocomplete="email"></div>
+        <div id="forgotError" class="hint" style="color:var(--cut);display:none;"></div>
+        <div id="forgotSuccess" class="hint" style="color:var(--brass);display:none;"></div>
+        <button class="btn primary" id="forgotSubmit">Invia link di recupero</button>
+        <div class="hint" style="margin-top:10px;"><a href="#" id="linkGotoLogin2">Torna al login</a></div>
+      </div>
+
+      <div id="acctViewReset" style="display:none;">
+        <div class="hint" style="margin-bottom:8px;">Scegli la nuova password per il tuo account.</div>
+        <div class="field"><label>Nuova password (almeno 6 caratteri)</label><input type="password" id="resetPassword" autocomplete="new-password"></div>
+        <div class="field"><label>Conferma password</label><input type="password" id="resetPasswordConfirm" autocomplete="new-password"></div>
+        <div id="resetError" class="hint" style="color:var(--cut);display:none;"></div>
+        <button class="btn primary" id="resetSubmit">Imposta nuova password</button>
+      </div>
+
+      <div id="acctViewLoggedIn" style="display:none;">
+        <div class="hint" style="margin-bottom:12px;">Sei collegato come <b id="acctLoggedUsername"></b> (<span id="acctLoggedEmail"></span>).</div>
+        <button class="btn" id="logoutSubmit">Esci</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="saveLibraryModal" class="modal-overlay">
+  <div class="modal-box" style="width:340px;">
+    <div class="modal-head">
+      <h3>Salva in libreria</h3>
+      <button class="iconbtn" id="saveLibModalClose" title="Chiudi">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Nome del progetto</label><input type="text" id="saveLibName"></div>
+      <div class="field">
+        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;">
+          <input type="checkbox" id="saveLibShared" style="width:auto;">
+          Condividi nella libreria comune (visibile a tutti gli utenti)
+        </label>
+      </div>
+      <div id="saveLibError" class="hint" style="color:var(--cut);display:none;"></div>
+      <button class="btn primary" id="saveLibSubmit">Salva</button>
+    </div>
+  </div>
 </div>
 
 <div id="libraryModal" class="modal-overlay">
@@ -2493,6 +2570,7 @@ document.getElementById('fileMenu').addEventListener('click', (e)=>{
 
 /* ---------- libreria progetti: comunicazione con le API PHP ---------- */
 async function apiFetch(path, opts){
+  opts = Object.assign({credentials:'include'}, opts||{});
   let res;
   try{
     res = await fetch(API_BASE + path, opts);
@@ -2509,23 +2587,36 @@ async function apiFetch(path, opts){
 function escapeHTML(s){
   return String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 }
-async function saveToLibrary(){
-  const defaultName = document.getElementById('filename').value || 'disegno';
-  const name = prompt('Nome del progetto in libreria:', defaultName);
-  if(!name) return;
+function saveToLibrary(){
+  if(!currentUser){ openAccountModal('login'); showToast('Accedi al tuo account per salvare in libreria.', true); return; }
+  document.getElementById('saveLibName').value = document.getElementById('filename').value || 'disegno';
+  document.getElementById('saveLibShared').checked = !!state.librarySharedLast;
+  document.getElementById('saveLibError').style.display = 'none';
+  document.getElementById('saveLibraryModal').classList.add('open');
+}
+function closeSaveLibraryModal(){ document.getElementById('saveLibraryModal').classList.remove('open'); }
+document.getElementById('saveLibModalClose').onclick = closeSaveLibraryModal;
+document.getElementById('saveLibraryModal').addEventListener('click', (e)=>{ if(e.target.id==='saveLibraryModal') closeSaveLibraryModal(); });
+document.getElementById('saveLibSubmit').onclick = async ()=>{
+  const name = document.getElementById('saveLibName').value.trim();
+  const errEl = document.getElementById('saveLibError');
+  errEl.style.display = 'none';
+  if(!name){ errEl.textContent='Inserisci un nome per il progetto.'; errEl.style.display=''; return; }
+  const shared = document.getElementById('saveLibShared').checked;
   try{
-    const payload = { id: state.libraryId || null, name, page: state.page, shapes: state.shapes, refImage: state.refImage, layers: state.layers, activeLayerId: state.activeLayerId, customFonts: state.customFonts };
+    const payload = { id: state.libraryId || null, name, shared, page: state.page, shapes: state.shapes, refImage: state.refImage, layers: state.layers, activeLayerId: state.activeLayerId, customFonts: state.customFonts };
     const data = await apiFetch('save.php', {
       method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
     });
     state.libraryId = data.id;
+    state.librarySharedLast = shared;
     renameActiveTab(name);
-    const info = document.getElementById('saveInfo');
-    info.textContent = 'salvato in libreria';
-    setTimeout(()=>{ if(info.textContent==='salvato in libreria') info.textContent=''; }, 2500);
-  }catch(err){ showToast('Errore nel salvataggio in libreria: ' + err.message, true); }
-}
+    closeSaveLibraryModal();
+    showToast(shared ? 'Salvato in libreria e condiviso con tutti gli utenti.' : 'Salvato nella tua libreria personale.', false);
+  }catch(err){ errEl.textContent = err.message; errEl.style.display=''; }
+};
 function openLibraryModal(){
+  if(!currentUser){ openAccountModal('login'); showToast('Accedi al tuo account per usare la libreria.', true); return; }
   document.getElementById('libraryModal').classList.add('open');
   loadLibraryList();
 }
@@ -2541,18 +2632,31 @@ async function loadLibraryList(){
     const items = (data.items || []).slice().sort((a,b)=> (b.updated||'').localeCompare(a.updated||''));
     if(!items.length){ host.innerHTML = '<div class="emptystate">Nessun progetto salvato in libreria.</div>'; return; }
     host.innerHTML = '';
-    items.forEach(it=>{
-      const row = document.createElement('div'); row.className='layerrow';
-      const when = it.updated ? new Date(it.updated).toLocaleString() : '';
-      const lbl = document.createElement('span'); lbl.className='lbl';
-      lbl.innerHTML = `${escapeHTML(it.name)}<br><span style="color:var(--ink-dim);font-size:10.5px;">${escapeHTML(when)}</span>`;
-      const loadBtn = document.createElement('button'); loadBtn.textContent='Apri';
-      loadBtn.onclick = ()=> loadFromLibrary(it.id);
-      const delBtn = document.createElement('button'); delBtn.textContent='Elimina';
-      delBtn.onclick = ()=> deleteFromLibrary(it.id);
-      row.appendChild(lbl); row.appendChild(loadBtn); row.appendChild(delBtn);
-      host.appendChild(row);
-    });
+    const mine = items.filter(it=>it.mine);
+    const shared = items.filter(it=>!it.mine);
+    function renderSection(title, list){
+      if(!list.length) return;
+      const h = document.createElement('div'); h.className='hint'; h.style.cssText='margin:10px 0 4px;font-weight:600;';
+      h.textContent = title; host.appendChild(h);
+      list.forEach(it=>{
+        const row = document.createElement('div'); row.className='layerrow';
+        const when = it.updated ? new Date(it.updated).toLocaleString() : '';
+        const ownerLine = it.mine ? '' : ` · di ${escapeHTML(it.ownerName||'?')}`;
+        const lbl = document.createElement('span'); lbl.className='lbl';
+        lbl.innerHTML = `${escapeHTML(it.name)}${it.shared?' 🌐':''}<br><span style="color:var(--ink-dim);font-size:10.5px;">${escapeHTML(when)}${ownerLine}</span>`;
+        const loadBtn = document.createElement('button'); loadBtn.textContent='Apri';
+        loadBtn.onclick = ()=> loadFromLibrary(it.id);
+        row.appendChild(lbl); row.appendChild(loadBtn);
+        if(it.mine){
+          const delBtn = document.createElement('button'); delBtn.textContent='Elimina';
+          delBtn.onclick = ()=> deleteFromLibrary(it.id);
+          row.appendChild(delBtn);
+        }
+        host.appendChild(row);
+      });
+    }
+    renderSection('I miei progetti', mine);
+    renderSection('Libreria comune (condivisi da tutti gli utenti)', shared);
   }catch(err){
     host.innerHTML = `<div class="emptystate">${escapeHTML(err.message)}</div>`;
   }
@@ -2567,11 +2671,13 @@ async function loadFromLibrary(id){
     restoreLayersFromProject(proj);
     restoreFontsFromProject(proj);
     state.selection.clear();
-    state.libraryId = id;
+    state.libraryId = data.mine ? id : null; // un progetto altrui condiviso, se modificato, va salvato come copia propria
+    state.librarySharedLast = !!proj.shared;
     if(proj.name) renameActiveTab(proj.name);
     syncPageSizeSelect();
     pushHistory(); renderAll(); refreshImageTabPreview();
     closeLibraryModal();
+    if(!data.mine) showToast('Progetto condiviso caricato: salvandolo verrà creata una tua copia personale.', false);
   }catch(err){ showToast('Errore nel caricamento dalla libreria: ' + err.message, true); }
 }
 async function deleteFromLibrary(id){
@@ -2582,6 +2688,110 @@ async function deleteFromLibrary(id){
     if(state.libraryId===id) state.libraryId = null;
     loadLibraryList();
   }catch(err){ showToast('Errore nell\'eliminazione: ' + err.message, true); }
+}
+
+/* ============================================================
+   ACCOUNT UTENTE — login, registrazione, recupero password.
+   I file salvati in libreria possono restare privati (visibili solo
+   a chi li ha creati) oppure essere condivisi con tutti gli utenti
+   (vedi checkbox nella modale "Salva in libreria").
+============================================================ */
+let currentUser = null;
+
+function updateAccountUI(){
+  const btn = document.getElementById('btnAccount');
+  btn.textContent = currentUser ? ('👤 ' + currentUser.username) : '👤 Accedi';
+}
+async function checkAuthStatus(){
+  try{
+    const data = await apiFetch('me.php', {method:'GET'});
+    currentUser = data.user || null;
+  }catch(err){ currentUser = null; }
+  updateAccountUI();
+}
+function showAccountView(view){
+  ['Login','Register','Forgot','Reset','LoggedIn'].forEach(v=>{
+    document.getElementById('acctView'+v).style.display = (v.toLowerCase()===view) ? '' : 'none';
+  });
+  const titles = {login:'Accedi', register:'Crea un account', forgot:'Recupera password', reset:'Imposta nuova password', loggedin:'Account'};
+  document.getElementById('accountModalTitle').textContent = titles[view] || 'Account';
+}
+function openAccountModal(view){
+  showAccountView(currentUser && view!=='reset' ? 'loggedin' : (view||'login'));
+  if(currentUser && view!=='reset'){
+    document.getElementById('acctLoggedUsername').textContent = currentUser.username;
+    document.getElementById('acctLoggedEmail').textContent = currentUser.email;
+  }
+  document.getElementById('accountModal').classList.add('open');
+}
+function closeAccountModal(){ document.getElementById('accountModal').classList.remove('open'); }
+document.getElementById('accountModalClose').onclick = closeAccountModal;
+document.getElementById('accountModal').addEventListener('click', (e)=>{ if(e.target.id==='accountModal') closeAccountModal(); });
+document.getElementById('btnAccount').onclick = ()=> openAccountModal(currentUser ? 'loggedin' : 'login');
+
+document.getElementById('linkGotoForgot').onclick = (e)=>{ e.preventDefault(); showAccountView('forgot'); };
+document.getElementById('linkGotoRegister').onclick = (e)=>{ e.preventDefault(); showAccountView('register'); };
+document.getElementById('linkGotoLogin1').onclick = (e)=>{ e.preventDefault(); showAccountView('login'); };
+document.getElementById('linkGotoLogin2').onclick = (e)=>{ e.preventDefault(); showAccountView('login'); };
+
+document.getElementById('loginSubmit').onclick = async ()=>{
+  const identifier = document.getElementById('loginIdentifier').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errEl = document.getElementById('loginError'); errEl.style.display='none';
+  try{
+    const data = await apiFetch('login.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({identifier, password})});
+    currentUser = data.user; updateAccountUI(); closeAccountModal();
+    showToast('Accesso effettuato, ciao ' + currentUser.username + '!', false);
+  }catch(err){ errEl.textContent = err.message; errEl.style.display=''; }
+};
+document.getElementById('registerSubmit').onclick = async ()=>{
+  const username = document.getElementById('regUsername').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const errEl = document.getElementById('registerError'); errEl.style.display='none';
+  try{
+    const data = await apiFetch('register.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username, email, password})});
+    currentUser = data.user; updateAccountUI(); closeAccountModal();
+    showToast('Account creato, benvenuto ' + currentUser.username + '!', false);
+  }catch(err){ errEl.textContent = err.message; errEl.style.display=''; }
+};
+document.getElementById('forgotSubmit').onclick = async ()=>{
+  const email = document.getElementById('forgotEmail').value.trim();
+  const errEl = document.getElementById('forgotError'), okEl = document.getElementById('forgotSuccess');
+  errEl.style.display='none'; okEl.style.display='none';
+  try{
+    const data = await apiFetch('forgot_password.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email})});
+    okEl.textContent = data.message; okEl.style.display='';
+  }catch(err){ errEl.textContent = err.message; errEl.style.display=''; }
+};
+let pendingResetToken = null;
+document.getElementById('resetSubmit').onclick = async ()=>{
+  const pw1 = document.getElementById('resetPassword').value;
+  const pw2 = document.getElementById('resetPasswordConfirm').value;
+  const errEl = document.getElementById('resetError'); errEl.style.display='none';
+  if(pw1.length<6){ errEl.textContent='La password deve avere almeno 6 caratteri.'; errEl.style.display=''; return; }
+  if(pw1!==pw2){ errEl.textContent='Le due password non coincidono.'; errEl.style.display=''; return; }
+  try{
+    await apiFetch('reset_password.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({token:pendingResetToken, password:pw1})});
+    pendingResetToken = null;
+    history.replaceState(null, '', location.pathname);
+    showAccountView('login');
+    showToast('Password reimpostata: accedi con la nuova password.', false);
+  }catch(err){ errEl.textContent = err.message; errEl.style.display=''; }
+};
+document.getElementById('logoutSubmit').onclick = async ()=>{
+  try{ await apiFetch('logout.php', {method:'POST'}); }catch(err){}
+  currentUser = null; updateAccountUI(); closeAccountModal();
+  showToast('Sei uscito dal tuo account.', false);
+};
+function checkPasswordResetURLParam(){
+  const params = new URLSearchParams(location.search);
+  const token = params.get('reset');
+  if(token){
+    pendingResetToken = token;
+    showAccountView('reset');
+    document.getElementById('accountModal').classList.add('open');
+  }
 }
 
 /* ============================================================
@@ -4922,6 +5132,8 @@ async function init(){
   buildRail();
   buildImageTab();
   updateStatusToggles();
+  checkAuthStatus();
+  checkPasswordResetURLParam();
   const restored = await tryRestore();
   if(!restored){
     const doc = makeNewDocument('Disegno 1');

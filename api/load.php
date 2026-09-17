@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/common.php';
 check_api_key();
+$user = require_login();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     json_error('Metodo non consentito, usare GET.', 405);
@@ -22,4 +23,10 @@ if (!is_array($project)) {
     json_error('Il file di progetto sul server risulta corrotto.', 500);
 }
 
-json_ok(['project' => $project]);
+$isOwner  = ($project['ownerId'] ?? null) === $user['id'];
+$isShared = !empty($project['shared']);
+if (!$isOwner && !$isShared) {
+    json_error('Non hai accesso a questo progetto.', 403);
+}
+
+json_ok(['project' => $project, 'mine' => $isOwner]);

@@ -1,8 +1,29 @@
 <?php
 require_once __DIR__ . '/config.php';
 
+// Sessioni: servono per riconoscere l'utente collegato tra una richiesta e
+// l'altra. Vanno avviate prima di qualunque output (gli header sotto non
+// contano come output, va bene).
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path'     => '/',
+    'samesite' => 'Lax',
+    'secure'   => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+    'httponly' => true,
+]);
+session_name(SESSION_COOKIE_NAME);
+session_start();
+
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
+// Con le sessioni (cookie) il CORS "*" non è consentito dai browser insieme
+// alle credenziali: rispecchio l'origine della richiesta quando presente.
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if ($origin !== '') {
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Access-Control-Allow-Credentials: true');
+} else {
+    header('Access-Control-Allow-Origin: *');
+}
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, X-Api-Key');
 
@@ -77,4 +98,96 @@ function read_json_body() {
         json_error('Corpo della richiesta non valido: atteso JSON.', 400);
     }
     return $data;
+}
+
+/* ============================================================
+   ACCOUNT UTENTE — registrazione, login, recupero password.
+   Nessun database: un unico file indice con tutti gli utenti,
+   password sempre salvate come hash (mai in chiaro).
+============================================================ */
+
+function ensure_users_dir() {
+    if (!is_dir(USERS_DIR)) {
+        if (!mkdir(USERS_DIR, 0775, true) && !is_dir(USERS_DIR)) {
+            json_error('Impossibile creare la cartella utenti sul server. Verifica i permessi di scrittura.', 500);
+        }
+    }
+    $htaccess = USERS_DIR . '/.htaccess';
+    if (!file_exists($htaccess)) {
+        @file_put_contents($htaccess, "Require all denied\nDeny from all\n");
+    }
+}
+
+function read_users() {
+    ensure_users_dir();
+    if (!file_exists(USERS_INDEX_FILE)) return [];
+    $raw = @file_get_contents(USERS_INDEX_FILE);
+    $data = json_decode($raw, true);
+    return is_array($data) ? $data : [];
+}
+
+function write_users($users) {
+    ensure_users_dir();
+    file_put_contents(USERS_INDEX_FILE, json_encode(array_values($users), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+}
+
+function find_user_by_username($users, $username) {
+    foreach ($users as $u) {
+        if (isset($u['username']) && strcasecmp($u['username'], $username) === 0) return $u;
+    }
+    return null;
+}
+
+function find_user_by_email($users, $email) {
+    foreach ($users as $u) {
+        if (isset($u['email']) && strcasecmp($u['email'], $email) === 0) return $u;
+    }
+    return null;
+}
+
+function find_user_by_id($users, $id) {
+    foreach ($users as $u) {
+        if (isset($u['id']) && $u['id'] === $id) return $u;
+    }
+    return null;
+}
+
+// Utente attualmente collegato (in base alla sessione), oppure null.
+function current_user() {
+    if (empty($_SESSION['user_id'])) return null;
+    $users = read_users();
+    return find_user_by_id($users, $_SESSION['user_id']);
+}
+
+// Come current_user(), ma interrompe la richiesta con errore 401 se non
+// c'è nessuno collegato: da chiamare in cima alle API che richiedono login.
+function require_login() {
+    $u = current_user();
+    if (!$u) json_error('Devi accedere al tuo account per usare questa funzione.', 401);
+    return $u;
+}
+
+// Versione dell'utente sicura da restituire al client: mai l'hash password
+// né il token di reset.
+function public_user($u) {
+    return ['id' => $u['id'], 'username' => $u['username'], 'email' => $u['email']];
+}
+
+function safe_username($u) {
+    return is_string($u) && preg_match('/^[A-Za-z0-9_.-]{3,30}$/', $u) === 1;
+}
+
+function valid_email($e) {
+    return is_string($e) && filter_var($e, FILTER_VALIDATE_EMAIL) !== false;
+}
+
+// URL di base del progetto (la cartella che contiene index.html), dedotto
+// dalla richiesta corrente: usato per costruire il link nell'email di
+// recupero password senza doverlo configurare a mano.
+function site_base_url() {
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    // questo file sta in api/, la root del progetto è una cartella sopra
+    $dir = rtrim(dirname(dirname($_SERVER['SCRIPT_NAME'])), '/');
+    return $scheme . '://' . $host . $dir;
 }
