@@ -553,6 +553,31 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   </div>
 </div>
 
+<div id="svgImportOptModal" class="modal-overlay">
+  <div class="modal-box" style="width:340px;">
+    <div class="modal-head">
+      <h3>Opzioni di importazione</h3>
+      <button class="iconbtn" id="svgImportOptClose" title="Chiudi">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Fattore di scala (%)</label><input type="number" id="svgImportOptScale" value="100" step="1" min="0.1"></div>
+      <div class="hint">100% = dimensione invariata rispetto al file originale.</div>
+      <hr class="sep">
+      <div class="field">
+        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;">
+          <input type="checkbox" id="svgImportOptFit" style="width:auto;">
+          Porta il disegno in alto a sinistra e adatta il foglio
+        </label>
+      </div>
+      <div class="field" id="svgImportOptMarginWrap" style="display:none;">
+        <label>Margine di tolleranza (<span id="svgImportOptMarginUnit">mm</span>)</label>
+        <input type="number" id="svgImportOptMargin" value="3" step="0.5" min="0">
+      </div>
+      <button class="btn primary" id="svgImportOptApply">Importa disegno</button>
+    </div>
+  </div>
+</div>
+
 <div id="scaleModal" class="modal-overlay">
   <div class="modal-box" style="width:340px;">
     <div class="modal-head">
@@ -3756,7 +3781,7 @@ function scaleDashArray(dash, factor){
   if(!dash || dash==='none') return 'none';
   return dash.split(/[\s,]+/).map(n=>(parseFloat(n)*factor).toFixed(2)).join(',');
 }
-function importSVGString(text){
+function importSVGString(text, opts){
   let doc;
   try{ doc = new DOMParser().parseFromString(text, 'image/svg+xml'); }catch(e){ doc=null; }
   const svgRoot = doc && doc.querySelector('svg');
@@ -3875,7 +3900,7 @@ function importSVGString(text){
   walk(svgRoot, baseMat, rootInh);
 
   if(!newShapes.length){ showToast('Non ho trovato elementi disegnabili modificabili in questo file SVG.', true); return; }
-  autoFitImportedShapes(dedupeImportedShapes(newShapes));
+  autoFitImportedShapes(dedupeImportedShapes(newShapes), opts);
 }
 function dedupeImportedShapes(shapes){
   // molti programmi disegnano ogni forma più volte con stili diversi (hitbox invisibile,
@@ -3932,32 +3957,49 @@ function shapeBBox(s){
   if(s.type==='text'){ const w=(s.text||'').length*(s.fontSize||6)*0.55; return {x:s.x, y:s.y-(s.fontSize||6), w:w||0.01, h:(s.fontSize||6)*1.3}; }
   return {x:s.x, y:s.y, w:s.w||0.01, h:s.h||0.01};
 }
-async function autoFitImportedShapes(newShapes){
+async function autoFitImportedShapes(newShapes, opts){
+  opts = opts || {};
+  if(opts.scaleFactor && opts.scaleFactor!==1) scaleShapesAroundCenter(newShapes, opts.scaleFactor);
+
   const boxes = newShapes.map(shapeBBox);
   const minX = Math.min(...boxes.map(b=>b.x)), minY = Math.min(...boxes.map(b=>b.y));
   const maxX = Math.max(...boxes.map(b=>b.x+b.w)), maxY = Math.max(...boxes.map(b=>b.y+b.h));
   const bw = maxX-minX || 1, bh = maxY-minY || 1;
 
-  const fitsPage = bw <= state.page.w && bh <= state.page.h;
-  if(!fitsPage){
-    const ok = await showConfirm(
-      `Il disegno importato misura ${bw.toFixed(1)}×${bh.toFixed(1)} mm, più grande della pagina attuale (${state.page.w}×${state.page.h} mm).\n\nImpostare la pagina esattamente su queste misure? Le dimensioni del disegno importato non vengono comunque alterate in nessun caso.`,
-      'Disegno più grande della pagina'
-    );
-    if(ok){
-      state.page = {w: Math.ceil(bw+4), h: Math.ceil(bh+4)};
-      syncPageSizeSelect();
+  if(opts.fitTopLeft){
+    // Il disegno va posizionato a partire da (0,0) e il foglio adattato alla sua misura + margine:
+    // lo faccio SUBITO sulle shape ancora "sciolte" (non ancora in state.shapes), poi le aggiungo al livello attivo.
+    const marginMM = opts.marginMM!=null ? opts.marginMM : unitToMm(3);
+    const dx = marginMM - minX, dy = marginMM - minY;
+    newShapes.forEach(s=>{
+      if(s.points) s.points = s.points.map(p=>[p[0]+dx, p[1]+dy]);
+      if(s.x!=null){ s.x+=dx; s.y+=dy; }
+    });
+    state.page.w = bw + marginMM*2;
+    state.page.h = bh + marginMM*2;
+    syncPageSizeSelect();
+  } else {
+    const fitsPage = bw <= state.page.w && bh <= state.page.h;
+    if(!fitsPage){
+      const ok = await showConfirm(
+        `Il disegno importato misura ${bw.toFixed(1)}×${bh.toFixed(1)} mm, più grande della pagina attuale (${state.page.w}×${state.page.h} mm).\n\nImpostare la pagina esattamente su queste misure? Le dimensioni del disegno importato non vengono comunque alterate in nessun caso.`,
+        'Disegno più grande della pagina'
+      );
+      if(ok){
+        state.page = {w: Math.ceil(bw+4), h: Math.ceil(bh+4)};
+        syncPageSizeSelect();
+      }
     }
+    // Il disegno importato viene solo CENTRATO, mai riscalato oltre al fattore già eventualmente applicato sopra.
+    const srcCenter = [minX+bw/2, minY+bh/2];
+    const dstCenter = [state.page.w/2, state.page.h/2];
+    function fn(p){ return [dstCenter[0]+(p[0]-srcCenter[0]), dstCenter[1]+(p[1]-srcCenter[1])]; }
+    newShapes.forEach(s=>{
+      if(s.points) s.points = s.points.map(fn);
+      if(s.x!=null){ const p = fn([s.x,s.y]); s.x=p[0]; s.y=p[1]; }
+    });
   }
 
-  // Il disegno importato viene solo CENTRATO, mai riscalato: le misure del file originale restano esatte.
-  const srcCenter = [minX+bw/2, minY+bh/2];
-  const dstCenter = [state.page.w/2, state.page.h/2];
-  function fn(p){ return [dstCenter[0]+(p[0]-srcCenter[0]), dstCenter[1]+(p[1]-srcCenter[1])]; }
-  newShapes.forEach(s=>{
-    if(s.points) s.points = s.points.map(fn);
-    if(s.x!=null){ const p = fn([s.x,s.y]); s.x=p[0]; s.y=p[1]; }
-  });
   state.shapes.push(...newShapes);
   state.selection = new Set(newShapes.map(s=>s.id));
   const welded = runWeldPass(0.5); // tolleranza prudente: unisce estremi quasi coincidenti (arrotondamenti del file sorgente)
@@ -3965,7 +4007,9 @@ async function autoFitImportedShapes(newShapes){
   renderAll();
   document.querySelector('.tabtrig[data-tab="prop"]').click();
   const weldNote = welded>0 ? ` — ${welded} collegamenti tra segmenti ricostruiti automaticamente.` : '';
-  showToast(`Importati ${newShapes.length} elementi — dimensioni originali mantenute (${bw.toFixed(1)}×${bh.toFixed(1)} mm).${weldNote}`, false);
+  const scaleNote = (opts.scaleFactor && opts.scaleFactor!==1) ? ` — scala ${(opts.scaleFactor*100).toFixed(1)}%` : '';
+  const fitNote = opts.fitTopLeft ? ' — foglio adattato al disegno' : '';
+  showToast(`Importati ${newShapes.length} elementi (${bw.toFixed(1)}×${bh.toFixed(1)} mm)${scaleNote}${fitNote}.${weldNote}`, false);
 }
 let pendingSVGImportText = null;
 let pendingSVGImportName = null;
@@ -3978,7 +4022,7 @@ function openSVGFilePicker(){
     r.onload = ()=>{
       const text = r.result;
       if(state.shapes.length > 0) openImportChoiceModal(text, fileName);
-      else { importSVGString(text); renameActiveTab(fileName); }
+      else openSVGImportOptionsModal(text, fileName);
     };
     r.readAsText(inp.files[0]);
   };
@@ -3997,15 +4041,14 @@ document.getElementById('importChoiceClose').onclick = closeImportChoiceModal;
 document.getElementById('importChoiceModal').addEventListener('click', (e)=>{ if(e.target.id==='importChoiceModal') closeImportChoiceModal(); });
 document.getElementById('importChoiceMerge').onclick = ()=>{
   const text = pendingSVGImportText; closeImportChoiceModal();
-  if(text) importSVGString(text);
+  if(text) openSVGImportOptionsModal(text, null);
 };
 document.getElementById('importChoiceReplace').onclick = ()=>{
   const text = pendingSVGImportText, fileName = pendingSVGImportName; closeImportChoiceModal();
   if(!text) return;
   state.shapes = []; state.selection.clear(); state.refImage = null; state.gapMarkers = [];
   renderAll();
-  importSVGString(text);
-  if(fileName) renameActiveTab(fileName);
+  openSVGImportOptionsModal(text, fileName);
 };
 document.getElementById('importChoiceSaveReplace').onclick = ()=>{
   const text = pendingSVGImportText, fileName = pendingSVGImportName; closeImportChoiceModal();
@@ -4013,10 +4056,51 @@ document.getElementById('importChoiceSaveReplace').onclick = ()=>{
   saveProjectFile();
   state.shapes = []; state.selection.clear(); state.refImage = null; state.gapMarkers = [];
   renderAll();
-  importSVGString(text);
-  if(fileName) renameActiveTab(fileName);
+  openSVGImportOptionsModal(text, fileName);
 };
 document.getElementById('btnImportSVGTop').onclick = openSVGFilePicker;
+
+/* ============================================================
+   OPZIONI DI IMPORTAZIONE SVG — scala e adattamento in alto a sinistra,
+   chieste subito dopo la scelta del file (evita il passaggio separato
+   dal menu File ▾ → Scala).
+============================================================ */
+let pendingImportOptsText = null;
+let pendingImportOptsFileName = null;
+function openSVGImportOptionsModal(text, fileName){
+  pendingImportOptsText = text;
+  pendingImportOptsFileName = fileName || null;
+  document.getElementById('svgImportOptScale').value = 100;
+  document.getElementById('svgImportOptFit').checked = false;
+  document.getElementById('svgImportOptMargin').value = 3;
+  document.getElementById('svgImportOptMarginUnit').textContent = UNITS[state.unit].label;
+  refreshSVGImportOptFitVisibility();
+  document.getElementById('svgImportOptModal').classList.add('open');
+}
+function refreshSVGImportOptFitVisibility(){
+  document.getElementById('svgImportOptMarginWrap').style.display = document.getElementById('svgImportOptFit').checked ? '' : 'none';
+}
+function closeSVGImportOptionsModal(){
+  pendingImportOptsText = null;
+  document.getElementById('svgImportOptModal').classList.remove('open');
+}
+document.getElementById('svgImportOptFit').addEventListener('change', refreshSVGImportOptFitVisibility);
+document.getElementById('svgImportOptClose').onclick = closeSVGImportOptionsModal;
+document.getElementById('svgImportOptModal').addEventListener('click', (e)=>{ if(e.target.id==='svgImportOptModal') closeSVGImportOptionsModal(); });
+document.getElementById('svgImportOptApply').onclick = ()=>{
+  const text = pendingImportOptsText, fileName = pendingImportOptsFileName;
+  if(!text) return;
+  const pct = parseFloat(document.getElementById('svgImportOptScale').value);
+  if(isNaN(pct) || pct<=0){ showToast('Inserisci una percentuale di scala valida maggiore di 0.', true); return; }
+  const factor = pct/100;
+  const fitTopLeft = document.getElementById('svgImportOptFit').checked;
+  const marginU = parseFloat(document.getElementById('svgImportOptMargin').value);
+  const marginMM = unitToMm(isNaN(marginU) ? 3 : marginU);
+  document.getElementById('svgImportOptModal').classList.remove('open');
+  pendingImportOptsText = null;
+  importSVGString(text, {scaleFactor:factor, fitTopLeft, marginMM});
+  if(fileName) renameActiveTab(fileName);
+};
 
 /* ============================================================
    VERIFICA CHIUSURE — trova percorsi aperti/punti scollegati
@@ -4216,6 +4300,35 @@ document.querySelectorAll('.tabtrig[data-scaletab]').forEach(b=> b.onclick = ()=
 document.getElementById('calRefresh').onclick = refreshScaleCalibration;
 document.getElementById('scaleModalClose').onclick = ()=> document.getElementById('scaleModal').classList.remove('open');
 document.getElementById('scaleModal').addEventListener('click', (e)=>{ if(e.target.id==='scaleModal') document.getElementById('scaleModal').classList.remove('open'); });
+function scaleShapesAroundCenter(targets, factor){
+  if(!targets.length || factor===1) return;
+  const boxes = targets.map(shapeBBox);
+  const minX=Math.min(...boxes.map(b=>b.x)), minY=Math.min(...boxes.map(b=>b.y));
+  const maxX=Math.max(...boxes.map(b=>b.x+b.w)), maxY=Math.max(...boxes.map(b=>b.y+b.h));
+  const pivot = [(minX+maxX)/2, (minY+maxY)/2];
+  const fn = (p)=> [pivot[0]+(p[0]-pivot[0])*factor, pivot[1]+(p[1]-pivot[1])*factor];
+  targets.forEach(s=>{
+    if(s.points) s.points = s.points.map(fn);
+    if(s.x!=null){ const np=fn([s.x,s.y]); s.x=np[0]; s.y=np[1]; if(s.w!=null){ s.w*=factor; s.h*=factor; } }
+    if(s.type==='text') s.fontSize = (s.fontSize||6)*factor;
+    if(s.style && s.style.strokeWidth) s.style.strokeWidth *= factor;
+    if(s.smooth) s.smooth = s.smooth.map(v=>v*factor);
+  });
+}
+function fitPageToShapesTopLeft(targets, marginMM){
+  if(!targets.length) return;
+  const boxes = targets.map(shapeBBox);
+  const minX=Math.min(...boxes.map(b=>b.x)), minY=Math.min(...boxes.map(b=>b.y));
+  const maxX=Math.max(...boxes.map(b=>b.x+b.w)), maxY=Math.max(...boxes.map(b=>b.y+b.h));
+  const dx = marginMM - minX, dy = marginMM - minY;
+  if(dx || dy){
+    moveShapesBy(targets.map(s=>s.id), dx, dy);
+    if(state.refImage){ state.refImage.x += dx; state.refImage.y += dy; }
+  }
+  state.page.w = (maxX-minX) + marginMM*2;
+  state.page.h = (maxY-minY) + marginMM*2;
+  syncPageSizeSelect();
+}
 document.getElementById('scaleApply').onclick = ()=>{
   let factor;
   if(scaleModalMode==='percent'){
@@ -4231,35 +4344,14 @@ document.getElementById('scaleApply').onclick = ()=>{
   const scope = document.getElementById('scaleScope').value;
   const targets = scope==='selection' ? state.shapes.filter(s=>state.selection.has(s.id)) : state.shapes;
   if(!targets.length){ showToast('Nessun elemento da scalare.', true); return; }
-  const boxes = targets.map(shapeBBox);
-  const minX=Math.min(...boxes.map(b=>b.x)), minY=Math.min(...boxes.map(b=>b.y));
-  const maxX=Math.max(...boxes.map(b=>b.x+b.w)), maxY=Math.max(...boxes.map(b=>b.y+b.h));
-  const pivot = [(minX+maxX)/2, (minY+maxY)/2];
-  const fn = (p)=> [pivot[0]+(p[0]-pivot[0])*factor, pivot[1]+(p[1]-pivot[1])*factor];
-  targets.forEach(s=>{
-    if(s.points) s.points = s.points.map(fn);
-    if(s.x!=null){ const np=fn([s.x,s.y]); s.x=np[0]; s.y=np[1]; if(s.w!=null){ s.w*=factor; s.h*=factor; } }
-    if(s.type==='text') s.fontSize = (s.fontSize||6)*factor;
-    if(s.style && s.style.strokeWidth) s.style.strokeWidth *= factor;
-    if(s.smooth) s.smooth = s.smooth.map(v=>v*factor);
-  });
+  scaleShapesAroundCenter(targets, factor);
 
   const doFit = scope==='all' && document.getElementById('scaleFitPage').checked;
   let fitMsg = '';
   if(doFit){
     const marginU = parseFloat(document.getElementById('scaleMargin').value);
     const marginMM = isNaN(marginU) ? unitToMm(3) : unitToMm(marginU);
-    const newBoxes = targets.map(shapeBBox);
-    const minX2=Math.min(...newBoxes.map(b=>b.x)), minY2=Math.min(...newBoxes.map(b=>b.y));
-    const maxX2=Math.max(...newBoxes.map(b=>b.x+b.w)), maxY2=Math.max(...newBoxes.map(b=>b.y+b.h));
-    const dx = marginMM - minX2, dy = marginMM - minY2;
-    if(dx || dy){
-      moveShapesBy(targets.map(s=>s.id), dx, dy);
-      if(state.refImage){ state.refImage.x += dx; state.refImage.y += dy; }
-    }
-    state.page.w = (maxX2-minX2) + marginMM*2;
-    state.page.h = (maxY2-minY2) + marginMM*2;
-    syncPageSizeSelect();
+    fitPageToShapesTopLeft(targets, marginMM);
     fitMsg = ` Foglio adattato al disegno (margine ${marginU||3}${UNITS[state.unit].label}).`;
   }
 
