@@ -360,6 +360,10 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
     <input id="filename" type="text" value="disegno" title="Nome file">
   </div>
   <div class="grp">
+    <button class="iconbtn" id="btnQuickSave" title="Salva subito una copia locale nel browser">💾 Salva</button>
+    <button class="iconbtn" id="btnSaveLibraryTop" title="Salva in libreria (server) — richiede un account">☁ Libreria</button>
+  </div>
+  <div class="grp">
     <button class="iconbtn" id="btnUndo" title="Annulla (Ctrl+Z)">↶</button>
     <button class="iconbtn" id="btnRedo" title="Ripeti (Ctrl+Shift+Z)">↷</button>
   </div>
@@ -837,6 +841,19 @@ function el(tag, attrs){
   return n;
 }
 function uid(){ return 'id'+Math.random().toString(36).slice(2,10); }
+
+// Chiude una finestra modale quando si clicca sullo sfondo scuro esterno.
+// Attenzione: un semplice controllo su 'click' scambia per "click fuori"
+// anche un trascinamento che INIZIA dentro un campo di testo (per
+// selezionare del testo) e TERMINA fuori dal riquadro — la finestra si
+// chiuderebbe per sbaglio mentre si sta ancora scrivendo. Per evitarlo,
+// la chiusura scatta solo se sia il mousedown sia il click finale hanno
+// colpito proprio lo sfondo (mai un suo contenuto).
+function setupOverlayClickClose(overlayEl, closeFn){
+  let downOnOverlay = false;
+  overlayEl.addEventListener('mousedown', (e)=>{ downOnOverlay = (e.target === overlayEl); });
+  overlayEl.addEventListener('click', (e)=>{ if(e.target === overlayEl && downOnOverlay) closeFn(); });
+}
 
 /* ============================================================
    UNITÀ DI MISURA — i valori restano SEMPRE in mm internamente
@@ -2608,7 +2625,7 @@ function saveToLibrary(){
 }
 function closeSaveLibraryModal(){ document.getElementById('saveLibraryModal').classList.remove('open'); }
 document.getElementById('saveLibModalClose').onclick = closeSaveLibraryModal;
-document.getElementById('saveLibraryModal').addEventListener('click', (e)=>{ if(e.target.id==='saveLibraryModal') closeSaveLibraryModal(); });
+setupOverlayClickClose(document.getElementById('saveLibraryModal'), closeSaveLibraryModal);
 document.getElementById('saveLibSubmit').onclick = async ()=>{
   const name = document.getElementById('saveLibName').value.trim();
   const errEl = document.getElementById('saveLibError');
@@ -2634,7 +2651,7 @@ function openLibraryModal(){
 }
 function closeLibraryModal(){ document.getElementById('libraryModal').classList.remove('open'); }
 document.getElementById('libModalClose').onclick = closeLibraryModal;
-document.getElementById('libraryModal').addEventListener('click', (e)=>{ if(e.target.id==='libraryModal') closeLibraryModal(); });
+setupOverlayClickClose(document.getElementById('libraryModal'), closeLibraryModal);
 
 async function loadLibraryList(){
   const host = document.getElementById('libList');
@@ -2717,7 +2734,7 @@ function openVersionsModal(id){
 }
 function closeVersionsModal(){ document.getElementById('versionsModal').classList.remove('open'); }
 document.getElementById('versionsModalClose').onclick = closeVersionsModal;
-document.getElementById('versionsModal').addEventListener('click', (e)=>{ if(e.target.id==='versionsModal') closeVersionsModal(); });
+setupOverlayClickClose(document.getElementById('versionsModal'), closeVersionsModal);
 
 async function loadVersionsList(id){
   const host = document.getElementById('versionsList');
@@ -2815,7 +2832,7 @@ function openAccountModal(view){
 }
 function closeAccountModal(){ document.getElementById('accountModal').classList.remove('open'); }
 document.getElementById('accountModalClose').onclick = closeAccountModal;
-document.getElementById('accountModal').addEventListener('click', (e)=>{ if(e.target.id==='accountModal') closeAccountModal(); });
+setupOverlayClickClose(document.getElementById('accountModal'), closeAccountModal);
 document.getElementById('btnAccount').onclick = ()=> openAccountModal(currentUser ? 'loggedin' : 'login');
 
 document.getElementById('linkGotoForgot').onclick = (e)=>{ e.preventDefault(); showAccountView('forgot'); };
@@ -3128,7 +3145,7 @@ function openPrintProofModal(){
   document.getElementById('printProofModal').classList.add('open');
 }
 document.getElementById('printProofClose').onclick = ()=> document.getElementById('printProofModal').classList.remove('open');
-document.getElementById('printProofModal').addEventListener('click', (e)=>{ if(e.target.id==='printProofModal') document.getElementById('printProofModal').classList.remove('open'); });
+setupOverlayClickClose(document.getElementById('printProofModal'), ()=> document.getElementById('printProofModal').classList.remove('open'));
 document.getElementById('proofFormat').addEventListener('change', updateProofInfo);
 document.getElementById('proofOrientation').addEventListener('change', updateProofInfo);
 document.getElementById('proofGenerate').onclick = generatePrintProof;
@@ -3188,7 +3205,7 @@ document.getElementById('unitSelect').addEventListener('change', (e)=>{
   renderAll();
 });
 document.getElementById('pageModalClose').onclick = closeCustomPageModal;
-document.getElementById('pageSizeModal').addEventListener('click', (e)=>{ if(e.target.id==='pageSizeModal') closeCustomPageModal(); });
+setupOverlayClickClose(document.getElementById('pageSizeModal'), closeCustomPageModal);
 document.getElementById('customPageApply').onclick = applyCustomPage;
 ['customW','customH'].forEach(id=>{
   document.getElementById(id).addEventListener('keydown', (e)=>{ if(e.key==='Enter') applyCustomPage(); });
@@ -4337,7 +4354,7 @@ function closeImportChoiceModal(){
   document.getElementById('importChoiceModal').classList.remove('open');
 }
 document.getElementById('importChoiceClose').onclick = closeImportChoiceModal;
-document.getElementById('importChoiceModal').addEventListener('click', (e)=>{ if(e.target.id==='importChoiceModal') closeImportChoiceModal(); });
+setupOverlayClickClose(document.getElementById('importChoiceModal'), closeImportChoiceModal);
 document.getElementById('importChoiceMerge').onclick = ()=>{
   const text = pendingSVGImportText; closeImportChoiceModal();
   if(text) openSVGImportOptionsModal(text, null);
@@ -4385,7 +4402,7 @@ function closeSVGImportOptionsModal(){
 }
 document.getElementById('svgImportOptFit').addEventListener('change', refreshSVGImportOptFitVisibility);
 document.getElementById('svgImportOptClose').onclick = closeSVGImportOptionsModal;
-document.getElementById('svgImportOptModal').addEventListener('click', (e)=>{ if(e.target.id==='svgImportOptModal') closeSVGImportOptionsModal(); });
+setupOverlayClickClose(document.getElementById('svgImportOptModal'), closeSVGImportOptionsModal);
 document.getElementById('svgImportOptApply').onclick = ()=>{
   const text = pendingImportOptsText, fileName = pendingImportOptsFileName;
   if(!text) return;
@@ -4532,7 +4549,7 @@ function runWeldPass(toleranceMM){
 function openWeldModal(){ document.getElementById('weldModal').classList.add('open'); }
 function closeWeldModal(){ document.getElementById('weldModal').classList.remove('open'); }
 document.getElementById('weldModalClose').onclick = closeWeldModal;
-document.getElementById('weldModal').addEventListener('click', (e)=>{ if(e.target.id==='weldModal') closeWeldModal(); });
+setupOverlayClickClose(document.getElementById('weldModal'), closeWeldModal);
 document.getElementById('weldApply').onclick = ()=>{
   const tol = parseFloat(document.getElementById('weldTolerance').value) || 1;
   const n = runWeldPass(tol);
@@ -4598,7 +4615,7 @@ document.getElementById('scaleFitPage').addEventListener('change', refreshScaleF
 document.querySelectorAll('.tabtrig[data-scaletab]').forEach(b=> b.onclick = ()=> setScaleModalMode(b.dataset.scaletab));
 document.getElementById('calRefresh').onclick = refreshScaleCalibration;
 document.getElementById('scaleModalClose').onclick = ()=> document.getElementById('scaleModal').classList.remove('open');
-document.getElementById('scaleModal').addEventListener('click', (e)=>{ if(e.target.id==='scaleModal') document.getElementById('scaleModal').classList.remove('open'); });
+setupOverlayClickClose(document.getElementById('scaleModal'), ()=> document.getElementById('scaleModal').classList.remove('open'));
 function scaleShapesAroundCenter(targets, factor){
   if(!targets.length || factor===1) return;
   const boxes = targets.map(shapeBBox);
@@ -4749,7 +4766,7 @@ function buildFontFaceCSS(){
 }
 function openFontModal(){ renderFontList(); document.getElementById('fontModal').classList.add('open'); }
 document.getElementById('fontModalClose').onclick = ()=> document.getElementById('fontModal').classList.remove('open');
-document.getElementById('fontModal').addEventListener('click', (e)=>{ if(e.target.id==='fontModal') document.getElementById('fontModal').classList.remove('open'); });
+setupOverlayClickClose(document.getElementById('fontModal'), ()=> document.getElementById('fontModal').classList.remove('open'));
 document.getElementById('dropzoneFont').onclick = ()=>{
   const inp = document.createElement('input'); inp.type='file'; inp.accept='.ttf,.otf,.woff,.woff2';
   inp.onchange = async ()=>{
@@ -4902,7 +4919,7 @@ function openCutPreview(){
   document.getElementById('cutPreviewModal').classList.add('open');
 }
 document.getElementById('cutPreviewClose').onclick = ()=> document.getElementById('cutPreviewModal').classList.remove('open');
-document.getElementById('cutPreviewModal').addEventListener('click', (e)=>{ if(e.target.id==='cutPreviewModal') document.getElementById('cutPreviewModal').classList.remove('open'); });
+setupOverlayClickClose(document.getElementById('cutPreviewModal'), ()=> document.getElementById('cutPreviewModal').classList.remove('open'));
 
 /* ============================================================
    EXPORT
@@ -5005,7 +5022,7 @@ function doClearAll(){
 document.getElementById('btnNew').onclick = clearAll;
 document.getElementById('btnHelp').onclick = ()=> document.getElementById('helpModal').classList.add('open');
 document.getElementById('helpModalClose').onclick = ()=> document.getElementById('helpModal').classList.remove('open');
-document.getElementById('helpModal').addEventListener('click', (e)=>{ if(e.target.id==='helpModal') document.getElementById('helpModal').classList.remove('open'); });
+setupOverlayClickClose(document.getElementById('helpModal'), ()=> document.getElementById('helpModal').classList.remove('open'));
 
 /* ============================================================
    NOTIFICHE E CONFERME (sostituiscono alert/confirm nativi)
@@ -5037,54 +5054,65 @@ function resolveConfirm(v){
 }
 document.getElementById('confirmOk').onclick = ()=> resolveConfirm(true);
 document.getElementById('confirmCancel').onclick = ()=> resolveConfirm(false);
-document.getElementById('confirmModal').addEventListener('click', (e)=>{ if(e.target.id==='confirmModal') resolveConfirm(false); });
+setupOverlayClickClose(document.getElementById('confirmModal'), ()=> resolveConfirm(false));
 
 /* ============================================================
-   AUTOSAVE (persistent storage, no browser localStorage)
+   AUTOSAVE — copia locale nel browser (localStorage), per non perdere
+   il lavoro chiudendo per sbaglio la scheda. È indipendente dalla
+   Libreria sul server: quella richiede un account, questa no, ma
+   resta solo su QUESTO browser/computer.
 ============================================================ */
+const AUTOSAVE_KEY = 'spikecut-project';
 function scheduleAutosave(){
   clearTimeout(state.autosaveTimer);
   state.autosaveTimer = setTimeout(doAutosave, 900);
 }
-async function doAutosave(){
+function doAutosave(){
   try{
-    if(!window.storage) return;
     snapshotActiveDocument();
     const payload = JSON.stringify({documents, activeDocId, customFonts:state.customFonts});
-    await window.storage.set('fustella-project', payload, false);
-    document.getElementById('saveInfo').textContent = 'salvato';
-    setTimeout(()=>document.getElementById('saveInfo').textContent='', 1500);
-  }catch(err){ /* best-effort */ }
+    localStorage.setItem(AUTOSAVE_KEY, payload);
+    flashSaveInfo('salvato');
+  }catch(err){ /* best-effort: es. quota localStorage esaurita, o modalità privata del browser */ }
 }
+function flashSaveInfo(text){
+  const el = document.getElementById('saveInfo');
+  el.textContent = text;
+  clearTimeout(flashSaveInfo._t);
+  flashSaveInfo._t = setTimeout(()=>{ if(el.textContent===text) el.textContent=''; }, 1500);
+}
+document.getElementById('btnQuickSave').onclick = ()=>{
+  clearTimeout(state.autosaveTimer);
+  doAutosave();
+};
+document.getElementById('btnSaveLibraryTop').onclick = saveToLibrary;
 async function tryRestore(){
   try{
-    if(!window.storage) return false;
-    const res = await window.storage.get('fustella-project', false);
-    if(res && res.value){
-      const data = JSON.parse(res.value);
-      if(Array.isArray(data.documents) && data.documents.length){
-        documents = data.documents;
-        documents.forEach(doc=>{
-          if(!doc.layers || !doc.layers.length){
-            const dl = {id:uid(), name:'Livello 1', visible:true, locked:false};
-            doc.layers = [dl]; doc.activeLayerId = dl.id;
-            (doc.shapes||[]).forEach(s=>{ if(!s.layerId) s.layerId = dl.id; });
-          }
-        });
-        activeDocId = data.activeDocId && documents.some(d=>d.id===data.activeDocId) ? data.activeDocId : documents[0].id;
-        state.customFonts = data.customFonts || [];
-        state.customFonts.forEach(injectFontFace);
-        return true;
-      }
-      // formato precedente (una sola bozza salvata, senza schede)
-      if(data.shapes && data.shapes.length){
-        const doc = makeNewDocument('Disegno');
-        doc.shapes = data.shapes; doc.page = data.page || doc.page; doc.refImage = data.refImage || null;
-        doc.shapes.forEach(s=>{ if(!s.layerId) s.layerId = doc.activeLayerId; });
-        doc.history = [JSON.stringify({shapes:doc.shapes, layers:doc.layers})]; doc.histIndex = 0;
-        documents = [doc]; activeDocId = doc.id;
-        return true;
-      }
+    const raw = localStorage.getItem(AUTOSAVE_KEY);
+    if(!raw) return false;
+    const data = JSON.parse(raw);
+    if(Array.isArray(data.documents) && data.documents.length){
+      documents = data.documents;
+      documents.forEach(doc=>{
+        if(!doc.layers || !doc.layers.length){
+          const dl = {id:uid(), name:'Livello 1', visible:true, locked:false};
+          doc.layers = [dl]; doc.activeLayerId = dl.id;
+          (doc.shapes||[]).forEach(s=>{ if(!s.layerId) s.layerId = dl.id; });
+        }
+      });
+      activeDocId = data.activeDocId && documents.some(d=>d.id===data.activeDocId) ? data.activeDocId : documents[0].id;
+      state.customFonts = data.customFonts || [];
+      state.customFonts.forEach(injectFontFace);
+      return true;
+    }
+    // formato precedente (una sola bozza salvata, senza schede)
+    if(data.shapes && data.shapes.length){
+      const doc = makeNewDocument('Disegno');
+      doc.shapes = data.shapes; doc.page = data.page || doc.page; doc.refImage = data.refImage || null;
+      doc.shapes.forEach(s=>{ if(!s.layerId) s.layerId = doc.activeLayerId; });
+      doc.history = [JSON.stringify({shapes:doc.shapes, layers:doc.layers})]; doc.histIndex = 0;
+      documents = [doc]; activeDocId = doc.id;
+      return true;
     }
   }catch(err){ /* no previous project, ignore */ }
   return false;
