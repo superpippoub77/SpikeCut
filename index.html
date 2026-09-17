@@ -757,6 +757,13 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
         </select>
       </div>
       <div class="field">
+        <label>Direzione dei fogli</label>
+        <select id="tileDirection">
+          <option value="ltr" selected>Da sinistra a destra</option>
+          <option value="rtl">Da destra a sinistra</option>
+        </select>
+      </div>
+      <div class="field">
         <label>Sovrapposizione tra fogli adiacenti (mm)</label>
         <input type="number" id="tileOverlap" value="10" step="1" min="0">
       </div>
@@ -5081,7 +5088,7 @@ document.getElementById('tileFormat').addEventListener('change', ()=>{
   document.getElementById('tileOrientWrap').style.display = isCustom ? 'none' : '';
   updateTileInfo();
 });
-['tileOrientation','tileOverlap','tileMargin','tileCustomW','tileCustomH'].forEach(id=>{
+['tileOrientation','tileDirection','tileOverlap','tileMargin','tileCustomW','tileCustomH'].forEach(id=>{
   document.getElementById(id).addEventListener('input', updateTileInfo);
 });
 
@@ -5119,14 +5126,15 @@ function updateTileInfo(){
     info.textContent = `Il disegno (${l.dw.toFixed(0)}×${l.dh.toFixed(0)} mm) verrà diviso in ${total} fogli formato ${l.sheetW.toFixed(0)}×${l.sheetH.toFixed(0)} mm (${l.rows} righe × ${l.cols} colonne), con ${l.overlap.toFixed(0)}mm di sovrapposizione tra fogli adiacenti.${marginNote}`;
   }
 }
-function buildTileSVG(l, r, c){
-  const tileX = c*l.stepW, tileY = r*l.stepH; // origine, in coordinate del DISEGNO, di questo foglio
+function buildTileSVG(l, r, c, direction){
+  const tileX = c*l.stepW, tileY = r*l.stepH; // origine, in coordinate del DISEGNO, di questo foglio (sempre da sinistra: è geometria fisica)
   const { body: groupsBody } = buildDrawingGroupsSVG();
-  const idx = r*l.cols + c + 1, total = l.rows*l.cols;
+  const logicalC = direction==='rtl' ? (l.cols - 1 - c) : c; // ordine di lettura/numerazione scelto dall'utente
+  const idx = r*l.cols + logicalC + 1, total = l.rows*l.cols;
   // sposta il disegno in modo che il punto (tileX,tileY) cada esattamente nell'angolo
   // dell'area stampabile (subito dopo il margine di sicurezza), sui 4 lati di QUESTO foglio
   const dx = l.margin - tileX, dy = l.margin - tileY;
-  const clipId = 'tileclip-' + idx;
+  const clipId = 'tileclip-' + (r*l.cols+c+1);
   let extra = `<defs><clipPath id="${clipId}"><rect x="${sN(l.margin)}" y="${sN(l.margin)}" width="${sN(l.usableW)}" height="${sN(l.usableH)}"/></clipPath></defs>`;
   extra += `<rect x="0" y="0" width="${sN(l.sheetW)}" height="${sN(l.sheetH)}" fill="#ffffff"/>\n`;
   // linee tratteggiate nella zona di sovrapposizione, solo verso un foglio successivo esistente
@@ -5138,7 +5146,7 @@ function buildTileSVG(l, r, c){
     const y = l.margin + l.usableH - l.overlap;
     extra += `<line x1="${sN(l.margin)}" y1="${sN(y)}" x2="${sN(l.margin+l.usableW)}" y2="${sN(y)}" stroke="#bbbbbb" stroke-width="0.3" stroke-dasharray="2,1.5"/>\n`;
   }
-  const label = `Foglio ${idx}/${total} — riga ${r+1}, colonna ${c+1}`;
+  const label = `Foglio ${idx}/${total} — riga ${r+1}, colonna ${logicalC+1}`;
   extra += `<text x="${sN(l.margin+2)}" y="${sN(l.sheetH-Math.max(1,l.margin)-2)}" font-size="3" font-family="sans-serif" fill="#999999">${escapeXML(label)}</text>\n`;
   // il disegno vero e proprio: traslato, poi ritagliato all'area stampabile, così non finisce
   // mai nella fascia di margine anche se un tratto sconfina leggermente dalla propria zona
@@ -5168,6 +5176,7 @@ function rasterizeSVGToDataURL(svgStr, wmm, hmm){
 async function exportTiledPDF(){
   if(!window.jspdf){ showToast('Libreria PDF non disponibile: verifica la connessione a Internet e riprova.', true); return; }
   const l = computeTileLayout();
+  const direction = document.getElementById('tileDirection').value;
   const total = l.rows*l.cols;
   const btn = document.getElementById('tileGenerate');
   const origLabel = btn.textContent;
@@ -5177,9 +5186,12 @@ async function exportTiledPDF(){
     let pdf = null;
     let done = 0;
     for(let r=0; r<l.rows; r++){
-      for(let c=0; c<l.cols; c++){
+      for(let logicalC=0; logicalC<l.cols; logicalC++){
+        // la colonna FISICA (posizione reale nel disegno) dipende dalla direzione scelta:
+        // in "da destra a sinistra" la prima colonna letta è quella più a destra.
+        const c = direction==='rtl' ? (l.cols - 1 - logicalC) : logicalC;
         btn.textContent = `Genero foglio ${done+1}/${total}…`;
-        const svgStr = buildTileSVG(l, r, c);
+        const svgStr = buildTileSVG(l, r, c, direction);
         const imgData = await rasterizeSVGToDataURL(svgStr, l.sheetW, l.sheetH);
         if(!pdf){
           pdf = new jsPDF({ orientation: l.sheetW>=l.sheetH?'landscape':'portrait', unit:'mm', format:[l.sheetW,l.sheetH] });
