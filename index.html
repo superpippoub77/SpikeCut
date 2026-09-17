@@ -584,6 +584,16 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
           <option value="selection">Solo la selezione corrente</option>
         </select>
       </div>
+      <div class="field" id="scaleFitWrap">
+        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;">
+          <input type="checkbox" id="scaleFitPage" style="width:auto;">
+          Porta il disegno in alto a sinistra e adatta il foglio
+        </label>
+      </div>
+      <div class="field" id="scaleMarginWrap" style="display:none;">
+        <label>Margine di tolleranza (<span id="scaleMarginUnit">mm</span>)</label>
+        <input type="number" id="scaleMargin" value="3" step="0.5" min="0">
+      </div>
       <button class="btn primary" id="scaleApply">Applica scala</button>
     </div>
   </div>
@@ -4178,7 +4188,17 @@ function refreshScaleCalibration(){
 function openScaleModal(){
   document.getElementById('scaleModal').classList.add('open');
   setScaleModalMode('percent');
+  refreshScaleFitVisibility();
+  document.getElementById('scaleMarginUnit').textContent = UNITS[state.unit].label;
 }
+function refreshScaleFitVisibility(){
+  const scope = document.getElementById('scaleScope').value;
+  const isAll = scope==='all';
+  document.getElementById('scaleFitWrap').style.display = isAll ? '' : 'none';
+  document.getElementById('scaleMarginWrap').style.display = (isAll && document.getElementById('scaleFitPage').checked) ? '' : 'none';
+}
+document.getElementById('scaleScope').addEventListener('change', refreshScaleFitVisibility);
+document.getElementById('scaleFitPage').addEventListener('change', refreshScaleFitVisibility);
 document.querySelectorAll('.tabtrig[data-scaletab]').forEach(b=> b.onclick = ()=> setScaleModalMode(b.dataset.scaletab));
 document.getElementById('calRefresh').onclick = refreshScaleCalibration;
 document.getElementById('scaleModalClose').onclick = ()=> document.getElementById('scaleModal').classList.remove('open');
@@ -4210,10 +4230,30 @@ document.getElementById('scaleApply').onclick = ()=>{
     if(s.style && s.style.strokeWidth) s.style.strokeWidth *= factor;
     if(s.smooth) s.smooth = s.smooth.map(v=>v*factor);
   });
+
+  const doFit = scope==='all' && document.getElementById('scaleFitPage').checked;
+  let fitMsg = '';
+  if(doFit){
+    const marginU = parseFloat(document.getElementById('scaleMargin').value);
+    const marginMM = isNaN(marginU) ? unitToMm(3) : unitToMm(marginU);
+    const newBoxes = targets.map(shapeBBox);
+    const minX2=Math.min(...newBoxes.map(b=>b.x)), minY2=Math.min(...newBoxes.map(b=>b.y));
+    const maxX2=Math.max(...newBoxes.map(b=>b.x+b.w)), maxY2=Math.max(...newBoxes.map(b=>b.y+b.h));
+    const dx = marginMM - minX2, dy = marginMM - minY2;
+    if(dx || dy){
+      moveShapesBy(targets.map(s=>s.id), dx, dy);
+      if(state.refImage){ state.refImage.x += dx; state.refImage.y += dy; }
+    }
+    state.page.w = (maxX2-minX2) + marginMM*2;
+    state.page.h = (maxY2-minY2) + marginMM*2;
+    syncPageSizeSelect();
+    fitMsg = ` Foglio adattato al disegno (margine ${marginU||3}${UNITS[state.unit].label}).`;
+  }
+
   pushHistory();
   renderAll();
   document.getElementById('scaleModal').classList.remove('open');
-  showToast(`Scala applicata: fattore ${factor.toFixed(4)} (${(factor*100).toFixed(1)}%) su ${targets.length} elementi.`, false);
+  showToast(`Scala applicata: fattore ${factor.toFixed(4)} (${(factor*100).toFixed(1)}%) su ${targets.length} elementi.${fitMsg}`, false);
 };
 
 /* ============================================================
