@@ -5113,7 +5113,13 @@ function computeTileLayout(){
   const dw = state.page.w, dh = state.page.h;
   const cols = Math.max(1, Math.ceil(Math.max(0.01, dw - overlap) / stepW));
   const rows = Math.max(1, Math.ceil(Math.max(0.01, dh - overlap) / stepH));
-  return { sheetW, sheetH, margin, usableW, usableH, overlap, stepW, stepH, cols, rows, dw, dh };
+  const direction = document.getElementById('tileDirection').value;
+  // Da sinistra a destra: il primo foglio letto (colonna fisica 0) combacia col bordo
+  // sinistro del disegno (x=0); l'eventuale avanzo di pagina bianca finisce sull'ultimo,
+  // più a destra. Da destra a sinistra: è il contrario — ancoro il foglio più a destra
+  // esattamente al bordo destro del disegno, e l'avanzo finisce sul più a sinistra.
+  const offsetX = direction==='rtl' ? (dw - usableW - (cols-1)*stepW) : 0;
+  return { sheetW, sheetH, margin, usableW, usableH, overlap, stepW, stepH, cols, rows, dw, dh, offsetX };
 }
 function updateTileInfo(){
   const l = computeTileLayout();
@@ -5127,7 +5133,7 @@ function updateTileInfo(){
   }
 }
 function buildTileSVG(l, r, c, direction){
-  const tileX = c*l.stepW, tileY = r*l.stepH; // origine, in coordinate del DISEGNO, di questo foglio (sempre da sinistra: è geometria fisica)
+  const tileX = c*l.stepW + (l.offsetX||0), tileY = r*l.stepH; // origine, in coordinate del DISEGNO, di questo foglio (ancorata secondo la direzione scelta)
   const { body: groupsBody } = buildDrawingGroupsSVG();
   const logicalC = direction==='rtl' ? (l.cols - 1 - c) : c; // ordine di lettura/numerazione scelto dall'utente
   const idx = r*l.cols + logicalC + 1, total = l.rows*l.cols;
