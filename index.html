@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>SpikeCut — Editor Vettoriale</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/imagetracerjs/1.2.6/imagetracer_v1.2.6.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/imagetracerjs@1.2.6/imagetracer_v1.2.6.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://apis.google.com/js/api.js"></script>
 <script src="https://accounts.google.com/gsi/client"></script>
@@ -822,7 +822,8 @@ const state = {
   magnetPx: 10,                // screen px radius for magnet
   draft: null,                 // in-progress drawing object
   drag: null,                  // active drag operation
-  refImage: null,              // {dataUrl, x,y,w,h, opacity, img, layerId, hidden}
+  refImage: null,              // {dataUrl, x,y,w,h, opacity, img, layerId, hidden, rotation, locked, filters}
+  refImageSelected: false,     // l'immagine di riferimento è selezionata sul canvas (interazione separata dalle forme)
   libraryId: null,             // id del progetto in libreria, se caricato/salvato da lì
   layers: [{id:'layer-1', name:'Livello 1', visible:true, locked:false}], // ordine: indice 0 = fondo, ultimo = cima
   activeLayerId: 'layer-1',    // livello in cui vanno le forme appena create
@@ -1219,6 +1220,23 @@ function renderShapes(){
 
 function renderSelectionHandles(){
   layerOverlay.innerHTML = '';
+  if(state.refImageSelected && state.refImage){
+    const r = state.refImage;
+    const cx=r.x+r.w/2, cy=r.y+r.h/2, rot=r.rotation||0;
+    const corners = [[r.x,r.y],[r.x+r.w,r.y],[r.x+r.w,r.y+r.h],[r.x,r.y+r.h]].map(p=>rotatePointAround(p,[cx,cy],rot));
+    const pts = corners.map(p=>`${p[0]*state.scale},${p[1]*state.scale}`).join(' ');
+    layerOverlay.appendChild(el('polygon', {points:pts, fill:'none', stroke:'var(--brass)', 'stroke-width':1, 'stroke-dasharray':'4,3', 'pointer-events':'none'}));
+    if(!r.locked){
+      const cornerPos = ['nw','ne','se','sw'];
+      corners.forEach((c,i)=>{
+        layerOverlay.appendChild(el('rect', {x:c[0]*state.scale-4, y:c[1]*state.scale-4, width:8, height:8, fill:'#fff', stroke:'var(--brass)', 'stroke-width':1.5, 'data-img-resize':cornerPos[i], style:'cursor:nwse-resize'}));
+      });
+      const topCenter = rotatePointAround([cx,r.y], [cx,cy], rot);
+      const handlePt = rotatePointAround([cx, r.y-(16/state.scale)], [cx,cy], rot);
+      layerOverlay.appendChild(el('line', {x1:topCenter[0]*state.scale, y1:topCenter[1]*state.scale, x2:handlePt[0]*state.scale, y2:handlePt[1]*state.scale, stroke:'var(--brass)', 'stroke-width':1, 'pointer-events':'none'}));
+      layerOverlay.appendChild(el('circle', {cx:handlePt[0]*state.scale, cy:handlePt[1]*state.scale, r:5.5, fill:'#fff', stroke:'var(--brass)', 'stroke-width':1.5, 'data-img-rotate':'1', style:'cursor:grab'}));
+    }
+  }
   if(state.selection.size===0) return;
   for(const id of state.selection){
     const s = state.shapes.find(x=>x.id===id);
@@ -1314,13 +1332,38 @@ function renderDraft(){
   }
 }
 
+function refImageFilterCSS(r){
+  const f = r.filters || {};
+  const parts = [
+    `brightness(${(f.brightness!=null?f.brightness:100)}%)`,
+    `contrast(${(f.contrast!=null?f.contrast:100)}%)`,
+    `saturate(${(f.saturate!=null?f.saturate:100)}%)`,
+    `grayscale(${f.grayscale||0}%)`,
+    `sepia(${f.sepia||0}%)`,
+    `invert(${f.invert||0}%)`,
+    `hue-rotate(${f.hueRotate||0}deg)`,
+    `blur(${f.blur||0}px)`
+  ];
+  return parts.join(' ');
+}
 function renderRefImage(){
   layerRef.innerHTML='';
   const r = state.refImage;
   if(!r || r.hidden || !isLayerVisible(r.layerId)) return;
-  const img = el('image', {href:r.dataUrl, x:r.x*state.scale, y:r.y*state.scale, width:r.w*state.scale, height:r.h*state.scale, opacity:r.opacity, 'data-ref':'1'});
+  const img = el('image', {href:r.dataUrl, x:r.x*state.scale, y:r.y*state.scale, width:r.w*state.scale, height:r.h*state.scale, opacity:r.opacity, 'data-ref':'1', style:`filter:${refImageFilterCSS(r)}`});
   img.setAttributeNS('http://www.w3.org/1999/xlink','href', r.dataUrl);
+  if(r.rotation){
+    const cx=(r.x+r.w/2)*state.scale, cy=(r.y+r.h/2)*state.scale;
+    img.setAttribute('transform', `rotate(${r.rotation} ${cx} ${cy})`);
+  }
   layerRef.appendChild(img);
+}
+function hitTestRefImage(mm){
+  const r = state.refImage;
+  if(!r || r.hidden || r.locked || !isLayerVisible(r.layerId)) return false;
+  const cx = r.x+r.w/2, cy = r.y+r.h/2;
+  const p = r.rotation ? rotatePointAround(mm, [cx,cy], -r.rotation) : mm;
+  return p[0]>=r.x && p[0]<=r.x+r.w && p[1]>=r.y && p[1]<=r.y+r.h;
 }
 
 function renderMarquee(){
@@ -1689,6 +1732,7 @@ function buildRail(){
 function setTool(id){
   state.tool = id;
   state.draft = null;
+  state.refImageSelected = false;
   document.querySelectorAll('.tool').forEach(b=>b.classList.toggle('active', b.dataset.tool===id));
   stage.style.cursor = id==='select' ? 'default' : 'crosshair';
   renderAll();
@@ -1798,6 +1842,17 @@ function pointInPoly(p, pts){
 function handleMouseDown(mm, e){
   const target = e.target;
   if(state.tool==='select'){
+    if(state.refImageSelected && target.dataset && target.dataset.imgRotate){
+      const r = state.refImage;
+      const center = [r.x+r.w/2, r.y+r.h/2];
+      dragMode='rotate-image';
+      state.drag = {center, startRotation:r.rotation||0, startAngle: Math.atan2(mm[1]-center[1], mm[0]-center[0])};
+      return;
+    }
+    if(state.refImageSelected && target.dataset && target.dataset.imgResize){
+      dragMode='resize-image'; state.drag={corner:target.dataset.imgResize};
+      return;
+    }
     if(target.dataset && target.dataset.vertex!==undefined){
       dragMode='move-vertex'; state.drag={shapeId:target.dataset.shape, vertex:+target.dataset.vertex, start:mm};
       return;
@@ -1828,11 +1883,18 @@ function handleMouseDown(mm, e){
     }
     const hit = topShapeAt(mm);
     if(hit){
+      state.refImageSelected = false;
       if(!e.shiftKey) state.selection.clear();
       state.selection.add(hit.id);
       dragMode='move-shape';
       state.drag = {ids:[...state.selection], lastPt:mm};
+    } else if(state.refImage && !e.shiftKey && hitTestRefImage(mm)){
+      state.selection.clear();
+      state.refImageSelected = true;
+      dragMode='move-image';
+      state.drag = {startX:state.refImage.x, startY:state.refImage.y, startMM:mm};
     } else {
+      state.refImageSelected = false;
       if(!e.shiftKey) state.selection.clear();
       dragMode='rubberband'; state.drag={start:mm, current:mm};
     }
@@ -1951,6 +2013,32 @@ function handleMouseMove(mm, e){
       s.rotation = newRot;
       renderAll();
     }
+    return;
+  }
+  if(dragMode==='move-image' && state.drag){
+    const dx = mm[0]-state.drag.startMM[0], dy = mm[1]-state.drag.startMM[1];
+    state.refImage.x = state.drag.startX+dx;
+    state.refImage.y = state.drag.startY+dy;
+    renderAll();
+    return;
+  }
+  if(dragMode==='resize-image' && state.drag){
+    const r = state.refImage;
+    const c = state.drag.corner;
+    if(c.includes('e')) r.w = Math.max(2, mm[0]-r.x);
+    if(c.includes('s')) r.h = Math.max(2, mm[1]-r.y);
+    if(c.includes('w')){ const nx=mm[0]; r.w = Math.max(2, r.x+r.w-nx); r.x=nx; }
+    if(c.includes('n')){ const ny=mm[1]; r.h = Math.max(2, r.y+r.h-ny); r.y=ny; }
+    renderAll();
+    return;
+  }
+  if(dragMode==='rotate-image' && state.drag){
+    const r = state.refImage;
+    const curAngle = Math.atan2(mm[1]-state.drag.center[1], mm[0]-state.drag.center[0]);
+    let newRot = state.drag.startRotation + (curAngle-state.drag.startAngle)*180/Math.PI;
+    if(e.shiftKey) newRot = Math.round(newRot/15)*15;
+    r.rotation = newRot;
+    renderAll();
     return;
   }
   if(dragMode==='rubberband' && state.drag){
@@ -2122,8 +2210,14 @@ window.addEventListener('keydown', (e)=>{
   if((e.ctrlKey||e.metaKey)) return; // avoid clobbering other browser shortcuts
   const map = {v:'select',p:'pen',l:'line',r:'rect',o:'ellipse',a:'arc',b:'freehand',t:'text'};
   if(map[k]){ setTool(map[k]); return; }
-  if(k==='delete' || k==='backspace'){ e.preventDefault(); deleteSelection(); return; }
-  if(k==='escape'){ state.draft=null; state.selection.clear(); renderAll(); return; }
+  if(k==='delete' || k==='backspace'){
+    e.preventDefault();
+    if(state.refImageSelected && state.selection.size===0){
+      state.refImage=null; state.refImageSelected=false; renderAll(); refreshImageTabPreview();
+    } else deleteSelection();
+    return;
+  }
+  if(k==='escape'){ state.draft=null; state.selection.clear(); state.refImageSelected=false; renderAll(); return; }
   if(k==='enter' && state.tool==='pen' && state.draft){ finishPenDraft(false); return; }
   if(k==='c' && state.tool==='pen' && state.draft){ finishPenDraft(true); return; }
   if(k==='g'){ toggleGrid(); return; }
@@ -2679,6 +2773,11 @@ function renderPropPanel(){
   const ids = [...state.selection];
   host.innerHTML='';
 
+  if(state.refImageSelected && state.refImage && ids.length===0){
+    renderRefImagePropPanel(host);
+    return;
+  }
+
   // Role picker (applies to active tool AND to selection if any)
   const roleField = document.createElement('div');
   roleField.className='field';
@@ -2836,6 +2935,87 @@ function renderPropPanel(){
   function withSelectionLive(fn){ ids.forEach(id=>fn(state.shapes.find(x=>x.id===id))); renderCanvasOnly(); }
 }
 
+function renderRefImagePropPanel(host){
+  const r = state.refImage;
+  const u = UNITS[state.unit];
+  const title = document.createElement('div'); title.className='field';
+  title.innerHTML = `<label>Immagine di riferimento</label>`;
+  host.appendChild(title);
+
+  function numField(label, valueMM, onSetMM){
+    const f = document.createElement('div'); f.className='field';
+    f.innerHTML = `<label>${label}</label>`;
+    const inp = document.createElement('input'); inp.type='number'; inp.step=String(u.step);
+    inp.value = Math.round(mmToUnit(valueMM)*Math.pow(10,u.decimals))/Math.pow(10,u.decimals);
+    inp.addEventListener('input', ()=>{ const v=parseFloat(inp.value); if(!isNaN(v)){ onSetMM(unitToMm(v)); renderCanvasOnly(); } });
+    inp.addEventListener('change', ()=>renderPropPanel());
+    f.appendChild(inp);
+    return f;
+  }
+  const row1 = document.createElement('div'); row1.className='row';
+  row1.appendChild(numField('X ('+u.label+')', r.x, v=>r.x=v));
+  row1.appendChild(numField('Y ('+u.label+')', r.y, v=>r.y=v));
+  host.appendChild(row1);
+  const row2 = document.createElement('div'); row2.className='row';
+  row2.appendChild(numField('Larghezza ('+u.label+')', r.w, v=>r.w=Math.max(0.1,v)));
+  row2.appendChild(numField('Altezza ('+u.label+')', r.h, v=>r.h=Math.max(0.1,v)));
+  host.appendChild(row2);
+
+  const rotField = document.createElement('div'); rotField.className='field';
+  rotField.innerHTML = `<label>Rotazione (gradi)</label>`;
+  const rotInp = document.createElement('input'); rotInp.type='number'; rotInp.step='1'; rotInp.value = Math.round(r.rotation||0);
+  rotInp.addEventListener('input', ()=>{ const v=parseFloat(rotInp.value); if(!isNaN(v)){ r.rotation=v; renderCanvasOnly(); } });
+  rotInp.addEventListener('change', ()=>renderPropPanel());
+  rotField.appendChild(rotInp); host.appendChild(rotField);
+
+  const opField = document.createElement('div'); opField.className='field';
+  opField.innerHTML = `<label>Opacità</label>`;
+  const opInp = document.createElement('input'); opInp.type='range'; opInp.min='0'; opInp.max='1'; opInp.step='0.05'; opInp.value=r.opacity;
+  opInp.oninput = ()=>{ r.opacity=parseFloat(opInp.value); renderCanvasOnly(); };
+  opField.appendChild(opInp); host.appendChild(opField);
+
+  host.appendChild(document.createElement('hr')).className='sep';
+  const filtTitle = document.createElement('div'); filtTitle.className='field';
+  filtTitle.innerHTML = `<label>Regolazioni colore</label>`;
+  host.appendChild(filtTitle);
+
+  if(!r.filters) r.filters = {brightness:100, contrast:100, saturate:100, grayscale:0, sepia:0, invert:0, hueRotate:0, blur:0};
+  function sliderField(label, key, min, max, step, unitSuffix){
+    const f = document.createElement('div'); f.className='field';
+    f.innerHTML = `<label>${label}: <span id="fv-${key}">${r.filters[key]}${unitSuffix||''}</span></label>`;
+    const inp = document.createElement('input'); inp.type='range'; inp.min=min; inp.max=max; inp.step=step; inp.value=r.filters[key];
+    inp.oninput = ()=>{
+      r.filters[key] = parseFloat(inp.value);
+      const span = document.getElementById('fv-'+key); if(span) span.textContent = r.filters[key]+(unitSuffix||'');
+      renderCanvasOnly();
+    };
+    f.appendChild(inp);
+    host.appendChild(f);
+  }
+  sliderField('Luminosità', 'brightness', 0, 200, 1, '%');
+  sliderField('Contrasto', 'contrast', 0, 200, 1, '%');
+  sliderField('Saturazione', 'saturate', 0, 200, 1, '%');
+  sliderField('Scala di grigi', 'grayscale', 0, 100, 1, '%');
+  sliderField('Seppia', 'sepia', 0, 100, 1, '%');
+  sliderField('Negativo', 'invert', 0, 100, 1, '%');
+  sliderField('Tonalità', 'hueRotate', 0, 360, 1, '°');
+  sliderField('Sfocatura', 'blur', 0, 10, 0.1, 'px');
+  const resetBtn = document.createElement('button'); resetBtn.className='btn'; resetBtn.textContent='Reimposta regolazioni colore';
+  resetBtn.onclick = ()=>{ r.filters = {brightness:100, contrast:100, saturate:100, grayscale:0, sepia:0, invert:0, hueRotate:0, blur:0}; renderAll(); };
+  host.appendChild(resetBtn);
+
+  host.appendChild(document.createElement('hr')).className='sep';
+  const lockWrap = document.createElement('label');
+  lockWrap.style.cssText = 'display:flex;align-items:center;gap:7px;margin-bottom:10px;font-size:11.5px;color:var(--ink-dim);cursor:pointer;';
+  const lockBox = document.createElement('input'); lockBox.type='checkbox'; lockBox.checked = !!r.locked; lockBox.style.cssText='width:auto;';
+  lockBox.onchange = ()=>{ r.locked = lockBox.checked; renderAll(); };
+  lockWrap.appendChild(lockBox); lockWrap.appendChild(document.createTextNode('Blocca immagine (non spostabile)'));
+  host.appendChild(lockWrap);
+
+  const delBtn = document.createElement('button'); delBtn.className='btn danger'; delBtn.textContent='Rimuovi immagine di riferimento';
+  delBtn.onclick = ()=>{ state.refImage=null; state.refImageSelected=false; renderAll(); refreshImageTabPreview(); };
+  host.appendChild(delBtn);
+}
 function renderGeometrySection(host, s){
   host.appendChild(document.createElement('hr')).className='sep';
   const title = document.createElement('div'); title.className='field';
@@ -3146,7 +3326,7 @@ function loadRefImage(file){
       const maxW = state.page.w*0.9;
       let w = img.width/6, h = img.height/6; // rough mm guess
       if(w>maxW){ const r=maxW/w; w*=r; h*=r; }
-      state.refImage = { dataUrl: reader.result, x:(state.page.w-w)/2, y:(state.page.h-h)/2, w, h, opacity:0.5, srcW:img.width, srcH:img.height, layerId: state.activeLayerId, hidden:false };
+      state.refImage = { dataUrl: reader.result, x:(state.page.w-w)/2, y:(state.page.h-h)/2, w, h, opacity:0.5, srcW:img.width, srcH:img.height, layerId: state.activeLayerId, hidden:false, rotation:0, locked:false, filters:{brightness:100, contrast:100, saturate:100, grayscale:0, sepia:0, invert:0, hueRotate:0, blur:0} };
       renderAll();
       refreshImageTabPreview();
     };
@@ -4375,6 +4555,7 @@ function loadDocumentIntoState(doc){
   state.selection = new Set();
   state.gapMarkers = [];
   state.draft = null;
+  state.refImageSelected = false;
   document.getElementById('filename').value = doc.name;
   syncPageSizeSelect();
   refreshImageTabPreview();
