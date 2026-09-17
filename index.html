@@ -161,7 +161,7 @@ svg#stage{
 .field label{display:block;font-size:11px;color:var(--ink-dim);margin-bottom:5px;}
 .row{display:flex;gap:8px;}
 .row .field{flex:1;}
-input[type=number], select, input[type=text]{
+input[type=number], select, input[type=text], input[type=password], input[type=email]{
   width:100%;background:var(--bg-2);border:1px solid var(--line);color:var(--ink);
   border-radius:5px;padding:6px 7px;font-size:12.5px;font-family:var(--mono);
 }
@@ -171,6 +171,14 @@ input[type=color]{
   padding:2px;cursor:pointer;
 }
 input[type=range]{width:100%;accent-color:var(--brass);}
+.pwfield{position:relative;}
+.pwfield input{padding-right:32px;}
+.pwfield .pweye{
+  position:absolute; right:3px; top:50%; transform:translateY(-50%);
+  background:none; border:none; cursor:pointer; font-size:14px; color:var(--ink-dim);
+  padding:3px 6px; line-height:1; width:auto;
+}
+.pwfield .pweye:hover{color:var(--ink);}
 .rolepicker{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
 .rolebtn{
   border:1px solid var(--line);background:var(--bg-2);color:var(--ink);
@@ -405,6 +413,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
     <div class="dropdown-menu" id="fileMenu">
       <button data-action="export-svg">Esporta SVG (taglio/stampa)</button>
       <button data-action="export-pdf">Esporta PDF</button>
+      <button data-action="export-pdf-tiled">Esporta PDF multi-pagina (disegno grande)…</button>
       <button data-action="print-proof">Stampa di prova (A3/A4/A5)…</button>
       <div class="menu-sep"></div>
       <button data-action="save-project">Salva progetto (.json)</button>
@@ -491,7 +500,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 
       <div id="acctViewLogin">
         <div class="field"><label>Nome utente o email</label><input type="text" id="loginIdentifier" autocomplete="username"></div>
-        <div class="field"><label>Password</label><input type="password" id="loginPassword" autocomplete="current-password"></div>
+        <div class="field"><label>Password</label><div class="pwfield"><input type="password" id="loginPassword" autocomplete="current-password"><button type="button" class="pweye" data-target="loginPassword" title="Mostra/nascondi password">👁</button></div></div>
         <div id="loginError" class="hint" style="color:var(--cut);display:none;"></div>
         <button class="btn primary" id="loginSubmit">Accedi</button>
         <div class="hint" style="margin-top:10px;">
@@ -503,7 +512,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
       <div id="acctViewRegister" style="display:none;">
         <div class="field"><label>Nome utente</label><input type="text" id="regUsername" autocomplete="username"></div>
         <div class="field"><label>Email</label><input type="email" id="regEmail" autocomplete="email"></div>
-        <div class="field"><label>Password (almeno 6 caratteri)</label><input type="password" id="regPassword" autocomplete="new-password"></div>
+        <div class="field"><label>Password (almeno 6 caratteri)</label><div class="pwfield"><input type="password" id="regPassword" autocomplete="new-password"><button type="button" class="pweye" data-target="regPassword" title="Mostra/nascondi password">👁</button></div></div>
         <div id="registerError" class="hint" style="color:var(--cut);display:none;"></div>
         <button class="btn primary" id="registerSubmit">Crea account</button>
         <div class="hint" style="margin-top:10px;">Hai già un account? <a href="#" id="linkGotoLogin1">Accedi</a></div>
@@ -520,8 +529,8 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 
       <div id="acctViewReset" style="display:none;">
         <div class="hint" style="margin-bottom:8px;">Scegli la nuova password per il tuo account.</div>
-        <div class="field"><label>Nuova password (almeno 6 caratteri)</label><input type="password" id="resetPassword" autocomplete="new-password"></div>
-        <div class="field"><label>Conferma password</label><input type="password" id="resetPasswordConfirm" autocomplete="new-password"></div>
+        <div class="field"><label>Nuova password (almeno 6 caratteri)</label><div class="pwfield"><input type="password" id="resetPassword" autocomplete="new-password"><button type="button" class="pweye" data-target="resetPassword" title="Mostra/nascondi password">👁</button></div></div>
+        <div class="field"><label>Conferma password</label><div class="pwfield"><input type="password" id="resetPasswordConfirm" autocomplete="new-password"><button type="button" class="pweye" data-target="resetPasswordConfirm" title="Mostra/nascondi password">👁</button></div></div>
         <div id="resetError" class="hint" style="color:var(--cut);display:none;"></div>
         <button class="btn primary" id="resetSubmit">Imposta nuova password</button>
       </div>
@@ -713,6 +722,45 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
         <input type="number" id="scaleMargin" value="3" step="0.5" min="0">
       </div>
       <button class="btn primary" id="scaleApply">Applica scala</button>
+    </div>
+  </div>
+</div>
+
+<div id="tilePrintModal" class="modal-overlay">
+  <div class="modal-box" style="width:340px;">
+    <div class="modal-head">
+      <h3>Esporta PDF multi-pagina</h3>
+      <button class="iconbtn" id="tilePrintClose" title="Chiudi">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="hint" style="margin-bottom:8px;">Per disegni più grandi del foglio: li divide su più pagine, in scala reale 1:1, da stampare e assemblare.</div>
+      <div class="field">
+        <label>Formato foglio base</label>
+        <select id="tileFormat">
+          <option value="A3">A3 (297×420 mm)</option>
+          <option value="A4" selected>A4 (210×297 mm)</option>
+          <option value="A5">A5 (148×210 mm)</option>
+          <option value="custom">Personalizzato…</option>
+        </select>
+      </div>
+      <div class="row" id="tileCustomWrap" style="display:none;">
+        <div class="field"><label>Larghezza (mm)</label><input type="number" id="tileCustomW" value="210" step="1" min="10"></div>
+        <div class="field"><label>Altezza (mm)</label><input type="number" id="tileCustomH" value="297" step="1" min="10"></div>
+      </div>
+      <div class="field" id="tileOrientWrap">
+        <label>Orientamento</label>
+        <select id="tileOrientation">
+          <option value="portrait" selected>Verticale</option>
+          <option value="landscape">Orizzontale</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Sovrapposizione tra fogli adiacenti (mm)</label>
+        <input type="number" id="tileOverlap" value="10" step="1" min="0">
+      </div>
+      <div id="tileInfo" class="hint"></div>
+      <button class="btn primary" id="tileGenerate">Esporta PDF multi-pagina</button>
+      <div class="hint" style="margin-top:8px;">Ogni pagina riporta un piccolo riferimento (es. "Foglio 2/6 — riga 1, colonna 2") e una linea tratteggiata nella zona di sovrapposizione, per allineare i fogli tra loro.</div>
     </div>
   </div>
 </div>
@@ -2582,6 +2630,7 @@ document.getElementById('fileMenu').addEventListener('click', (e)=>{
   const action = e.target.dataset.action; if(!action) return;
   if(action==='export-svg') exportSVG();
   else if(action==='export-pdf') exportPDF();
+  else if(action==='export-pdf-tiled') openTilePrintModal();
   else if(action==='print-proof') openPrintProofModal();
   else if(action==='save-project') saveProjectFile();
   else if(action==='open-project') openProjectFilePicker();
@@ -2839,6 +2888,15 @@ document.getElementById('linkGotoForgot').onclick = (e)=>{ e.preventDefault(); s
 document.getElementById('linkGotoRegister').onclick = (e)=>{ e.preventDefault(); showAccountView('register'); };
 document.getElementById('linkGotoLogin1').onclick = (e)=>{ e.preventDefault(); showAccountView('login'); };
 document.getElementById('linkGotoLogin2').onclick = (e)=>{ e.preventDefault(); showAccountView('login'); };
+document.querySelectorAll('.pweye').forEach(btn=>{
+  btn.onclick = ()=>{
+    const inp = document.getElementById(btn.dataset.target);
+    const showing = inp.type === 'text';
+    inp.type = showing ? 'password' : 'text';
+    btn.textContent = showing ? '👁' : '🙈';
+    btn.title = showing ? 'Mostra password' : 'Nascondi password';
+  };
+});
 
 document.getElementById('loginSubmit').onclick = async ()=>{
   const identifier = document.getElementById('loginIdentifier').value.trim();
@@ -4924,9 +4982,8 @@ setupOverlayClickClose(document.getElementById('cutPreviewModal'), ()=> document
 /* ============================================================
    EXPORT
 ============================================================ */
-function buildExportSVG(){
-  const w = state.page.w, h = state.page.h;
-  let body = `<style>${buildFontFaceCSS()}</style><rect x="0" y="0" width="${w}" height="${h}" fill="#ffffff"/>\n`;
+function buildDrawingGroupsSVG(){
+  let body = `<style>${buildFontFaceCSS()}</style>\n`;
   const groups = {design:[],cut:[],fold:[],diecut:[],glue:[]};
   state.shapes.forEach(s=>{ if(isShapeEffVisible(s)) (groups[s.style.role]||groups.design).push(s); });
   Object.keys(ROLE_STYLE).forEach(roleKey=>{
@@ -4936,6 +4993,12 @@ function buildExportSVG(){
     list.forEach(s=> body += exportNode(s) + '\n');
     body += `</g>\n`;
   });
+  return { body, groups };
+}
+function buildExportSVG(){
+  const w = state.page.w, h = state.page.h;
+  const { body: groupsBody, groups } = buildDrawingGroupsSVG();
+  let body = `<rect x="0" y="0" width="${w}" height="${h}" fill="#ffffff"/>\n` + groupsBody;
   // legend
   const legendItems = Object.keys(ROLE_STYLE).filter(k=>groups[k].length);
   if(legendItems.length){
@@ -4992,6 +5055,134 @@ function exportNode(s){
   return '';
 }
 function escapeXML(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ============================================================
+   ESPORTAZIONE PDF MULTI-PAGINA (stampa a mosaico) — per disegni
+   più grandi del foglio: li divide su una griglia di fogli dello
+   stesso formato, in scala reale 1:1, con una piccola sovrapposizione
+   per allineare i fogli in fase di assemblaggio.
+============================================================ */
+function openTilePrintModal(){
+  document.getElementById('tilePrintModal').classList.add('open');
+  updateTileInfo();
+}
+document.getElementById('tilePrintClose').onclick = ()=> document.getElementById('tilePrintModal').classList.remove('open');
+setupOverlayClickClose(document.getElementById('tilePrintModal'), ()=> document.getElementById('tilePrintModal').classList.remove('open'));
+document.getElementById('tileFormat').addEventListener('change', ()=>{
+  const isCustom = document.getElementById('tileFormat').value === 'custom';
+  document.getElementById('tileCustomWrap').style.display = isCustom ? '' : 'none';
+  document.getElementById('tileOrientWrap').style.display = isCustom ? 'none' : '';
+  updateTileInfo();
+});
+['tileOrientation','tileOverlap','tileCustomW','tileCustomH'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', updateTileInfo);
+});
+
+function computeTileLayout(){
+  const fmtKey = document.getElementById('tileFormat').value;
+  let sheetW, sheetH;
+  if(fmtKey==='custom'){
+    sheetW = Math.max(10, parseFloat(document.getElementById('tileCustomW').value) || 210);
+    sheetH = Math.max(10, parseFloat(document.getElementById('tileCustomH').value) || 297);
+  } else {
+    const base = PAPER_SIZES[fmtKey];
+    const landscape = document.getElementById('tileOrientation').value === 'landscape';
+    sheetW = landscape ? base.h : base.w;
+    sheetH = landscape ? base.w : base.h;
+  }
+  const overlap = Math.min(Math.min(sheetW,sheetH)/2 - 5, Math.max(0, parseFloat(document.getElementById('tileOverlap').value) || 0));
+  const stepW = Math.max(10, sheetW - overlap);
+  const stepH = Math.max(10, sheetH - overlap);
+  const dw = state.page.w, dh = state.page.h;
+  const cols = Math.max(1, Math.ceil(Math.max(0.01, dw - overlap) / stepW));
+  const rows = Math.max(1, Math.ceil(Math.max(0.01, dh - overlap) / stepH));
+  return { sheetW, sheetH, overlap, stepW, stepH, cols, rows, dw, dh };
+}
+function updateTileInfo(){
+  const l = computeTileLayout();
+  const info = document.getElementById('tileInfo');
+  const total = l.cols*l.rows;
+  if(total<=1){
+    info.textContent = `Il disegno (${l.dw.toFixed(0)}×${l.dh.toFixed(0)} mm) entra in un solo foglio ${l.sheetW.toFixed(0)}×${l.sheetH.toFixed(0)} mm: non serve dividerlo, ma l'esportazione funziona comunque.`;
+  } else {
+    info.textContent = `Il disegno (${l.dw.toFixed(0)}×${l.dh.toFixed(0)} mm) verrà diviso in ${total} fogli formato ${l.sheetW.toFixed(0)}×${l.sheetH.toFixed(0)} mm (${l.rows} righe × ${l.cols} colonne), con ${l.overlap.toFixed(0)}mm di sovrapposizione tra fogli adiacenti.`;
+  }
+}
+function buildTileSVG(l, r, c){
+  const tileX = c*l.stepW, tileY = r*l.stepH;
+  const { body: groupsBody } = buildDrawingGroupsSVG();
+  const idx = r*l.cols + c + 1, total = l.rows*l.cols;
+  let extra = `<rect x="${sN(tileX)}" y="${sN(tileY)}" width="${sN(l.sheetW)}" height="${sN(l.sheetH)}" fill="#ffffff"/>\n`;
+  // linee tratteggiate nella zona di sovrapposizione, solo verso un foglio successivo esistente
+  if(c < l.cols-1){
+    const x = tileX + l.sheetW - l.overlap;
+    extra += `<line x1="${sN(x)}" y1="${sN(tileY)}" x2="${sN(x)}" y2="${sN(tileY+l.sheetH)}" stroke="#bbbbbb" stroke-width="0.3" stroke-dasharray="2,1.5"/>\n`;
+  }
+  if(r < l.rows-1){
+    const y = tileY + l.sheetH - l.overlap;
+    extra += `<line x1="${sN(tileX)}" y1="${sN(y)}" x2="${sN(tileX+l.sheetW)}" y2="${sN(y)}" stroke="#bbbbbb" stroke-width="0.3" stroke-dasharray="2,1.5"/>\n`;
+  }
+  const label = `Foglio ${idx}/${total} — riga ${r+1}, colonna ${c+1}`;
+  extra += `<text x="${sN(tileX+3)}" y="${sN(tileY+l.sheetH-3)}" font-size="3" font-family="sans-serif" fill="#999999">${escapeXML(label)}</text>\n`;
+  const body = extra + groupsBody;
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${sN(l.sheetW)}mm" height="${sN(l.sheetH)}mm" viewBox="${sN(tileX)} ${sN(tileY)} ${sN(l.sheetW)} ${sN(l.sheetH)}">\n${body}\n</svg>`;
+}
+function rasterizeSVGToDataURL(svgStr, wmm, hmm){
+  return new Promise((resolve, reject)=>{
+    const dpi = 200, pxPerMM = dpi/25.4;
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, Math.round(wmm*pxPerMM));
+    canvas.height = Math.max(1, Math.round(hmm*pxPerMM));
+    const ctx = canvas.getContext('2d');
+    const blob = new Blob([svgStr], {type:'image/svg+xml;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = ()=>{
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+      resolve(canvas.toDataURL('image/png'));
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); reject(new Error('Errore nella generazione di uno dei fogli.')); };
+    img.src = url;
+  });
+}
+async function exportTiledPDF(){
+  if(!window.jspdf){ showToast('Libreria PDF non disponibile: verifica la connessione a Internet e riprova.', true); return; }
+  const l = computeTileLayout();
+  const total = l.rows*l.cols;
+  const btn = document.getElementById('tileGenerate');
+  const origLabel = btn.textContent;
+  try{
+    btn.disabled = true;
+    const { jsPDF } = window.jspdf;
+    let pdf = null;
+    let done = 0;
+    for(let r=0; r<l.rows; r++){
+      for(let c=0; c<l.cols; c++){
+        btn.textContent = `Genero foglio ${done+1}/${total}…`;
+        const svgStr = buildTileSVG(l, r, c);
+        const imgData = await rasterizeSVGToDataURL(svgStr, l.sheetW, l.sheetH);
+        if(!pdf){
+          pdf = new jsPDF({ orientation: l.sheetW>=l.sheetH?'landscape':'portrait', unit:'mm', format:[l.sheetW,l.sheetH] });
+        } else {
+          pdf.addPage([l.sheetW,l.sheetH], l.sheetW>=l.sheetH?'landscape':'portrait');
+        }
+        pdf.addImage(imgData, 'PNG', 0, 0, l.sheetW, l.sheetH);
+        done++;
+      }
+    }
+    pdf.save((document.getElementById('filename').value||'disegno') + '-multipagina.pdf');
+    document.getElementById('tilePrintModal').classList.remove('open');
+    showToast(`PDF multi-pagina generato: ${total} fogli.`, false);
+  }catch(err){
+    showToast('Errore durante la generazione del PDF multi-pagina: ' + err.message, true);
+  }finally{
+    btn.disabled = false;
+    btn.textContent = origLabel;
+  }
+}
+document.getElementById('tileGenerate').onclick = exportTiledPDF;
 
 function exportSVG(){
   const svgStr = buildExportSVG();
