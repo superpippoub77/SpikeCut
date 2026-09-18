@@ -371,7 +371,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
     <button class="iconbtn" id="btnQuickSave" title="Salva subito una copia locale nel browser">💾 Salva</button>
   </div>
   <div class="grp">
-    <button class="iconbtn" id="btnSaveLibraryTop" title="Salva in libreria (server) — richiede un account">☁ Libreria</button>
+    <button class="iconbtn" id="btnSaveLibraryTop" disabled title="Accedi al tuo account per salvare in libreria (server)">☁ Libreria</button>
   </div>
   <div class="grp">
     <button class="iconbtn" id="btnUndo" title="Annulla (Ctrl+Z)">↶</button>
@@ -774,7 +774,10 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
       </div>
       <div class="hint" style="margin-top:-4px;margin-bottom:8px;">Molte stampanti non riescono a stampare fino al bordo completo del foglio: questo margine tiene il disegno lontano dai 4 bordi di OGNI foglio, non solo dal contorno esterno del disegno complessivo.</div>
       <div id="tileInfo" class="hint"></div>
-      <button class="btn primary" id="tileGenerate">Esporta PDF multi-pagina</button>
+      <div class="row">
+        <button class="btn" id="tilePreviewBtn">👁 Anteprima sul foglio</button>
+        <button class="btn primary" id="tileGenerate">Esporta PDF multi-pagina</button>
+      </div>
       <div class="hint" style="margin-top:8px;">Ogni pagina riporta un piccolo riferimento (es. "Foglio 2/6 — riga 1, colonna 2") e una linea tratteggiata nella zona di sovrapposizione, per allineare i fogli tra loro.</div>
     </div>
   </div>
@@ -1037,6 +1040,7 @@ const state = {
   showEndpoints: true,          // mostra sempre gli estremi liberi/collegati dei percorsi aperti
   showDimensions: false,        // mostra le quote permanenti del disegno e del foglio
   showTileGuides: false,        // mostra sul foglio le linee di taglio dell'export PDF multi-pagina
+  hoverSegment: null,            // {shapeId, idx} — evidenzia il tratto idx→idx+1 mentre ci si sofferma sul suo blocco nel pannello coordinate
   history: [],
   histIndex: -1,
   autosaveTimer: null
@@ -1533,6 +1537,17 @@ function renderSelectionHandles(){
       renderBBoxHandles(s, state.selection.size===1);
     } else if(s.type==='text'){
       renderTextHandles(s, state.selection.size===1);
+    }
+  }
+  if(state.hoverSegment){
+    const hs = state.hoverSegment;
+    const s = state.shapes.find(x=>x.id===hs.shapeId);
+    if(s && s.points && (hs.idx < s.points.length-1 || (s.closed && hs.idx===s.points.length-1))){
+      const a = s.points[hs.idx], b = s.points[(hs.idx+1) % s.points.length];
+      layerOverlay.appendChild(el('line', {
+        x1:a[0]*state.scale, y1:a[1]*state.scale, x2:b[0]*state.scale, y2:b[1]*state.scale,
+        stroke:'#ffcc00', 'stroke-width':5, 'stroke-linecap':'round', opacity:0.55, 'pointer-events':'none'
+      }));
     }
   }
 }
@@ -2577,9 +2592,13 @@ document.getElementById('toggleDimensions').onclick = ()=>{
   renderCanvasOnly();
 };
 document.getElementById('toggleTileGuides').onclick = ()=>{
-  state.showTileGuides = !state.showTileGuides;
-  updateStatusToggles();
-  renderCanvasOnly();
+  if(state.showTileGuides){
+    state.showTileGuides = false;
+    updateStatusToggles();
+    renderCanvasOnly();
+  } else {
+    openTilePrintModal();
+  }
 };
 document.getElementById('zoomIn').onclick = ()=>zoomBy(1.2);
 document.getElementById('zoomOut').onclick = ()=>zoomBy(1/1.2);
@@ -2880,6 +2899,11 @@ let currentUser = null;
 function updateAccountUI(){
   const btn = document.getElementById('btnAccount');
   btn.textContent = currentUser ? ('👤 ' + currentUser.username) : '👤 Accedi';
+  const libBtn = document.getElementById('btnSaveLibraryTop');
+  libBtn.disabled = !currentUser;
+  libBtn.title = currentUser
+    ? 'Salva in libreria (server) — scegli se privato o condiviso con tutti gli utenti'
+    : 'Accedi al tuo account per salvare in libreria (server)';
 }
 async function checkAuthStatus(){
   try{
@@ -3310,6 +3334,7 @@ function renderPropPanel(){
   const host = document.getElementById('tab-prop');
   const ids = [...state.selection];
   host.innerHTML='';
+  state.hoverSegment = null; // il pannello viene ricostruito da zero: nessun blocco è più "sotto il mouse"
 
   if(state.refImageSelected && state.refImage && ids.length===0){
     renderRefImagePropPanel(host);
@@ -3594,15 +3619,17 @@ function renderGeometrySection(host, s){
     });
     inp.addEventListener('change', ()=>{ pushHistory(); renderPropPanel(); });
   }
-  function coordRow(labelX, x, onX, labelY, y, onY){
+  function coordRow(labelX, x, onX, labelY, y, onY, target){
+    target = target || host;
     const row = document.createElement('div'); row.className='row';
     const nx = mkNum(labelX, x); bindLive(nx.input, onX); row.appendChild(nx.field);
     const ny = mkNum(labelY, y); bindLive(ny.input, onY); row.appendChild(ny.field);
-    host.appendChild(row);
+    target.appendChild(row);
   }
-  function lengthField(label, lenMM, onLenMM){
+  function lengthField(label, lenMM, onLenMM, target){
+    target = target || host;
     const n = mkNum(label, lenMM); bindLive(n.input, onLenMM);
-    host.appendChild(n.field);
+    target.appendChild(n.field);
   }
 
   if(s.points){
@@ -3610,31 +3637,41 @@ function renderGeometrySection(host, s){
     const n = s.points.length;
     if(n <= 20){
       s.points.forEach((p, i)=>{
+        if(i>0) host.appendChild(document.createElement('hr')).className='sep';
+        const block = document.createElement('div');
+        block.addEventListener('mouseenter', ()=>{ state.hoverSegment = {shapeId:s.id, idx:i}; renderSelectionHandles(); });
+        block.addEventListener('mouseleave', ()=>{ state.hoverSegment = null; renderSelectionHandles(); });
+        host.appendChild(block);
         const label = (i===0 && !s.closed) ? `Punto ${i+1} (inizio)` : ((i===n-1 && !s.closed) ? `Punto ${i+1} (fine)` : `Punto ${i+1}`);
-        const lab = document.createElement('div'); lab.className='hint'; lab.style.margin = i===0 ? '0 0 2px' : '10px 0 2px';
+        const lab = document.createElement('div'); lab.className='hint'; lab.style.margin = '0 0 2px';
         lab.textContent = label;
-        host.appendChild(lab);
+        block.appendChild(lab);
         coordRow('X', p[0], v=>moveConnectedVertex(s, i, [v, s.points[i][1]]),
-                  'Y', p[1], v=>moveConnectedVertex(s, i, [s.points[i][0], v]));
+                  'Y', p[1], v=>moveConnectedVertex(s, i, [s.points[i][0], v]), block);
         if(s.closed || (i>0 && i<n-1)){
           lengthField(`Curvatura (${unitLabel()}) — 0 = angolo vivo`, s.smooth[i]||0, v=>{
             s.smooth[i] = Math.max(0, v);
-          });
+          }, block);
         }
         if(i < n-1){
           lengthField(`Lunghezza tratto ${i+1}→${i+2} (${unitLabel()})`, dist(s.points[i], s.points[i+1]), v=>{
             const a = s.points[i];
             const ang = Math.atan2(s.points[i+1][1]-a[1], s.points[i+1][0]-a[0]);
             moveConnectedVertex(s, i+1, [a[0]+Math.cos(ang)*v, a[1]+Math.sin(ang)*v]);
-          });
+          }, block);
         }
       });
       if(s.closed && n>2){
+        host.appendChild(document.createElement('hr')).className='sep';
+        const lastBlock = document.createElement('div');
+        lastBlock.addEventListener('mouseenter', ()=>{ state.hoverSegment = {shapeId:s.id, idx:n-1}; renderSelectionHandles(); });
+        lastBlock.addEventListener('mouseleave', ()=>{ state.hoverSegment = null; renderSelectionHandles(); });
+        host.appendChild(lastBlock);
         lengthField(`Lunghezza tratto ${n}→1 (${unitLabel()})`, dist(s.points[n-1], s.points[0]), v=>{
           const a = s.points[n-1];
           const ang = Math.atan2(s.points[0][1]-a[1], s.points[0][0]-a[0]);
           moveConnectedVertex(s, 0, [a[0]+Math.cos(ang)*v, a[1]+Math.sin(ang)*v]);
-        });
+        }, lastBlock);
       }
     } else {
       let total=0; for(let i=0;i<n-1;i++) total+=dist(s.points[i], s.points[i+1]);
@@ -5267,6 +5304,12 @@ async function exportTiledPDF(){
     btn.textContent = origLabel;
   }
 }
+document.getElementById('tilePreviewBtn').onclick = ()=>{
+  state.showTileGuides = true;
+  updateStatusToggles();
+  renderCanvasOnly();
+  showToast('Anteprima aggiornata sul foglio: cambia pure le impostazioni qui sopra, si aggiorna in automatico.', false);
+};
 document.getElementById('tileGenerate').onclick = exportTiledPDF;
 
 function exportSVG(){
