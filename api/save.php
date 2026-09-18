@@ -75,7 +75,8 @@ $project = [
     'updated'       => $now,
 ];
 
-if (file_put_contents(project_path($id), json_encode($project, JSON_UNESCAPED_UNICODE)) === false) {
+$bytesWritten = file_put_contents(project_path($id), json_encode($project, JSON_UNESCAPED_UNICODE));
+if ($bytesWritten === false) {
     json_error('Impossibile scrivere il progetto sul server.', 500);
 }
 
@@ -92,6 +93,7 @@ $index[] = [
     'folderId'  => $folderId,
     'created'   => $project['created'],
     'updated'   => $project['updated'],
+    'size'      => $bytesWritten,
 ];
 write_index($index);
 

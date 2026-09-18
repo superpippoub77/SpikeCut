@@ -203,6 +203,19 @@ input[type=range]{width:100%;accent-color:var(--brass);}
 .btn.danger{color:var(--cut);}
 .hint{font-size:10.5px;color:var(--ink-dim);line-height:1.5;margin-top:6px;}
 .emptystate{color:var(--ink-dim);font-size:12px;line-height:1.6;padding-top:20px;text-align:center;}
+.libtree-row{padding:4px 8px;border-radius:5px;cursor:pointer;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.libtree-row:hover{background:var(--bg-2);}
+.libtree-row.active{background:var(--brass);color:#1c1200;}
+.libtree-row.dragover{outline:2px dashed var(--brass);outline-offset:-2px;}
+.libitem-row{display:grid;grid-template-columns:1fr 100px 76px auto;gap:8px;align-items:center;padding:5px 4px;border-radius:5px;font-size:12px;}
+.libitem-row:not(.libitem-head):hover{background:var(--bg-2);}
+.libitem-row.dragover{outline:2px dashed var(--brass);outline-offset:-2px;}
+.libitem-head{color:var(--ink-dim);font-weight:600;font-size:11px;border-bottom:1px solid var(--line-soft);margin-bottom:2px;padding-bottom:6px;}
+.libitem-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;}
+.libitem-date{color:var(--ink-dim);white-space:nowrap;font-size:11px;}
+.libitem-size{color:var(--ink-dim);white-space:nowrap;text-align:right;font-size:11px;}
+.libitem-actions{display:flex;gap:4px;justify-content:flex-end;}
+.libitem-actions button{padding:2px 7px;font-size:10.5px;width:auto;margin:0;}
 hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 
 /* layers list */
@@ -525,7 +538,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.8.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.9.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -636,19 +649,22 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 </div>
 
 <div id="libraryModal" class="modal-overlay">
-  <div class="modal-box">
+  <div class="modal-box" style="width:760px;max-width:96vw;height:560px;max-height:88vh;">
     <div class="modal-head">
       <h3>Libreria progetti</h3>
       <button class="iconbtn" id="libModalClose" title="Chiudi">✕</button>
     </div>
-    <div class="modal-body" style="display:flex;flex-direction:column;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
-        <div id="libBreadcrumb" style="flex:1;font-size:12px;color:var(--ink-dim);"></div>
-        <div id="libOpenAllWrap"></div>
+    <div class="modal-body" style="display:flex;flex-direction:column;flex:1;padding:0;overflow:hidden;">
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--line-soft);flex-shrink:0;">
         <button class="btn" id="libNewFolderBtn" style="width:auto;margin:0;">📁+ Nuova cartella</button>
+        <div id="libOpenAllWrap"></div>
       </div>
-      <div id="libList" style="flex:1;overflow-y:auto;">
-        <div class="emptystate">Caricamento…</div>
+      <div style="display:flex;flex:1;min-height:0;">
+        <div id="libTree" style="width:190px;flex-shrink:0;border-right:1px solid var(--line-soft);overflow-y:auto;padding:8px 6px;"></div>
+        <div style="flex:1;display:flex;flex-direction:column;min-width:0;">
+          <div id="libBreadcrumb" style="padding:7px 12px;font-size:12px;color:var(--ink-dim);border-bottom:1px solid var(--line-soft);flex-shrink:0;"></div>
+          <div id="libList" style="flex:1;overflow-y:auto;padding:2px 10px;"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -3157,7 +3173,69 @@ function folderOptionsHTML(excludeId){
   walk(null, 0);
   return opts.join('');
 }
+function formatFileSize(bytes){
+  if(bytes==null || isNaN(bytes)) return '';
+  if(bytes<1024) return bytes+' B';
+  if(bytes<1024*1024) return (bytes/1024).toFixed(1)+' KB';
+  return (bytes/1024/1024).toFixed(1)+' MB';
+}
+// Rende una riga (dell'albero o dell'elenco) una destinazione valida per il
+// trascinamento: accetta sia un progetto (spostato con move_project.php)
+// sia un'altra cartella (riparentata con move_folder.php).
+function wireFolderDropTarget(rowEl, folderId){
+  rowEl.addEventListener('dragover', (e)=>{
+    if(e.dataTransfer.types.includes('text/spikecut-project') || e.dataTransfer.types.includes('text/spikecut-folder')){
+      e.preventDefault();
+      rowEl.classList.add('dragover');
+    }
+  });
+  rowEl.addEventListener('dragleave', ()=> rowEl.classList.remove('dragover'));
+  rowEl.addEventListener('drop', async (e)=>{
+    e.preventDefault();
+    rowEl.classList.remove('dragover');
+    const projId = e.dataTransfer.getData('text/spikecut-project');
+    const srcFolderId = e.dataTransfer.getData('text/spikecut-folder');
+    if(projId){
+      await moveProjectAction(projId, folderId);
+    } else if(srcFolderId && srcFolderId !== (folderId||'')){
+      try{
+        await apiFetch('move_folder.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:srcFolderId, parentId:folderId})});
+        loadLibraryList();
+      }catch(err){ showToast('Errore nello spostamento della cartella: ' + err.message, true); loadLibraryList(); }
+    }
+  });
+}
+function renderFolderTree(){
+  const host = document.getElementById('libTree');
+  host.innerHTML = '';
+  const rootRow = document.createElement('div');
+  rootRow.className = 'libtree-row' + (libCurrentFolderId===null ? ' active' : '');
+  rootRow.textContent = '📚 Libreria';
+  rootRow.onclick = ()=> navigateToFolder(null);
+  wireFolderDropTarget(rootRow, null);
+  host.appendChild(rootRow);
+
+  function walk(parentId, depth){
+    libCacheFolders.filter(f=> (f.parentId||null) === (parentId||null))
+      .sort((a,b)=> a.name.localeCompare(b.name))
+      .forEach(f=>{
+        const row = document.createElement('div');
+        row.className = 'libtree-row' + (libCurrentFolderId===f.id ? ' active' : '');
+        row.style.paddingLeft = (8 + depth*14) + 'px';
+        row.textContent = '📁 ' + f.name;
+        row.title = f.name;
+        row.onclick = ()=> navigateToFolder(f.id);
+        row.draggable = true;
+        row.addEventListener('dragstart', (e)=>{ e.dataTransfer.setData('text/spikecut-folder', f.id); e.stopPropagation(); });
+        wireFolderDropTarget(row, f.id);
+        host.appendChild(row);
+        walk(f.id, depth+1);
+      });
+  }
+  walk(null, 0);
+}
 function renderLibraryView(){
+  renderFolderTree();
   const host = document.getElementById('libList');
   const crumb = document.getElementById('libBreadcrumb');
   host.innerHTML = '';
@@ -3174,8 +3252,8 @@ function renderLibraryView(){
     crumb.appendChild(a);
   });
 
-  const subFolders = libCacheFolders.filter(f=> (f.parentId||null) === (libCurrentFolderId||null));
-  const myItemsHere = libCacheItems.filter(it=> it.mine && (it.folderId||null) === (libCurrentFolderId||null));
+  const subFolders = libCacheFolders.filter(f=> (f.parentId||null) === (libCurrentFolderId||null)).sort((a,b)=>a.name.localeCompare(b.name));
+  const myItemsHere = libCacheItems.filter(it=> it.mine && (it.folderId||null) === (libCurrentFolderId||null)).sort((a,b)=> (b.updated||'').localeCompare(a.updated||''));
   const sharedItems = libCurrentFolderId===null ? libCacheItems.filter(it=>!it.mine) : [];
 
   const openAllWrap = document.getElementById('libOpenAllWrap');
@@ -3189,55 +3267,73 @@ function renderLibraryView(){
   }
 
   if(!subFolders.length && !myItemsHere.length && !sharedItems.length){
-    host.innerHTML = '<div class="emptystate">Cartella vuota.</div>';
+    host.innerHTML = '<div class="emptystate">Cartella vuota. Trascina qui un progetto o una cartella, oppure crane una nuova con "Nuova cartella".</div>';
+    return;
   }
 
+  const head = document.createElement('div'); head.className='libitem-row libitem-head';
+  head.innerHTML = '<div>Nome</div><div>Ultima modifica</div><div style="text-align:right;">Dimensione</div><div></div>';
+  host.appendChild(head);
+
   subFolders.forEach(f=>{
-    const row = document.createElement('div'); row.className='layerrow';
-    const lbl = document.createElement('span'); lbl.className='lbl'; lbl.style.cursor='pointer';
-    lbl.textContent = '📁 ' + f.name;
-    lbl.onclick = ()=> navigateToFolder(f.id);
+    const row = document.createElement('div'); row.className='libitem-row';
+    const nameDiv = document.createElement('div'); nameDiv.className='libitem-name';
+    nameDiv.innerHTML = `📁 ${escapeHTML(f.name)}`;
+    nameDiv.onclick = ()=> navigateToFolder(f.id);
+    row.appendChild(nameDiv);
+    row.appendChild(document.createElement('div'));
+    row.appendChild(document.createElement('div'));
+    const actions = document.createElement('div'); actions.className='libitem-actions';
     const renBtn = document.createElement('button'); renBtn.textContent='✎'; renBtn.title='Rinomina cartella';
-    renBtn.onclick = ()=> renameFolderAction(f);
+    renBtn.onclick = (e)=>{ e.stopPropagation(); renameFolderAction(f); };
     const delBtn = document.createElement('button'); delBtn.textContent='🗑'; delBtn.title='Elimina cartella';
-    delBtn.onclick = ()=> deleteFolderAction(f);
-    row.appendChild(lbl); row.appendChild(renBtn); row.appendChild(delBtn);
+    delBtn.onclick = (e)=>{ e.stopPropagation(); deleteFolderAction(f); };
+    actions.appendChild(renBtn); actions.appendChild(delBtn);
+    row.appendChild(actions);
+    row.draggable = true;
+    row.addEventListener('dragstart', (e)=> e.dataTransfer.setData('text/spikecut-folder', f.id));
+    wireFolderDropTarget(row, f.id);
     host.appendChild(row);
   });
 
-
   function renderProjectRow(it){
-    const row = document.createElement('div'); row.className='layerrow';
-    const when = it.updated ? new Date(it.updated).toLocaleString() : '';
-    const ownerLine = it.mine ? '' : ` · di ${escapeHTML(it.ownerName||'?')}`;
-    const lbl = document.createElement('span'); lbl.className='lbl';
-    lbl.innerHTML = `${escapeHTML(it.name)}${it.shared?' 🌐':''}<br><span style="color:var(--ink-dim);font-size:10.5px;">${escapeHTML(when)}${ownerLine}</span>`;
-    const loadBtn = document.createElement('button'); loadBtn.textContent='Apri';
-    loadBtn.onclick = ()=> loadFromLibrary(it.id);
-    const versBtn = document.createElement('button'); versBtn.textContent='Versioni';
-    versBtn.onclick = ()=> openVersionsModal(it.id);
-    row.appendChild(lbl); row.appendChild(loadBtn); row.appendChild(versBtn);
+    const row = document.createElement('div'); row.className='libitem-row';
     if(it.mine){
-      const moveSel = document.createElement('select'); moveSel.title='Sposta in…'; moveSel.style.cssText='width:auto;max-width:130px;';
-      moveSel.innerHTML = folderOptionsHTML(null);
-      moveSel.value = it.folderId || '';
-      moveSel.onchange = ()=> moveProjectAction(it.id, moveSel.value || null);
-      row.appendChild(moveSel);
-      const delBtn = document.createElement('button'); delBtn.textContent='Elimina';
-      delBtn.onclick = ()=> deleteFromLibrary(it.id);
-      row.appendChild(delBtn);
+      row.draggable = true;
+      row.addEventListener('dragstart', (e)=> e.dataTransfer.setData('text/spikecut-project', it.id));
     }
+    const nameDiv = document.createElement('div'); nameDiv.className='libitem-name';
+    const ownerNote = it.mine ? '' : ` <span style="color:var(--ink-dim);">· di ${escapeHTML(it.ownerName||'?')}</span>`;
+    nameDiv.innerHTML = `📄 ${escapeHTML(it.name)}${it.shared?' 🌐':''}${ownerNote}`;
+    nameDiv.onclick = ()=> loadFromLibrary(it.id);
+    row.appendChild(nameDiv);
+
+    const dateDiv = document.createElement('div'); dateDiv.className='libitem-date';
+    dateDiv.textContent = it.updated ? new Date(it.updated).toLocaleDateString() : '';
+    row.appendChild(dateDiv);
+
+    const sizeDiv = document.createElement('div'); sizeDiv.className='libitem-size';
+    sizeDiv.textContent = formatFileSize(it.size);
+    row.appendChild(sizeDiv);
+
+    const actions = document.createElement('div'); actions.className='libitem-actions';
+    const versBtn = document.createElement('button'); versBtn.textContent='Versioni';
+    versBtn.onclick = (e)=>{ e.stopPropagation(); openVersionsModal(it.id); };
+    actions.appendChild(versBtn);
+    if(it.mine){
+      const delBtn = document.createElement('button'); delBtn.textContent='🗑'; delBtn.title='Elimina';
+      delBtn.onclick = (e)=>{ e.stopPropagation(); deleteFromLibrary(it.id); };
+      actions.appendChild(delBtn);
+    }
+    row.appendChild(actions);
     host.appendChild(row);
   }
 
-  if(myItemsHere.length){
-    const h = document.createElement('div'); h.className='hint'; h.style.cssText='margin:10px 0 4px;font-weight:600;';
-    h.textContent = 'I miei progetti in questa cartella'; host.appendChild(h);
-    myItemsHere.forEach(renderProjectRow);
-  }
+  myItemsHere.forEach(renderProjectRow);
   if(sharedItems.length){
-    const h = document.createElement('div'); h.className='hint'; h.style.cssText='margin:10px 0 4px;font-weight:600;';
-    h.textContent = 'Libreria comune (condivisi da tutti gli utenti)'; host.appendChild(h);
+    const h = document.createElement('div'); h.style.cssText='margin:10px 0 4px;font-weight:600;font-size:12px;';
+    h.textContent = 'Libreria comune (condivisi da tutti gli utenti)';
+    host.appendChild(h);
     sharedItems.forEach(renderProjectRow);
   }
 }
