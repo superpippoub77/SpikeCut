@@ -33,6 +33,22 @@ if (!$existing) {
     $id = bin2hex(random_bytes(12));
 }
 
+// cartella di destinazione: se il client non la specifica esplicitamente e si
+// sta risalvando un progetto già esistente, resta dov'era; altrimenti (nuovo
+// progetto, o il client la specifica) va convalidata come propria dell'utente.
+if (array_key_exists('folderId', $body)) {
+    $folderId = $body['folderId'];
+    if (!safe_folder_id($folderId)) {
+        json_error('Cartella di destinazione non valida.', 400);
+    }
+    $folders = read_folders();
+    if (!folder_usable_by($folders, $folderId, $user['id'])) {
+        json_error('Non hai accesso a quella cartella.', 403);
+    }
+} else {
+    $folderId = $existing['folderId'] ?? null;
+}
+
 $now = date('c');
 if ($existing) {
     // sto sovrascrivendo un progetto già esistente: ne conservo lo stato
@@ -54,6 +70,7 @@ $project = [
     'ownerId'       => $user['id'],
     'ownerName'     => $user['username'],
     'shared'        => $shared,
+    'folderId'      => $folderId,
     'created'       => $existing['created'] ?? $now,
     'updated'       => $now,
 ];
@@ -72,6 +89,7 @@ $index[] = [
     'ownerId'   => $user['id'],
     'ownerName' => $user['username'],
     'shared'    => $shared,
+    'folderId'  => $folderId,
     'created'   => $project['created'],
     'updated'   => $project['updated'],
 ];

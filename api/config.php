@@ -17,6 +17,7 @@ $API_KEY = '';
 // più un indice). Deve essere scrivibile dal server web.
 define('LIBRARY_DIR', __DIR__ . '/../library');
 define('INDEX_FILE', LIBRARY_DIR . '/index.json');
+define('FOLDERS_FILE', LIBRARY_DIR . '/folders.json');
 
 // Cartella dove vengono salvati gli account utente (un unico file indice,
 // nessun database richiesto). Deve essere scrivibile dal server web e,

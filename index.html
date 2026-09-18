@@ -503,7 +503,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.0.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.1.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -568,6 +568,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
     </div>
     <div class="modal-body">
       <div class="field"><label>Nome del progetto</label><input type="text" id="saveLibName"></div>
+      <div class="field"><label>Cartella</label><select id="saveLibFolder"></select></div>
       <div class="field">
         <label style="display:flex;align-items:center;gap:7px;cursor:pointer;">
           <input type="checkbox" id="saveLibShared" style="width:auto;">
@@ -598,8 +599,14 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
       <h3>Libreria progetti</h3>
       <button class="iconbtn" id="libModalClose" title="Chiudi">✕</button>
     </div>
-    <div id="libList" class="modal-body">
-      <div class="emptystate">Caricamento…</div>
+    <div class="modal-body" style="display:flex;flex-direction:column;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
+        <div id="libBreadcrumb" style="flex:1;font-size:12px;color:var(--ink-dim);"></div>
+        <button class="btn" id="libNewFolderBtn" style="width:auto;margin:0;">📁+ Nuova cartella</button>
+      </div>
+      <div id="libList" style="flex:1;overflow-y:auto;">
+        <div class="emptystate">Caricamento…</div>
+      </div>
     </div>
   </div>
 </div>
@@ -886,6 +893,19 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
         + / - / 0: zoom avanti / indietro / reimposta
         <hr class="sep">
         La calamita aggancia i nuovi punti a estremi già esistenti entro un piccolo raggio, così le linee si uniscono senza lasciare spazi vuoti.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="promptModal" class="modal-overlay">
+  <div class="modal-box" style="width:320px;">
+    <div class="modal-head"><h3 id="promptTitle">Nome</h3></div>
+    <div class="modal-body">
+      <input type="text" id="promptInput">
+      <div style="display:flex;gap:8px;margin-top:14px;">
+        <button class="btn" id="promptCancel" style="flex:1;">Annulla</button>
+        <button class="btn primary" id="promptOk" style="flex:1;">Conferma</button>
       </div>
     </div>
   </div>
@@ -2732,12 +2752,20 @@ async function apiFetch(path, opts){
 function escapeHTML(s){
   return String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 }
-function saveToLibrary(){
+async function saveToLibrary(){
   if(!currentUser){ openAccountModal('login'); showToast('Accedi al tuo account per salvare in libreria.', true); return; }
   document.getElementById('saveLibName').value = document.getElementById('filename').value || 'disegno';
   document.getElementById('saveLibShared').checked = !!state.librarySharedLast;
   document.getElementById('saveLibError').style.display = 'none';
   document.getElementById('saveLibraryModal').classList.add('open');
+  const folderSel = document.getElementById('saveLibFolder');
+  folderSel.innerHTML = '<option value="">📁 Cartella principale</option>';
+  try{
+    const data = await apiFetch('list.php', {method:'GET'});
+    libCacheItems = data.items || []; libCacheFolders = data.folders || [];
+    folderSel.innerHTML = folderOptionsHTML(null);
+    folderSel.value = (state.libraryFolderId!=null ? state.libraryFolderId : libCurrentFolderId) || '';
+  }catch(err){ /* selettore resta solo con "Cartella principale": non blocco il salvataggio per questo */ }
 }
 function closeSaveLibraryModal(){ document.getElementById('saveLibraryModal').classList.remove('open'); }
 document.getElementById('saveLibModalClose').onclick = closeSaveLibraryModal;
@@ -2748,20 +2776,27 @@ document.getElementById('saveLibSubmit').onclick = async ()=>{
   errEl.style.display = 'none';
   if(!name){ errEl.textContent='Inserisci un nome per il progetto.'; errEl.style.display=''; return; }
   const shared = document.getElementById('saveLibShared').checked;
+  const folderId = document.getElementById('saveLibFolder').value || null;
   try{
-    const payload = { id: state.libraryId || null, name, shared, page: state.page, shapes: state.shapes, refImage: state.refImage, layers: state.layers, activeLayerId: state.activeLayerId, customFonts: state.customFonts };
+    const payload = { id: state.libraryId || null, name, shared, folderId, page: state.page, shapes: state.shapes, refImage: state.refImage, layers: state.layers, activeLayerId: state.activeLayerId, customFonts: state.customFonts };
     const data = await apiFetch('save.php', {
       method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
     });
     state.libraryId = data.id;
+    state.libraryFolderId = folderId;
     state.librarySharedLast = shared;
     renameActiveTab(name);
     closeSaveLibraryModal();
     showToast(shared ? 'Salvato in libreria e condiviso con tutti gli utenti.' : 'Salvato nella tua libreria personale.', false);
   }catch(err){ errEl.textContent = err.message; errEl.style.display=''; }
 };
+let libCacheItems = [];
+let libCacheFolders = [];
+let libCurrentFolderId = null;
+
 function openLibraryModal(){
   if(!currentUser){ openAccountModal('login'); showToast('Accedi al tuo account per usare la libreria.', true); return; }
+  libCurrentFolderId = null;
   document.getElementById('libraryModal').classList.add('open');
   loadLibraryList();
 }
@@ -2774,39 +2809,145 @@ async function loadLibraryList(){
   host.innerHTML = '<div class="emptystate">Caricamento…</div>';
   try{
     const data = await apiFetch('list.php', {method:'GET'});
-    const items = (data.items || []).slice().sort((a,b)=> (b.updated||'').localeCompare(a.updated||''));
-    if(!items.length){ host.innerHTML = '<div class="emptystate">Nessun progetto salvato in libreria.</div>'; return; }
-    host.innerHTML = '';
-    const mine = items.filter(it=>it.mine);
-    const shared = items.filter(it=>!it.mine);
-    function renderSection(title, list){
-      if(!list.length) return;
-      const h = document.createElement('div'); h.className='hint'; h.style.cssText='margin:10px 0 4px;font-weight:600;';
-      h.textContent = title; host.appendChild(h);
-      list.forEach(it=>{
-        const row = document.createElement('div'); row.className='layerrow';
-        const when = it.updated ? new Date(it.updated).toLocaleString() : '';
-        const ownerLine = it.mine ? '' : ` · di ${escapeHTML(it.ownerName||'?')}`;
-        const lbl = document.createElement('span'); lbl.className='lbl';
-        lbl.innerHTML = `${escapeHTML(it.name)}${it.shared?' 🌐':''}<br><span style="color:var(--ink-dim);font-size:10.5px;">${escapeHTML(when)}${ownerLine}</span>`;
-        const loadBtn = document.createElement('button'); loadBtn.textContent='Apri';
-        loadBtn.onclick = ()=> loadFromLibrary(it.id);
-        const versBtn = document.createElement('button'); versBtn.textContent='Versioni';
-        versBtn.onclick = ()=> openVersionsModal(it.id);
-        row.appendChild(lbl); row.appendChild(loadBtn); row.appendChild(versBtn);
-        if(it.mine){
-          const delBtn = document.createElement('button'); delBtn.textContent='Elimina';
-          delBtn.onclick = ()=> deleteFromLibrary(it.id);
-          row.appendChild(delBtn);
-        }
-        host.appendChild(row);
-      });
-    }
-    renderSection('I miei progetti', mine);
-    renderSection('Libreria comune (condivisi da tutti gli utenti)', shared);
+    libCacheItems = data.items || [];
+    libCacheFolders = data.folders || [];
+    if(libCurrentFolderId && !libCacheFolders.some(f=>f.id===libCurrentFolderId)) libCurrentFolderId = null;
+    renderLibraryView();
   }catch(err){
     host.innerHTML = `<div class="emptystate">${escapeHTML(err.message)}</div>`;
   }
+}
+function folderPath(folderId){
+  const path = [];
+  let cur = folderId;
+  let guard = 0;
+  while(cur && guard++ < 50){
+    const f = libCacheFolders.find(x=>x.id===cur);
+    if(!f) break;
+    path.unshift(f);
+    cur = f.parentId;
+  }
+  return path;
+}
+function navigateToFolder(folderId){
+  libCurrentFolderId = folderId;
+  renderLibraryView();
+}
+function folderOptionsHTML(excludeId){
+  const opts = ['<option value="">📁 Cartella principale</option>'];
+  function walk(parentId, depth){
+    libCacheFolders.filter(f=>(f.parentId||null)===(parentId||null)).forEach(f=>{
+      if(f.id===excludeId) return; // non si può spostare una cartella dentro se stessa (i figli sono comunque esclusi dal ciclo lato server)
+      opts.push(`<option value="${f.id}">${'　'.repeat(depth)}📁 ${escapeHTML(f.name)}</option>`);
+      walk(f.id, depth+1);
+    });
+  }
+  walk(null, 0);
+  return opts.join('');
+}
+function renderLibraryView(){
+  const host = document.getElementById('libList');
+  const crumb = document.getElementById('libBreadcrumb');
+  host.innerHTML = '';
+
+  // breadcrumb: Libreria > cartella > sottocartella...
+  crumb.innerHTML = '';
+  const rootLink = document.createElement('a'); rootLink.href='#'; rootLink.textContent='📚 Libreria';
+  rootLink.onclick = (e)=>{ e.preventDefault(); navigateToFolder(null); };
+  crumb.appendChild(rootLink);
+  folderPath(libCurrentFolderId).forEach(f=>{
+    crumb.appendChild(document.createTextNode(' / '));
+    const a = document.createElement('a'); a.href='#'; a.textContent = f.name;
+    a.onclick = (e)=>{ e.preventDefault(); navigateToFolder(f.id); };
+    crumb.appendChild(a);
+  });
+
+  const subFolders = libCacheFolders.filter(f=> (f.parentId||null) === (libCurrentFolderId||null));
+  const myItemsHere = libCacheItems.filter(it=> it.mine && (it.folderId||null) === (libCurrentFolderId||null));
+  const sharedItems = libCurrentFolderId===null ? libCacheItems.filter(it=>!it.mine) : [];
+
+  if(!subFolders.length && !myItemsHere.length && !sharedItems.length){
+    host.innerHTML = '<div class="emptystate">Cartella vuota.</div>';
+  }
+
+  subFolders.forEach(f=>{
+    const row = document.createElement('div'); row.className='layerrow';
+    const lbl = document.createElement('span'); lbl.className='lbl'; lbl.style.cursor='pointer';
+    lbl.textContent = '📁 ' + f.name;
+    lbl.onclick = ()=> navigateToFolder(f.id);
+    const renBtn = document.createElement('button'); renBtn.textContent='✎'; renBtn.title='Rinomina cartella';
+    renBtn.onclick = ()=> renameFolderAction(f);
+    const delBtn = document.createElement('button'); delBtn.textContent='🗑'; delBtn.title='Elimina cartella';
+    delBtn.onclick = ()=> deleteFolderAction(f);
+    row.appendChild(lbl); row.appendChild(renBtn); row.appendChild(delBtn);
+    host.appendChild(row);
+  });
+
+
+  function renderProjectRow(it){
+    const row = document.createElement('div'); row.className='layerrow';
+    const when = it.updated ? new Date(it.updated).toLocaleString() : '';
+    const ownerLine = it.mine ? '' : ` · di ${escapeHTML(it.ownerName||'?')}`;
+    const lbl = document.createElement('span'); lbl.className='lbl';
+    lbl.innerHTML = `${escapeHTML(it.name)}${it.shared?' 🌐':''}<br><span style="color:var(--ink-dim);font-size:10.5px;">${escapeHTML(when)}${ownerLine}</span>`;
+    const loadBtn = document.createElement('button'); loadBtn.textContent='Apri';
+    loadBtn.onclick = ()=> loadFromLibrary(it.id);
+    const versBtn = document.createElement('button'); versBtn.textContent='Versioni';
+    versBtn.onclick = ()=> openVersionsModal(it.id);
+    row.appendChild(lbl); row.appendChild(loadBtn); row.appendChild(versBtn);
+    if(it.mine){
+      const moveSel = document.createElement('select'); moveSel.title='Sposta in…'; moveSel.style.cssText='width:auto;max-width:130px;';
+      moveSel.innerHTML = folderOptionsHTML(null);
+      moveSel.value = it.folderId || '';
+      moveSel.onchange = ()=> moveProjectAction(it.id, moveSel.value || null);
+      row.appendChild(moveSel);
+      const delBtn = document.createElement('button'); delBtn.textContent='Elimina';
+      delBtn.onclick = ()=> deleteFromLibrary(it.id);
+      row.appendChild(delBtn);
+    }
+    host.appendChild(row);
+  }
+
+  if(myItemsHere.length){
+    const h = document.createElement('div'); h.className='hint'; h.style.cssText='margin:10px 0 4px;font-weight:600;';
+    h.textContent = 'I miei progetti in questa cartella'; host.appendChild(h);
+    myItemsHere.forEach(renderProjectRow);
+  }
+  if(sharedItems.length){
+    const h = document.createElement('div'); h.className='hint'; h.style.cssText='margin:10px 0 4px;font-weight:600;';
+    h.textContent = 'Libreria comune (condivisi da tutti gli utenti)'; host.appendChild(h);
+    sharedItems.forEach(renderProjectRow);
+  }
+}
+document.getElementById('libNewFolderBtn').onclick = async ()=>{
+  const name = await showPrompt('Nome della nuova cartella');
+  if(!name) return;
+  try{
+    await apiFetch('create_folder.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name, parentId:libCurrentFolderId})});
+    loadLibraryList();
+  }catch(err){ showToast('Errore nella creazione della cartella: ' + err.message, true); }
+};
+async function renameFolderAction(f){
+  const name = await showPrompt('Nuovo nome della cartella', f.name);
+  if(!name || name===f.name) return;
+  try{
+    await apiFetch('rename_folder.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:f.id, name})});
+    loadLibraryList();
+  }catch(err){ showToast('Errore nel rinominare la cartella: ' + err.message, true); }
+}
+async function deleteFolderAction(f){
+  const ok = await showConfirm(`Eliminare la cartella "${f.name}"? Il suo contenuto (sottocartelle e progetti) verrà spostato nella cartella superiore, non verrà cancellato.`, 'Elimina cartella');
+  if(!ok) return;
+  try{
+    await apiFetch('delete_folder.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:f.id})});
+    loadLibraryList();
+  }catch(err){ showToast('Errore nell\'eliminazione della cartella: ' + err.message, true); }
+}
+async function moveProjectAction(id, folderId){
+  try{
+    await apiFetch('move_project.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, folderId})});
+    loadLibraryList();
+  }catch(err){ showToast('Errore nello spostamento: ' + err.message, true); loadLibraryList(); }
 }
 async function loadFromLibrary(id){
   try{
@@ -2819,6 +2960,7 @@ async function loadFromLibrary(id){
     restoreFontsFromProject(proj);
     state.selection.clear();
     state.libraryId = data.mine ? id : null; // un progetto altrui condiviso, se modificato, va salvato come copia propria
+    state.libraryFolderId = data.mine ? (proj.folderId || null) : null;
     state.librarySharedLast = !!proj.shared;
     if(proj.name) renameActiveTab(proj.name);
     syncPageSizeSelect();
@@ -5404,6 +5546,29 @@ function resolveConfirm(v){
 document.getElementById('confirmOk').onclick = ()=> resolveConfirm(true);
 document.getElementById('confirmCancel').onclick = ()=> resolveConfirm(false);
 setupOverlayClickClose(document.getElementById('confirmModal'), ()=> resolveConfirm(false));
+
+let _promptResolve = null;
+function showPrompt(title, defaultValue){
+  return new Promise((resolve)=>{
+    document.getElementById('promptTitle').textContent = title || 'Nome';
+    const inp = document.getElementById('promptInput');
+    inp.value = defaultValue || '';
+    document.getElementById('promptModal').classList.add('open');
+    inp.focus(); inp.select();
+    _promptResolve = resolve;
+  });
+}
+function resolvePrompt(v){
+  document.getElementById('promptModal').classList.remove('open');
+  if(_promptResolve){ _promptResolve(v); _promptResolve = null; }
+}
+document.getElementById('promptOk').onclick = ()=> resolvePrompt(document.getElementById('promptInput').value.trim());
+document.getElementById('promptCancel').onclick = ()=> resolvePrompt(null);
+document.getElementById('promptInput').addEventListener('keydown', (e)=>{
+  if(e.key==='Enter') resolvePrompt(document.getElementById('promptInput').value.trim());
+  if(e.key==='Escape') resolvePrompt(null);
+});
+setupOverlayClickClose(document.getElementById('promptModal'), ()=> resolvePrompt(null));
 
 /* ============================================================
    AUTOSAVE — copia locale nel browser (localStorage), per non perdere

@@ -13,6 +13,7 @@ $items = array_values(array_filter($index, function ($e) use ($user) {
 }));
 foreach ($items as &$it) {
     $it['mine'] = ($it['ownerId'] ?? null) === $user['id'];
+    if (!array_key_exists('folderId', $it)) $it['folderId'] = null;
 }
 unset($it);
 
@@ -20,4 +21,9 @@ usort($items, function ($a, $b) {
     return strcmp($b['updated'] ?? '', $a['updated'] ?? '');
 });
 
-json_ok(['items' => $items]);
+$folders = read_folders();
+$myFolders = array_values(array_filter($folders, function ($f) use ($user) {
+    return ($f['ownerId'] ?? null) === $user['id'];
+}));
+
+json_ok(['items' => $items, 'folders' => $myFolders]);

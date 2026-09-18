@@ -89,6 +89,57 @@ function project_path($id) {
 }
 
 /* ============================================================
+   CARTELLE — organizzazione libera della propria libreria in
+   cartelle (anche annidate), come in un file manager. Ogni cartella
+   appartiene a un utente; un progetto o una sottocartella con
+   folderId/parentId null sta nella cartella principale (radice).
+============================================================ */
+
+function read_folders() {
+    ensure_library_dir();
+    if (!file_exists(FOLDERS_FILE)) return [];
+    $data = json_decode(@file_get_contents(FOLDERS_FILE), true);
+    return is_array($data) ? $data : [];
+}
+
+function write_folders($folders) {
+    ensure_library_dir();
+    file_put_contents(FOLDERS_FILE, json_encode(array_values($folders), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+}
+
+// null (radice) è sempre valido; altrimenti l'id deve avere il formato giusto.
+function safe_folder_id($id) {
+    return $id === null || (is_string($id) && preg_match('/^[a-f0-9]{16,40}$/', $id) === 1);
+}
+
+// Vero se $folderId è null (radice, sempre permesso) oppure è una cartella
+// che esiste davvero ed appartiene a $userId.
+function folder_usable_by($folders, $folderId, $userId) {
+    if ($folderId === null) return true;
+    foreach ($folders as $f) {
+        if ($f['id'] === $folderId) return $f['ownerId'] === $userId;
+    }
+    return false;
+}
+
+// Impedisce di spostare una cartella dentro se stessa o in una propria
+// discendente (creerebbe un ciclo nell'albero).
+function folder_is_descendant_or_self($folders, $candidateId, $ancestorId) {
+    if ($candidateId === $ancestorId) return true;
+    $byId = [];
+    foreach ($folders as $f) $byId[$f['id']] = $f;
+    $cur = $candidateId;
+    $guard = 0;
+    while ($cur !== null && isset($byId[$cur]) && $guard < 200) {
+        $parent = $byId[$cur]['parentId'] ?? null;
+        if ($parent === $ancestorId) return true;
+        $cur = $parent;
+        $guard++;
+    }
+    return false;
+}
+
+/* ============================================================
    CRONOLOGIA VERSIONI — ad ogni salvataggio che sovrascrive un
    progetto esistente, lo stato precedente viene conservato qui
    prima di essere sostituito, così si può tornare indietro.
