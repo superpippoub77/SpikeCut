@@ -507,7 +507,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.4.1</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.4.2</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2139,6 +2139,8 @@ stage.addEventListener('mousemove', (e)=>{
   document.getElementById('coord').textContent = `x: ${mmToUnit(mm[0]).toFixed(u.decimals)}  y: ${mmToUnit(mm[1]).toFixed(u.decimals)} ${u.label}`;
   handleMouseMove(mm, e);
 });
+let _lastClickTime = 0;
+let _lastClickPos = null;
 stage.addEventListener('mousedown', (e)=>{
   try{
     const ae = document.activeElement;
@@ -2149,6 +2151,24 @@ stage.addEventListener('mousedown', (e)=>{
       return;
     }
     e.preventDefault(); // evita che il browser avvii una selezione testo/trascinamento nativa sul canvas
+
+    // Rilevamento MANUALE del doppio clic (invece di affidarsi all'evento nativo
+    // 'dblclick' del browser): ad ogni clic ridisegniamo il canvas per mostrare
+    // la selezione, il che sostituisce l'elemento appena cliccato con uno nuovo
+    // — alcuni browser, non riconoscendo più lo stesso elemento tra il primo e
+    // il secondo clic, non arrivano a generare 'dblclick'. Contando noi stessi
+    // tempo e distanza tra due clic consecutivi, la funzione resta affidabile
+    // a prescindere da questo.
+    const now = Date.now();
+    const pos = {x:e.clientX, y:e.clientY};
+    const isDoubleClick = _lastClickPos && (now - _lastClickTime) < 450 && Math.hypot(pos.x-_lastClickPos.x, pos.y-_lastClickPos.y) < 6;
+    _lastClickTime = isDoubleClick ? 0 : now; // azzero per non contare un eventuale terzo clic ravvicinato come un'altra doppia
+    _lastClickPos = isDoubleClick ? null : pos;
+
+    if(isDoubleClick){
+      handleDblClick(clientToMM(e.clientX,e.clientY), e);
+      return;
+    }
     handleMouseDown(clientToMM(e.clientX,e.clientY), e);
   }catch(err){
     showToast('Errore imprevisto: ' + err.message, true);
@@ -2156,6 +2176,9 @@ stage.addEventListener('mousedown', (e)=>{
   }
 });
 window.addEventListener('mouseup', (e)=>{ handleMouseUp(clientToMM(e.clientX,e.clientY), e); });
+// L'evento nativo resta collegato come rete di sicurezza: se in un browser
+// dovesse comunque attivarsi, richiama la stessa funzione (che si occupa già
+// di chiudere un eventuale pannello già aperto prima di riaprirlo).
 stage.addEventListener('dblclick', (e)=>{
   try{
     handleDblClick(clientToMM(e.clientX,e.clientY), e);
@@ -2921,13 +2944,23 @@ document.getElementById('saveLibSubmit').onclick = async ()=>{
   const folderId = document.getElementById('saveLibFolder').value || null;
 
   let targetId = state.libraryId || null;
-  const dup = libCacheItems.find(it=> it.mine && it.name===name && it.id!==state.libraryId);
-  if(dup){
-    const choice = await showSaveConflict(name);
-    if(!choice) return; // annullato: si resta nella modale di salvataggio
-    if(choice==='overwrite') targetId = dup.id;
-    // 'copy': targetId resta quello di partenza (nuovo progetto, o quello già aperto)
-  }
+  try{
+    // ricontrollo con l'elenco più aggiornato possibile, per non basarmi su
+    // dati eventualmente non più freschi da quando la finestra è stata aperta
+    const freshData = await apiFetch('list.php', {method:'GET'});
+    libCacheItems = freshData.items || []; libCacheFolders = freshData.folders || [];
+    const norm = (s)=> (s||'').trim().toLowerCase();
+    // un duplicato conta solo dentro la STESSA cartella di destinazione, come
+    // in un vero file system: due nomi uguali in cartelle diverse convivono
+    const dup = libCacheItems.find(it=> it.mine && it.id!==state.libraryId
+      && (it.folderId||null)===(folderId||null) && norm(it.name)===norm(name));
+    if(dup){
+      const choice = await showSaveConflict(name);
+      if(!choice) return; // annullato: si resta nella modale di salvataggio
+      if(choice==='overwrite') targetId = dup.id;
+      // 'copy': targetId resta quello di partenza (nuovo progetto, o quello già aperto)
+    }
+  }catch(err){ /* se il controllo duplicati fallisce, procedo comunque con il salvataggio normale */ }
 
   try{
     const payload = { id: targetId, name, shared, folderId, page: state.page, shapes: state.shapes, refImage: state.refImage, layers: state.layers, activeLayerId: state.activeLayerId, customFonts: state.customFonts };
