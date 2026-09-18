@@ -506,7 +506,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.2.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.3.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -559,6 +559,20 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
         <button class="btn" id="logoutSubmit">Esci</button>
       </div>
 
+    </div>
+  </div>
+</div>
+
+<div id="saveConflictModal" class="modal-overlay">
+  <div class="modal-box" style="width:340px;">
+    <div class="modal-head">
+      <h3>Nome già esistente</h3>
+      <button class="iconbtn" id="saveConflictClose" title="Chiudi">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="saveConflictMessage" class="hint" style="margin-bottom:14px;"></div>
+      <button class="btn primary" id="saveConflictOverwrite" style="margin-bottom:8px;">Sovrascrivi il progetto esistente</button>
+      <button class="btn" id="saveConflictCopy">Salva come copia separata</button>
     </div>
   </div>
 </div>
@@ -2442,23 +2456,108 @@ function handleDblClick(mm, e){
   if(state.tool==='pen' && state.draft){
     finishPenDraft(false);
   } else if(state.tool==='select' && e.target && e.target.tagName==='path'){
-    // add a vertex mid-segment on double-click of a selected path
     const id = e.target.dataset.id;
     const s = state.shapes.find(x=>x.id===id);
     if(s && s.points){
+      const n = s.points.length;
       let bestI=0, bd=Infinity;
-      for(let i=0;i<s.points.length-1;i++){
+      for(let i=0;i<n-1;i++){
         const d = pointToSegDist(mm, s.points[i], s.points[i+1]);
         if(d<bd){bd=d;bestI=i;}
       }
+      if(s.closed && n>1){
+        const dClose = pointToSegDist(mm, s.points[n-1], s.points[0]);
+        if(dClose<bd){ bd=dClose; bestI=n-1; }
+      }
       if(bd < 4/state.scale){
-        s.points.splice(bestI+1,0,mm);
-        if(!s.smooth) s.smooth = s.points.map(()=>0);
-        else s.smooth.splice(bestI+1,0,0);
-        pushHistory(); renderAll();
+        openSegmentInlineEditor(s, bestI, mm, e.clientX, e.clientY);
       }
     }
   }
+}
+
+/* ============================================================
+   EDITOR INLINE DEL TRATTO — doppio clic su un segmento: mostra
+   lì sul posto lunghezza e curvatura modificabili direttamente,
+   senza dover cercare il blocco corrispondente nella barra laterale.
+============================================================ */
+let segEditorEl = null;
+function segEditorOutsideClick(e){
+  if(segEditorEl && !segEditorEl.contains(e.target)) closeSegmentInlineEditor();
+}
+function closeSegmentInlineEditor(){
+  if(segEditorEl){ segEditorEl.remove(); segEditorEl = null; }
+  document.removeEventListener('mousedown', segEditorOutsideClick, true);
+  if(state.hoverSegment){ state.hoverSegment = null; renderSelectionHandles(); }
+}
+function openSegmentInlineEditor(s, idx, clickMM, clientX, clientY){
+  closeSegmentInlineEditor();
+  const n = s.points.length;
+  const isClosingSeg = (idx === n-1) && s.closed;
+  const a = s.points[idx], b = s.points[isClosingSeg ? 0 : idx+1];
+  if(!b) return;
+  const u = UNITS[state.unit];
+  const dec = Math.pow(10, u.decimals);
+
+  const box = document.createElement('div');
+  box.style.cssText = `position:fixed; left:${Math.min(clientX+12, window.innerWidth-230)}px; top:${Math.min(clientY+12, window.innerHeight-180)}px; z-index:500; background:var(--bg-1); border:1px solid var(--line); border-radius:8px; box-shadow:0 10px 30px rgba(0,0,0,.5); padding:10px 12px; width:200px;`;
+  const title = isClosingSeg ? `Tratto ${n}→1` : `Tratto ${idx+1}→${idx+2}`;
+  box.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <b style="font-size:12px;">${title}</b>
+      <button id="segEditClose" class="iconbtn" style="padding:2px 6px;">✕</button>
+    </div>
+    <div class="field"><label>Lunghezza (${u.label})</label><input type="number" id="segEditLen" step="${u.step}"></div>
+    <div class="field" id="segEditCurvWrap" style="display:none;"><label>Curvatura (${u.label})</label><input type="number" id="segEditCurv" step="${u.step}" min="0"></div>
+    <button class="btn" id="segEditAddVertex" style="margin-top:2px;">+ Aggiungi vertice qui</button>
+  `;
+  document.body.appendChild(box);
+  segEditorEl = box;
+
+  const lenInp = box.querySelector('#segEditLen');
+  lenInp.value = Math.round(mmToUnit(dist(a,b))*dec)/dec;
+  lenInp.addEventListener('input', ()=>{
+    const v = parseFloat(lenInp.value);
+    if(isNaN(v) || v<=0) return;
+    const mmV = unitToMm(v);
+    const ang = Math.atan2(b[1]-a[1], b[0]-a[0]);
+    moveConnectedVertex(s, isClosingSeg ? 0 : idx+1, [a[0]+Math.cos(ang)*mmV, a[1]+Math.sin(ang)*mmV]);
+    renderCanvasOnly();
+  });
+  lenInp.addEventListener('change', ()=>{ pushHistory(); renderPropPanel(); });
+
+  // la curvatura riguarda il vertice di ARRIVO del tratto, e ha senso solo se
+  // quel vertice non è un estremo libero di un percorso aperto
+  const curvVertexIdx = isClosingSeg ? 0 : idx+1;
+  const curvApplies = s.closed || (curvVertexIdx>0 && curvVertexIdx<n-1);
+  if(curvApplies){
+    if(!s.smooth) s.smooth = s.points.map(()=>0);
+    box.querySelector('#segEditCurvWrap').style.display = '';
+    const curvInp = box.querySelector('#segEditCurv');
+    curvInp.value = Math.round(mmToUnit(s.smooth[curvVertexIdx]||0)*dec)/dec;
+    curvInp.addEventListener('input', ()=>{
+      const v = parseFloat(curvInp.value);
+      if(isNaN(v)) return;
+      s.smooth[curvVertexIdx] = Math.max(0, unitToMm(v));
+      renderCanvasOnly();
+    });
+    curvInp.addEventListener('change', ()=>{ pushHistory(); renderPropPanel(); });
+  }
+
+  box.querySelector('#segEditClose').onclick = closeSegmentInlineEditor;
+  box.querySelector('#segEditAddVertex').onclick = ()=>{
+    const insertAt = isClosingSeg ? n : idx+1;
+    s.points.splice(insertAt, 0, clickMM);
+    if(!s.smooth) s.smooth = s.points.map(()=>0);
+    else s.smooth.splice(insertAt, 0, 0);
+    pushHistory(); renderAll();
+    closeSegmentInlineEditor();
+  };
+
+  state.hoverSegment = {shapeId:s.id, idx:idx};
+  renderSelectionHandles();
+  setTimeout(()=> document.addEventListener('mousedown', segEditorOutsideClick, true), 0);
+  box.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeSegmentInlineEditor(); });
 }
 
 function commitDraft(){
@@ -2774,6 +2873,23 @@ async function saveToLibrary(){
 function closeSaveLibraryModal(){ document.getElementById('saveLibraryModal').classList.remove('open'); }
 document.getElementById('saveLibModalClose').onclick = closeSaveLibraryModal;
 setupOverlayClickClose(document.getElementById('saveLibraryModal'), closeSaveLibraryModal);
+let _saveConflictResolve = null;
+function showSaveConflict(name){
+  return new Promise((resolve)=>{
+    document.getElementById('saveConflictMessage').textContent = `Hai già un progetto chiamato "${name}" nella tua libreria. Cosa vuoi fare?`;
+    document.getElementById('saveConflictModal').classList.add('open');
+    _saveConflictResolve = resolve;
+  });
+}
+function resolveSaveConflict(v){
+  document.getElementById('saveConflictModal').classList.remove('open');
+  if(_saveConflictResolve){ _saveConflictResolve(v); _saveConflictResolve = null; }
+}
+document.getElementById('saveConflictOverwrite').onclick = ()=> resolveSaveConflict('overwrite');
+document.getElementById('saveConflictCopy').onclick = ()=> resolveSaveConflict('copy');
+document.getElementById('saveConflictClose').onclick = ()=> resolveSaveConflict(null);
+setupOverlayClickClose(document.getElementById('saveConflictModal'), ()=> resolveSaveConflict(null));
+
 document.getElementById('saveLibSubmit').onclick = async ()=>{
   const name = document.getElementById('saveLibName').value.trim();
   const errEl = document.getElementById('saveLibError');
@@ -2781,8 +2897,18 @@ document.getElementById('saveLibSubmit').onclick = async ()=>{
   if(!name){ errEl.textContent='Inserisci un nome per il progetto.'; errEl.style.display=''; return; }
   const shared = document.getElementById('saveLibShared').checked;
   const folderId = document.getElementById('saveLibFolder').value || null;
+
+  let targetId = state.libraryId || null;
+  const dup = libCacheItems.find(it=> it.mine && it.name===name && it.id!==state.libraryId);
+  if(dup){
+    const choice = await showSaveConflict(name);
+    if(!choice) return; // annullato: si resta nella modale di salvataggio
+    if(choice==='overwrite') targetId = dup.id;
+    // 'copy': targetId resta quello di partenza (nuovo progetto, o quello già aperto)
+  }
+
   try{
-    const payload = { id: state.libraryId || null, name, shared, folderId, page: state.page, shapes: state.shapes, refImage: state.refImage, layers: state.layers, activeLayerId: state.activeLayerId, customFonts: state.customFonts };
+    const payload = { id: targetId, name, shared, folderId, page: state.page, shapes: state.shapes, refImage: state.refImage, layers: state.layers, activeLayerId: state.activeLayerId, customFonts: state.customFonts };
     const data = await apiFetch('save.php', {
       method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
     });
