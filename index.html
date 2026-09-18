@@ -507,7 +507,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.4.2</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.5.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1348,6 +1348,20 @@ function collectConnectionPoints(){
 
 // Sposta un singolo vertice di una forma; se altre forme hanno un punto coincidente
 // con la posizione precedente, quel punto viene aggiornato alla nuova posizione.
+async function deletePointFromShape(s, idx){
+  if(!s.points || s.points.length <= 2){
+    showToast('Non puoi eliminare questo punto: un percorso deve avere almeno 2 punti.', true);
+    return;
+  }
+  const ok = await showConfirm(`Eliminare il punto ${idx+1}? I due tratti collegati diventeranno un unico tratto.`, 'Elimina punto');
+  if(!ok) return;
+  s.points.splice(idx, 1);
+  if(s.smooth) s.smooth.splice(idx, 1);
+  state.hoverSegment = null;
+  pushHistory();
+  renderAll();
+  renderPropPanel();
+}
 function moveConnectedVertex(shape, idx, newPt){
   const oldPt = shape.points[idx];
   for(const other of state.shapes){
@@ -1608,12 +1622,22 @@ function renderSelectionHandles(){
   if(state.hoverSegment){
     const hs = state.hoverSegment;
     const s = state.shapes.find(x=>x.id===hs.shapeId);
-    if(s && s.points && (hs.idx < s.points.length-1 || (s.closed && hs.idx===s.points.length-1))){
-      const a = s.points[hs.idx], b = s.points[(hs.idx+1) % s.points.length];
-      layerOverlay.appendChild(el('line', {
-        x1:a[0]*state.scale, y1:a[1]*state.scale, x2:b[0]*state.scale, y2:b[1]*state.scale,
-        stroke:'#ffcc00', 'stroke-width':5, 'stroke-linecap':'round', opacity:0.55, 'pointer-events':'none'
-      }));
+    if(s && s.points){
+      if(hs.idx < s.points.length-1 || (s.closed && hs.idx===s.points.length-1)){
+        const a = s.points[hs.idx], b = s.points[(hs.idx+1) % s.points.length];
+        layerOverlay.appendChild(el('line', {
+          x1:a[0]*state.scale, y1:a[1]*state.scale, x2:b[0]*state.scale, y2:b[1]*state.scale,
+          stroke:'#ffcc00', 'stroke-width':5, 'stroke-linecap':'round', opacity:0.55, 'pointer-events':'none'
+        }));
+      } else {
+        // ultimo punto di un percorso APERTO: non c'è un tratto successivo da
+        // evidenziare, quindi segnalo comunque il punto stesso con un pallino
+        const p = s.points[hs.idx];
+        layerOverlay.appendChild(el('circle', {
+          cx:p[0]*state.scale, cy:p[1]*state.scale, r:8,
+          fill:'#ffcc00', opacity:0.55, 'pointer-events':'none'
+        }));
+      }
     }
   }
 }
@@ -2950,17 +2974,27 @@ document.getElementById('saveLibSubmit').onclick = async ()=>{
     const freshData = await apiFetch('list.php', {method:'GET'});
     libCacheItems = freshData.items || []; libCacheFolders = freshData.folders || [];
     const norm = (s)=> (s||'').trim().toLowerCase();
-    // un duplicato conta solo dentro la STESSA cartella di destinazione, come
-    // in un vero file system: due nomi uguali in cartelle diverse convivono
-    const dup = libCacheItems.find(it=> it.mine && it.id!==state.libraryId
-      && (it.folderId||null)===(folderId||null) && norm(it.name)===norm(name));
-    if(dup){
+
+    if(state.libraryId){
+      // il progetto aperto in questa scheda esiste GIÀ in libreria: risalvare
+      // lo sovrascriverebbe direttamente, quindi chiedo sempre conferma.
       const choice = await showSaveConflict(name);
       if(!choice) return; // annullato: si resta nella modale di salvataggio
-      if(choice==='overwrite') targetId = dup.id;
-      // 'copy': targetId resta quello di partenza (nuovo progetto, o quello già aperto)
+      if(choice==='copy') targetId = null; // crea un progetto nuovo e separato, lascia intatto l'originale
+      // 'overwrite': targetId resta state.libraryId, cioè lo stesso progetto
+    } else {
+      // progetto nuovo in questa scheda: controllo comunque se esiste già un
+      // ALTRO progetto con lo stesso nome nella stessa cartella di destinazione
+      const dup = libCacheItems.find(it=> it.mine && it.id!==state.libraryId
+        && (it.folderId||null)===(folderId||null) && norm(it.name)===norm(name));
+      if(dup){
+        const choice = await showSaveConflict(name);
+        if(!choice) return;
+        if(choice==='overwrite') targetId = dup.id;
+        // 'copy': targetId resta null (nuovo progetto)
+      }
     }
-  }catch(err){ /* se il controllo duplicati fallisce, procedo comunque con il salvataggio normale */ }
+  }catch(err){ /* se il controllo fallisce, procedo comunque con il salvataggio normale */ }
 
   try{
     const payload = { id: targetId, name, shared, folderId, page: state.page, shapes: state.shapes, refImage: state.refImage, layers: state.layers, activeLayerId: state.activeLayerId, customFonts: state.customFonts };
@@ -4059,8 +4093,16 @@ function renderGeometrySection(host, s){
         block.addEventListener('mouseleave', ()=>{ state.hoverSegment = null; renderSelectionHandles(); });
         host.appendChild(block);
         const label = (i===0 && !s.closed) ? `Punto ${i+1} (inizio)` : ((i===n-1 && !s.closed) ? `Punto ${i+1} (fine)` : `Punto ${i+1}`);
-        const lab = document.createElement('div'); lab.className='hint'; lab.style.margin = '0 0 2px';
-        lab.textContent = label;
+        const lab = document.createElement('div');
+        lab.style.cssText = 'margin:0 0 2px;display:flex;align-items:center;justify-content:space-between;gap:6px;';
+        const labText = document.createElement('span'); labText.className='hint'; labText.textContent = label;
+        lab.appendChild(labText);
+        if(n>2){
+          const delBtn = document.createElement('button'); delBtn.textContent='✕'; delBtn.title='Elimina questo punto';
+          delBtn.className='iconbtn'; delBtn.style.cssText='padding:1px 6px;font-size:11px;';
+          delBtn.onclick = (e)=>{ e.stopPropagation(); deletePointFromShape(s, i); };
+          lab.appendChild(delBtn);
+        }
         block.appendChild(lab);
         coordRow('X', p[0], v=>moveConnectedVertex(s, i, [v, s.points[i][1]]),
                   'Y', p[1], v=>moveConnectedVertex(s, i, [s.points[i][0], v]), block);
