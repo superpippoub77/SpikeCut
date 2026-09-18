@@ -514,6 +514,10 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 <div id="status">
   <span id="coord">x: 0.0  y: 0.0 mm</span>
   <span class="toggle on" id="toggleGrid" title="Griglia (G)">▦ griglia</span>
+  <select id="gridStepSelect" title="Passo della griglia" style="width:auto;padding:2px 4px;font-size:10.5px;margin-left:-4px;">
+    <option value="1">1 mm</option>
+    <option value="10" selected>1 cm</option>
+  </select>
   <span class="toggle on" id="toggleMagnet" title="Calamita (M)">🧲 calamita</span>
   <span class="toggle on" id="toggleEndpoints" title="Mostra i punti liberi (arancio) e collegati (verde) di ogni percorso aperto">● punti</span>
   <span class="toggle" id="toggleDimensions" title="Mostra/nascondi le quote del disegno e del foglio">📐 quote</span>
@@ -521,7 +525,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.7.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.8.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -3874,6 +3878,11 @@ document.getElementById('unitSelect').addEventListener('change', (e)=>{
   try{ localStorage.setItem('spikecut-unit', state.unit); }catch(err){ /* best-effort */ }
   renderAll();
 });
+document.getElementById('gridStepSelect').addEventListener('change', (e)=>{
+  state.grid = parseFloat(e.target.value) || 10;
+  try{ localStorage.setItem('spikecut-gridstep', String(state.grid)); }catch(err){ /* best-effort */ }
+  renderCanvasOnly();
+});
 document.getElementById('pageModalClose').onclick = closeCustomPageModal;
 setupOverlayClickClose(document.getElementById('pageSizeModal'), closeCustomPageModal);
 document.getElementById('customPageApply').onclick = applyCustomPage;
@@ -6174,6 +6183,13 @@ async function init(){
     if(savedUnit && UNITS[savedUnit]){
       state.unit = savedUnit;
       document.getElementById('unitSelect').value = savedUnit;
+    }
+  }catch(err){ /* best-effort */ }
+  try{
+    const savedGrid = localStorage.getItem('spikecut-gridstep');
+    if(savedGrid==='1' || savedGrid==='10'){
+      state.grid = parseFloat(savedGrid);
+      document.getElementById('gridStepSelect').value = savedGrid;
     }
   }catch(err){ /* best-effort */ }
   checkAuthStatus();
