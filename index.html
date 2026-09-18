@@ -30,6 +30,9 @@
 }
 @font-face{font-family:'Inter';src:local('Inter');}
 *{box-sizing:border-box;}
+a{color:#8ecbff;}
+a:visited{color:#8ecbff;}
+a:hover{color:#b8ddff;}
 html,body{height:100%;margin:0;}
 body{
   background:var(--bg-0);
@@ -503,7 +506,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.1.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.2.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -602,6 +605,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
     <div class="modal-body" style="display:flex;flex-direction:column;">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
         <div id="libBreadcrumb" style="flex:1;font-size:12px;color:var(--ink-dim);"></div>
+        <div id="libOpenAllWrap"></div>
         <button class="btn" id="libNewFolderBtn" style="width:auto;margin:0;">📁+ Nuova cartella</button>
       </div>
       <div id="libList" style="flex:1;overflow-y:auto;">
@@ -2866,6 +2870,16 @@ function renderLibraryView(){
   const myItemsHere = libCacheItems.filter(it=> it.mine && (it.folderId||null) === (libCurrentFolderId||null));
   const sharedItems = libCurrentFolderId===null ? libCacheItems.filter(it=>!it.mine) : [];
 
+  const openAllWrap = document.getElementById('libOpenAllWrap');
+  openAllWrap.innerHTML = '';
+  if(myItemsHere.length){
+    const btn = document.createElement('button'); btn.className='btn'; btn.style.cssText='width:auto;margin:0;';
+    btn.textContent = `📂 Apri tutta la cartella (${myItemsHere.length})`;
+    btn.title = 'Apre ogni progetto di questa cartella in una scheda separata';
+    btn.onclick = ()=> openFolderAsTabs(myItemsHere);
+    openAllWrap.appendChild(btn);
+  }
+
   if(!subFolders.length && !myItemsHere.length && !sharedItems.length){
     host.innerHTML = '<div class="emptystate">Cartella vuota.</div>';
   }
@@ -2948,6 +2962,39 @@ async function moveProjectAction(id, folderId){
     await apiFetch('move_project.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, folderId})});
     loadLibraryList();
   }catch(err){ showToast('Errore nello spostamento: ' + err.message, true); loadLibraryList(); }
+}
+async function openFolderAsTabs(items){
+  if(!items.length) return;
+  snapshotActiveDocument();
+  let opened = 0, failed = 0;
+  let firstNewDocId = null;
+  for(const it of items){
+    try{
+      const data = await apiFetch('load.php?id=' + encodeURIComponent(it.id), {method:'GET'});
+      const proj = data.project || {};
+      const defaultLayer = {id:uid(), name:'Livello 1', visible:true, locked:false};
+      const layers = (proj.layers && proj.layers.length) ? proj.layers : [defaultLayer];
+      const doc = {
+        id: uid(), name: proj.name || it.name || 'Disegno',
+        shapes: proj.shapes || [], page: proj.page || {w:210,h:297}, refImage: proj.refImage || null,
+        layers, activeLayerId: proj.activeLayerId || layers[0].id,
+        history: [JSON.stringify({shapes:proj.shapes||[], layers})], histIndex: 0,
+        libraryId: it.id, libraryFolderId: it.folderId || null
+      };
+      if(proj.customFonts) restoreFontsFromProject(proj); // font incorporati nel progetto: li rendo disponibili subito
+      documents.push(doc);
+      if(!firstNewDocId) firstNewDocId = doc.id;
+      opened++;
+    }catch(err){ failed++; }
+  }
+  if(firstNewDocId){
+    activeDocId = firstNewDocId;
+    loadDocumentIntoState(documents.find(d=>d.id===firstNewDocId));
+  }
+  renderTabBar();
+  closeLibraryModal();
+  const failNote = failed>0 ? ` (${failed} non aperti per un errore)` : '';
+  showToast(`Aperti ${opened} progetti in altrettante schede${failNote}.`, failed>0);
 }
 async function loadFromLibrary(id){
   try{
@@ -5646,7 +5693,7 @@ function makeNewDocument(name){
     id: uid(), name: name || 'Disegno',
     shapes: [], page: {w:210,h:297}, refImage: null,
     layers: [defaultLayer], activeLayerId: defaultLayer.id,
-    history: [JSON.stringify({shapes:[], layers:[defaultLayer]})], histIndex: 0, libraryId: null
+    history: [JSON.stringify({shapes:[], layers:[defaultLayer]})], histIndex: 0, libraryId: null, libraryFolderId: null
   };
 }
 function snapshotActiveDocument(){
@@ -5660,6 +5707,7 @@ function snapshotActiveDocument(){
   doc.history = state.history;
   doc.histIndex = state.histIndex;
   doc.libraryId = state.libraryId;
+  doc.libraryFolderId = state.libraryFolderId;
 }
 function loadDocumentIntoState(doc){
   state.shapes = doc.shapes;
@@ -5671,6 +5719,7 @@ function loadDocumentIntoState(doc){
   state.history = doc.history;
   state.histIndex = doc.histIndex;
   state.libraryId = doc.libraryId;
+  state.libraryFolderId = doc.libraryFolderId!=null ? doc.libraryFolderId : null;
   state.selection = new Set();
   state.gapMarkers = [];
   state.draft = null;
