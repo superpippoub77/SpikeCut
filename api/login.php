@@ -22,26 +22,7 @@ if (!$user || !password_verify($password, $user['passwordHash'])) {
     json_error('Nome utente/email o password non corretti.', 401);
 }
 
-$_SESSION['user_id'] = $user['id'];
+$ttl = !empty($body['remember']) ? JWT_TTL_REMEMBER : JWT_TTL_DEFAULT;
+$token = issue_jwt($user, $ttl);
 
-if (!empty($body['remember'])) {
-    $token = bin2hex(random_bytes(32));
-    foreach ($users as &$u) {
-        if ($u['id'] === $user['id']) {
-            $u['rememberToken'] = $token;
-            $u['rememberTokenExpires'] = time() + REMEMBER_TTL;
-            break;
-        }
-    }
-    unset($u);
-    write_users($users);
-    setcookie(REMEMBER_COOKIE_NAME, $token, [
-        'expires'  => time() + REMEMBER_TTL,
-        'path'     => '/',
-        'secure'   => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
-        'httponly' => true,
-        'samesite' => 'Lax',
-    ]);
-}
-
-json_ok(['user' => public_user($user)]);
+json_ok(['user' => public_user($user), 'token' => $token, 'expiresIn' => $ttl]);

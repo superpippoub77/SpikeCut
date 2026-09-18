@@ -27,6 +27,7 @@ foreach ($users as &$u) {
         $u['passwordHash'] = password_hash($password, PASSWORD_DEFAULT);
         $u['resetToken']   = null;
         $u['resetExpires'] = null;
+        $u['tokenValidAfter'] = time(); // invalida ogni accesso già aperto altrove
         $found = true;
         break;
     }

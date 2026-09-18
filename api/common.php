@@ -1,31 +1,13 @@
 <?php
 require_once __DIR__ . '/config.php';
 
-// Sessioni: servono per riconoscere l'utente collegato tra una richiesta e
-// l'altra. Vanno avviate prima di qualunque output (gli header sotto non
-// contano come output, va bene).
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path'     => '/',
-    'samesite' => 'Lax',
-    'secure'   => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
-    'httponly' => true,
-]);
-session_name(SESSION_COOKIE_NAME);
-session_start();
-
 header('Content-Type: application/json; charset=utf-8');
-// Con le sessioni (cookie) il CORS "*" non è consentito dai browser insieme
-// alle credenziali: rispecchio l'origine della richiesta quando presente.
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-if ($origin !== '') {
-    header('Access-Control-Allow-Origin: ' . $origin);
-    header('Access-Control-Allow-Credentials: true');
-} else {
-    header('Access-Control-Allow-Origin: *');
-}
+// L'autenticazione ora passa dall'header "Authorization" (JWT), non da un
+// cookie di sessione: il CORS può restare permissivo come per qualunque API,
+// senza bisogno di credenziali/cookie cross-origin.
+header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, X-Api-Key');
+header('Access-Control-Allow-Headers: Content-Type, X-Api-Key, Authorization');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
@@ -246,26 +228,118 @@ function find_user_by_id($users, $id) {
     return null;
 }
 
-// Utente attualmente collegato (in base alla sessione), oppure null.
-function current_user() {
-    if (!empty($_SESSION['user_id'])) {
-        $users = read_users();
-        $u = find_user_by_id($users, $_SESSION['user_id']);
-        if ($u) return $u;
+/* ============================================================
+   JWT (JSON Web Token) — firma e verifica HS256 scritte in PHP puro,
+   senza librerie esterne (nessun composer richiesto sull'hosting).
+   Il token contiene: sub (id utente), iat (emesso il), exp (scade il).
+============================================================ */
+
+function base64url_encode($data) {
+    return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+}
+
+function base64url_decode($data) {
+    $pad = strlen($data) % 4;
+    if ($pad) $data .= str_repeat('=', 4 - $pad);
+    return base64_decode(strtr($data, '-_', '+/'));
+}
+
+// Chiave di firma: generata da sola in modo casuale al primo utilizzo e
+// salvata in users/.jwt_secret (cartella già protetta da .htaccess). Non va
+// mai scritta a mano né trasmessa al client.
+function jwt_secret() {
+    static $cached = null;
+    if ($cached !== null) return $cached;
+    ensure_users_dir();
+    if (file_exists(JWT_SECRET_FILE)) {
+        $existing = trim((string) @file_get_contents(JWT_SECRET_FILE));
+        if ($existing !== '') { $cached = $existing; return $cached; }
     }
-    // nessuna sessione attiva: provo con il cookie "ricordami", se presente e valido
-    if (!empty($_COOKIE[REMEMBER_COOKIE_NAME])) {
-        $token = (string) $_COOKIE[REMEMBER_COOKIE_NAME];
-        $users = read_users();
-        foreach ($users as $u) {
-            if (!empty($u['rememberToken']) && hash_equals((string) $u['rememberToken'], $token)
-                && ($u['rememberTokenExpires'] ?? 0) > time()) {
-                $_SESSION['user_id'] = $u['id']; // ristabilisco la normale sessione
-                return $u;
-            }
+    $cached = bin2hex(random_bytes(32));
+    file_put_contents(JWT_SECRET_FILE, $cached);
+    @chmod(JWT_SECRET_FILE, 0600);
+    return $cached;
+}
+
+function jwt_encode($payload) {
+    $header = ['alg' => 'HS256', 'typ' => 'JWT'];
+    $segments = [
+        base64url_encode(json_encode($header, JSON_UNESCAPED_UNICODE)),
+        base64url_encode(json_encode($payload, JSON_UNESCAPED_UNICODE)),
+    ];
+    $signingInput = implode('.', $segments);
+    $signature = hash_hmac('sha256', $signingInput, jwt_secret(), true);
+    $segments[] = base64url_encode($signature);
+    return implode('.', $segments);
+}
+
+// Restituisce il payload decodificato se la firma è valida e il token non è
+// scaduto, altrimenti null. Non fa MAI fidamento sul contenuto senza aver
+// prima verificato la firma con hash_equals (a tempo costante).
+function jwt_decode($jwt) {
+    if (!is_string($jwt) || $jwt === '') return null;
+    $parts = explode('.', $jwt);
+    if (count($parts) !== 3) return null;
+    [$headerB64, $payloadB64, $sigB64] = $parts;
+    $expected = hash_hmac('sha256', $headerB64 . '.' . $payloadB64, jwt_secret(), true);
+    $actual = base64url_decode($sigB64);
+    if (!hash_equals($expected, $actual)) return null;
+    $payload = json_decode(base64url_decode($payloadB64), true);
+    if (!is_array($payload)) return null;
+    if (!isset($payload['exp']) || $payload['exp'] < time()) return null;
+    return $payload;
+}
+
+// L'header Authorization non arriva sempre nello stesso punto di $_SERVER a
+// seconda di come PHP gira sull'hosting (mod_php, CGI, FastCGI...): li provo
+// tutti nell'ordine più comune.
+function get_authorization_header() {
+    if (!empty($_SERVER['HTTP_AUTHORIZATION'])) return trim($_SERVER['HTTP_AUTHORIZATION']);
+    if (!empty($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) return trim($_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
+    if (function_exists('apache_request_headers')) {
+        foreach (apache_request_headers() as $name => $value) {
+            if (strcasecmp($name, 'Authorization') === 0) return trim($value);
         }
     }
+    if (function_exists('getallheaders')) {
+        foreach (getallheaders() as $name => $value) {
+            if (strcasecmp($name, 'Authorization') === 0) return trim($value);
+        }
+    }
+    return '';
+}
+
+function jwt_from_request() {
+    $auth = get_authorization_header();
+    if ($auth !== '' && preg_match('/^Bearer\s+(.+)$/i', $auth, $m)) return $m[1];
     return null;
+}
+
+// Rilascia un nuovo token per l'utente indicato. $rememberSeconds è la
+// durata: usa JWT_TTL_REMEMBER con "Ricordami", altrimenti JWT_TTL_DEFAULT.
+function issue_jwt($user, $ttlSeconds) {
+    $now = time();
+    return jwt_encode([
+        'sub' => $user['id'],
+        'iat' => $now,
+        'exp' => $now + $ttlSeconds,
+    ]);
+}
+
+// Utente attualmente autenticato in base al token presentato, oppure null.
+// Un token emesso PRIMA dell'ultimo logout (tokenValidAfter) viene rifiutato:
+// è quello che permette un vero logout anche con un token altrimenti valido.
+function current_user() {
+    $token = jwt_from_request();
+    if (!$token) return null;
+    $payload = jwt_decode($token);
+    if (!$payload || empty($payload['sub'])) return null;
+    $users = read_users();
+    $u = find_user_by_id($users, $payload['sub']);
+    if (!$u) return null;
+    $validAfter = $u['tokenValidAfter'] ?? 0;
+    if (($payload['iat'] ?? 0) <= $validAfter) return null; // token emesso prima o nello stesso istante di un logout/reset password
+    return $u;
 }
 
 // Come current_user(), ma interrompe la richiesta con errore 401 se non

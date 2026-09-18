@@ -30,16 +30,17 @@ if (find_user_by_email($users, $email)) {
 }
 
 $user = [
-    'id'           => bin2hex(random_bytes(12)),
-    'username'     => $username,
-    'email'        => $email,
-    'passwordHash' => password_hash($password, PASSWORD_DEFAULT),
-    'created'      => date('c'),
-    'resetToken'   => null,
-    'resetExpires' => null,
+    'id'              => bin2hex(random_bytes(12)),
+    'username'        => $username,
+    'email'           => $email,
+    'passwordHash'    => password_hash($password, PASSWORD_DEFAULT),
+    'created'         => date('c'),
+    'resetToken'      => null,
+    'resetExpires'    => null,
+    'tokenValidAfter' => 0,
 ];
 $users[] = $user;
 write_users($users);
 
-$_SESSION['user_id'] = $user['id'];
-json_ok(['user' => public_user($user)]);
+$token = issue_jwt($user, JWT_TTL_DEFAULT);
+json_ok(['user' => public_user($user), 'token' => $token, 'expiresIn' => JWT_TTL_DEFAULT]);

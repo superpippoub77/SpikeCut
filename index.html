@@ -521,7 +521,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.6.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.7.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1989,6 +1989,73 @@ function renderEndpointMarkers(){
       }));
     });
   }
+  renderCornerAngles();
+}
+
+/* ============================================================
+   ANGOLI TRA I SEGMENTI — visibili solo con l'opzione "punti" (●)
+   attiva. Segna l'angolo in ogni vertice dove si incontrano ESATTAMENTE
+   due tratti: sia il caso normale (un vertice interno di uno stesso
+   percorso), sia due forme DIVERSE i cui estremi coincidono (un
+   collegamento tra oggetti). Se in un punto convergono 1 solo tratto
+   (estremo libero) o 3+ (un incrocio), l'angolo sarebbe ambiguo e non
+   viene mostrato.
+============================================================ */
+function renderCornerAngles(){
+  const rays = [];
+  state.shapes.forEach(s=>{
+    if(!s.points || !isShapeEffVisible(s)) return;
+    const n = s.points.length;
+    if(n<2) return;
+    for(let i=0;i<n;i++){
+      const p = s.points[i];
+      const hasPrev = s.closed || i>0;
+      const hasNext = s.closed || i<n-1;
+      if(hasPrev){
+        const prevP = s.points[(i-1+n)%n];
+        rays.push({pos:p, vec:[prevP[0]-p[0], prevP[1]-p[1]]});
+      }
+      if(hasNext){
+        const nextP = s.points[(i+1)%n];
+        rays.push({pos:p, vec:[nextP[0]-p[0], nextP[1]-p[1]]});
+      }
+    }
+  });
+  const used = new Array(rays.length).fill(false);
+  for(let i=0;i<rays.length;i++){
+    if(used[i]) continue;
+    const group = [rays[i]];
+    used[i] = true;
+    for(let j=i+1;j<rays.length;j++){
+      if(used[j]) continue;
+      if(pointsEqual(rays[j].pos, rays[i].pos)){ group.push(rays[j]); used[j] = true; }
+    }
+    if(group.length !== 2) continue; // niente angolo se non convergono esattamente 2 tratti
+    drawCornerAngle(group[0], group[1]);
+  }
+}
+function drawCornerAngle(rayA, rayB){
+  const pos = rayA.pos;
+  const angA = Math.atan2(rayA.vec[1], rayA.vec[0]);
+  const angB = Math.atan2(rayB.vec[1], rayB.vec[0]);
+  let d = angB - angA;
+  while(d > Math.PI) d -= 2*Math.PI;
+  while(d <= -Math.PI) d += 2*Math.PI;
+  const diffDeg = Math.abs(d) * 180/Math.PI;
+  if(diffDeg < 1) return; // tratti sostanzialmente allineati/sovrapposti: nulla di utile da mostrare
+  const R = 6/state.scale, RL = 11/state.scale; // raggi in mm: restano costanti a schermo indipendentemente dallo zoom
+  const steps = 10;
+  const pts = [];
+  for(let k=0;k<=steps;k++){
+    const a = angA + d*(k/steps);
+    pts.push(`${(pos[0]+R*Math.cos(a))*state.scale},${(pos[1]+R*Math.sin(a))*state.scale}`);
+  }
+  layerOverlay.appendChild(el('polyline', {points:pts.join(' '), fill:'none', stroke:'#59c2ff', 'stroke-width':1, opacity:0.85, 'pointer-events':'none'}));
+  const midAngle = angA + d/2;
+  const lp = [pos[0]+RL*Math.cos(midAngle), pos[1]+RL*Math.sin(midAngle)];
+  const t = el('text', {x:lp[0]*state.scale, y:lp[1]*state.scale, 'font-size':9, 'font-family':'sans-serif', fill:'#59c2ff', 'text-anchor':'middle', 'dominant-baseline':'middle', 'pointer-events':'none'});
+  t.textContent = Math.round(diffDeg) + '°';
+  layerOverlay.appendChild(t);
 }
 
 function renderGapMarkers(){
@@ -2923,8 +2990,13 @@ function handleMenuAction(e){
 MENU_IDS.forEach(id=> document.getElementById(id).addEventListener('click', handleMenuAction));
 
 /* ---------- libreria progetti: comunicazione con le API PHP ---------- */
+const AUTH_TOKEN_KEY = 'spikecut-jwt';
+function getAuthToken(){ try{ return localStorage.getItem(AUTH_TOKEN_KEY); }catch(err){ return null; } }
+function setAuthToken(token){ try{ if(token) localStorage.setItem(AUTH_TOKEN_KEY, token); else localStorage.removeItem(AUTH_TOKEN_KEY); }catch(err){ /* best-effort */ } }
 async function apiFetch(path, opts){
-  opts = Object.assign({credentials:'include'}, opts||{});
+  opts = Object.assign({}, opts||{});
+  const token = getAuthToken();
+  opts.headers = Object.assign({}, opts.headers||{}, token ? {'Authorization': 'Bearer ' + token} : {});
   let res;
   try{
     res = await fetch(API_BASE + path, opts);
@@ -3359,6 +3431,7 @@ async function checkAuthStatus(){
   try{
     const data = await apiFetch('me.php', {method:'GET'});
     currentUser = data.user || null;
+    if(!currentUser) setAuthToken(null); // il token salvato non è (più) valido: lo scarto
   }catch(err){ currentUser = null; }
   updateAccountUI();
 }
@@ -3403,6 +3476,7 @@ document.getElementById('loginSubmit').onclick = async ()=>{
   const errEl = document.getElementById('loginError'); errEl.style.display='none';
   try{
     const data = await apiFetch('login.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({identifier, password, remember})});
+    setAuthToken(data.token);
     currentUser = data.user; updateAccountUI(); closeAccountModal();
     showToast('Accesso effettuato, ciao ' + currentUser.username + '!', false);
   }catch(err){ errEl.textContent = err.message; errEl.style.display=''; }
@@ -3429,6 +3503,7 @@ document.getElementById('registerSubmit').onclick = async ()=>{
   const errEl = document.getElementById('registerError'); errEl.style.display='none';
   try{
     const data = await apiFetch('register.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username, email, password})});
+    setAuthToken(data.token);
     currentUser = data.user; updateAccountUI(); closeAccountModal();
     showToast('Account creato, benvenuto ' + currentUser.username + '!', false);
   }catch(err){ errEl.textContent = err.message; errEl.style.display=''; }
@@ -3459,6 +3534,7 @@ document.getElementById('resetSubmit').onclick = async ()=>{
 };
 document.getElementById('logoutSubmit').onclick = async ()=>{
   try{ await apiFetch('logout.php', {method:'POST'}); }catch(err){}
+  setAuthToken(null);
   currentUser = null; updateAccountUI(); closeAccountModal();
   showToast('Sei uscito dal tuo account.', false);
 };

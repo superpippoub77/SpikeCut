@@ -16,6 +16,7 @@ COME METTERLO ONLINE (es. hosting Aruba o simile con supporto PHP)
      /qualunque-cartella/
        index.html
        api/
+         .htaccess               (necessario per il login con JWT, vedi sotto)
          config.php
          common.php
          register.php
@@ -28,6 +29,14 @@ COME METTERLO ONLINE (es. hosting Aruba o simile con supporto PHP)
          list.php
          load.php
          delete.php
+         versions.php
+         load_version.php
+         restore_version.php
+         create_folder.php
+         rename_folder.php
+         delete_folder.php
+         move_project.php
+         move_folder.php
        library/
          .htaccess
          index.json
@@ -73,6 +82,36 @@ ACCOUNT UTENTE E LIBRERIA CONDIVISA
   consegna non garantita al 100% — controlla anche nello spam.
   Se sul tuo hosting mail() non funziona affatto, va configurato un
   vero servizio SMTP lato server (chiedi pure supporto se serve).
+
+
+ACCESSO CON JWT (token) invece di sessioni/cookie
+===================================================
+- Il login non usa più cookie di sessione: dopo l'accesso il server
+  restituisce un token firmato (JWT), che il browser conserva e
+  ripresenta ad ogni richiesta. Il vantaggio: il server verifica solo
+  la firma del token, senza dover tenere nulla in memoria, ed è
+  immune ai tipici problemi di cookie bloccati/cross-origin.
+- La chiave con cui i token vengono firmati NON va configurata a
+  mano: viene generata da sola, casuale e sicura, al primo utilizzo,
+  e salvata in users/.jwt_secret (protetto da accesso diretto via URL
+  come il resto di users/). Cancellare quel file invalida tutti i
+  token già emessi, forzando un nuovo accesso per tutti gli utenti.
+- "Ricordami" nella schermata di accesso sceglie solo la DURATA del
+  token (30 giorni anziché 24 ore): il token stesso resta salvato nel
+  browser (localStorage), non serve più un cookie separato per questo.
+- Il logout resta effettivo anche prima della scadenza naturale del
+  token: viene registrato un momento "valido da" per l'utente, e ogni
+  token emesso prima di quel momento smette subito di funzionare.
+- IMPORTANTE per chi mette il sito online su Apache (Aruba compreso):
+  alcune configurazioni PHP scartano l'header "Authorization" prima
+  che arrivi allo script, il che romperebbe il login. Il file
+  api/.htaccess incluso in questo pacchetto lo ripristina già; se lo
+  sostituisci o lo elimini per errore, il login smette di funzionare
+  pur senza mostrare un errore chiaro — in caso di problemi, controlla
+  prima questo.
+- Chi aveva già eseguito l'accesso con la versione precedente (basata
+  su cookie/sessioni) dovrà semplicemente accedere di nuovo una volta:
+  i vecchi cookie non vengono più letti.
 
 PROTEGGERE ULTERIORMENTE L'API CON UNA CHIAVE (opzionale; il login
 utente già protegge la libreria, questa è una barriera aggiuntiva

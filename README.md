@@ -65,7 +65,11 @@ usato nel file originale.
 Righelli, griglia con calamita, quotature in tempo reale durante il
 disegno e quotature permanenti dell'intero pezzo, unità di misura
 selezionabile (mm/cm/m/pollici), verifica automatica dei percorsi aperti
-e saldatura dei punti vicini.
+e saldatura dei punti vicini. Attivando l'opzione "punti" (●) nella barra
+di stato, oltre agli estremi liberi/collegati vengono segnati anche gli
+**angoli** tra i tratti che si incontrano in ogni vertice — sia tra due
+segmenti dello stesso percorso, sia tra due forme diverse i cui estremi
+coincidono — con la relativa quotazione in gradi.
 
 ### Importazione
 - **SVG esistente**: parser completo (archi, curve, trasformazioni),
@@ -113,8 +117,12 @@ dalle pagine PHP in `api/`. Le password non sono mai salvate in chiaro
 
 ### Account
 Registrazione (nome utente + email + password), accesso, disconnessione,
-recupero password via email con link a tempo (1 ora). Le sessioni usano i
-cookie standard di PHP.
+recupero password via email con link a tempo (1 ora). L'accesso usa un
+token firmato (JWT) anziché sessioni/cookie: il server verifica solo la
+firma del token ad ogni richiesta, senza bisogno di conservare nulla in
+memoria; un logout esplicito resta comunque efficace da subito, anche
+prima della scadenza naturale del token (vedi LEGGIMI.txt per i dettagli
+e l'avviso importante sull'header "Authorization" su hosting Apache).
 
 ### Libreria progetti
 Ogni progetto salvato ha un proprietario. Al momento del salvataggio si

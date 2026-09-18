@@ -34,14 +34,23 @@ define('MAX_PAYLOAD_BYTES', 15 * 1024 * 1024); // 15 MB
 // nuovo salvataggio, per non far crescere la libreria all'infinito).
 define('MAX_VERSIONS_PER_PROJECT', 30);
 
-// Nome del cookie di sessione (puoi lasciarlo così).
-define('SESSION_COOKIE_NAME', 'spikecut_session');
-
-// Cookie "Ricordami": un token separato dalla sessione, che permette di
-// restare collegati anche dopo aver chiuso il browser (la sessione PHP da
-// sola scade quando il browser si chiude, o dopo un periodo di inattività).
-define('REMEMBER_COOKIE_NAME', 'spikecut_remember');
-define('REMEMBER_TTL', 60 * 60 * 24 * 30); // 30 giorni
+/**
+ * ACCESSO CON JWT (JSON Web Token)
+ * Il login non usa più sessioni/cookie: dopo l'accesso il server firma un
+ * token che il browser conserva e ripresenta ad ogni richiesta (header
+ * "Authorization: Bearer <token>"). Il server verifica solo la firma, senza
+ * dover tenere nulla in memoria — tranne un piccolo controllo che permette
+ * comunque un logout reale (vedi tokenValidAfter in common.php).
+ *
+ * La chiave segreta con cui i token vengono firmati NON va scritta qui a
+ * mano: viene generata da sola, in modo casuale e sicuro, al primo utilizzo,
+ * e salvata in users/.jwt_secret (cartella già protetta da accesso diretto
+ * via URL). Cancellare quel file invalida tutti i token già emessi, forzando
+ * un nuovo accesso per tutti.
+ */
+define('JWT_SECRET_FILE', USERS_DIR . '/.jwt_secret');
+define('JWT_TTL_DEFAULT', 60 * 60 * 24);      // durata di un accesso normale: 24 ore
+define('JWT_TTL_REMEMBER', 60 * 60 * 24 * 30); // durata con "Ricordami": 30 giorni
 
 // Per quanto tempo (in secondi) resta valido il link di recupero password
 // inviato via email prima di scadere. Default: 1 ora.
