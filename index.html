@@ -376,6 +376,9 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
     <button class="iconbtn" id="btnSaveLibraryTop" disabled title="Accedi al tuo account per salvare in libreria (server)">☁ Libreria</button>
   </div>
   <div class="grp">
+    <button class="iconbtn" id="btnOpenLibraryTop" disabled title="Accedi al tuo account per aprire la libreria (server)">📂 Apri libreria</button>
+  </div>
+  <div class="grp">
     <button class="iconbtn" id="btnUndo" title="Annulla (Ctrl+Z)">↶</button>
     <button class="iconbtn" id="btnRedo" title="Ripeti (Ctrl+Shift+Z)">↷</button>
   </div>
@@ -415,18 +418,26 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <div class="grp menuwrap">
     <button class="btn primary" style="width:auto;margin:0;padding:7px 14px;" id="btnFileMenu">File ▾</button>
     <div class="dropdown-menu" id="fileMenu">
-      <button data-action="export-svg">Esporta SVG (taglio/stampa)</button>
-      <button data-action="export-pdf">Esporta PDF</button>
-      <button data-action="export-pdf-tiled">Esporta PDF multi-pagina (disegno grande)…</button>
-      <button data-action="print-proof">Stampa di prova (A3/A4/A5)…</button>
-      <div class="menu-sep"></div>
       <button data-action="save-project">Salva progetto (.json)</button>
       <button data-action="open-project">Apri progetto (.json)</button>
       <div class="menu-sep"></div>
       <button data-action="save-library">Salva in libreria (server)</button>
       <button data-action="open-library">Apri dalla libreria (server)</button>
       <button data-action="open-drive">Apri da Google Drive</button>
-      <div class="menu-sep"></div>
+    </div>
+  </div>
+  <div class="grp menuwrap">
+    <button class="btn primary" style="width:auto;margin:0;padding:7px 14px;" id="btnPrintMenu">Stampa ▾</button>
+    <div class="dropdown-menu" id="printMenu">
+      <button data-action="export-svg">Esporta SVG (taglio/stampa)</button>
+      <button data-action="export-pdf">Esporta PDF</button>
+      <button data-action="export-pdf-tiled">Esporta PDF multi-pagina (disegno grande)…</button>
+      <button data-action="print-proof">Stampa di prova (A3/A4/A5)…</button>
+    </div>
+  </div>
+  <div class="grp menuwrap">
+    <button class="btn primary" style="width:auto;margin:0;padding:7px 14px;" id="btnToolsMenu">Strumenti ▾</button>
+    <div class="dropdown-menu" id="toolsMenu">
       <button data-action="check-closures">Verifica chiusure percorsi</button>
       <button data-action="cut-preview">Anteprima taglio (fustella)</button>
       <div class="menu-sep"></div>
@@ -492,7 +503,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.0.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2664,14 +2675,24 @@ makeResizable(document.getElementById('panelResizer'), document.getElementById('
 makeResizable(document.getElementById('railResizer'), document.getElementById('rail'), 44, 220, 1);
 
 /* ============================================================
-   MENU FILE (esporta / salva)
+   MENU A TENDINA — File / Stampa / Strumenti
 ============================================================ */
-document.getElementById('btnFileMenu').onclick = (e)=>{
-  e.stopPropagation();
-  document.getElementById('fileMenu').classList.toggle('open');
-};
-document.addEventListener('click', ()=> document.getElementById('fileMenu').classList.remove('open'));
-document.getElementById('fileMenu').addEventListener('click', (e)=>{
+const MENU_IDS = ['fileMenu','printMenu','toolsMenu'];
+function closeAllMenus(){ MENU_IDS.forEach(id=> document.getElementById(id).classList.remove('open')); }
+function wireMenuButton(btnId, menuId){
+  document.getElementById(btnId).onclick = (e)=>{
+    e.stopPropagation();
+    const menu = document.getElementById(menuId);
+    const wasOpen = menu.classList.contains('open');
+    closeAllMenus();
+    if(!wasOpen) menu.classList.add('open');
+  };
+}
+wireMenuButton('btnFileMenu', 'fileMenu');
+wireMenuButton('btnPrintMenu', 'printMenu');
+wireMenuButton('btnToolsMenu', 'toolsMenu');
+document.addEventListener('click', closeAllMenus);
+function handleMenuAction(e){
   const action = e.target.dataset.action; if(!action) return;
   if(action==='export-svg') exportSVG();
   else if(action==='export-pdf') exportPDF();
@@ -2688,8 +2709,9 @@ document.getElementById('fileMenu').addEventListener('click', (e)=>{
   else if(action==='close-all-paths') closeAllOpenPaths();
   else if(action==='scale-drawing') openScaleModal();
   else if(action==='manage-fonts') openFontModal();
-  document.getElementById('fileMenu').classList.remove('open');
-});
+  closeAllMenus();
+}
+MENU_IDS.forEach(id=> document.getElementById(id).addEventListener('click', handleMenuAction));
 
 /* ---------- libreria progetti: comunicazione con le API PHP ---------- */
 async function apiFetch(path, opts){
@@ -2906,6 +2928,11 @@ function updateAccountUI(){
   libBtn.title = currentUser
     ? 'Salva in libreria (server) — scegli se privato o condiviso con tutti gli utenti'
     : 'Accedi al tuo account per salvare in libreria (server)';
+  const openLibBtn = document.getElementById('btnOpenLibraryTop');
+  openLibBtn.disabled = !currentUser;
+  openLibBtn.title = currentUser
+    ? 'Apri dalla libreria (server): i tuoi progetti e quelli condivisi da altri utenti'
+    : 'Accedi al tuo account per aprire la libreria (server)';
 }
 async function checkAuthStatus(){
   try{
@@ -5408,6 +5435,7 @@ document.getElementById('btnQuickSave').onclick = ()=>{
   doAutosave();
 };
 document.getElementById('btnSaveLibraryTop').onclick = saveToLibrary;
+document.getElementById('btnOpenLibraryTop').onclick = openLibraryModal;
 async function tryRestore(){
   try{
     const raw = localStorage.getItem(AUTOSAVE_KEY);
