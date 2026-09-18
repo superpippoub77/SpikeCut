@@ -23,4 +23,25 @@ if (!$user || !password_verify($password, $user['passwordHash'])) {
 }
 
 $_SESSION['user_id'] = $user['id'];
+
+if (!empty($body['remember'])) {
+    $token = bin2hex(random_bytes(32));
+    foreach ($users as &$u) {
+        if ($u['id'] === $user['id']) {
+            $u['rememberToken'] = $token;
+            $u['rememberTokenExpires'] = time() + REMEMBER_TTL;
+            break;
+        }
+    }
+    unset($u);
+    write_users($users);
+    setcookie(REMEMBER_COOKIE_NAME, $token, [
+        'expires'  => time() + REMEMBER_TTL,
+        'path'     => '/',
+        'secure'   => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+}
+
 json_ok(['user' => public_user($user)]);

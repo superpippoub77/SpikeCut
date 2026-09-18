@@ -248,9 +248,24 @@ function find_user_by_id($users, $id) {
 
 // Utente attualmente collegato (in base alla sessione), oppure null.
 function current_user() {
-    if (empty($_SESSION['user_id'])) return null;
-    $users = read_users();
-    return find_user_by_id($users, $_SESSION['user_id']);
+    if (!empty($_SESSION['user_id'])) {
+        $users = read_users();
+        $u = find_user_by_id($users, $_SESSION['user_id']);
+        if ($u) return $u;
+    }
+    // nessuna sessione attiva: provo con il cookie "ricordami", se presente e valido
+    if (!empty($_COOKIE[REMEMBER_COOKIE_NAME])) {
+        $token = (string) $_COOKIE[REMEMBER_COOKIE_NAME];
+        $users = read_users();
+        foreach ($users as $u) {
+            if (!empty($u['rememberToken']) && hash_equals((string) $u['rememberToken'], $token)
+                && ($u['rememberTokenExpires'] ?? 0) > time()) {
+                $_SESSION['user_id'] = $u['id']; // ristabilisco la normale sessione
+                return $u;
+            }
+        }
+    }
+    return null;
 }
 
 // Come current_user(), ma interrompe la richiesta con errore 401 se non

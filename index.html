@@ -506,7 +506,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.3.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.4.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -520,6 +520,12 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
       <div id="acctViewLogin">
         <div class="field"><label>Nome utente o email</label><input type="text" id="loginIdentifier" autocomplete="username"></div>
         <div class="field"><label>Password</label><div class="pwfield"><input type="password" id="loginPassword" autocomplete="current-password"><button type="button" class="pweye" data-target="loginPassword" title="Mostra/nascondi password">👁</button></div></div>
+        <div class="field">
+          <label style="display:flex;align-items:center;gap:7px;cursor:pointer;">
+            <input type="checkbox" id="loginRemember" style="width:auto;" checked>
+            Ricordami su questo dispositivo
+          </label>
+        </div>
         <div id="loginError" class="hint" style="color:var(--cut);display:none;"></div>
         <button class="btn primary" id="loginSubmit">Accedi</button>
         <div class="hint" style="margin-top:10px;">
@@ -563,20 +569,6 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   </div>
 </div>
 
-<div id="saveConflictModal" class="modal-overlay">
-  <div class="modal-box" style="width:340px;">
-    <div class="modal-head">
-      <h3>Nome già esistente</h3>
-      <button class="iconbtn" id="saveConflictClose" title="Chiudi">✕</button>
-    </div>
-    <div class="modal-body">
-      <div id="saveConflictMessage" class="hint" style="margin-bottom:14px;"></div>
-      <button class="btn primary" id="saveConflictOverwrite" style="margin-bottom:8px;">Sovrascrivi il progetto esistente</button>
-      <button class="btn" id="saveConflictCopy">Salva come copia separata</button>
-    </div>
-  </div>
-</div>
-
 <div id="saveLibraryModal" class="modal-overlay">
   <div class="modal-box" style="width:340px;">
     <div class="modal-head">
@@ -594,6 +586,20 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
       </div>
       <div id="saveLibError" class="hint" style="color:var(--cut);display:none;"></div>
       <button class="btn primary" id="saveLibSubmit">Salva</button>
+    </div>
+  </div>
+</div>
+
+<div id="saveConflictModal" class="modal-overlay">
+  <div class="modal-box" style="width:340px;">
+    <div class="modal-head">
+      <h3>Nome già esistente</h3>
+      <button class="iconbtn" id="saveConflictClose" title="Chiudi">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="saveConflictMessage" class="hint" style="margin-bottom:14px;"></div>
+      <button class="btn primary" id="saveConflictOverwrite" style="margin-bottom:8px;">Sovrascrivi il progetto esistente</button>
+      <button class="btn" id="saveConflictCopy">Salva come copia separata</button>
     </div>
   </div>
 </div>
@@ -970,6 +976,14 @@ function setupOverlayClickClose(overlayEl, closeFn){
   let downOnOverlay = false;
   overlayEl.addEventListener('mousedown', (e)=>{ downOnOverlay = (e.target === overlayEl); });
   overlayEl.addEventListener('click', (e)=>{ if(e.target === overlayEl && downOnOverlay) closeFn(); });
+}
+// Apre una finestra modale assicurandosi che finisca sempre sopra alle altre
+// eventualmente già aperte (es. una conferma sopra la libreria): la sposta in
+// fondo al DOM, dove — a parità di z-index — il browser disegna per ultimo.
+function openModal(id){
+  const el = document.getElementById(id);
+  el.parentNode.appendChild(el);
+  el.classList.add('open');
 }
 
 /* ============================================================
@@ -2455,9 +2469,10 @@ function handleMouseUp(mm, e){
 function handleDblClick(mm, e){
   if(state.tool==='pen' && state.draft){
     finishPenDraft(false);
-  } else if(state.tool==='select' && e.target && e.target.tagName==='path'){
-    const id = e.target.dataset.id;
-    const s = state.shapes.find(x=>x.id===id);
+  } else if(state.tool==='select'){
+    // stessa tolleranza generosa del clic singolo di selezione: il doppio clic
+    // non deve richiedere di colpire il tratto con precisione al pixel
+    const s = topShapeAt(mm);
     if(s && s.points){
       const n = s.points.length;
       let bestI=0, bd=Infinity;
@@ -2469,9 +2484,7 @@ function handleDblClick(mm, e){
         const dClose = pointToSegDist(mm, s.points[n-1], s.points[0]);
         if(dClose<bd){ bd=dClose; bestI=n-1; }
       }
-      if(bd < 4/state.scale){
-        openSegmentInlineEditor(s, bestI, mm, e.clientX, e.clientY);
-      }
+      openSegmentInlineEditor(s, bestI, mm, e.clientX, e.clientY);
     }
   }
 }
@@ -2860,7 +2873,7 @@ async function saveToLibrary(){
   document.getElementById('saveLibName').value = document.getElementById('filename').value || 'disegno';
   document.getElementById('saveLibShared').checked = !!state.librarySharedLast;
   document.getElementById('saveLibError').style.display = 'none';
-  document.getElementById('saveLibraryModal').classList.add('open');
+  openModal('saveLibraryModal');
   const folderSel = document.getElementById('saveLibFolder');
   folderSel.innerHTML = '<option value="">📁 Cartella principale</option>';
   try{
@@ -2877,7 +2890,7 @@ let _saveConflictResolve = null;
 function showSaveConflict(name){
   return new Promise((resolve)=>{
     document.getElementById('saveConflictMessage').textContent = `Hai già un progetto chiamato "${name}" nella tua libreria. Cosa vuoi fare?`;
-    document.getElementById('saveConflictModal').classList.add('open');
+    openModal('saveConflictModal');
     _saveConflictResolve = resolve;
   });
 }
@@ -2927,7 +2940,7 @@ let libCurrentFolderId = null;
 function openLibraryModal(){
   if(!currentUser){ openAccountModal('login'); showToast('Accedi al tuo account per usare la libreria.', true); return; }
   libCurrentFolderId = null;
-  document.getElementById('libraryModal').classList.add('open');
+  openModal('libraryModal');
   loadLibraryList();
 }
 function closeLibraryModal(){ document.getElementById('libraryModal').classList.remove('open'); }
@@ -3160,7 +3173,7 @@ async function deleteFromLibrary(id){
 let versionsModalProjectId = null;
 function openVersionsModal(id){
   versionsModalProjectId = id;
-  document.getElementById('versionsModal').classList.add('open');
+  openModal('versionsModal');
   loadVersionsList(id);
 }
 function closeVersionsModal(){ document.getElementById('versionsModal').classList.remove('open'); }
@@ -3269,7 +3282,7 @@ function openAccountModal(view){
     document.getElementById('acctLoggedUsername').textContent = currentUser.username;
     document.getElementById('acctLoggedEmail').textContent = currentUser.email;
   }
-  document.getElementById('accountModal').classList.add('open');
+  openModal('accountModal');
 }
 function closeAccountModal(){ document.getElementById('accountModal').classList.remove('open'); }
 document.getElementById('accountModalClose').onclick = closeAccountModal;
@@ -3293,13 +3306,29 @@ document.querySelectorAll('.pweye').forEach(btn=>{
 document.getElementById('loginSubmit').onclick = async ()=>{
   const identifier = document.getElementById('loginIdentifier').value.trim();
   const password = document.getElementById('loginPassword').value;
+  const remember = document.getElementById('loginRemember').checked;
   const errEl = document.getElementById('loginError'); errEl.style.display='none';
   try{
-    const data = await apiFetch('login.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({identifier, password})});
+    const data = await apiFetch('login.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({identifier, password, remember})});
     currentUser = data.user; updateAccountUI(); closeAccountModal();
     showToast('Accesso effettuato, ciao ' + currentUser.username + '!', false);
   }catch(err){ errEl.textContent = err.message; errEl.style.display=''; }
 };
+document.getElementById('loginIdentifier').addEventListener('keydown', (e)=>{
+  if(e.key==='Enter'){ e.preventDefault(); document.getElementById('loginPassword').focus(); }
+});
+document.getElementById('loginPassword').addEventListener('keydown', (e)=>{
+  if(e.key==='Enter'){ e.preventDefault(); document.getElementById('loginSubmit').click(); }
+});
+document.getElementById('regUsername').addEventListener('keydown', (e)=>{
+  if(e.key==='Enter'){ e.preventDefault(); document.getElementById('regEmail').focus(); }
+});
+document.getElementById('regEmail').addEventListener('keydown', (e)=>{
+  if(e.key==='Enter'){ e.preventDefault(); document.getElementById('regPassword').focus(); }
+});
+document.getElementById('regPassword').addEventListener('keydown', (e)=>{
+  if(e.key==='Enter'){ e.preventDefault(); document.getElementById('registerSubmit').click(); }
+});
 document.getElementById('registerSubmit').onclick = async ()=>{
   const username = document.getElementById('regUsername').value.trim();
   const email = document.getElementById('regEmail').value.trim();
@@ -3346,7 +3375,7 @@ function checkPasswordResetURLParam(){
   if(token){
     pendingResetToken = token;
     showAccountView('reset');
-    document.getElementById('accountModal').classList.add('open');
+    openModal('accountModal');
   }
 }
 
@@ -3592,7 +3621,7 @@ function generatePrintProof(){
 }
 function openPrintProofModal(){
   updateProofInfo();
-  document.getElementById('printProofModal').classList.add('open');
+  openModal('printProofModal');
 }
 document.getElementById('printProofClose').onclick = ()=> document.getElementById('printProofModal').classList.remove('open');
 setupOverlayClickClose(document.getElementById('printProofModal'), ()=> document.getElementById('printProofModal').classList.remove('open'));
@@ -3625,7 +3654,7 @@ function openCustomPageModal(){
   document.getElementById('customW').value = Math.round(mmToUnit(state.page.w)*Math.pow(10,u.decimals))/Math.pow(10,u.decimals);
   document.getElementById('customH').value = Math.round(mmToUnit(state.page.h)*Math.pow(10,u.decimals))/Math.pow(10,u.decimals);
   document.getElementById('customPageError').style.display = 'none';
-  document.getElementById('pageSizeModal').classList.add('open');
+  openModal('pageSizeModal');
   setTimeout(()=> document.getElementById('customW').focus(), 30);
 }
 function closeCustomPageModal(){
@@ -4811,7 +4840,7 @@ function openSVGFilePicker(){
 function openImportChoiceModal(text, fileName){
   pendingSVGImportText = text;
   pendingSVGImportName = fileName;
-  document.getElementById('importChoiceModal').classList.add('open');
+  openModal('importChoiceModal');
 }
 function closeImportChoiceModal(){
   pendingSVGImportText = null;
@@ -4855,7 +4884,7 @@ function openSVGImportOptionsModal(text, fileName){
   document.getElementById('svgImportOptMargin').value = 3;
   document.getElementById('svgImportOptMarginUnit').textContent = UNITS[state.unit].label;
   refreshSVGImportOptFitVisibility();
-  document.getElementById('svgImportOptModal').classList.add('open');
+  openModal('svgImportOptModal');
 }
 function refreshSVGImportOptFitVisibility(){
   document.getElementById('svgImportOptMarginWrap').style.display = document.getElementById('svgImportOptFit').checked ? '' : 'none';
@@ -5010,7 +5039,7 @@ function weldPointsToSegments(toleranceMM){
 function runWeldPass(toleranceMM){
   return autoWeldPoints(toleranceMM) + weldPointsToSegments(toleranceMM);
 }
-function openWeldModal(){ document.getElementById('weldModal').classList.add('open'); }
+function openWeldModal(){ openModal('weldModal'); }
 function closeWeldModal(){ document.getElementById('weldModal').classList.remove('open'); }
 document.getElementById('weldModalClose').onclick = closeWeldModal;
 setupOverlayClickClose(document.getElementById('weldModal'), closeWeldModal);
@@ -5063,7 +5092,7 @@ function refreshScaleCalibration(){
   document.getElementById('calibrateHint').textContent = 'Seleziona una linea/percorso di riferimento sul disegno (strumento Selezione), poi premi "Aggiorna dalla selezione".';
 }
 function openScaleModal(){
-  document.getElementById('scaleModal').classList.add('open');
+  openModal('scaleModal');
   setScaleModalMode('percent');
   refreshScaleFitVisibility();
   document.getElementById('scaleMarginUnit').textContent = UNITS[state.unit].label;
@@ -5228,7 +5257,7 @@ function buildFontFaceCSS(){
   });
   return css;
 }
-function openFontModal(){ renderFontList(); document.getElementById('fontModal').classList.add('open'); }
+function openFontModal(){ renderFontList(); openModal('fontModal'); }
 document.getElementById('fontModalClose').onclick = ()=> document.getElementById('fontModal').classList.remove('open');
 setupOverlayClickClose(document.getElementById('fontModal'), ()=> document.getElementById('fontModal').classList.remove('open'));
 document.getElementById('dropzoneFont').onclick = ()=>{
@@ -5339,7 +5368,7 @@ function openCutPreview(){
   body.innerHTML = '';
   if(!placed.length){
     body.innerHTML = '<div class="emptystate">Nessun percorso chiuso con ruolo "Taglio" trovato.<br>Disegna e chiudi almeno una forma con ruolo Taglio per vedere l\'anteprima.</div>';
-    document.getElementById('cutPreviewModal').classList.add('open');
+    openModal('cutPreviewModal');
     return;
   }
   if(cutOpenIssues.length){
@@ -5380,7 +5409,7 @@ function openCutPreview(){
   const note = document.createElement('div'); note.className='hint'; note.style.textAlign='center';
   note.textContent = 'Anteprima indicativa del pezzo isolato dopo il taglio — le piegature non sono ancora simulate.';
   body.appendChild(note);
-  document.getElementById('cutPreviewModal').classList.add('open');
+  openModal('cutPreviewModal');
 }
 document.getElementById('cutPreviewClose').onclick = ()=> document.getElementById('cutPreviewModal').classList.remove('open');
 setupOverlayClickClose(document.getElementById('cutPreviewModal'), ()=> document.getElementById('cutPreviewModal').classList.remove('open'));
@@ -5469,7 +5498,7 @@ function escapeXML(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').repla
    per allineare i fogli in fase di assemblaggio.
 ============================================================ */
 function openTilePrintModal(){
-  document.getElementById('tilePrintModal').classList.add('open');
+  openModal('tilePrintModal');
   updateTileInfo();
 }
 document.getElementById('tilePrintClose').onclick = ()=> document.getElementById('tilePrintModal').classList.remove('open');
@@ -5684,7 +5713,7 @@ function doClearAll(){
   pushHistory(); renderAll(); refreshImageTabPreview();
 }
 document.getElementById('btnNew').onclick = clearAll;
-document.getElementById('btnHelp').onclick = ()=> document.getElementById('helpModal').classList.add('open');
+document.getElementById('btnHelp').onclick = ()=> openModal('helpModal');
 document.getElementById('helpModalClose').onclick = ()=> document.getElementById('helpModal').classList.remove('open');
 setupOverlayClickClose(document.getElementById('helpModal'), ()=> document.getElementById('helpModal').classList.remove('open'));
 
@@ -5708,7 +5737,7 @@ function showConfirm(message, title){
   return new Promise((resolve)=>{
     document.getElementById('confirmTitle').textContent = title || 'Conferma';
     document.getElementById('confirmMessage').textContent = message;
-    document.getElementById('confirmModal').classList.add('open');
+    openModal('confirmModal');
     _confirmResolve = resolve;
   });
 }
@@ -5726,7 +5755,7 @@ function showPrompt(title, defaultValue){
     document.getElementById('promptTitle').textContent = title || 'Nome';
     const inp = document.getElementById('promptInput');
     inp.value = defaultValue || '';
-    document.getElementById('promptModal').classList.add('open');
+    openModal('promptModal');
     inp.focus(); inp.select();
     _promptResolve = resolve;
   });

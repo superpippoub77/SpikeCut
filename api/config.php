@@ -37,6 +37,12 @@ define('MAX_VERSIONS_PER_PROJECT', 30);
 // Nome del cookie di sessione (puoi lasciarlo così).
 define('SESSION_COOKIE_NAME', 'spikecut_session');
 
+// Cookie "Ricordami": un token separato dalla sessione, che permette di
+// restare collegati anche dopo aver chiuso il browser (la sessione PHP da
+// sola scade quando il browser si chiude, o dopo un periodo di inattività).
+define('REMEMBER_COOKIE_NAME', 'spikecut_remember');
+define('REMEMBER_TTL', 60 * 60 * 24 * 30); // 30 giorni
+
 // Per quanto tempo (in secondi) resta valido il link di recupero password
 // inviato via email prima di scadere. Default: 1 ora.
 define('RESET_TOKEN_TTL', 3600);
