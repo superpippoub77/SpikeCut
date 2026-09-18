@@ -397,6 +397,12 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
     <button class="iconbtn" id="btnCustomPage" title="Imposta misure esatte del piano">⚙</button>
   </div>
   <div class="grp">
+    <input type="color" id="pageBgColor" value="#ffffff" title="Colore di sfondo del foglio" style="width:30px;height:28px;padding:2px;cursor:pointer;">
+    <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--ink-dim);cursor:pointer;white-space:nowrap;" title="Sfondo trasparente (nessun colore) invece di un colore pieno">
+      <input type="checkbox" id="pageBgTransparent" style="width:auto;">Trasp.
+    </label>
+  </div>
+  <div class="grp">
     <select id="unitSelect" title="Unità di misura visualizzata">
       <option value="mm">mm</option>
       <option value="cm">cm</option>
@@ -471,7 +477,15 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
     <div id="rulerV"><canvas id="rulerVCanvas"></canvas></div>
     <div id="stage-scroll">
       <div id="canvasHolder">
-        <svg id="stage" xmlns="http://www.w3.org/2000/svg"></svg>
+        <svg id="stage" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="transparency-pattern" width="12" height="12" patternUnits="userSpaceOnUse">
+              <rect width="12" height="12" fill="#e8e8e8"/>
+              <rect width="6" height="6" fill="#cfcfcf"/>
+              <rect x="6" y="6" width="6" height="6" fill="#cfcfcf"/>
+            </pattern>
+          </defs>
+        </svg>
       </div>
     </div>
     <div id="snapBadge">calamita</div>
@@ -507,7 +521,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.5.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.6.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1232,7 +1246,9 @@ function setStageSize(){
   stage.setAttribute('height', h);
   stage.setAttribute('viewBox', `0 0 ${w} ${h}`);
   layerBg.innerHTML = '';
-  layerBg.appendChild(el('rect', {x:0,y:0,width:w,height:h,fill:'#ffffff'}));
+  const bg = state.page.bg || '#ffffff';
+  const fillValue = bg==='transparent' ? 'url(#transparency-pattern)' : bg;
+  layerBg.appendChild(el('rect', {x:0,y:0,width:w,height:h,fill:fillValue}));
 }
 
 function drawGrid(){
@@ -2149,7 +2165,8 @@ window.addEventListener('mousemove', (e)=>{
   const dyMM = (e.clientY - pageResizeDrag.startClientY) / state.scale;
   state.page = {
     w: Math.max(5, Math.min(5000, pageResizeDrag.startW + dxMM)),
-    h: Math.max(5, Math.min(5000, pageResizeDrag.startH + dyMM))
+    h: Math.max(5, Math.min(5000, pageResizeDrag.startH + dyMM)),
+    bg: state.page.bg
   };
   renderAll();
 });
@@ -3642,9 +3659,10 @@ function updateProofInfo(){
 function buildProofSVG(l){
   const offX = (l.pw - l.dw*l.scale)/2;
   const offY = (l.ph - 6 - l.dh*l.scale)/2;
+  const pageBg = (state.page.bg && state.page.bg!=='transparent') ? state.page.bg : '#ffffff'; // la carta stampata non può essere "trasparente"
   let body = `<style>${buildFontFaceCSS()}</style><rect x="0" y="0" width="${sN(l.pw)}" height="${sN(l.ph)}" fill="#ffffff"/>`;
   body += `<g transform="translate(${sN(offX)},${sN(offY)}) scale(${sN(l.scale)})">`;
-  body += `<rect x="0" y="0" width="${sN(l.dw)}" height="${sN(l.dh)}" fill="#ffffff" stroke="#cfcfcf" stroke-width="${sN(0.4/l.scale)}"/>`;
+  body += `<rect x="0" y="0" width="${sN(l.dw)}" height="${sN(l.dh)}" fill="${pageBg}" stroke="#cfcfcf" stroke-width="${sN(0.4/l.scale)}"/>`;
   const groups = {design:[],cut:[],fold:[],diecut:[],glue:[]};
   state.shapes.forEach(s=>{ if(isShapeEffVisible(s)) (groups[s.style.role]||groups.design).push(s); });
   Object.keys(ROLE_STYLE).forEach(roleKey=> groups[roleKey].forEach(s=> body += exportNode(s)));
@@ -3713,12 +3731,32 @@ function syncPageSizeSelect(){
   const sel = document.getElementById('pageSize');
   const match = Array.from(sel.options).some(o => o.value === key);
   sel.value = match ? key : 'custom';
+  syncPageBgControls();
 }
+function syncPageBgControls(){
+  const bg = state.page.bg || '#ffffff';
+  const isTransparent = bg === 'transparent';
+  document.getElementById('pageBgTransparent').checked = isTransparent;
+  document.getElementById('pageBgColor').value = isTransparent ? '#ffffff' : bg;
+  document.getElementById('pageBgColor').disabled = isTransparent;
+}
+document.getElementById('pageBgColor').addEventListener('input', (e)=>{
+  document.getElementById('pageBgTransparent').checked = false;
+  state.page.bg = e.target.value;
+  renderCanvasOnly();
+});
+document.getElementById('pageBgColor').addEventListener('change', ()=> pushHistory());
+document.getElementById('pageBgTransparent').addEventListener('change', (e)=>{
+  state.page.bg = e.target.checked ? 'transparent' : document.getElementById('pageBgColor').value;
+  document.getElementById('pageBgColor').disabled = e.target.checked;
+  pushHistory();
+  renderCanvasOnly();
+});
 document.getElementById('pageSize').addEventListener('change', (e)=>{
   const v = e.target.value;
   if(v==='custom'){ openCustomPageModal(); return; }
   const [w,h] = v.split('x').map(Number);
-  state.page = {w,h};
+  state.page = {w,h,bg:state.page.bg};
   renderAll();
 });
 function openCustomPageModal(){
@@ -3749,7 +3787,7 @@ function applyCustomPage(){
     err.style.display = 'block';
     return;
   }
-  state.page = {w,h};
+  state.page = {w,h,bg:state.page.bg};
   document.getElementById('pageSizeModal').classList.remove('open');
   syncPageSizeSelect();
   renderAll();
@@ -4879,7 +4917,7 @@ async function autoFitImportedShapes(newShapes, opts){
         'Disegno più grande della pagina'
       );
       if(ok){
-        state.page = {w: Math.ceil(bw+4), h: Math.ceil(bh+4)};
+        state.page = {w: Math.ceil(bw+4), h: Math.ceil(bh+4), bg: state.page.bg};
         syncPageSizeSelect();
       }
     }
@@ -5517,7 +5555,9 @@ function buildDrawingGroupsSVG(){
 function buildExportSVG(){
   const w = state.page.w, h = state.page.h;
   const { body: groupsBody, groups } = buildDrawingGroupsSVG();
-  let body = `<rect x="0" y="0" width="${w}" height="${h}" fill="#ffffff"/>\n` + groupsBody;
+  const pageBg = state.page.bg || '#ffffff';
+  const bgRect = pageBg==='transparent' ? '' : `<rect x="0" y="0" width="${w}" height="${h}" fill="${pageBg}"/>\n`;
+  let body = bgRect + groupsBody;
   // legend
   const legendItems = Object.keys(ROLE_STYLE).filter(k=>groups[k].length);
   if(legendItems.length){
@@ -5685,8 +5725,9 @@ function buildTileSVG(l, r, c, direction){
   // dell'area stampabile (subito dopo il margine di sicurezza), sui 4 lati di QUESTO foglio
   const dx = l.margin - tileX, dy = l.margin - tileY;
   const clipId = 'tileclip-' + (r*l.cols+c+1);
+  const tileBg = (state.page.bg && state.page.bg!=='transparent') ? state.page.bg : '#ffffff'; // un foglio stampato non può essere "trasparente"
   let extra = `<defs><clipPath id="${clipId}"><rect x="${sN(l.margin)}" y="${sN(l.margin)}" width="${sN(l.usableW)}" height="${sN(l.usableH)}"/></clipPath></defs>`;
-  extra += `<rect x="0" y="0" width="${sN(l.sheetW)}" height="${sN(l.sheetH)}" fill="#ffffff"/>\n`;
+  extra += `<rect x="0" y="0" width="${sN(l.sheetW)}" height="${sN(l.sheetH)}" fill="${tileBg}"/>\n`;
   // linee tratteggiate nella zona di sovrapposizione, solo verso un foglio successivo esistente
   if(c < l.cols-1){
     const x = l.margin + l.usableW - l.overlap;
@@ -5930,7 +5971,7 @@ function makeNewDocument(name){
   const defaultLayer = {id:uid(), name:'Livello 1', visible:true, locked:false};
   return {
     id: uid(), name: name || 'Disegno',
-    shapes: [], page: {w:210,h:297}, refImage: null,
+    shapes: [], page: {w:210,h:297,bg:'#ffffff'}, refImage: null,
     layers: [defaultLayer], activeLayerId: defaultLayer.id,
     history: [JSON.stringify({shapes:[], layers:[defaultLayer]})], histIndex: 0, libraryId: null, libraryFolderId: null
   };
