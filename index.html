@@ -124,6 +124,7 @@ svg#stage{
   overflow:visible;
   box-shadow:0 20px 60px rgba(0,0,0,.55);
   background:var(--paper);
+  user-select:none; -webkit-user-select:none; -moz-user-select:none;
   cursor:crosshair;
 }
 .floating-text-input{
@@ -506,7 +507,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.4.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.4.1</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2147,6 +2148,7 @@ stage.addEventListener('mousedown', (e)=>{
       pageResizeDrag = { startClientX:e.clientX, startClientY:e.clientY, startW: state.page.w, startH: state.page.h };
       return;
     }
+    e.preventDefault(); // evita che il browser avvii una selezione testo/trascinamento nativa sul canvas
     handleMouseDown(clientToMM(e.clientX,e.clientY), e);
   }catch(err){
     showToast('Errore imprevisto: ' + err.message, true);
@@ -2154,7 +2156,14 @@ stage.addEventListener('mousedown', (e)=>{
   }
 });
 window.addEventListener('mouseup', (e)=>{ handleMouseUp(clientToMM(e.clientX,e.clientY), e); });
-stage.addEventListener('dblclick', (e)=>{ handleDblClick(clientToMM(e.clientX,e.clientY), e); });
+stage.addEventListener('dblclick', (e)=>{
+  try{
+    handleDblClick(clientToMM(e.clientX,e.clientY), e);
+  }catch(err){
+    showToast('Errore imprevisto nel doppio clic: ' + err.message, true);
+    console.error(err);
+  }
+});
 
 function topShapeAt(mm){
   // hit test dal più in cima al più in fondo, rispettando l'ordine dei livelli
