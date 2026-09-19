@@ -553,7 +553,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.10.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.10.1</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -6286,7 +6286,15 @@ function showContextMenu(clientX, clientY, items){
 function hideContextMenu(){
   document.getElementById('ctxMenu').style.display = 'none';
 }
-document.addEventListener('click', hideContextMenu);
+// Il mousedown scatta sempre, subito, sia che l'interazione resti un clic sia
+// che diventi un trascinamento (selezione, spostamento di una forma...): usarlo
+// invece di 'click' evita che il menu resti aperto quando l'interazione
+// successiva è un trascinamento e il browser non arriva a generare un 'click'.
+document.addEventListener('mousedown', (e)=>{
+  const menu = document.getElementById('ctxMenu');
+  if(menu.style.display==='block' && !menu.contains(e.target)) hideContextMenu();
+}, true);
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') hideContextMenu(); });
 document.addEventListener('contextmenu', (e)=>{
   // un secondo tasto destro fuori da un'area gestita chiude il menu invece di
   // lasciarlo aperto sopra a quello nativo del browser
