@@ -553,7 +553,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.11.1</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.11.2</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -5294,6 +5294,11 @@ function isNearBlackColor(hex){
   if(!rgb) return false;
   return Math.hypot(rgb[0], rgb[1], rgb[2]) < 60; // il nero pieno (o quasi) è quasi sempre un artefatto tecnico da CAD
 }
+function colorsClose(hexA, hexB, threshold){
+  const a = hexToRGB(hexA), b = hexToRGB(hexB);
+  if(!a || !b) return false;
+  return Math.hypot(a[0]-b[0], a[1]-b[1], a[2]-b[2]) < (threshold||20);
+}
 function dedupeImportedShapes(shapes){
   // molti programmi disegnano ogni forma più volte con stili diversi (hitbox invisibile,
   // riempimento, contorno) sovrapposte esattamente: le raggruppo per ingombro e ne tengo una sola,
@@ -5318,7 +5323,10 @@ function dedupeImportedShapes(shapes){
     // Un riempimento di un COLORE VERO invece è quasi sempre voluto — es. un rettangolo colorato
     // con un sottile bordo nero sopra, comune in Google Disegni e altri strumenti — e va tenuto
     // INSIEME al contorno, non scartato.
-    const fillIsMeaningful = withFill && !isNearBlackColor(withFill.style.fill) && withFill !== withStroke;
+    const fillIsMeaningful = withFill && withFill !== withStroke && (
+      (withStroke && colorsClose(withFill.style.fill, withStroke.style.stroke)) || // stesso colore su riempimento e contorno: è il colore voluto, non un artefatto
+      !isNearBlackColor(withFill.style.fill) // oppure un colore vero e proprio, non nero/quasi nero
+    );
     if(withStroke && fillIsMeaningful){
       merged.style.fill = withFill.style.fill;
       merged.style.fillOpacity = withFill.style.fillOpacity!=null ? withFill.style.fillOpacity : 1;
