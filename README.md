@@ -58,18 +58,35 @@ usato nel file originale.
 - **Ordine di sovrapposizione**: dentro allo stesso livello, ogni forma
   può essere portata avanti/indietro o in primo/secondo piano, come nei
   programmi di disegno classici.
+- **Menu contestuale (tasto destro)** su un oggetto: copia, duplica,
+  elimina, ordine di sovrapposizione, blocca/sblocca; sull'area vuota del
+  foglio, se c'è qualcosa negli appunti, incolla esattamente nel punto
+  cliccato.
 - **Schede multiple**: più disegni aperti contemporaneamente, ognuno con
   il proprio foglio, storico annulla/ripeti e libreria.
 
 ### Precisione
-Righelli, griglia con calamita, quotature in tempo reale durante il
-disegno e quotature permanenti dell'intero pezzo, unità di misura
-selezionabile (mm/cm/m/pollici), verifica automatica dei percorsi aperti
-e saldatura dei punti vicini. Attivando l'opzione "punti" (●) nella barra
-di stato, oltre agli estremi liberi/collegati vengono segnati anche gli
-**angoli** tra i tratti che si incontrano in ogni vertice — sia tra due
-segmenti dello stesso percorso, sia tra due forme diverse i cui estremi
-coincidono — con la relativa quotazione in gradi.
+Righelli, griglia con calamita — passo regolabile **millimetrico o
+centimetrico** — quotature in tempo reale durante il disegno e quotature
+permanenti dell'intero pezzo, unità di misura selezionabile (mm/cm/m/
+pollici), verifica automatica dei percorsi aperti e saldatura dei punti
+vicini. Attivando l'opzione "punti" (●) nella barra di stato, oltre agli
+estremi liberi/collegati vengono segnati anche gli **angoli** tra i
+tratti che si incontrano in ogni vertice — sia tra due segmenti dello
+stesso percorso, sia tra due forme diverse i cui estremi coincidono —
+con la relativa quotazione in gradi.
+
+Doppio clic su un tratto (strumento Selezione) apre un piccolo editor
+**inline** sul posto, con lunghezza e curvatura modificabili subito,
+senza cercare il punto corrispondente nella barra laterale; da lì si può
+anche aggiungere un vertice esattamente dove si è cliccato. Nella barra
+laterale, ogni punto ha inoltre una ✕ per eliminarlo direttamente (con
+conferma, e un minimo di 2 punti per percorso).
+
+Il **foglio** può avere uno sfondo di qualunque colore, o essere
+completamente trasparente (utile per materiali colorati o per
+sovrapporre il disegno ad altro): si imposta dalla topbar, ed è salvato
+per singolo progetto.
 
 ### Importazione
 - **SVG esistente**: parser completo (archi, curve, trasformazioni),
@@ -132,6 +149,15 @@ tutti gli utenti registrati). Solo il proprietario può modificare o
 eliminare un proprio progetto, anche se condiviso; aprire un progetto
 condiviso altrui e poi salvarlo crea automaticamente una copia personale,
 senza toccare l'originale.
+
+La libreria è organizzata in **cartelle** (anche annidate), con
+un'interfaccia in stile Esplora Risorse: albero delle cartelle a
+sinistra, elenco con nome/data/dimensione a destra. Si possono creare,
+rinominare ed eliminare cartelle, e **trascinare** (drag & drop) un
+progetto o un'intera cartella su un'altra per spostarli. È disponibile
+anche un **menu contestuale** (tasto destro) con copia/taglia/incolla,
+rinomina ed elimina — copiare o tagliare una cartella porta con sé tutto
+il suo contenuto, sottocartelle comprese.
 
 ### Cronologia versioni
 Ogni salvataggio successivo al primo conserva lo stato precedente. Dalla

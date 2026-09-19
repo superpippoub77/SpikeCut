@@ -83,6 +83,11 @@ ACCOUNT UTENTE E LIBRERIA CONDIVISA
   consegna non garantita al 100% — controlla anche nello spam.
   Se sul tuo hosting mail() non funziona affatto, va configurato un
   vero servizio SMTP lato server (chiedi pure supporto se serve).
+- La libreria è organizzata in cartelle (anche annidate), con
+  un'interfaccia in stile Esplora Risorse: albero a sinistra, elenco
+  con dimensioni a destra, trascinamento (drag & drop) per spostare
+  progetti e cartelle, e un menu contestuale (tasto destro) con
+  copia/taglia/incolla/rinomina/elimina — vedi più sotto.
 
 
 ACCESSO CON JWT (token) invece di sessioni/cookie
