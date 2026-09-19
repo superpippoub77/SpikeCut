@@ -288,6 +288,21 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 .dropdown-menu button:hover{background:var(--bg-1);}
 .dropdown-menu .menu-sep{height:1px;background:var(--line-soft);margin:5px 2px;}
 
+/* menu contestuale (tasto destro) — stesso aspetto del menu a tendina, ma
+   posizionato liberamente alle coordinate del clic invece che ancorato */
+#ctxMenu{
+  position:fixed;min-width:200px;
+  background:var(--bg-2);border:1px solid var(--line);border-radius:8px;
+  box-shadow:0 12px 30px rgba(0,0,0,.5);padding:6px;z-index:300;display:none;
+}
+#ctxMenu button{
+  display:block;width:100%;text-align:left;background:none;border:none;color:var(--ink);
+  padding:8px 10px;border-radius:5px;font-size:12.5px;cursor:pointer;
+}
+#ctxMenu button:hover:not(:disabled){background:var(--bg-1);}
+#ctxMenu button:disabled{opacity:.35;cursor:default;}
+#ctxMenu .menu-sep{height:1px;background:var(--line-soft);margin:5px 2px;}
+
 /* dimension labels (quotatura) drawn live in the overlay layer */
 .dimlabel-bg{fill:#fdf1d8;stroke:#c9973f;stroke-width:1;}
 .dimlabel-txt{fill:#3a2c0c;font-size:10.5px;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;}
@@ -538,7 +553,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.9.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.10.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -984,6 +999,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 </div>
 
 <div id="toastHost"></div>
+<div id="ctxMenu"></div>
 
 <script>
 (function(){
@@ -2316,6 +2332,68 @@ stage.addEventListener('dblclick', (e)=>{
   }
 });
 
+/* ============================================================
+   MENU CONTESTUALE (tasto destro) SUL DISEGNO — le operazioni
+   consentite sulla forma cliccata, oppure "Incolla" sull'area vuota.
+============================================================ */
+let canvasClipboardShape = null;
+stage.addEventListener('contextmenu', (e)=>{
+  try{
+    e.preventDefault();
+    if(state.tool !== 'select') return; // coerente con le altre interazioni: solo in modalità Selezione
+    const mm = clientToMM(e.clientX, e.clientY);
+    const hit = topShapeAt(mm);
+    if(hit){
+      if(!state.selection.has(hit.id)){ state.selection.clear(); state.selection.add(hit.id); renderAll(); }
+      showContextMenu(e.clientX, e.clientY, shapeContextItems(hit));
+    } else if(canvasClipboardShape){
+      showContextMenu(e.clientX, e.clientY, [
+        {label:'📌 Incolla qui', action:()=> pasteShapeAt(mm)}
+      ]);
+    }
+  }catch(err){
+    showToast('Errore imprevisto nel menu contestuale: ' + err.message, true);
+    console.error(err);
+  }
+});
+function shapeContextItems(s){
+  return [
+    {label:'📋 Copia', action:()=>{ canvasClipboardShape = JSON.parse(JSON.stringify(s)); showToast('Forma copiata.', false); }},
+    {label:'⧉ Duplica', action:()=> duplicateShape(s)},
+    {label:'🗑 Elimina', action:()=>{ state.selection = new Set([s.id]); deleteSelection(); }},
+    'sep',
+    {label:'⤒ Primo piano', action:()=> bringToFront(s.id)},
+    {label:'⤓ Secondo piano', action:()=> sendToBack(s.id)},
+    {label:'▲ Avanti di uno', action:()=> bringForward(s.id)},
+    {label:'▼ Indietro di uno', action:()=> sendBackward(s.id)},
+    'sep',
+    {label: s.locked ? '🔓 Sblocca' : '🔒 Blocca', action:()=>{ s.locked = !s.locked; pushHistory(); renderAll(); }},
+  ];
+}
+function duplicateShape(s){
+  const copy = JSON.parse(JSON.stringify(s));
+  copy.id = uid();
+  const offset = 5; // mm, così la copia non finisce esattamente sopra l'originale
+  if(copy.points) copy.points = copy.points.map(p=>[p[0]+offset, p[1]+offset]);
+  else if(copy.x!=null){ copy.x += offset; copy.y += offset; }
+  state.shapes.push(copy);
+  state.selection = new Set([copy.id]);
+  pushHistory(); renderAll();
+}
+function pasteShapeAt(mm){
+  if(!canvasClipboardShape) return;
+  const copy = JSON.parse(JSON.stringify(canvasClipboardShape));
+  copy.id = uid();
+  const bbox = shapeBBox(copy);
+  const dx = mm[0]-(bbox.x+bbox.w/2), dy = mm[1]-(bbox.y+bbox.h/2);
+  if(copy.points) copy.points = copy.points.map(p=>[p[0]+dx, p[1]+dy]);
+  else if(copy.x!=null){ copy.x += dx; copy.y += dy; }
+  copy.layerId = state.activeLayerId;
+  state.shapes.push(copy);
+  state.selection = new Set([copy.id]);
+  pushHistory(); renderAll();
+}
+
 function topShapeAt(mm){
   // hit test dal più in cima al più in fondo, rispettando l'ordine dei livelli
   const ordered = shapesInZOrder();
@@ -3121,6 +3199,7 @@ document.getElementById('saveLibSubmit').onclick = async ()=>{
 let libCacheItems = [];
 let libCacheFolders = [];
 let libCurrentFolderId = null;
+let libClipboard = null; // {mode:'copy'|'cut', type:'project'|'folder', id, name}
 
 function openLibraryModal(){
   if(!currentUser){ openAccountModal('login'); showToast('Accedi al tuo account per usare la libreria.', true); return; }
@@ -3212,6 +3291,7 @@ function renderFolderTree(){
   rootRow.className = 'libtree-row' + (libCurrentFolderId===null ? ' active' : '');
   rootRow.textContent = '📚 Libreria';
   rootRow.onclick = ()=> navigateToFolder(null);
+  rootRow.oncontextmenu = (e)=>{ e.preventDefault(); e.stopPropagation(); showContextMenu(e.clientX, e.clientY, libEmptyAreaContextItems(null)); };
   wireFolderDropTarget(rootRow, null);
   host.appendChild(rootRow);
 
@@ -3225,6 +3305,7 @@ function renderFolderTree(){
         row.textContent = '📁 ' + f.name;
         row.title = f.name;
         row.onclick = ()=> navigateToFolder(f.id);
+        row.oncontextmenu = (e)=>{ e.preventDefault(); e.stopPropagation(); showContextMenu(e.clientX, e.clientY, libFolderContextItems(f)); };
         row.draggable = true;
         row.addEventListener('dragstart', (e)=>{ e.dataTransfer.setData('text/spikecut-folder', f.id); e.stopPropagation(); });
         wireFolderDropTarget(row, f.id);
@@ -3266,8 +3347,14 @@ function renderLibraryView(){
     openAllWrap.appendChild(btn);
   }
 
+  host.oncontextmenu = (e)=>{
+    if(e.target !== host) return; // solo se il clic è sull'area vuota, non su una riga specifica
+    e.preventDefault();
+    showContextMenu(e.clientX, e.clientY, libEmptyAreaContextItems(libCurrentFolderId));
+  };
+
   if(!subFolders.length && !myItemsHere.length && !sharedItems.length){
-    host.innerHTML = '<div class="emptystate">Cartella vuota. Trascina qui un progetto o una cartella, oppure crane una nuova con "Nuova cartella".</div>';
+    host.innerHTML = '<div class="emptystate">Cartella vuota. Trascina qui un progetto o una cartella, oppure creane una nuova con "Nuova cartella" (o tasto destro).</div>';
     return;
   }
 
@@ -3292,6 +3379,7 @@ function renderLibraryView(){
     row.appendChild(actions);
     row.draggable = true;
     row.addEventListener('dragstart', (e)=> e.dataTransfer.setData('text/spikecut-folder', f.id));
+    row.oncontextmenu = (e)=>{ e.preventDefault(); e.stopPropagation(); showContextMenu(e.clientX, e.clientY, libFolderContextItems(f)); };
     wireFolderDropTarget(row, f.id);
     host.appendChild(row);
   });
@@ -3302,6 +3390,7 @@ function renderLibraryView(){
       row.draggable = true;
       row.addEventListener('dragstart', (e)=> e.dataTransfer.setData('text/spikecut-project', it.id));
     }
+    row.oncontextmenu = (e)=>{ e.preventDefault(); e.stopPropagation(); showContextMenu(e.clientX, e.clientY, libProjectContextItems(it)); };
     const nameDiv = document.createElement('div'); nameDiv.className='libitem-name';
     const ownerNote = it.mine ? '' : ` <span style="color:var(--ink-dim);">· di ${escapeHTML(it.ownerName||'?')}</span>`;
     nameDiv.innerHTML = `📄 ${escapeHTML(it.name)}${it.shared?' 🌐':''}${ownerNote}`;
@@ -3367,6 +3456,146 @@ async function moveProjectAction(id, folderId){
     loadLibraryList();
   }catch(err){ showToast('Errore nello spostamento: ' + err.message, true); loadLibraryList(); }
 }
+async function renameProjectAction(it){
+  const name = await showPrompt('Nuovo nome del progetto', it.name);
+  if(!name || name===it.name) return;
+  try{
+    await apiFetch('rename_project.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:it.id, name})});
+    loadLibraryList();
+  }catch(err){ showToast('Errore nel rinominare: ' + err.message, true); }
+}
+
+/* ============================================================
+   APPUNTI DELLA LIBRERIA — copia/taglia/incolla di progetti e
+   cartelle, come nel tasto destro di Esplora Risorse.
+============================================================ */
+function setClipboard(mode, type, id, name){
+  libClipboard = {mode, type, id, name};
+  showToast((mode==='copy' ? 'Copiato: ' : 'Tagliato: ') + name, false);
+}
+async function pasteClipboardInto(targetFolderId){
+  if(!libClipboard) return;
+  const { mode, type, id } = libClipboard;
+  try{
+    if(type==='project'){
+      if(mode==='cut'){
+        await apiFetch('move_project.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, folderId:targetFolderId})});
+        libClipboard = null;
+      } else {
+        await duplicateProjectInto(id, targetFolderId);
+      }
+    } else if(type==='folder'){
+      if(folder_is_descendant_or_self_client(id, targetFolderId)){
+        showToast('Non puoi spostare/copiare una cartella dentro se stessa o in una sua sottocartella.', true);
+        return;
+      }
+      if(mode==='cut'){
+        await apiFetch('move_folder.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, parentId:targetFolderId})});
+        libClipboard = null;
+      } else {
+        await deepCopyFolder(id, targetFolderId);
+      }
+    }
+    await loadLibraryList();
+    showToast('Operazione completata.', false);
+  }catch(err){ showToast('Errore: ' + err.message, true); }
+}
+// Replica lato client lo stesso controllo del server, per un errore subito
+// chiaro senza dover attendere la risposta dell'API in questo caso specifico.
+function folder_is_descendant_or_self_client(candidateId, ancestorId){
+  if(candidateId === ancestorId) return true;
+  const byId = {}; libCacheFolders.forEach(f=> byId[f.id]=f);
+  let cur = ancestorId, guard = 0;
+  while(cur!=null && byId[cur] && guard++<200){
+    const parent = byId[cur].parentId || null;
+    if(parent === candidateId) return true;
+    cur = parent;
+  }
+  return false;
+}
+function uniqueNameIn(items, baseName){
+  const names = items.map(it=>it.name.trim().toLowerCase());
+  if(!names.includes(baseName.trim().toLowerCase())) return baseName;
+  return baseName + ' - copia';
+}
+async function duplicateProjectInto(id, targetFolderId){
+  const data = await apiFetch('load.php?id=' + encodeURIComponent(id), {method:'GET'});
+  const proj = data.project || {};
+  const siblings = libCacheItems.filter(it=> it.mine && (it.folderId||null)===(targetFolderId||null));
+  const newName = uniqueNameIn(siblings, proj.name || 'Progetto');
+  await apiFetch('save.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({
+    name:newName, shared:false, folderId:targetFolderId,
+    page:proj.page, shapes:proj.shapes, refImage:proj.refImage, layers:proj.layers,
+    activeLayerId:proj.activeLayerId, customFonts:proj.customFonts
+  })});
+}
+async function deepCopyFolder(folderId, targetParentId){
+  const orig = libCacheFolders.find(f=>f.id===folderId);
+  if(!orig) return;
+  const siblingFolders = libCacheFolders.filter(f=>(f.parentId||null)===(targetParentId||null));
+  const newName = uniqueNameIn(siblingFolders, orig.name);
+  const created = await apiFetch('create_folder.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name:newName, parentId:targetParentId})});
+  const newFolderId = created.folder.id;
+
+  const projectsHere = libCacheItems.filter(it=> it.mine && (it.folderId||null)===folderId);
+  for(const it of projectsHere){
+    await duplicateProjectInto(it.id, newFolderId);
+  }
+  const subFolders = libCacheFolders.filter(f=>(f.parentId||null)===folderId);
+  for(const sf of subFolders){
+    await deepCopyFolder(sf.id, newFolderId);
+  }
+}
+function libFolderContextItems(f){
+  return [
+    {label:'📂 Apri', action:()=> navigateToFolder(f.id)},
+    {label:'📁+ Nuova cartella qui', action: async ()=>{
+      const name = await showPrompt('Nome della nuova cartella');
+      if(!name) return;
+      try{
+        await apiFetch('create_folder.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name, parentId:f.id})});
+        loadLibraryList();
+      }catch(err){ showToast('Errore nella creazione della cartella: ' + err.message, true); }
+    }},
+    'sep',
+    {label:'📋 Copia', action:()=> setClipboard('copy','folder', f.id, f.name)},
+    {label:'✂ Taglia', action:()=> setClipboard('cut','folder', f.id, f.name)},
+    {label:'📌 Incolla qui', disabled:!libClipboard, action:()=> pasteClipboardInto(f.id)},
+    'sep',
+    {label:'✎ Rinomina', action:()=> renameFolderAction(f)},
+    {label:'🗑 Elimina', action:()=> deleteFolderAction(f)},
+  ];
+}
+function libProjectContextItems(it){
+  const items = [
+    {label:'📂 Apri', action:()=> loadFromLibrary(it.id)},
+    {label:'🕐 Versioni', action:()=> openVersionsModal(it.id)},
+  ];
+  if(it.mine){
+    items.push('sep',
+      {label:'📋 Copia', action:()=> setClipboard('copy','project', it.id, it.name)},
+      {label:'✂ Taglia', action:()=> setClipboard('cut','project', it.id, it.name)},
+      'sep',
+      {label:'✎ Rinomina', action:()=> renameProjectAction(it)},
+      {label:'🗑 Elimina', action:()=> deleteFromLibrary(it.id)}
+    );
+  }
+  return items;
+}
+function libEmptyAreaContextItems(targetFolderId){
+  return [
+    {label:'📁+ Nuova cartella', action: async ()=>{
+      const name = await showPrompt('Nome della nuova cartella');
+      if(!name) return;
+      try{
+        await apiFetch('create_folder.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name, parentId:targetFolderId})});
+        loadLibraryList();
+      }catch(err){ showToast('Errore nella creazione della cartella: ' + err.message, true); }
+    }},
+    {label:'📌 Incolla', disabled:!libClipboard, action:()=> pasteClipboardInto(targetFolderId)},
+  ];
+}
+
 async function openFolderAsTabs(items){
   if(!items.length) return;
   snapshotActiveDocument();
@@ -6026,6 +6255,44 @@ setupOverlayClickClose(document.getElementById('helpModal'), ()=> document.getEl
 /* ============================================================
    NOTIFICHE E CONFERME (sostituiscono alert/confirm nativi)
 ============================================================ */
+/* ============================================================
+   MENU CONTESTUALE (tasto destro) — condiviso tra la libreria e il
+   disegno: ciascuno gli passa solo l'elenco di voci da mostrare.
+============================================================ */
+function showContextMenu(clientX, clientY, items){
+  const menu = document.getElementById('ctxMenu');
+  menu.innerHTML = '';
+  items.forEach(it=>{
+    if(it==='sep'){
+      const s = document.createElement('div'); s.className='menu-sep';
+      menu.appendChild(s);
+      return;
+    }
+    const btn = document.createElement('button');
+    btn.textContent = it.label;
+    if(it.disabled) btn.disabled = true;
+    btn.onclick = (e)=>{ e.stopPropagation(); hideContextMenu(); if(!it.disabled) it.action(); };
+    menu.appendChild(btn);
+  });
+  menu.style.display = 'block';
+  // riposiziono DOPO averlo reso visibile, per conoscerne le dimensioni reali
+  // e non farlo uscire dal bordo destro/basso della finestra
+  const rect = menu.getBoundingClientRect();
+  const x = Math.min(clientX, window.innerWidth - rect.width - 6);
+  const y = Math.min(clientY, window.innerHeight - rect.height - 6);
+  menu.style.left = Math.max(4,x) + 'px';
+  menu.style.top = Math.max(4,y) + 'px';
+}
+function hideContextMenu(){
+  document.getElementById('ctxMenu').style.display = 'none';
+}
+document.addEventListener('click', hideContextMenu);
+document.addEventListener('contextmenu', (e)=>{
+  // un secondo tasto destro fuori da un'area gestita chiude il menu invece di
+  // lasciarlo aperto sopra a quello nativo del browser
+  if(!e.defaultPrevented) hideContextMenu();
+});
+
 function showToast(message, isError){
   const host = document.getElementById('toastHost');
   const t = document.createElement('div');

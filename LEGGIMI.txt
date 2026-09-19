@@ -35,6 +35,7 @@ COME METTERLO ONLINE (es. hosting Aruba o simile con supporto PHP)
          create_folder.php
          rename_folder.php
          delete_folder.php
+         rename_project.php
          move_project.php
          move_folder.php
        library/
@@ -127,6 +128,20 @@ allo stesso livello del server, utile ad es. contro robot automatici)
      opts.headers = Object.assign({'X-Api-Key': API_KEY}, opts.headers || {});
    (se preferisci, chiedi pure di farlo fare direttamente nell'editor
    la prossima volta che ne parliamo).
+
+MENU CONTESTUALE (tasto destro)
+================================
+- Nella libreria: tasto destro su un progetto o una cartella (nell'albero
+  a sinistra o nell'elenco) apre un menu con Apri, Copia, Taglia, Incolla,
+  Rinomina, Elimina — come in Esplora Risorse. Copiare/tagliare una
+  cartella copia/sposta anche tutto il suo contenuto (sottocartelle e
+  progetti compresi).
+- Sul disegno: tasto destro su un oggetto (con lo strumento Selezione
+  attivo) apre un menu con Copia, Duplica, Elimina, l'ordine di
+  sovrapposizione (primo/secondo piano, avanti/indietro) e Blocca/Sblocca.
+  Con qualcosa negli appunti, tasto destro sull'area vuota del foglio
+  offre "Incolla qui".
+
 
 CRONOLOGIA VERSIONI
 ====================
