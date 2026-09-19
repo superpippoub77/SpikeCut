@@ -553,7 +553,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.10.1</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.11.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1596,6 +1596,13 @@ function shapeToNode(s){
     if(s.rotation){
       const bbox = shapeBBox(s);
       const cx = (bbox.x+bbox.w/2)*state.scale, cy = (bbox.y+bbox.h/2)*state.scale;
+      node.setAttribute('transform', `rotate(${s.rotation} ${cx} ${cy})`);
+    }
+  } else if(s.type==='image'){
+    node = el('image', {x:s.x*state.scale, y:s.y*state.scale, width:s.w*state.scale, height:s.h*state.scale, preserveAspectRatio:'none', 'data-id':s.id, 'data-role':st.role});
+    node.setAttributeNS('http://www.w3.org/1999/xlink','href', s.href);
+    if(s.rotation){
+      const cx=(s.x+s.w/2)*state.scale, cy=(s.y+s.h/2)*state.scale;
       node.setAttribute('transform', `rotate(${s.rotation} ${cx} ${cy})`);
     }
   } else if(s.type==='tracedpath'){
@@ -5160,6 +5167,25 @@ function importSVGString(text, opts){
   function handlePathEl(node, mat, styleObj){
     const dAttr = node.getAttribute('d'); if(!dAttr) return;
     const subpaths = pathToAbsSubpaths(dAttr);
+    if(subpaths.length > 1){
+      // Più sottopercorsi in un solo tratto SVG: quasi sempre un contorno
+      // esterno + uno o più "buchi" tenuti separati grazie a fill-rule
+      // "evenodd" — il caso tipico di lettere convertite in tracciati
+      // (a, o, e, R, ecc., con vuoti al loro interno). Li combino in
+      // un'unica forma tracciata con fill-rule evenodd, invece di trattare
+      // ogni sottopercorso come una forma piena a sé: quest'ultima
+      // riempirebbe di nero anche i vuoti che dovrebbero restare tali.
+      const t1 = transformSubpaths(subpaths, mat);
+      const bbox = measureBBoxOfPaths(t1.map(sp=>sp.d));
+      const mat2 = matMul(matTranslate(-bbox.x,-bbox.y), mat);
+      const t2 = transformSubpaths(subpaths, mat2);
+      const combinedD = t2.map(sp=>sp.d).join(' ');
+      const paths = [{ d: combinedD,
+        fill: styleObj.fill!=='none' ? styleObj.fill : 'none',
+        stroke: styleObj.fill==='none' ? styleObj.stroke : 'none' }];
+      pushTraced(bbox, paths, styleObj);
+      return;
+    }
     const t1 = transformSubpaths(subpaths, mat);
     t1.forEach(sp=>{ if(!sp.hasCurve) pushPath(sp.points, sp.closed, styleObj); });
     const curvySrc = subpaths.filter(sp=>sp.hasCurve);
@@ -5173,6 +5199,25 @@ function importSVGString(text, opts){
         stroke: styleObj.fill==='none' ? styleObj.stroke : 'none' }));
       pushTraced(bbox, paths, styleObj);
     }
+  }
+  function handleImageEl(node, mat){
+    // Le immagini raster incorporate (<image>) non dipendono da fill/stroke:
+    // le importo come forma propria (tipo 'image'), spostabile/ruotabile/
+    // ridimensionabile come qualunque altra, invece di ignorarle.
+    const num = a=>parseFloat(node.getAttribute(a))||0;
+    const x=num('x'), y=num('y'), w=num('width'), h=num('height');
+    if(w<=0||h<=0) return;
+    const href = node.getAttribute('xlink:href') || node.getAttributeNS('http://www.w3.org/1999/xlink','href') || node.getAttribute('href');
+    if(!href) return;
+    const corners = [[x,y],[x+w,y],[x+w,y+h],[x,y+h]].map(p=>applyMat(mat,p));
+    const xs = corners.map(p=>p[0]), ys = corners.map(p=>p[1]);
+    const rx = Math.min(...xs), ry = Math.min(...ys);
+    newShapes.push({
+      id:uid(), type:'image', x:rx, y:ry, w:Math.max(...xs)-rx, h:Math.max(...ys)-ry,
+      href, rotation:0, locked:false,
+      style:{stroke:'none', fill:'none', fillOpacity:1, strokeWidth:0, dash:'none', role:'design', hasRealStroke:false},
+      visible:true, layerId: state.activeLayerId
+    });
   }
   function handleShapeEl(node, tag, mat, styleObj){
     const axisAligned = Math.abs(mat[1])<1e-6 && Math.abs(mat[2])<1e-6;
@@ -5230,6 +5275,7 @@ function importSVGString(text, opts){
       const ownMat = matMul(mat, matFromTransformAttr(child.getAttribute('transform')));
       const st = readStyleFromEl(child, inh);
       if(tag==='g' || tag==='svg' || tag==='a'){ walk(child, ownMat, st); continue; }
+      if(tag==='image'){ handleImageEl(child, ownMat); continue; } // non dipende da fill/stroke: gestita a parte
       const styleObj = styleToShapeStyle(st, ownMat);
       if(isInvisibleStyle(styleObj)) continue; // non disegna nulla (es. hitbox tecnica invisibile): non importarlo come oggetto duplicato
       if(tag==='path') handlePathEl(child, ownMat, styleObj);
@@ -5998,6 +6044,10 @@ function exportNode(s){
   if(s.type==='ellipse'){
     const rotAttr = s.rotation ? ` transform="rotate(${sN(s.rotation)} ${sN(s.x+s.w/2)} ${sN(s.y+s.h/2)})"` : '';
     return `<ellipse cx="${sN(s.x+s.w/2)}" cy="${sN(s.y+s.h/2)}" rx="${sN(Math.abs(s.w/2))}" ry="${sN(Math.abs(s.h/2))}" ${common}${rotAttr}/>`;
+  }
+  if(s.type==='image'){
+    const rotAttr = s.rotation ? ` transform="rotate(${sN(s.rotation)} ${sN(s.x+s.w/2)} ${sN(s.y+s.h/2)})"` : '';
+    return `<image x="${sN(s.x)}" y="${sN(s.y)}" width="${sN(s.w)}" height="${sN(s.h)}" preserveAspectRatio="none" xlink:href="${s.href}"${rotAttr}/>`;
   }
   if(s.type==='text'){
     let rotAttr = '';
