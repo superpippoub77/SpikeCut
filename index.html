@@ -553,7 +553,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.11.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.11.1</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -5289,6 +5289,11 @@ function importSVGString(text, opts){
   if(!newShapes.length){ showToast('Non ho trovato elementi disegnabili modificabili in questo file SVG.', true); return; }
   autoFitImportedShapes(dedupeImportedShapes(newShapes), opts);
 }
+function isNearBlackColor(hex){
+  const rgb = hexToRGB(hex);
+  if(!rgb) return false;
+  return Math.hypot(rgb[0], rgb[1], rgb[2]) < 60; // il nero pieno (o quasi) è quasi sempre un artefatto tecnico da CAD
+}
 function dedupeImportedShapes(shapes){
   // molti programmi disegnano ogni forma più volte con stili diversi (hitbox invisibile,
   // riempimento, contorno) sovrapposte esattamente: le raggruppo per ingombro e ne tengo una sola,
@@ -5308,9 +5313,19 @@ function dedupeImportedShapes(shapes){
     const withStroke = group.find(s => s.style.hasRealStroke && s.style.stroke && s.style.stroke!=='none');
     const base = withStroke || withFill || group[0];
     const merged = JSON.parse(JSON.stringify(base));
-    if(withStroke){
-      // un contorno reale tra i doppioni: lo privilegio, un riempimento pieno duplicato è quasi
-      // sempre un artefatto tecnico (hitbox/area di selezione) del programma che ha generato il file.
+    // Un riempimento pieno NERO (o quasi) duplicato sopra un vero contorno è quasi sempre un
+    // artefatto tecnico da CAD (hitbox/area di selezione): lo scarto, come già faceva prima.
+    // Un riempimento di un COLORE VERO invece è quasi sempre voluto — es. un rettangolo colorato
+    // con un sottile bordo nero sopra, comune in Google Disegni e altri strumenti — e va tenuto
+    // INSIEME al contorno, non scartato.
+    const fillIsMeaningful = withFill && !isNearBlackColor(withFill.style.fill) && withFill !== withStroke;
+    if(withStroke && fillIsMeaningful){
+      merged.style.fill = withFill.style.fill;
+      merged.style.fillOpacity = withFill.style.fillOpacity!=null ? withFill.style.fillOpacity : 1;
+      merged.style.stroke = withStroke.style.stroke;
+      merged.style.strokeWidth = withStroke.style.strokeWidth;
+      merged.style.dash = withStroke.style.dash;
+    } else if(withStroke){
       merged.style.stroke = withStroke.style.stroke;
       merged.style.strokeWidth = withStroke.style.strokeWidth;
       merged.style.dash = withStroke.style.dash;
@@ -5329,7 +5344,7 @@ function dedupeImportedShapes(shapes){
     if(merged.type==='tracedpath' && Array.isArray(merged.paths)){
       merged.paths = merged.paths.map(p=>({ d:p.d,
         fill: merged.style.fill!=='none' ? merged.style.fill : 'none',
-        stroke: merged.style.fill==='none' ? merged.style.stroke : 'none' }));
+        stroke: merged.style.stroke!=='none' ? merged.style.stroke : 'none' }));
     }
     result.push(stripImportFlags(merged));
   }
