@@ -553,7 +553,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.11.2</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 1.12.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2343,7 +2343,7 @@ stage.addEventListener('dblclick', (e)=>{
    MENU CONTESTUALE (tasto destro) SUL DISEGNO — le operazioni
    consentite sulla forma cliccata, oppure "Incolla" sull'area vuota.
 ============================================================ */
-let canvasClipboardShape = null;
+let canvasClipboardShapes = null; // array di forme copiate (con le coordinate originali)
 stage.addEventListener('contextmenu', (e)=>{
   try{
     e.preventDefault();
@@ -2353,9 +2353,9 @@ stage.addEventListener('contextmenu', (e)=>{
     if(hit){
       if(!state.selection.has(hit.id)){ state.selection.clear(); state.selection.add(hit.id); renderAll(); }
       showContextMenu(e.clientX, e.clientY, shapeContextItems(hit));
-    } else if(canvasClipboardShape){
+    } else if(canvasClipboardShapes && canvasClipboardShapes.length){
       showContextMenu(e.clientX, e.clientY, [
-        {label:'📌 Incolla qui', action:()=> pasteShapeAt(mm)}
+        {label:'📌 Incolla qui', action:()=> pasteClipboardShapesAt(mm)}
       ]);
     }
   }catch(err){
@@ -2365,7 +2365,7 @@ stage.addEventListener('contextmenu', (e)=>{
 });
 function shapeContextItems(s){
   return [
-    {label:'📋 Copia', action:()=>{ canvasClipboardShape = JSON.parse(JSON.stringify(s)); showToast('Forma copiata.', false); }},
+    {label: state.selection.size>1 ? `📋 Copia (${state.selection.size})` : '📋 Copia', action:()=> copySelectionToClipboard()},
     {label:'⧉ Duplica', action:()=> duplicateShape(s)},
     {label:'🗑 Elimina', action:()=>{ state.selection = new Set([s.id]); deleteSelection(); }},
     'sep',
@@ -2387,17 +2387,42 @@ function duplicateShape(s){
   state.selection = new Set([copy.id]);
   pushHistory(); renderAll();
 }
-function pasteShapeAt(mm){
-  if(!canvasClipboardShape) return;
-  const copy = JSON.parse(JSON.stringify(canvasClipboardShape));
-  copy.id = uid();
-  const bbox = shapeBBox(copy);
-  const dx = mm[0]-(bbox.x+bbox.w/2), dy = mm[1]-(bbox.y+bbox.h/2);
-  if(copy.points) copy.points = copy.points.map(p=>[p[0]+dx, p[1]+dy]);
-  else if(copy.x!=null){ copy.x += dx; copy.y += dy; }
-  copy.layerId = state.activeLayerId;
-  state.shapes.push(copy);
-  state.selection = new Set([copy.id]);
+// Copia (Ctrl+C, o dal menu contestuale) l'intera selezione corrente, non solo
+// una singola forma: così Ctrl+A seguito da Ctrl+C copia davvero tutto il disegno.
+function copySelectionToClipboard(){
+  if(state.selection.size===0) return;
+  canvasClipboardShapes = [...state.selection]
+    .map(id => state.shapes.find(s=>s.id===id))
+    .filter(Boolean)
+    .map(s => JSON.parse(JSON.stringify(s)));
+  if(!canvasClipboardShapes.length){ canvasClipboardShapes=null; return; }
+  showToast(canvasClipboardShapes.length>1 ? `${canvasClipboardShapes.length} forme copiate.` : 'Forma copiata.', false);
+}
+// Incolla tutto ciò che è negli appunti, mantenendo le posizioni RELATIVE tra
+// le forme copiate: se mm è indicato (clic destro "Incolla qui"), il centro
+// del gruppo incollato cade lì; altrimenti (Ctrl+V da tastiera) uno scostamento
+// fisso evita di sovrapporre esattamente l'incolla all'originale.
+function pasteClipboardShapesAt(mm){
+  if(!canvasClipboardShapes || !canvasClipboardShapes.length) return;
+  let dx, dy;
+  if(mm){
+    const boxes = canvasClipboardShapes.map(shapeBBox);
+    const minX=Math.min(...boxes.map(b=>b.x)), minY=Math.min(...boxes.map(b=>b.y));
+    const maxX=Math.max(...boxes.map(b=>b.x+b.w)), maxY=Math.max(...boxes.map(b=>b.y+b.h));
+    dx = mm[0]-(minX+maxX)/2; dy = mm[1]-(minY+maxY)/2;
+  } else {
+    dx = 5; dy = 5; // mm, scostamento fisso per l'incolla da tastiera
+  }
+  const newShapes = canvasClipboardShapes.map(s=>{
+    const copy = JSON.parse(JSON.stringify(s));
+    copy.id = uid();
+    if(copy.points) copy.points = copy.points.map(p=>[p[0]+dx, p[1]+dy]);
+    else if(copy.x!=null){ copy.x += dx; copy.y += dy; }
+    copy.layerId = state.activeLayerId;
+    return copy;
+  });
+  newShapes.forEach(s=> state.shapes.push(s));
+  state.selection = new Set(newShapes.map(s=>s.id));
   pushHistory(); renderAll();
 }
 
@@ -2928,6 +2953,22 @@ window.addEventListener('keydown', (e)=>{
     else e.shiftKey ? sendToBack(id) : sendBackward(id);
     return;
   }
+  if((e.ctrlKey||e.metaKey) && k==='a'){
+    e.preventDefault();
+    state.selection = new Set(state.shapes.map(s=>s.id));
+    state.refImageSelected = false;
+    renderAll();
+    return;
+  }
+  if((e.ctrlKey||e.metaKey) && k==='c'){ e.preventDefault(); copySelectionToClipboard(); return; }
+  if((e.ctrlKey||e.metaKey) && k==='x'){
+    e.preventDefault();
+    if(state.selection.size===0) return;
+    copySelectionToClipboard();
+    deleteSelection();
+    return;
+  }
+  if((e.ctrlKey||e.metaKey) && k==='v'){ e.preventDefault(); pasteClipboardShapesAt(null); return; }
   if((e.ctrlKey||e.metaKey)) return; // avoid clobbering other browser shortcuts
   const map = {v:'select',p:'pen',l:'line',r:'rect',o:'ellipse',a:'arc',b:'freehand',t:'text'};
   if(map[k]){ setTool(map[k]); return; }
@@ -4614,6 +4655,12 @@ function addColorField(host, label, value, onChange, disabled){
     const none = document.createElement('button'); none.className='btn'; none.style.marginTop='6px';
     none.textContent='Nessun riempimento';
     none.onclick = ()=>{ [...state.selection].forEach(id=>state.shapes.find(x=>x.id===id).style.fill='none'); pushHistory(); renderAll(); };
+    f.appendChild(none);
+  }
+  if(label==='Colore linea'){
+    const none = document.createElement('button'); none.className='btn'; none.style.marginTop='6px';
+    none.textContent='Nessun contorno';
+    none.onclick = ()=>{ [...state.selection].forEach(id=>state.shapes.find(x=>x.id===id).style.stroke='none'); pushHistory(); renderAll(); };
     f.appendChild(none);
   }
   host.appendChild(f);
