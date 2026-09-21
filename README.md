@@ -52,6 +52,14 @@ Ogni tratto ha un ruolo che ne determina colore e stile di stampa:
 L'importazione di un SVG riconosce automaticamente il ruolo dal colore
 usato nel file originale.
 
+### Descrizione e istruzioni del progetto
+Quando non c'è nessun oggetto selezionato, il pannello proprietà mostra la
+scheda descrittiva del progetto: tipo di scatola, carta/materiale
+consigliato, istruzioni di stampa e taglio, e i passaggi di montaggio/
+incollaggio passo dopo passo (con riordino e eliminazione). Utile per
+documentare la scatola per te stesso o per chi dovrà stamparla e montarla;
+viene salvata insieme al resto del progetto (libreria, file .json, copie).
+
 ### Organizzazione del disegno
 - **Livelli**: mostra/nascondi, blocca, riordina, con contenuto separato
   per ciascuno; ogni forma appartiene a un livello.

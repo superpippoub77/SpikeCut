@@ -173,6 +173,22 @@ CRONOLOGIA VERSIONI
   versioni precedenti, ma solo il proprietario può ripristinarle.
 
 
+FAVICON, LOGO E META DATI (SEO / anteprime social)
+====================================================
+- Il pacchetto include favicon.ico, favicon-32x32.png, favicon-16x16.png e
+  apple-touch-icon.png (icona per iOS), più il logo nella topbar dell'app
+  (cartella assets/): tutti già collegati in index.html, non serve altro.
+- Nell'intestazione di index.html ci sono anche i meta dati per la
+  descrizione nei motori di ricerca e per l'anteprima quando il link
+  viene condiviso su social/WhatsApp/Slack ecc. (tag Open Graph e
+  Twitter Card), con l'immagine assets/og-image.png.
+- Questi meta dati puntano all'indirizzo
+  https://www.filippomorano.com/projects/spikecut/ — se un giorno
+  spostassi il progetto su un altro indirizzo, vanno aggiornati i tag
+  <link rel="canonical">, "og:url", "og:image" e "twitter:image" in
+  cima al file con il nuovo indirizzo.
+
+
 NOTE
 - Non serve alcun database: ogni progetto è un file .json nella cartella
   "library/", con un piccolo indice (library/index.json) per l'elenco;

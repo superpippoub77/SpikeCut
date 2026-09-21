@@ -67,6 +67,7 @@ $project = [
     'layers'        => $body['layers'] ?? null,
     'activeLayerId' => $body['activeLayerId'] ?? null,
     'customFonts'   => $body['customFonts'] ?? null,
+    'projectInfo'   => $body['projectInfo'] ?? null,
     'ownerId'       => $user['id'],
     'ownerName'     => $user['username'],
     'shared'        => $shared,
