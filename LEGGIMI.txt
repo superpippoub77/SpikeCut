@@ -189,6 +189,16 @@ FAVICON, LOGO E META DATI (SEO / anteprime social)
   cima al file con il nuovo indirizzo.
 
 
+LINGUA DELL'INTERFACCIA
+========================
+- Selettore in alto nella barra: Italiano (predefinito), English, Deutsch,
+  Español, 中文, Français. Traduce l'intera interfaccia (menu, pulsanti,
+  tooltip, pannello proprietà, libreria, messaggi). La scelta resta
+  salvata nel browser tra una visita e l'altra.
+- I contenuti scritti dall'utente (nomi progetti/cartelle/livelli, testo
+  nel disegno) restano sempre come scritti, non vengono mai tradotti.
+
+
 NOTE
 - Non serve alcun database: ogni progetto è un file .json nella cartella
   "library/", con un piccolo indice (library/index.json) per l'elenco;

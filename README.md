@@ -30,6 +30,14 @@ disabilitato finché non è servito da un vero server web.
 
 ## 2. L'editor (index.html)
 
+### Lingua dell'interfaccia
+Selettore in alto nella barra degli strumenti: Italiano (predefinito), English,
+Deutsch, Español, 中文, Français. Traduce menu, pulsanti, tooltip, pannello
+proprietà, libreria e messaggi. La scelta viene ricordata tra una sessione e
+l'altra. I nomi che l'utente sceglie liberamente (progetti, cartelle,
+livelli, testo nel disegno) non vengono mai tradotti automaticamente.
+
+
 Un solo file, senza framework: HTML + CSS + JavaScript "vanilla", più
 alcune librerie esterne caricate da CDN (ImageTracer.js per la
 vettorizzazione delle immagini, jsPDF per l'export PDF, JSZip per i font
