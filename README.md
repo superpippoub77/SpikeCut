@@ -69,6 +69,21 @@ documentare la scatola per te stesso o per chi dovrà stamparla e montarla;
 viene salvata insieme al resto del progetto (libreria, file .json, copie).
 
 ### Organizzazione del disegno
+- **Allinea e distribuisci**: con 2+ forme selezionate, il pannello proprietà
+  mostra i comandi per allineare i bordi (sinistra/destra/centro orizzontale,
+  alto/basso/centro verticale) e, con 3+ forme, distribuirle uniformemente.
+- **Mirror (rifletti)**: ribalta specularmente in orizzontale o verticale la
+  selezione (una o più forme), attorno al centro del suo ingombro complessivo.
+  Per immagini e tracciati vettorizzati ribalta anche il contenuto visivo,
+  non solo la posizione.
+- **Offset / parallelo**: per una forma a punti selezionata, crea una copia
+  parallela spostata di una distanza esatta (positiva = verso l'esterno,
+  negativa = verso l'interno) — utile per alette, margini, abbondanze.
+- **Input numerico durante il disegno**: disegnando una linea, digitare dei
+  numeri ne impone la lunghezza esatta nell'unità di misura corrente,
+  lasciando comunque libero il mouse per puntare la direzione — Invio
+  conferma subito.
+
 - **Livelli**: mostra/nascondi, blocca, riordina, con contenuto separato
   per ciascuno; ogni forma appartiene a un livello.
 - **Ordine di sovrapposizione**: dentro allo stesso livello, ogni forma
