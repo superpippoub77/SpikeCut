@@ -442,6 +442,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <div class="grp">
     <button class="iconbtn" id="btnUndo" title="Annulla (Ctrl+Z)">↶</button>
     <button class="iconbtn" id="btnRedo" title="Ripeti (Ctrl+Shift+Z)">↷</button>
+    <button class="iconbtn" id="btnHistory" title="Cronologia visuale: salta direttamente a uno stato precedente">🕐</button>
   </div>
   <div class="grp">
     <select id="pageSize" title="Formato pagina">
@@ -495,6 +496,8 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <div class="grp menuwrap">
     <button class="btn primary" style="width:auto;margin:0;padding:7px 14px;" id="btnFileMenu">File ▾</button>
     <div class="dropdown-menu" id="fileMenu">
+      <button data-action="generate-box">📦 Genera scatola…</button>
+      <div class="menu-sep"></div>
       <button data-action="save-project">Salva progetto (.json)</button>
       <button data-action="open-project">Apri progetto (.json)</button>
       <div class="menu-sep"></div>
@@ -516,6 +519,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
     <button class="btn primary" style="width:auto;margin:0;padding:7px 14px;" id="btnToolsMenu">Strumenti ▾</button>
     <div class="dropdown-menu" id="toolsMenu">
       <button data-action="check-closures">Verifica chiusure percorsi</button>
+      <button data-action="check-overlaps">Verifica sovrapposizioni e duplicati</button>
       <button data-action="cut-preview">Anteprima taglio (fustella)</button>
       <div class="menu-sep"></div>
       <button data-action="weld-points">Salda punti vicini…</button>
@@ -570,11 +574,13 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
       <button class="tabtrig active" data-tab="prop">Proprietà</button>
       <button class="tabtrig" data-tab="layers">Livelli</button>
       <button class="tabtrig" data-tab="image">Immagine</button>
+      <button class="tabtrig" data-tab="components">Componenti</button>
     </div>
 
     <div class="tabpage active" data-tab="prop" id="tab-prop"></div>
     <div class="tabpage" data-tab="layers" id="tab-layers"></div>
     <div class="tabpage" data-tab="image" id="tab-image"></div>
+    <div class="tabpage" data-tab="components" id="tab-components"></div>
   </div>
 </div>
 
@@ -592,7 +598,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.1.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.4.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -698,6 +704,41 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
     </div>
     <div id="versionsList" class="modal-body">
       <div class="emptystate">Caricamento…</div>
+    </div>
+  </div>
+</div>
+
+<div id="historyModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Cronologia annulla/ripeti</h3>
+      <button class="iconbtn" id="historyModalClose" title="Chiudi">✕</button>
+    </div>
+    <div style="padding:0 16px 4px;font-size:11.5px;color:var(--ink-dim);">Clic su uno stato per tornarci direttamente, senza premere Annulla/Ripeti passo per passo.</div>
+    <div id="historyList" class="modal-body"></div>
+  </div>
+</div>
+
+<div id="boxGenModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Genera scatola</h3>
+      <button class="iconbtn" id="boxGenModalClose" title="Chiudi">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Tipo di scatola</label>
+        <select id="boxGenType">
+          <option value="american">Scatola americana (RSC)</option>
+          <option value="tuck">Astuccio con coperchio a incastro</option>
+        </select>
+      </div>
+      <div class="field"><label>Larghezza L (mm)</label><input type="number" id="boxGenL" value="200" min="10"></div>
+      <div class="field"><label>Profondità P (mm)</label><input type="number" id="boxGenW" value="150" min="10"></div>
+      <div class="field"><label>Altezza H (mm)</label><input type="number" id="boxGenH" value="100" min="10"></div>
+      <div class="field"><label>Aletta di incollaggio (mm) — lascia vuoto per un valore automatico</label><input type="number" id="boxGenGlue" placeholder="automatica" min="0"></div>
+      <div class="hint" id="boxGenError" style="color:var(--cut);display:none;margin-top:6px;"></div>
+      <button class="btn primary" id="boxGenApply" style="width:100%;margin-top:12px;">Genera in una nuova scheda</button>
     </div>
   </div>
 </div>
@@ -1498,6 +1539,42 @@ const I18N = {
     "Allinea i bordi inferiori": "Align bottom edges",
     "Distribuisci uniformemente in orizzontale": "Distribute evenly horizontally",
     "Distribuisci uniformemente in verticale": "Distribute evenly vertically",
+    "Verifica sovrapposizioni e duplicati": "Check overlaps and duplicates",
+    "Nessuna sovrapposizione o duplicato trovato tra le forme visibili.": "No overlap or duplicate found among the visible shapes.",
+    "{n} forme duplicate": "{n} duplicate shapes",
+    "{n} tratti di taglio sovrapposti": "{n} overlapping cut segments",
+    "Trovate: {list}. Le forme coinvolte sono state selezionate.": "Found: {list}. The involved shapes have been selected.",
+    "Seleziona stesso colore": "Select same color",
+    "Seleziona stesso ruolo": "Select same role",
+    "Selezionate {n} forme con lo stesso colore.": "Selected {n} shapes with the same color.",
+    "Selezionate {n} forme con lo stesso ruolo.": "Selected {n} shapes with the same role.",
+    "Cronologia visuale: salta direttamente a uno stato precedente": "Visual history: jump directly to a previous state",
+    "Cronologia annulla/ripeti": "Undo/redo history",
+    "Clic su uno stato per tornarci direttamente, senza premere Annulla/Ripeti passo per passo.": "Click a state to jump back to it directly, without pressing Undo/Redo step by step.",
+    "#{n} — {count} forme — {time}": "#{n} — {count} shapes — {time}",
+    "Componenti": "Components",
+    "Aletta standard": "Standard flap",
+    "Foro europeo": "Euro hole",
+    "Maniglia": "Handle",
+    "Linguetta": "Tab",
+    "Gancio": "Hook",
+    "Pezzi pronti da inserire al centro del foglio con un clic: si aggiungono come una normale forma modificabile, da spostare, ridimensionare e rifinire.": "Ready-made pieces to insert at the center of the sheet with one click: they’re added as a normal editable shape, to move, resize and refine.",
+    "\"{name}\" inserita al centro del foglio: spostala e adattala come preferisci.": "\"{name}\" inserted at the center of the sheet: move and adjust it as you like.",
+    "📦 Genera scatola…": "📦 Generate box…",
+    "Genera scatola": "Generate box",
+    "Scatola americana (RSC)": "American box (RSC)",
+    "Astuccio con coperchio a incastro": "Tuck-end carton",
+    "Larghezza L (mm)": "Width L (mm)",
+    "Profondità P (mm)": "Depth P (mm)",
+    "Altezza H (mm)": "Height H (mm)",
+    "Aletta di incollaggio (mm) — lascia vuoto per un valore automatico": "Glue flap (mm) — leave empty for an automatic value",
+    "automatica": "automatic",
+    "Genera in una nuova scheda": "Generate in a new tab",
+    "Inserisci Larghezza, Profondità e Altezza valide (almeno 10mm ciascuna).": "Enter valid Width, Depth and Height (at least 10mm each).",
+    "Fustella generata in una nuova scheda: verifica le misure prima di esportare.": "Dieline generated in a new tab: check the measurements before exporting.",
+    "Astuccio": "Tuck box",
+    "Scatola americana": "American box",
+    "{label} {L}×{W}×{H}": "{label} {L}×{W}×{H}",
   },
   de: {
     "1 cm": "1 cm",
@@ -1946,6 +2023,42 @@ const I18N = {
     "Allinea i bordi inferiori": "Untere Kanten ausrichten",
     "Distribuisci uniformemente in orizzontale": "Gleichmäßig horizontal verteilen",
     "Distribuisci uniformemente in verticale": "Gleichmäßig vertikal verteilen",
+    "Verifica sovrapposizioni e duplicati": "Überlappungen und Duplikate prüfen",
+    "Nessuna sovrapposizione o duplicato trovato tra le forme visibili.": "Keine Überlappung oder Duplikate unter den sichtbaren Formen gefunden.",
+    "{n} forme duplicate": "{n} doppelte Formen",
+    "{n} tratti di taglio sovrapposti": "{n} überlappende Schnittsegmente",
+    "Trovate: {list}. Le forme coinvolte sono state selezionate.": "Gefunden: {list}. Die betroffenen Formen wurden ausgewählt.",
+    "Seleziona stesso colore": "Gleiche Farbe auswählen",
+    "Seleziona stesso ruolo": "Gleiche Rolle auswählen",
+    "Selezionate {n} forme con lo stesso colore.": "{n} Formen mit derselben Farbe ausgewählt.",
+    "Selezionate {n} forme con lo stesso ruolo.": "{n} Formen mit derselben Rolle ausgewählt.",
+    "Cronologia visuale: salta direttamente a uno stato precedente": "Visueller Verlauf: direkt zu einem früheren Zustand springen",
+    "Cronologia annulla/ripeti": "Rückgängig/Wiederholen-Verlauf",
+    "Clic su uno stato per tornarci direttamente, senza premere Annulla/Ripeti passo per passo.": "Klicke auf einen Zustand, um direkt dorthin zurückzukehren, ohne Schritt für Schritt Rückgängig/Wiederholen zu drücken.",
+    "#{n} — {count} forme — {time}": "#{n} — {count} Formen — {time}",
+    "Componenti": "Komponenten",
+    "Aletta standard": "Standardlasche",
+    "Foro europeo": "Eurolochung",
+    "Maniglia": "Griff",
+    "Linguetta": "Zunge",
+    "Gancio": "Haken",
+    "Pezzi pronti da inserire al centro del foglio con un clic: si aggiungono come una normale forma modificabile, da spostare, ridimensionare e rifinire.": "Fertige Teile, die mit einem Klick in der Mitte des Blatts eingefügt werden: Sie werden als normale bearbeitbare Form hinzugefügt, zum Verschieben, Skalieren und Verfeinern.",
+    "\"{name}\" inserita al centro del foglio: spostala e adattala come preferisci.": "\"{name}\" in der Mitte des Blatts eingefügt: verschiebe und passe sie nach Belieben an.",
+    "📦 Genera scatola…": "📦 Schachtel erzeugen…",
+    "Genera scatola": "Schachtel erzeugen",
+    "Scatola americana (RSC)": "Amerikanische Schachtel (RSC)",
+    "Astuccio con coperchio a incastro": "Faltschachtel mit Stecklasche",
+    "Larghezza L (mm)": "Breite L (mm)",
+    "Profondità P (mm)": "Tiefe P (mm)",
+    "Altezza H (mm)": "Höhe H (mm)",
+    "Aletta di incollaggio (mm) — lascia vuoto per un valore automatico": "Klebelasche (mm) — leer lassen für einen automatischen Wert",
+    "automatica": "automatisch",
+    "Genera in una nuova scheda": "In neuem Tab erzeugen",
+    "Inserisci Larghezza, Profondità e Altezza valide (almeno 10mm ciascuna).": "Gib gültige Breite, Tiefe und Höhe ein (mindestens 10mm je Wert).",
+    "Fustella generata in una nuova scheda: verifica le misure prima di esportare.": "Stanzform in neuem Tab erzeugt: Prüfe die Maße vor dem Export.",
+    "Astuccio": "Faltschachtel",
+    "Scatola americana": "Amerikanische Schachtel",
+    "{label} {L}×{W}×{H}": "{label} {L}×{W}×{H}",
   },
   es: {
     "1 cm": "1 cm",
@@ -2394,6 +2507,42 @@ const I18N = {
     "Allinea i bordi inferiori": "Alinear bordes inferiores",
     "Distribuisci uniformemente in orizzontale": "Distribuir uniformemente en horizontal",
     "Distribuisci uniformemente in verticale": "Distribuir uniformemente en vertical",
+    "Verifica sovrapposizioni e duplicati": "Verificar solapamientos y duplicados",
+    "Nessuna sovrapposizione o duplicato trovato tra le forme visibili.": "No se encontró ningún solapamiento ni duplicado entre las formas visibles.",
+    "{n} forme duplicate": "{n} formas duplicadas",
+    "{n} tratti di taglio sovrapposti": "{n} tramos de corte solapados",
+    "Trovate: {list}. Le forme coinvolte sono state selezionate.": "Se encontró: {list}. Se han seleccionado las formas implicadas.",
+    "Seleziona stesso colore": "Seleccionar mismo color",
+    "Seleziona stesso ruolo": "Seleccionar mismo rol",
+    "Selezionate {n} forme con lo stesso colore.": "Se seleccionaron {n} formas con el mismo color.",
+    "Selezionate {n} forme con lo stesso ruolo.": "Se seleccionaron {n} formas con el mismo rol.",
+    "Cronologia visuale: salta direttamente a uno stato precedente": "Historial visual: saltar directamente a un estado anterior",
+    "Cronologia annulla/ripeti": "Historial de deshacer/rehacer",
+    "Clic su uno stato per tornarci direttamente, senza premere Annulla/Ripeti passo per passo.": "Haz clic en un estado para volver a él directamente, sin pulsar Deshacer/Rehacer paso a paso.",
+    "#{n} — {count} forme — {time}": "#{n} — {count} formas — {time}",
+    "Componenti": "Componentes",
+    "Aletta standard": "Pestaña estándar",
+    "Foro europeo": "Orificio europeo",
+    "Maniglia": "Asa",
+    "Linguetta": "Lengüeta",
+    "Gancio": "Gancho",
+    "Pezzi pronti da inserire al centro del foglio con un clic: si aggiungono come una normale forma modificabile, da spostare, ridimensionare e rifinire.": "Piezas listas para insertar en el centro de la hoja con un clic: se añaden como una forma normal editable, para mover, redimensionar y perfeccionar.",
+    "\"{name}\" inserita al centro del foglio: spostala e adattala come preferisci.": "\"{name}\" insertada en el centro de la hoja: muévela y ajústala como prefieras.",
+    "📦 Genera scatola…": "📦 Generar caja…",
+    "Genera scatola": "Generar caja",
+    "Scatola americana (RSC)": "Caja americana (RSC)",
+    "Astuccio con coperchio a incastro": "Estuche con tapa de encaje",
+    "Larghezza L (mm)": "Ancho L (mm)",
+    "Profondità P (mm)": "Profundidad P (mm)",
+    "Altezza H (mm)": "Altura H (mm)",
+    "Aletta di incollaggio (mm) — lascia vuoto per un valore automatico": "Pestaña de encolado (mm) — deja vacío para un valor automático",
+    "automatica": "automático",
+    "Genera in una nuova scheda": "Generar en una pestaña nueva",
+    "Inserisci Larghezza, Profondità e Altezza valide (almeno 10mm ciascuna).": "Introduce Ancho, Profundidad y Altura válidos (al menos 10mm cada uno).",
+    "Fustella generata in una nuova scheda: verifica le misure prima di esportare.": "Troquel generado en una pestaña nueva: comprueba las medidas antes de exportar.",
+    "Astuccio": "Estuche",
+    "Scatola americana": "Caja americana",
+    "{label} {L}×{W}×{H}": "{label} {L}×{W}×{H}",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -2842,6 +2991,42 @@ const I18N = {
     "Allinea i bordi inferiori": "下边缘对齐",
     "Distribuisci uniformemente in orizzontale": "水平均匀分布",
     "Distribuisci uniformemente in verticale": "垂直均匀分布",
+    "Verifica sovrapposizioni e duplicati": "检查重叠和重复",
+    "Nessuna sovrapposizione o duplicato trovato tra le forme visibili.": "在可见形状中未发现重叠或重复。",
+    "{n} forme duplicate": "{n} 个重复形状",
+    "{n} tratti di taglio sovrapposti": "{n} 段重叠的切割线",
+    "Trovate: {list}. Le forme coinvolte sono state selezionate.": "发现：{list}。相关形状已被选中。",
+    "Seleziona stesso colore": "选择相同颜色",
+    "Seleziona stesso ruolo": "选择相同角色",
+    "Selezionate {n} forme con lo stesso colore.": "已选择 {n} 个相同颜色的形状。",
+    "Selezionate {n} forme con lo stesso ruolo.": "已选择 {n} 个相同角色的形状。",
+    "Cronologia visuale: salta direttamente a uno stato precedente": "可视化历史记录：直接跳转到之前的状态",
+    "Cronologia annulla/ripeti": "撤销/重做历史记录",
+    "Clic su uno stato per tornarci direttamente, senza premere Annulla/Ripeti passo per passo.": "点击某个状态可直接跳回该状态，无需逐步点击撤销/重做。",
+    "#{n} — {count} forme — {time}": "#{n} — {count} 个形状 — {time}",
+    "Componenti": "组件",
+    "Aletta standard": "标准粘合舌",
+    "Foro europeo": "欧式挂孔",
+    "Maniglia": "手提孔",
+    "Linguetta": "插舌",
+    "Gancio": "挂钩",
+    "Pezzi pronti da inserire al centro del foglio con un clic: si aggiungono come una normale forma modificabile, da spostare, ridimensionare e rifinire.": "预制部件，一键插入图纸中心：以普通可编辑形状的方式添加，可移动、调整大小和细化。",
+    "\"{name}\" inserita al centro del foglio: spostala e adattala come preferisci.": "\"{name}\" 已插入图纸中心：可随意移动和调整。",
+    "📦 Genera scatola…": "📦 生成盒子…",
+    "Genera scatola": "生成盒子",
+    "Scatola americana (RSC)": "美式箱（RSC）",
+    "Astuccio con coperchio a incastro": "插入式翻盖纸盒",
+    "Larghezza L (mm)": "宽度 L（毫米）",
+    "Profondità P (mm)": "深度 P（毫米）",
+    "Altezza H (mm)": "高度 H（毫米）",
+    "Aletta di incollaggio (mm) — lascia vuoto per un valore automatico": "粘合舌（毫米）——留空则自动计算",
+    "automatica": "自动",
+    "Genera in una nuova scheda": "在新标签页中生成",
+    "Inserisci Larghezza, Profondità e Altezza valide (almeno 10mm ciascuna).": "请输入有效的宽度、深度和高度（每项至少10毫米）。",
+    "Fustella generata in una nuova scheda: verifica le misure prima di esportare.": "已在新标签页中生成刀模：导出前请检查尺寸。",
+    "Astuccio": "翻盖纸盒",
+    "Scatola americana": "美式箱",
+    "{label} {L}×{W}×{H}": "{label} {L}×{W}×{H}",
   },
   fr: {
     "1 cm": "1 cm",
@@ -3290,6 +3475,42 @@ const I18N = {
     "Allinea i bordi inferiori": "Aligner les bords inférieurs",
     "Distribuisci uniformemente in orizzontale": "Distribuer uniformément à l’horizontale",
     "Distribuisci uniformemente in verticale": "Distribuer uniformément à la verticale",
+    "Verifica sovrapposizioni e duplicati": "Vérifier les chevauchements et doublons",
+    "Nessuna sovrapposizione o duplicato trovato tra le forme visibili.": "Aucun chevauchement ni doublon trouvé parmi les formes visibles.",
+    "{n} forme duplicate": "{n} formes en double",
+    "{n} tratti di taglio sovrapposti": "{n} segments de découpe superposés",
+    "Trovate: {list}. Le forme coinvolte sono state selezionate.": "Trouvé : {list}. Les formes concernées ont été sélectionnées.",
+    "Seleziona stesso colore": "Sélectionner la même couleur",
+    "Seleziona stesso ruolo": "Sélectionner le même rôle",
+    "Selezionate {n} forme con lo stesso colore.": "{n} formes de la même couleur sélectionnées.",
+    "Selezionate {n} forme con lo stesso ruolo.": "{n} formes du même rôle sélectionnées.",
+    "Cronologia visuale: salta direttamente a uno stato precedente": "Historique visuel : sauter directement à un état antérieur",
+    "Cronologia annulla/ripeti": "Historique annuler/rétablir",
+    "Clic su uno stato per tornarci direttamente, senza premere Annulla/Ripeti passo per passo.": "Clique sur un état pour y revenir directement, sans appuyer sur Annuler/Rétablir étape par étape.",
+    "#{n} — {count} forme — {time}": "#{n} — {count} formes — {time}",
+    "Componenti": "Composants",
+    "Aletta standard": "Languette standard",
+    "Foro europeo": "Trou européen",
+    "Maniglia": "Poignée",
+    "Linguetta": "Languette",
+    "Gancio": "Crochet",
+    "Pezzi pronti da inserire al centro del foglio con un clic: si aggiungono come una normale forma modificabile, da spostare, ridimensionare e rifinire.": "Pièces prêtes à insérer au centre de la feuille en un clic : elles s’ajoutent comme une forme normale modifiable, à déplacer, redimensionner et affiner.",
+    "\"{name}\" inserita al centro del foglio: spostala e adattala come preferisci.": "« {name} » insérée au centre de la feuille : déplace-la et ajuste-la comme tu veux.",
+    "📦 Genera scatola…": "📦 Générer une boîte…",
+    "Genera scatola": "Générer une boîte",
+    "Scatola americana (RSC)": "Caisse américaine (RSC)",
+    "Astuccio con coperchio a incastro": "Étui à rabat encastré",
+    "Larghezza L (mm)": "Largeur L (mm)",
+    "Profondità P (mm)": "Profondeur P (mm)",
+    "Altezza H (mm)": "Hauteur H (mm)",
+    "Aletta di incollaggio (mm) — lascia vuoto per un valore automatico": "Languette de collage (mm) — laisse vide pour une valeur automatique",
+    "automatica": "automatique",
+    "Genera in una nuova scheda": "Générer dans un nouvel onglet",
+    "Inserisci Larghezza, Profondità e Altezza valide (almeno 10mm ciascuna).": "Saisis une largeur, une profondeur et une hauteur valides (au moins 10mm chacune).",
+    "Fustella generata in una nuova scheda: verifica le misure prima di esportare.": "Forme de découpe générée dans un nouvel onglet : vérifie les mesures avant d’exporter.",
+    "Astuccio": "Étui",
+    "Scatola americana": "Caisse américaine",
+    "{label} {L}×{W}×{H}": "{label} {L}×{W}×{H}",
   },
 };
 let currentLang = 'it';
@@ -3513,6 +3734,7 @@ const state = {
   hoverSegment: null,            // {shapeId, idx} — evidenzia il tratto idx→idx+1 mentre ci si sofferma sul suo blocco nel pannello coordinate
   projectInfo: { boxType:'', material:'', printNotes:'', assemblySteps:[] }, // descrizione del progetto: tipo scatola, carta/stampa consigliata, montaggio passo-passo
   history: [],
+  historyTimes: [],
   histIndex: -1,
   autosaveTimer: null
 };
@@ -3824,8 +4046,10 @@ function moveShapesBy(ids, dx, dy){
 function pushHistory(){
   const snap = JSON.stringify({shapes:state.shapes, layers:state.layers});
   state.history = state.history.slice(0, state.histIndex+1);
+  state.historyTimes = (state.historyTimes||[]).slice(0, state.histIndex+1);
   state.history.push(snap);
-  if(state.history.length>120) state.history.shift();
+  state.historyTimes.push(Date.now());
+  if(state.history.length>300){ state.history.shift(); state.historyTimes.shift(); }
   state.histIndex = state.history.length-1;
   updateUndoRedoButtons();
   scheduleAutosave();
@@ -3848,10 +4072,42 @@ function redo(){
   state.selection.clear();
   renderAll();
 }
+// Salta direttamente a un punto qualsiasi della cronologia (usato dal pannello
+// visuale), senza dover premere Annulla/Ripeti passo per passo.
+function jumpToHistory(index){
+  if(index<0 || index>=state.history.length || index===state.histIndex) return;
+  state.histIndex = index;
+  const data = JSON.parse(state.history[index]);
+  state.shapes = data.shapes; state.layers = data.layers || state.layers;
+  ensureActiveLayer();
+  state.selection.clear();
+  updateUndoRedoButtons();
+  renderAll();
+}
 function updateUndoRedoButtons(){
   document.getElementById('btnUndo').disabled = state.histIndex<=0;
   document.getElementById('btnRedo').disabled = state.histIndex>=state.history.length-1;
 }
+function renderHistoryPanel(){
+  const host = document.getElementById('historyList');
+  host.innerHTML = '';
+  const times = state.historyTimes || [];
+  for(let i=state.history.length-1; i>=0; i--){
+    let shapeCount = '?';
+    try{ shapeCount = JSON.parse(state.history[i]).shapes.length; }catch(err){ /* ignoro voci non leggibili */ }
+    const row = document.createElement('div');
+    row.className = 'layerrow' + (i===state.histIndex ? ' active' : '');
+    row.style.cursor = 'pointer';
+    const t = times[i] ? new Date(times[i]).toLocaleTimeString() : '';
+    const lbl = document.createElement('span'); lbl.className='lbl';
+    lbl.textContent = tpl('#{n} — {count} forme — {time}', {n:i+1, count:shapeCount, time:t}) + (i===state.histIndex ? '  ★' : '');
+    row.appendChild(lbl);
+    row.onclick = ()=>{ jumpToHistory(i); closeHistoryModal(); };
+    host.appendChild(row);
+  }
+}
+function openHistoryModal(){ renderHistoryPanel(); openModal('historyModal'); }
+function closeHistoryModal(){ document.getElementById('historyModal').classList.remove('open'); }
 
 /* ============================================================
    SHAPE FACTORY
@@ -4186,6 +4442,10 @@ function renderMarquee(){
     const x=Math.min(s0[0],s1[0])*state.scale, y=Math.min(s0[1],s1[1])*state.scale;
     const w=Math.abs(s1[0]-s0[0])*state.scale, h=Math.abs(s1[1]-s0[1])*state.scale;
     layerOverlay.appendChild(el('rect', {x,y,width:w,height:h, fill:'rgba(201,151,63,0.12)', stroke:'var(--brass)', 'stroke-width':1, 'stroke-dasharray':'4,3'}));
+  }
+  if(dragMode==='lasso' && state.drag && state.drag.points.length>1){
+    const d = 'M ' + state.drag.points.map(p=>`${p[0]*state.scale} ${p[1]*state.scale}`).join(' L ') + ' Z';
+    layerOverlay.appendChild(el('path', {d, fill:'rgba(201,151,63,0.12)', stroke:'var(--brass)', 'stroke-width':1, 'stroke-dasharray':'4,3'}));
   }
 }
 
@@ -4586,6 +4846,164 @@ const TOOLS = [
   {id:'freehand', key:'b', label:'Matita libera', icon:'M4 17c3-8 5-3 8-9 2 4 4-1 6 2'},
   {id:'text', key:'t', label:'Testo', icon:'M5 4h12M11 4v14'},
 ];
+/* ============================================================
+   LIBRERIA COMPONENTI — pezzi pronti (aletta, foro europeo, maniglia,
+   linguetta, gancio) da inserire con un clic, poi rifinibili come
+   qualunque altra forma.
+============================================================ */
+function makeCapsulePoints(width, height, sides){
+  sides = sides || 16;
+  const r = width/2;
+  const straightLen = Math.max(0, height - width);
+  const pts = [];
+  for(let i=0;i<=sides;i++){
+    const a = -Math.PI/2 + (i/sides)*Math.PI;
+    pts.push([r*Math.cos(a), -straightLen/2 - r*Math.sin(a)]);
+  }
+  for(let i=0;i<=sides;i++){
+    const a = Math.PI/2 + (i/sides)*Math.PI;
+    pts.push([r*Math.cos(a), straightLen/2 - r*Math.sin(a)]);
+  }
+  return pts;
+}
+function makeHookPoints(){
+  const stemW = 5, stemH = 18, hookOuterR = 12, hookInnerR = hookOuterR-stemW;
+  const cx = 0, cy = -stemH, sides = 16;
+  const pts = [[-stemW/2, 0], [-stemW/2, cy]];
+  for(let i=0;i<=sides;i++){
+    const a = Math.PI - (i/sides)*Math.PI*1.3;
+    pts.push([cx+hookOuterR*Math.cos(a), cy+hookOuterR*Math.sin(a)]);
+  }
+  const aEnd = Math.PI - 1.3*Math.PI;
+  pts.push([cx+hookInnerR*Math.cos(aEnd), cy+hookInnerR*Math.sin(aEnd)]);
+  for(let i=sides;i>=0;i--){
+    const a = Math.PI - (i/sides)*Math.PI*1.3;
+    pts.push([cx+hookInnerR*Math.cos(a), cy+hookInnerR*Math.sin(a)]);
+  }
+  pts.push([stemW/2, cy], [stemW/2, 0]);
+  return pts;
+}
+/* ============================================================
+   GENERAZIONE AUTOMATICA SCATOLE — inserendo Larghezza/Profondità/
+   Altezza, genera la fustella completa (americana o astuccio).
+============================================================ */
+function boxRectShape(x,y,w,h,role){
+  const rs = ROLE_STYLE[role];
+  return { id:uid(), type:'rect', x,y,w,h, locked:false, layerId: state.activeLayerId,
+    style:{stroke:rs.stroke, hasRealStroke:true, fill:'none', fillOpacity:1, strokeWidth:1, dash:rs.dash, role} };
+}
+function boxLineShape(p1,p2,role){
+  const rs = ROLE_STYLE[role];
+  return { id:uid(), type:'path', points:[[p1[0],p1[1]],[p2[0],p2[1]]], closed:false, smooth:[0,0], locked:false, layerId: state.activeLayerId,
+    style:{stroke:rs.stroke, hasRealStroke:true, fill:'none', fillOpacity:1, strokeWidth:1, dash:rs.dash, role} };
+}
+function boxPolyShape(points, role){
+  const rs = ROLE_STYLE[role];
+  return { id:uid(), type:'path', points:points.map(p=>[p[0],p[1]]), closed:true, smooth:points.map(()=>0), locked:false, layerId: state.activeLayerId,
+    style:{stroke:rs.stroke, hasRealStroke:true, fill:'none', fillOpacity:1, strokeWidth:1, dash:rs.dash, role} };
+}
+// Scatola americana (RSC — Regular Slotted Container): 4 pannelli laterali in
+// fila (L,W,L,W) più aletta di incollaggio, con 4 alette semplici sopra e 4
+// sotto (versione semplificata a spigoli dritti, senza rifilo angolare).
+function generateAmericanBox(L, W, H, glueW){
+  glueW = glueW || Math.round(Math.max(20, Math.min(L,W)*0.5));
+  const flapH = W/2;
+  const totalW = glueW + 2*L + 2*W;
+  const totalH = flapH*2 + H;
+  const shapes = [ boxRectShape(0,0,totalW,totalH,'cut') ];
+  [glueW, glueW+L, glueW+L+W, glueW+2*L+W].forEach(x=>
+    shapes.push(boxLineShape([x,0],[x,totalH],'fold')));
+  [flapH, flapH+H].forEach(y=>
+    shapes.push(boxLineShape([0,y],[totalW,y],'fold')));
+  return {shapes, totalW, totalH};
+}
+// Astuccio con coperchio a incastro (tuck box): stesso tubo di 4 pannelli,
+// ma sopra e sotto ha alette a trapezio (polvere) sui lati e un'aletta a
+// incastro davanti/dietro, invece di semplici alette rettangolari.
+function generateTuckBox(L, W, H, glueW){
+  glueW = glueW || Math.round(Math.max(15, Math.min(L,W)*0.4));
+  const dustH = W*0.4, tuckH = Math.max(12, W*0.25);
+  const totalW = glueW + 2*L + 2*W;
+  const totalH = H + 2*(dustH + tuckH);
+  const xs = { glue:0, front:glueW, side1:glueW+L, back:glueW+L+W, side2:glueW+L+2*W };
+  const shapes = [];
+  // corpo principale: rettangolo di taglio, alto H, tra le due fasce di alette
+  const bodyY0 = dustH+tuckH, bodyY1 = bodyY0+H;
+  shapes.push(boxLineShape([0,bodyY0],[totalW,bodyY0],'cut'));
+  shapes.push(boxLineShape([0,bodyY1],[totalW,bodyY1],'cut'));
+  shapes.push(boxLineShape([0,bodyY0],[0,bodyY1],'cut'));
+  shapes.push(boxLineShape([totalW,bodyY0],[totalW,bodyY1],'cut'));
+  [xs.front, xs.side1, xs.back, xs.side2].forEach(x=>
+    shapes.push(boxLineShape([x,bodyY0],[x,bodyY1],'fold')));
+
+  function addEnd(y0, dir){ // dir=+1 sopra il corpo (verso l'alto), -1 sotto (verso il basso)
+    const dustY = y0 + dir*dustH;
+    const tuckY = dustY + dir*tuckH;
+    // alette a trapezio (polvere) sui pannelli laterali (W)
+    [xs.side1, xs.side2].forEach(x0=>{
+      const w = W, inset = w*0.2;
+      shapes.push(boxPolyShape([
+        [x0, y0], [x0+w, y0], [x0+w-inset, dustY], [x0+inset, dustY]
+      ], 'cut'));
+      shapes.push(boxLineShape([x0,y0],[x0+w,y0],'fold'));
+    });
+    // aletta rettangolare sul pannello posteriore (back)
+    shapes.push(boxPolyShape([
+      [xs.back, y0], [xs.back+L, y0], [xs.back+L, dustY], [xs.back, dustY]
+    ], 'cut'));
+    shapes.push(boxLineShape([xs.back,y0],[xs.back+L,y0],'fold'));
+    // aletta a incastro sul pannello frontale (front), leggermente più lunga e rastremata in punta
+    const tipInset = L*0.12;
+    shapes.push(boxPolyShape([
+      [xs.front, y0], [xs.front+L, y0], [xs.front+L-tipInset, tuckY], [xs.front+tipInset, tuckY]
+    ], 'cut'));
+    shapes.push(boxLineShape([xs.front,y0],[xs.front+L,y0],'fold'));
+  }
+  addEnd(bodyY0, -1); // fasce superiori (sopra il corpo, y decrescente)
+  addEnd(bodyY1, +1); // fasce inferiori (sotto il corpo, y crescente)
+
+  return {shapes, totalW, totalH};
+}
+const COMPONENT_LIBRARY = [
+  { key:'flap', label:'Aletta standard', make:()=>({ points:[[-20,0],[20,0],[15,-15],[-15,-15]], closed:true }) },
+  { key:'eurohole', label:'Foro europeo', make:()=>({ points:makeCapsulePoints(8,25), closed:true }) },
+  { key:'handle', label:'Maniglia', make:()=>({ points:makeCapsulePoints(15,60).map(p=>[p[1],p[0]]), closed:true }) },
+  { key:'tab', label:'Linguetta', make:()=>({ points:[[-10,0],[10,0],[7,-8],[0,-11],[-7,-8]], closed:true }) },
+  { key:'hook', label:'Gancio', make:()=>({ points:makeHookPoints(), closed:true }) },
+];
+function insertComponent(key){
+  const def = COMPONENT_LIBRARY.find(c=>c.key===key);
+  if(!def) return;
+  const g = def.make();
+  const cx = state.page.w/2, cy = state.page.h/2;
+  const shape = {
+    id: uid(), type:'path', closed:!!g.closed,
+    points: g.points.map(p=>[p[0]+cx, p[1]+cy]),
+    smooth: g.points.map(()=>0),
+    layerId: state.activeLayerId, locked:false,
+    style: { stroke:'#111111', hasRealStroke:true, fill:'none', fillOpacity:1, strokeWidth:1, dash:'none', role:'design' }
+  };
+  state.shapes.push(shape);
+  state.selection = new Set([shape.id]);
+  pushHistory();
+  renderAll();
+  document.querySelector('.tabtrig[data-tab="prop"]').click();
+  showToast(tpl('"{name}" inserita al centro del foglio: spostala e adattala come preferisci.', {name: translate(def.label)}), false);
+}
+function buildComponentsTab(){
+  const host = document.getElementById('tab-components');
+  host.innerHTML = '';
+  const intro = document.createElement('div'); intro.className='hint'; intro.style.marginBottom='10px';
+  intro.textContent = 'Pezzi pronti da inserire al centro del foglio con un clic: si aggiungono come una normale forma modificabile, da spostare, ridimensionare e rifinire.';
+  host.appendChild(intro);
+  COMPONENT_LIBRARY.forEach(def=>{
+    const btn = document.createElement('button');
+    btn.className='btn'; btn.style.marginBottom='8px'; btn.textContent = def.label;
+    btn.onclick = ()=> insertComponent(def.key);
+    host.appendChild(btn);
+  });
+  applyI18n(host);
+}
 function buildRail(){
   const rail = document.getElementById('rail');
   TOOLS.forEach(t=>{
@@ -4741,8 +5159,23 @@ function shapeContextItems(s){
     {label:'▲ Avanti di uno', action:()=> bringForward(s.id)},
     {label:'▼ Indietro di uno', action:()=> sendBackward(s.id)},
     'sep',
+    {label:'Seleziona stesso colore', action:()=> selectSameColor(s)},
+    {label:'Seleziona stesso ruolo', action:()=> selectSameRole(s)},
+    'sep',
     {label: s.locked ? '🔓 Sblocca' : '🔒 Blocca', action:()=>{ s.locked = !s.locked; pushHistory(); renderAll(); }},
   ];
+}
+function selectSameColor(s){
+  const color = s.style.stroke;
+  state.selection = new Set(state.shapes.filter(sh=> !sh.locked && isShapeEffVisible(sh) && sh.style.stroke===color).map(sh=>sh.id));
+  renderAll();
+  showToast(tpl('Selezionate {n} forme con lo stesso colore.', {n: state.selection.size}), false);
+}
+function selectSameRole(s){
+  const role = s.style.role;
+  state.selection = new Set(state.shapes.filter(sh=> !sh.locked && isShapeEffVisible(sh) && sh.style.role===role).map(sh=>sh.id));
+  renderAll();
+  showToast(tpl('Selezionate {n} forme con lo stesso ruolo.', {n: state.selection.size}), false);
 }
 function duplicateShape(s){
   const copy = JSON.parse(JSON.stringify(s));
@@ -4910,7 +5343,11 @@ function handleMouseDown(mm, e){
     } else {
       state.refImageSelected = false;
       if(!e.shiftKey) state.selection.clear();
-      dragMode='rubberband'; state.drag={start:mm, current:mm};
+      if(e.altKey){
+        dragMode='lasso'; state.drag={points:[mm]};
+      } else {
+        dragMode='rubberband'; state.drag={start:mm, current:mm};
+      }
     }
     renderAll();
     return;
@@ -5082,6 +5519,13 @@ function handleMouseMove(mm, e){
     renderAll();
     return;
   }
+  if(dragMode==='lasso' && state.drag){
+    const pts = state.drag.points;
+    const last = pts[pts.length-1];
+    if(dist(last,mm) > 1.2/state.scale) pts.push(mm);
+    renderAll();
+    return;
+  }
 }
 
 function handleMouseUp(mm, e){
@@ -5109,6 +5553,16 @@ function handleMouseUp(mm, e){
           const intersects = !(b.x>x1 || b.x+b.w<x0 || b.y>y1 || b.y+b.h<y0);
           if(intersects) state.selection.add(s.id);
         }
+      }
+    }
+  } else if(dragMode==='lasso'){
+    if(state.drag && state.drag.points.length>=3){
+      const poly = state.drag.points;
+      for(const s of state.shapes){
+        if(!isShapeEffVisible(s) || s.locked) continue;
+        const b = shapeBBox(s);
+        const center = [b.x+b.w/2, b.y+b.h/2];
+        if(pointInPoly(center, poly)) state.selection.add(s.id);
       }
     }
   }
@@ -5543,6 +5997,8 @@ function handleMenuAction(e){
   else if(action==='open-library') openLibraryModal();
   else if(action==='open-drive') openGoogleDrivePicker();
   else if(action==='check-closures') checkClosures();
+  else if(action==='check-overlaps') checkOverlapsAndDuplicates();
+  else if(action==='generate-box') openModal('boxGenModal');
   else if(action==='cut-preview') openCutPreview();
   else if(action==='weld-points') openWeldModal();
   else if(action==='close-all-paths') closeAllOpenPaths();
@@ -6080,7 +6536,7 @@ async function openFolderAsTabs(items){
         id: uid(), name: proj.name || it.name || 'Disegno',
         shapes: proj.shapes || [], page: proj.page || {w:210,h:297}, refImage: proj.refImage || null,
         layers, activeLayerId: proj.activeLayerId || layers[0].id,
-        history: [JSON.stringify({shapes:proj.shapes||[], layers})], histIndex: 0,
+        history: [JSON.stringify({shapes:proj.shapes||[], layers})], historyTimes: [Date.now()], histIndex: 0,
         libraryId: it.id, libraryFolderId: it.folderId || null,
         projectInfo: proj.projectInfo || { boxType:'', material:'', printNotes:'', assemblySteps:[] }
       };
@@ -6144,6 +6600,43 @@ function openVersionsModal(id){
 function closeVersionsModal(){ document.getElementById('versionsModal').classList.remove('open'); }
 document.getElementById('versionsModalClose').onclick = closeVersionsModal;
 setupOverlayClickClose(document.getElementById('versionsModal'), closeVersionsModal);
+
+document.getElementById('btnHistory').onclick = openHistoryModal;
+document.getElementById('historyModalClose').onclick = closeHistoryModal;
+setupOverlayClickClose(document.getElementById('historyModal'), closeHistoryModal);
+
+function closeBoxGenModal(){ document.getElementById('boxGenModal').classList.remove('open'); }
+document.getElementById('boxGenModalClose').onclick = closeBoxGenModal;
+setupOverlayClickClose(document.getElementById('boxGenModal'), closeBoxGenModal);
+document.getElementById('boxGenApply').onclick = ()=>{
+  const err = document.getElementById('boxGenError');
+  err.style.display = 'none';
+  const L = parseFloat(document.getElementById('boxGenL').value);
+  const W = parseFloat(document.getElementById('boxGenW').value);
+  const H = parseFloat(document.getElementById('boxGenH').value);
+  const glueRaw = document.getElementById('boxGenGlue').value;
+  const glueW = glueRaw==='' ? null : parseFloat(glueRaw);
+  if([L,W,H].some(v=>isNaN(v) || v<10)){
+    err.textContent = 'Inserisci Larghezza, Profondità e Altezza valide (almeno 10mm ciascuna).';
+    err.style.display = '';
+    return;
+  }
+  const type = document.getElementById('boxGenType').value;
+  const result = type==='tuck' ? generateTuckBox(L,W,H,glueW) : generateAmericanBox(L,W,H,glueW);
+
+  snapshotActiveDocument();
+  const label = type==='tuck' ? 'Astuccio' : 'Scatola americana';
+  const doc = makeNewDocument(tpl('{label} {L}×{W}×{H}', {label:translate(label), L, W, H}));
+  result.shapes.forEach(s=> s.layerId = doc.activeLayerId); // le forme erano state generate col livello del documento precedente
+  doc.shapes = result.shapes;
+  doc.page = { w: Math.ceil(result.totalW+10), h: Math.ceil(result.totalH+10), bg:'#ffffff' };
+  documents.push(doc);
+  activeDocId = doc.id;
+  loadDocumentIntoState(doc);
+  renderTabBar();
+  closeBoxGenModal();
+  showToast('Fustella generata in una nuova scheda: verifica le misure prima di esportare.', false);
+};
 
 async function loadVersionsList(id){
   const host = document.getElementById('versionsList');
@@ -8335,6 +8828,85 @@ function findOpenIssues(){
   }
   return issues;
 }
+// Verifica se due segmenti sono collineari e si sovrappongono per un tratto
+// non trascurabile (non solo paralleli su rette diverse, e non semplicemente
+// vicini senza condividere la stessa retta).
+function segmentsOverlap(a1, a2, b1, b2, tol){
+  const dx = a2[0]-a1[0], dy = a2[1]-a1[1];
+  const lenA = Math.hypot(dx,dy);
+  if(lenA<1e-6) return false;
+  const ux = dx/lenA, uy = dy/lenA;
+  const perpDist = p=> Math.abs((p[0]-a1[0])*(-uy) + (p[1]-a1[1])*ux);
+  if(perpDist(b1) > tol || perpDist(b2) > tol) return false;
+  const proj = p=> (p[0]-a1[0])*ux + (p[1]-a1[1])*uy;
+  let bMin = proj(b1), bMax = proj(b2);
+  if(bMin>bMax){ const t=bMin; bMin=bMax; bMax=t; }
+  const overlapLen = Math.min(lenA,bMax) - Math.max(0,bMin);
+  return overlapLen > tol;
+}
+// Verifica se due forme a punti rappresentano lo stesso tracciato (stessi
+// punti, anche in ordine diverso o percorsi in verso opposto).
+function shapesAreDuplicate(a, b, tol){
+  if(!a.points || !b.points || a.points.length!==b.points.length) return false;
+  if(!!a.closed !== !!b.closed) return false;
+  const n = a.points.length;
+  const tryMatch = (bPts)=>{
+    const maxOffset = a.closed ? n : 1;
+    for(let offset=0; offset<maxOffset; offset++){
+      let ok = true;
+      for(let i=0;i<n;i++){
+        if(dist(a.points[i], bPts[(i+offset)%n]) > tol){ ok=false; break; }
+      }
+      if(ok) return true;
+    }
+    return false;
+  };
+  return tryMatch(b.points) || tryMatch([...b.points].reverse());
+}
+function checkOverlapsAndDuplicates(){
+  const shapes = state.shapes.filter(s=> s.points && isShapeEffVisible(s) && !s.locked);
+  const tol = 0.15; // mm
+  const dupIds = new Set();
+  const overlapIds = new Set();
+
+  for(let i=0;i<shapes.length;i++){
+    for(let j=i+1;j<shapes.length;j++){
+      if(shapesAreDuplicate(shapes[i], shapes[j], tol)){
+        dupIds.add(shapes[i].id); dupIds.add(shapes[j].id);
+      }
+    }
+  }
+
+  // sovrapposizioni tra tratti di TAGLIO (il caso più rilevante per la fustellatura:
+  // due linee di taglio che si ripassano sopra, anche solo in parte)
+  const cutSegs = [];
+  shapes.forEach(s=>{
+    if(s.style.role!=='cut') return;
+    const n = s.points.length;
+    for(let i=0;i<n-1;i++) cutSegs.push({shapeId:s.id, a:s.points[i], b:s.points[i+1]});
+    if(s.closed && n>1) cutSegs.push({shapeId:s.id, a:s.points[n-1], b:s.points[0]});
+  });
+  for(let i=0;i<cutSegs.length;i++){
+    for(let j=i+1;j<cutSegs.length;j++){
+      if(cutSegs[i].shapeId===cutSegs[j].shapeId) continue; // sovrapposizioni interne alla stessa forma non contano come duplicazione
+      if(segmentsOverlap(cutSegs[i].a, cutSegs[i].b, cutSegs[j].a, cutSegs[j].b, tol)){
+        overlapIds.add(cutSegs[i].shapeId); overlapIds.add(cutSegs[j].shapeId);
+      }
+    }
+  }
+
+  const allIssueIds = new Set([...dupIds, ...overlapIds]);
+  if(!allIssueIds.size){
+    showToast('Nessuna sovrapposizione o duplicato trovato tra le forme visibili.', false);
+    return;
+  }
+  state.selection = new Set(allIssueIds);
+  renderAll();
+  const parts = [];
+  if(dupIds.size) parts.push(tpl('{n} forme duplicate', {n: dupIds.size}));
+  if(overlapIds.size) parts.push(tpl('{n} tratti di taglio sovrapposti', {n: overlapIds.size}));
+  showToast(tpl('Trovate: {list}. Le forme coinvolte sono state selezionate.', {list: parts.join(' — ')}), true);
+}
 function checkClosures(){
   const issues = findOpenIssues();
   state.selection = new Set(issues.map(i=>i.shapeId));
@@ -9289,7 +9861,7 @@ async function tryRestore(){
       const doc = makeNewDocument('Disegno');
       doc.shapes = data.shapes; doc.page = data.page || doc.page; doc.refImage = data.refImage || null;
       doc.shapes.forEach(s=>{ if(!s.layerId) s.layerId = doc.activeLayerId; });
-      doc.history = [JSON.stringify({shapes:doc.shapes, layers:doc.layers})]; doc.histIndex = 0;
+      doc.history = [JSON.stringify({shapes:doc.shapes, layers:doc.layers})]; doc.historyTimes = [Date.now()]; doc.histIndex = 0;
       documents = [doc]; activeDocId = doc.id;
       return true;
     }
@@ -9310,7 +9882,7 @@ function makeNewDocument(name){
     id: uid(), name: name || 'Disegno',
     shapes: [], page: {w:210,h:297,bg:'#ffffff'}, refImage: null,
     layers: [defaultLayer], activeLayerId: defaultLayer.id,
-    history: [JSON.stringify({shapes:[], layers:[defaultLayer]})], histIndex: 0, libraryId: null, libraryFolderId: null,
+    history: [JSON.stringify({shapes:[], layers:[defaultLayer]})], historyTimes: [Date.now()], histIndex: 0, libraryId: null, libraryFolderId: null,
     projectInfo: { boxType:'', material:'', printNotes:'', assemblySteps:[] }
   };
 }
@@ -9323,6 +9895,7 @@ function snapshotActiveDocument(){
   doc.layers = state.layers;
   doc.activeLayerId = state.activeLayerId;
   doc.history = state.history;
+  doc.historyTimes = state.historyTimes;
   doc.histIndex = state.histIndex;
   doc.libraryId = state.libraryId;
   doc.libraryFolderId = state.libraryFolderId;
@@ -9336,6 +9909,7 @@ function loadDocumentIntoState(doc){
   state.activeLayerId = doc.activeLayerId;
   ensureActiveLayer();
   state.history = doc.history;
+  state.historyTimes = doc.historyTimes || doc.history.map(()=>Date.now());
   state.histIndex = doc.histIndex;
   state.libraryId = doc.libraryId;
   state.libraryFolderId = doc.libraryFolderId!=null ? doc.libraryFolderId : null;
@@ -9436,6 +10010,7 @@ document.getElementById('filename').addEventListener('change', (e)=> renameDocum
 async function init(){
   buildRail();
   buildImageTab();
+  buildComponentsTab();
   updateStatusToggles();
   try{
     const savedUnit = localStorage.getItem('spikecut-unit');

@@ -30,6 +30,15 @@ disabilitato finché non è servito da un vero server web.
 
 ## 2. L'editor (index.html)
 
+### Generazione automatica scatole
+Menu File → "📦 Genera scatola…": inserendo Larghezza, Profondità e Altezza
+(mm), genera automaticamente la fustella completa in una nuova scheda —
+**scatola americana (RSC)**, il classico cartone a 4 pannelli con alette
+sopra e sotto, oppure **astuccio con coperchio a incastro**, con alette a
+polvere sui lati e aletta a incastro davanti/dietro. L'aletta di
+incollaggio si può impostare a mano o lasciare calcolare automaticamente.
+
+
 ### Lingua dell'interfaccia
 Selettore in alto nella barra degli strumenti: Italiano (predefinito), English,
 Deutsch, Español, 中文, Français. Traduce menu, pulsanti, tooltip, pannello
@@ -69,6 +78,23 @@ documentare la scatola per te stesso o per chi dovrà stamparla e montarla;
 viene salvata insieme al resto del progetto (libreria, file .json, copie).
 
 ### Organizzazione del disegno
+- **Cronologia annulla/ripeti visuale**: il pulsante 🕐 in alto (accanto ad
+  Annulla/Ripeti) apre l'elenco di tutti gli stati passati del disegno
+  (fino a 300), con orario e numero di forme — clic su uno qualsiasi per
+  tornarci direttamente, senza premere Annulla passo per passo.
+- **Libreria componenti** (scheda "Componenti" nel pannello laterale):
+  pezzi pronti da inserire con un clic al centro del foglio — aletta
+  standard, foro europeo, maniglia, linguetta, gancio — che si aggiungono
+  come forme normali, modificabili come qualunque altra.
+- **Selezione avanzata**: oltre al rettangolo di selezione, tenendo premuto
+  **Alt** durante il trascinamento sull'area vuota si ottiene una selezione
+  a **lazo** (percorso libero). Dal menu tasto destro su un oggetto:
+  **"Seleziona stesso colore"** e **"Seleziona stesso ruolo"** selezionano
+  tutte le forme visibili che condividono quella caratteristica.
+- **Verifica sovrapposizioni e duplicati** (menu Strumenti): individua forme
+  duplicate (stesso tracciato, anche percorso in verso opposto) e tratti di
+  taglio che si sovrappongono anche solo parzialmente — le forme coinvolte
+  vengono selezionate automaticamente.
 - **Allinea e distribuisci**: con 2+ forme selezionate, il pannello proprietà
   mostra i comandi per allineare i bordi (sinistra/destra/centro orizzontale,
   alto/basso/centro verticale) e, con 3+ forme, distribuirle uniformemente.
