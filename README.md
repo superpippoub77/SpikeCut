@@ -108,6 +108,24 @@ documentare la scatola per te stesso o per chi dovrà stamparla e montarla;
 viene salvata insieme al resto del progetto (libreria, file .json, copie).
 
 ### Organizzazione del disegno
+- **Unisci punti**: selezionando un'area (rettangolo o lazo con Alt), i
+  punti liberi al suo interno — estremità di linee aperte che non toccano
+  nient'altro — vengono numerati 1, 2, …, n sul disegno. Con il pulsante
+  "🔗 Unisci punti…" nel pannello proprietà o dal menu tasto destro si
+  apre una finestra con le coppie "Da → a" (già proposte unendo i punti più
+  vicini, modificabili, invertibili con ⇄, aggiungibili). Due modalità:
+  **Sposta** (il punto di partenza raggiunge quello di arrivo, che resta
+  fermo) o **Collega con un nuovo tratto**. Facoltativamente le linee con lo
+  stesso ruolo e livello vengono fuse in un unico percorso, e una linea che
+  si richiude su se stessa diventa un percorso chiuso. Le catene (un punto
+  sia di partenza sia di arrivo) vengono segnalate e bloccate.
+- **Finestre riducibili a icona**: le finestre di lavoro (Unisci punti,
+  Anteprima 3D, Genera scatola, Libreria, Cronologia, Salda punti, Stampa…)
+  hanno il pulsante ▁ nell'intestazione: la finestra si riduce nella barra
+  in basso, si modifica il disegno e poi la si riprende con un clic, com'era
+  rimasta (l'Anteprima 3D si ricalcola sul disegno aggiornato). La ✕
+  nella barra la chiude. Conferme, richieste di testo e accesso non sono
+  riducibili, perché aspettano una risposta immediata.
 - **Cronologia annulla/ripeti visuale**: il pulsante 🕐 in alto (accanto ad
   Annulla/Ripeti) apre l'elenco di tutti gli stati passati del disegno
   (fino a 300), con orario e numero di forme — clic su uno qualsiasi per

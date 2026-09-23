@@ -342,6 +342,14 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   align-items:center; justify-content:center; z-index:200;
 }
 .modal-overlay.open{display:flex;}
+#modalDock{
+  position:fixed; left:50%; transform:translateX(-50%); bottom:34px; z-index:150;
+  display:none; gap:6px; padding:5px 8px; max-width:92vw; overflow-x:auto;
+  background:var(--bg-1); border:1px solid var(--brass); border-radius:9px; box-shadow:0 4px 18px rgba(0,0,0,.35);
+}
+#modalDock .dockchip{ display:flex; align-items:center; gap:2px; border:1px solid var(--line); border-radius:6px; background:var(--bg-2, var(--bg-1)); }
+#modalDock .dockchip button{ background:none; border:none; color:inherit; cursor:pointer; font-size:12px; padding:4px 8px; white-space:nowrap; }
+#modalDock .dockchip button:hover{ color:var(--brass); }
 .modal-box{
   width:440px; max-width:92vw; max-height:74vh; background:var(--bg-1);
   border:1px solid var(--line); border-radius:10px; box-shadow:0 20px 60px rgba(0,0,0,.6);
@@ -599,7 +607,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.9.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.10.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -717,6 +725,31 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
     </div>
     <div style="padding:0 16px 4px;font-size:11.5px;color:var(--ink-dim);">Clic su uno stato per tornarci direttamente, senza premere Annulla/Ripeti passo per passo.</div>
     <div id="historyList" class="modal-body"></div>
+  </div>
+</div>
+
+<div id="modalDock"></div>
+
+<div id="joinModal" class="modal-overlay">
+  <div class="modal-box" style="width:460px;">
+    <div class="modal-head">
+      <h3>Unisci punti</h3>
+      <button class="iconbtn" id="joinModalClose" title="Chiudi">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="hint" style="margin-bottom:10px;">I punti liberi dell'area selezionata sono numerati sul disegno. Per ogni coppia scegli da quale punto a quale: con "Sposta" il punto di partenza raggiunge quello di arrivo, che resta fermo. Riduci la finestra a icona per guardare i numeri sul disegno.</div>
+      <div id="joinPairs"></div>
+      <button class="btn" id="joinAddPair" style="width:auto;margin:2px 0 10px;">+ Aggiungi coppia</button>
+      <div class="field"><label>Modalità</label>
+        <select id="joinMode">
+          <option value="move">Sposta il punto di partenza su quello di arrivo</option>
+          <option value="connect">Collega i due punti con un nuovo tratto</option>
+        </select>
+      </div>
+      <label style="display:flex;align-items:center;gap:7px;margin-top:8px;font-size:12px;cursor:pointer;"><input type="checkbox" id="joinMerge" checked style="width:auto;"><span>Fondi in un unico percorso le linee con lo stesso ruolo</span></label>
+      <div class="hint" id="joinError" style="color:var(--cut);display:none;margin-top:8px;"></div>
+      <button class="btn primary" id="joinApply" style="width:100%;margin-top:12px;">Unisci</button>
+    </div>
   </div>
 </div>
 
@@ -1652,6 +1685,34 @@ const I18N = {
     "Elementi evidenziati sul disegno (cerchi rossi): correggili e riapri l'anteprima 3D.": "Items highlighted on the drawing (red circles): fix them and reopen the 3D preview.",
     "{n} pieghe allungate fino al contorno.": "{n} folds extended to the outline.",
     "Nessun pannello da piegare: vedi il controllo del disegno qui sotto.": "No panel to fold: see the drawing check below.",
+    "Unisci punti": "Join points",
+    "🔗 Unisci punti…": "🔗 Join points…",
+    "{n} punti liberi nell'area selezionata, numerati sul disegno.": "{n} free points in the selected area, numbered on the drawing.",
+    "Servono almeno 2 punti liberi nell'area selezionata per unirli.": "At least 2 free points in the selected area are needed to join them.",
+    "Da": "From",
+    "a": "to",
+    "Inverti il verso della coppia": "Reverse the pair direction",
+    "Rimuovi coppia": "Remove pair",
+    "Nessuna coppia: aggiungine una.": "No pairs: add one.",
+    "Aggiungi almeno una coppia di punti da unire.": "Add at least one pair of points to join.",
+    "Il punto {n} non può essere unito a se stesso.": "Point {n} can’t be joined to itself.",
+    "Il punto {n} compare due volte come punto di partenza.": "Point {n} appears twice as a starting point.",
+    "Il punto {n} è sia punto di partenza sia punto di arrivo: una catena non si può risolvere, usa coppie che puntano tutte a punti fermi.": "Point {n} is both a starting and an end point: a chain can’t be resolved, use pairs that all point to fixed points.",
+    "Il disegno è cambiato da quando hai aperto la finestra: chiudila e riapri \"Unisci punti\" per rinumerare i punti.": "The drawing has changed since you opened the window: close it and reopen \"Join points\" to renumber the points.",
+    "{n} unioni eseguite.": "{n} joins done.",
+    "{n} linee fuse in un unico percorso.": "{n} lines merged into a single path.",
+    "{n} percorsi chiusi.": "{n} paths closed.",
+    "I punti liberi dell'area selezionata sono numerati sul disegno. Per ogni coppia scegli da quale punto a quale: con \"Sposta\" il punto di partenza raggiunge quello di arrivo, che resta fermo. Riduci la finestra a icona per guardare i numeri sul disegno.": "The free points of the selected area are numbered on the drawing. For each pair choose from which point to which: with \"Move\" the starting point reaches the end point, which stays still. Minimize the window to look at the numbers on the drawing.",
+    "+ Aggiungi coppia": "+ Add pair",
+    "Modalità": "Mode",
+    "Sposta il punto di partenza su quello di arrivo": "Move the starting point onto the end point",
+    "Collega i due punti con un nuovo tratto": "Connect the two points with a new segment",
+    "Fondi in un unico percorso le linee con lo stesso ruolo": "Merge lines with the same role into a single path",
+    "Unisci": "Join",
+    "Riduci a icona: la ritrovi nella barra in basso, modifichi il disegno e poi la riprendi": "Minimize: find it in the bar at the bottom, edit the drawing, then resume it",
+    "Riprendi la finestra": "Resume the window",
+    "Chiudi la finestra": "Close the window",
+    "Elementi evidenziati sul disegno (cerchi rossi): correggili e riprendi l'anteprima 3D dalla barra in basso.": "Items highlighted on the drawing (red circles): fix them and resume the 3D preview from the bar at the bottom.",
   },
   de: {
     "1 cm": "1 cm",
@@ -2190,6 +2251,34 @@ const I18N = {
     "Elementi evidenziati sul disegno (cerchi rossi): correggili e riapri l'anteprima 3D.": "Elemente in der Zeichnung markiert (rote Kreise): Korrigiere sie und öffne die 3D-Vorschau erneut.",
     "{n} pieghe allungate fino al contorno.": "{n} Falze bis zur Kontur verlängert.",
     "Nessun pannello da piegare: vedi il controllo del disegno qui sotto.": "Kein Feld zum Falten: siehe die Zeichnungsprüfung unten.",
+    "Unisci punti": "Punkte verbinden",
+    "🔗 Unisci punti…": "🔗 Punkte verbinden…",
+    "{n} punti liberi nell'area selezionata, numerati sul disegno.": "{n} freie Punkte im ausgewählten Bereich, in der Zeichnung nummeriert.",
+    "Servono almeno 2 punti liberi nell'area selezionata per unirli.": "Zum Verbinden werden mindestens 2 freie Punkte im ausgewählten Bereich benötigt.",
+    "Da": "Von",
+    "a": "nach",
+    "Inverti il verso della coppia": "Richtung des Paares umkehren",
+    "Rimuovi coppia": "Paar entfernen",
+    "Nessuna coppia: aggiungine una.": "Keine Paare: füge eines hinzu.",
+    "Aggiungi almeno una coppia di punti da unire.": "Füge mindestens ein Punktpaar zum Verbinden hinzu.",
+    "Il punto {n} non può essere unito a se stesso.": "Punkt {n} kann nicht mit sich selbst verbunden werden.",
+    "Il punto {n} compare due volte come punto di partenza.": "Punkt {n} kommt zweimal als Startpunkt vor.",
+    "Il punto {n} è sia punto di partenza sia punto di arrivo: una catena non si può risolvere, usa coppie che puntano tutte a punti fermi.": "Punkt {n} ist zugleich Start- und Zielpunkt: Eine Kette lässt sich nicht auflösen, verwende Paare, die alle auf feste Punkte zeigen.",
+    "Il disegno è cambiato da quando hai aperto la finestra: chiudila e riapri \"Unisci punti\" per rinumerare i punti.": "Die Zeichnung hat sich seit dem Öffnen des Fensters geändert: Schließe es und öffne \"Punkte verbinden\" erneut, um die Punkte neu zu nummerieren.",
+    "{n} unioni eseguite.": "{n} Verbindungen ausgeführt.",
+    "{n} linee fuse in un unico percorso.": "{n} Linien zu einem einzigen Pfad zusammengeführt.",
+    "{n} percorsi chiusi.": "{n} Pfade geschlossen.",
+    "I punti liberi dell'area selezionata sono numerati sul disegno. Per ogni coppia scegli da quale punto a quale: con \"Sposta\" il punto di partenza raggiunge quello di arrivo, che resta fermo. Riduci la finestra a icona per guardare i numeri sul disegno.": "Die freien Punkte des ausgewählten Bereichs sind in der Zeichnung nummeriert. Wähle für jedes Paar, von welchem Punkt zu welchem: Mit \"Verschieben\" erreicht der Startpunkt den Zielpunkt, der fest bleibt. Minimiere das Fenster, um die Nummern in der Zeichnung zu sehen.",
+    "+ Aggiungi coppia": "+ Paar hinzufügen",
+    "Modalità": "Modus",
+    "Sposta il punto di partenza su quello di arrivo": "Startpunkt auf den Zielpunkt verschieben",
+    "Collega i due punti con un nuovo tratto": "Die beiden Punkte mit einem neuen Abschnitt verbinden",
+    "Fondi in un unico percorso le linee con lo stesso ruolo": "Linien mit derselben Rolle zu einem einzigen Pfad zusammenführen",
+    "Unisci": "Verbinden",
+    "Riduci a icona: la ritrovi nella barra in basso, modifichi il disegno e poi la riprendi": "Minimieren: Du findest es in der Leiste unten, bearbeitest die Zeichnung und nimmst es dann wieder auf",
+    "Riprendi la finestra": "Fenster wiederherstellen",
+    "Chiudi la finestra": "Fenster schließen",
+    "Elementi evidenziati sul disegno (cerchi rossi): correggili e riprendi l'anteprima 3D dalla barra in basso.": "Elemente in der Zeichnung markiert (rote Kreise): Korrigiere sie und nimm die 3D-Vorschau über die Leiste unten wieder auf.",
   },
   es: {
     "1 cm": "1 cm",
@@ -2728,6 +2817,34 @@ const I18N = {
     "Elementi evidenziati sul disegno (cerchi rossi): correggili e riapri l'anteprima 3D.": "Elementos resaltados en el dibujo (círculos rojos): corrígelos y vuelve a abrir la vista previa 3D.",
     "{n} pieghe allungate fino al contorno.": "{n} pliegues alargados hasta el contorno.",
     "Nessun pannello da piegare: vedi il controllo del disegno qui sotto.": "Ningún panel que plegar: consulta el control del dibujo más abajo.",
+    "Unisci punti": "Unir puntos",
+    "🔗 Unisci punti…": "🔗 Unir puntos…",
+    "{n} punti liberi nell'area selezionata, numerati sul disegno.": "{n} puntos libres en el área seleccionada, numerados en el dibujo.",
+    "Servono almeno 2 punti liberi nell'area selezionata per unirli.": "Se necesitan al menos 2 puntos libres en el área seleccionada para unirlos.",
+    "Da": "De",
+    "a": "a",
+    "Inverti il verso della coppia": "Invertir el sentido del par",
+    "Rimuovi coppia": "Quitar par",
+    "Nessuna coppia: aggiungine una.": "Ningún par: añade uno.",
+    "Aggiungi almeno una coppia di punti da unire.": "Añade al menos un par de puntos que unir.",
+    "Il punto {n} non può essere unito a se stesso.": "El punto {n} no puede unirse consigo mismo.",
+    "Il punto {n} compare due volte come punto di partenza.": "El punto {n} aparece dos veces como punto de partida.",
+    "Il punto {n} è sia punto di partenza sia punto di arrivo: una catena non si può risolvere, usa coppie che puntano tutte a punti fermi.": "El punto {n} es a la vez punto de partida y de llegada: una cadena no se puede resolver, usa pares que apunten todos a puntos fijos.",
+    "Il disegno è cambiato da quando hai aperto la finestra: chiudila e riapri \"Unisci punti\" per rinumerare i punti.": "El dibujo ha cambiado desde que abriste la ventana: ciérrala y vuelve a abrir \"Unir puntos\" para renumerar los puntos.",
+    "{n} unioni eseguite.": "{n} uniones realizadas.",
+    "{n} linee fuse in un unico percorso.": "{n} líneas fusionadas en un único trazado.",
+    "{n} percorsi chiusi.": "{n} trazados cerrados.",
+    "I punti liberi dell'area selezionata sono numerati sul disegno. Per ogni coppia scegli da quale punto a quale: con \"Sposta\" il punto di partenza raggiunge quello di arrivo, che resta fermo. Riduci la finestra a icona per guardare i numeri sul disegno.": "Los puntos libres del área seleccionada están numerados en el dibujo. Para cada par elige de qué punto a qué punto: con \"Mover\" el punto de partida alcanza el de llegada, que queda fijo. Minimiza la ventana para ver los números en el dibujo.",
+    "+ Aggiungi coppia": "+ Añadir par",
+    "Modalità": "Modo",
+    "Sposta il punto di partenza su quello di arrivo": "Mover el punto de partida sobre el de llegada",
+    "Collega i due punti con un nuovo tratto": "Conectar los dos puntos con un tramo nuevo",
+    "Fondi in un unico percorso le linee con lo stesso ruolo": "Fusionar en un único trazado las líneas con el mismo rol",
+    "Unisci": "Unir",
+    "Riduci a icona: la ritrovi nella barra in basso, modifichi il disegno e poi la riprendi": "Minimizar: la encuentras en la barra inferior, modificas el dibujo y luego la retomas",
+    "Riprendi la finestra": "Retomar la ventana",
+    "Chiudi la finestra": "Cerrar la ventana",
+    "Elementi evidenziati sul disegno (cerchi rossi): correggili e riprendi l'anteprima 3D dalla barra in basso.": "Elementos resaltados en el dibujo (círculos rojos): corrígelos y retoma la vista previa 3D desde la barra inferior.",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -3266,6 +3383,34 @@ const I18N = {
     "Elementi evidenziati sul disegno (cerchi rossi): correggili e riapri l'anteprima 3D.": "已在图纸上标出相关元素（红色圆圈）：修正后重新打开3D预览。",
     "{n} pieghe allungate fino al contorno.": "已将 {n} 条折线延长至轮廓。",
     "Nessun pannello da piegare: vedi il controllo del disegno qui sotto.": "没有可折叠的面板：请查看下方的图纸检查。",
+    "Unisci punti": "连接点",
+    "🔗 Unisci punti…": "🔗 连接点…",
+    "{n} punti liberi nell'area selezionata, numerati sul disegno.": "所选区域内有 {n} 个空闲点，已在图纸上编号。",
+    "Servono almeno 2 punti liberi nell'area selezionata per unirli.": "所选区域内至少需要 2 个空闲点才能连接。",
+    "Da": "从",
+    "a": "到",
+    "Inverti il verso della coppia": "反转配对方向",
+    "Rimuovi coppia": "删除配对",
+    "Nessuna coppia: aggiungine una.": "没有配对：请添加一个。",
+    "Aggiungi almeno una coppia di punti da unire.": "请至少添加一对要连接的点。",
+    "Il punto {n} non può essere unito a se stesso.": "点 {n} 不能与自身连接。",
+    "Il punto {n} compare due volte come punto di partenza.": "点 {n} 作为起点出现了两次。",
+    "Il punto {n} è sia punto di partenza sia punto di arrivo: una catena non si può risolvere, usa coppie che puntano tutte a punti fermi.": "点 {n} 同时是起点和终点：无法处理链式连接，请让所有配对都指向固定点。",
+    "Il disegno è cambiato da quando hai aperto la finestra: chiudila e riapri \"Unisci punti\" per rinumerare i punti.": "自打开窗口以来图纸已更改：请关闭后重新打开\"连接点\"以重新编号。",
+    "{n} unioni eseguite.": "已完成 {n} 处连接。",
+    "{n} linee fuse in un unico percorso.": "{n} 条线已合并为单一路径。",
+    "{n} percorsi chiusi.": "{n} 条路径已闭合。",
+    "I punti liberi dell'area selezionata sono numerati sul disegno. Per ogni coppia scegli da quale punto a quale: con \"Sposta\" il punto di partenza raggiunge quello di arrivo, che resta fermo. Riduci la finestra a icona per guardare i numeri sul disegno.": "所选区域的空闲点已在图纸上编号。为每一对选择从哪个点到哪个点：\"移动\"模式下起点移到终点，终点保持不动。将窗口最小化即可查看图纸上的编号。",
+    "+ Aggiungi coppia": "+ 添加配对",
+    "Modalità": "模式",
+    "Sposta il punto di partenza su quello di arrivo": "将起点移到终点",
+    "Collega i due punti con un nuovo tratto": "用新线段连接两点",
+    "Fondi in un unico percorso le linee con lo stesso ruolo": "将相同角色的线合并为单一路径",
+    "Unisci": "连接",
+    "Riduci a icona: la ritrovi nella barra in basso, modifichi il disegno e poi la riprendi": "最小化：可在底部栏找到，修改图纸后再恢复",
+    "Riprendi la finestra": "恢复窗口",
+    "Chiudi la finestra": "关闭窗口",
+    "Elementi evidenziati sul disegno (cerchi rossi): correggili e riprendi l'anteprima 3D dalla barra in basso.": "已在图纸上标出相关元素（红色圆圈）：修正后从底部栏恢复3D预览。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -3804,6 +3949,34 @@ const I18N = {
     "Elementi evidenziati sul disegno (cerchi rossi): correggili e riapri l'anteprima 3D.": "Éléments mis en évidence sur le dessin (cercles rouges) : corrige-les et rouvre l’aperçu 3D.",
     "{n} pieghe allungate fino al contorno.": "{n} plis prolongés jusqu’au contour.",
     "Nessun pannello da piegare: vedi il controllo del disegno qui sotto.": "Aucun panneau à plier : vois le contrôle du dessin ci-dessous.",
+    "Unisci punti": "Joindre les points",
+    "🔗 Unisci punti…": "🔗 Joindre les points…",
+    "{n} punti liberi nell'area selezionata, numerati sul disegno.": "{n} points libres dans la zone sélectionnée, numérotés sur le dessin.",
+    "Servono almeno 2 punti liberi nell'area selezionata per unirli.": "Il faut au moins 2 points libres dans la zone sélectionnée pour les joindre.",
+    "Da": "De",
+    "a": "à",
+    "Inverti il verso della coppia": "Inverser le sens de la paire",
+    "Rimuovi coppia": "Supprimer la paire",
+    "Nessuna coppia: aggiungine una.": "Aucune paire : ajoutes-en une.",
+    "Aggiungi almeno una coppia di punti da unire.": "Ajoute au moins une paire de points à joindre.",
+    "Il punto {n} non può essere unito a se stesso.": "Le point {n} ne peut pas être joint à lui-même.",
+    "Il punto {n} compare due volte come punto di partenza.": "Le point {n} apparaît deux fois comme point de départ.",
+    "Il punto {n} è sia punto di partenza sia punto di arrivo: una catena non si può risolvere, usa coppie che puntano tutte a punti fermi.": "Le point {n} est à la fois point de départ et d’arrivée : une chaîne ne peut pas être résolue, utilise des paires qui pointent toutes vers des points fixes.",
+    "Il disegno è cambiato da quando hai aperto la finestra: chiudila e riapri \"Unisci punti\" per rinumerare i punti.": "Le dessin a changé depuis l’ouverture de la fenêtre : ferme-la et rouvre « Joindre les points » pour renuméroter les points.",
+    "{n} unioni eseguite.": "{n} jonctions effectuées.",
+    "{n} linee fuse in un unico percorso.": "{n} lignes fusionnées en un seul tracé.",
+    "{n} percorsi chiusi.": "{n} tracés fermés.",
+    "I punti liberi dell'area selezionata sono numerati sul disegno. Per ogni coppia scegli da quale punto a quale: con \"Sposta\" il punto di partenza raggiunge quello di arrivo, che resta fermo. Riduci la finestra a icona per guardare i numeri sul disegno.": "Les points libres de la zone sélectionnée sont numérotés sur le dessin. Pour chaque paire, choisis de quel point vers quel point : avec « Déplacer », le point de départ rejoint le point d’arrivée, qui reste fixe. Réduis la fenêtre pour regarder les numéros sur le dessin.",
+    "+ Aggiungi coppia": "+ Ajouter une paire",
+    "Modalità": "Mode",
+    "Sposta il punto di partenza su quello di arrivo": "Déplacer le point de départ sur le point d’arrivée",
+    "Collega i due punti con un nuovo tratto": "Relier les deux points par un nouveau segment",
+    "Fondi in un unico percorso le linee con lo stesso ruolo": "Fusionner en un seul tracé les lignes ayant le même rôle",
+    "Unisci": "Joindre",
+    "Riduci a icona: la ritrovi nella barra in basso, modifichi il disegno e poi la riprendi": "Réduire : tu la retrouves dans la barre en bas, tu modifies le dessin puis tu la reprends",
+    "Riprendi la finestra": "Reprendre la fenêtre",
+    "Chiudi la finestra": "Fermer la fenêtre",
+    "Elementi evidenziati sul disegno (cerchi rossi): correggili e riprendi l'anteprima 3D dalla barra in basso.": "Éléments mis en évidence sur le dessin (cercles rouges) : corrige-les et reprends l’aperçu 3D depuis la barre en bas.",
   },
 };
 let currentLang = 'it';
@@ -3903,6 +4076,7 @@ function openModal(id){
   const el = document.getElementById(id);
   el.parentNode.appendChild(el);
   el.classList.add('open');
+  if(el.dataset.minimized==='1'){ delete el.dataset.minimized; renderModalDock(); }
 }
 
 /* ============================================================
@@ -5161,6 +5335,7 @@ function renderCanvasOnly(){
   renderEndpointMarkers();
   renderGapMarkers();
   renderFoldIndicators();
+  renderJoinLabels();
   renderTileGuidesOverlay();
   drawRulers();
   updateDrawHint();
@@ -5522,12 +5697,12 @@ function renderFold3DCheck(result){
   }
 }
 function showFoldIssuesOnDrawing(shapes, points){
-  closeFold3D();
+  minimizeModal('fold3dModal');
   state.selection = new Set(shapes.map(s=>s.id));
   state.foldCheckMarkers = points.slice();
   document.querySelector('.tabtrig[data-tab="prop"]').click();
   renderAll();
-  showToast('Elementi evidenziati sul disegno (cerchi rossi): correggili e riapri l\'anteprima 3D.', false);
+  showToast('Elementi evidenziati sul disegno (cerchi rossi): correggili e riprendi l\'anteprima 3D dalla barra in basso.', false);
 }
 function applyFoldFixes(fixes){
   fixes.forEach(f=>{ f.shape.points[f.idx] = [f.target[0], f.target[1]]; });
@@ -5540,11 +5715,17 @@ function applyFoldFixes(fixes){
 /* ---------- visualizzatore 3D (canvas 2D, algoritmo del pittore) ---------- */
 const fold3d = { model:null, frac:1, yaw:-0.6, pitch:0.45, zoom:1, anim:null, drag:null };
 function openFold3D(){
+  fold3d.yaw=-0.6; fold3d.pitch=0.45; fold3d.zoom=1;
+  openModal('fold3dModal');
+  refreshFold3D();
+}
+// ricostruisce modello e controllo dal disegno attuale (usata anche al ripristino
+// dalla barra in basso, dopo aver modificato il disegno), mantenendo il punto di vista
+function refreshFold3D(){
   const model = buildFoldModel(state.shapes);
-  fold3d.model = model; fold3d.yaw=-0.6; fold3d.pitch=0.45; fold3d.zoom=1;
+  fold3d.model = model;
   document.getElementById('fold3dInfo').textContent = tpl('{p} pannelli, {h} pieghe collegate.', {p:model.faces.length, h:model.hinges.length});
   renderFold3DCheck(checkFoldModel(model));
-  openModal('fold3dModal');
   if(model.faces.length) playFold3D(); else setFold3DFrac(0);
 }
 function setFold3DFrac(f){
@@ -5601,6 +5782,275 @@ function renderFold3D(){
     it.vs.forEach((v,k)=>{ const p = proj(v); if(k) ctx.lineTo(p[0],p[1]); else ctx.moveTo(p[0],p[1]); });
     ctx.closePath(); ctx.fill();
     ctx.strokeStyle = 'rgba(30,30,30,0.85)'; ctx.lineWidth = 1; ctx.stroke();
+  });
+}
+
+
+/* ============================================================
+   UNISCI PUNTI — i punti liberi (estremità di linee aperte che non
+   toccano nient'altro) dentro l'area selezionata vengono numerati
+   1..n sul disegno; l'utente sceglie le coppie "da → a".
+============================================================ */
+const joinState = { cands:[], pairs:[], active:false };
+function computeJoinCandidates(){
+  if(state.tool!=='select' || !state.selection.size) return [];
+  const region = state.joinRegion;
+  const inRegion = p=> !region ? true : region.type==='rect'
+    ? (p[0]>=region.x0 && p[0]<=region.x1 && p[1]>=region.y0 && p[1]<=region.y1)
+    : pointInPoly(p, region.pts);
+  const pool = region ? state.shapes : state.shapes.filter(s=>state.selection.has(s.id));
+  const all = collectConnectionPoints();
+  const out = [];
+  pool.forEach(s=>{
+    if(!s.points || s.closed || s.points.length<2 || s.locked || !isShapeEffVisible(s)) return;
+    [0, s.points.length-1].forEach(idx=>{
+      const p = s.points[idx];
+      if(!inRegion(p)) return;
+      const linked = all.some(o=> !(o.shapeId===s.id && o.kind==='vertex' && o.idx===idx) && pointsEqual(o.pt, p));
+      if(!linked) out.push({shapeId:s.id, idx, pt:[p[0],p[1]]});
+    });
+  });
+  out.sort((a,b)=> (a.pt[1]-b.pt[1]) || (a.pt[0]-b.pt[0])); // dall'alto in basso, poi da sinistra a destra
+  out.forEach((c,i)=> c.n = i+1);
+  return out;
+}
+function currentJoinLabels(){
+  const ov = document.getElementById('joinModal');
+  const dialogAlive = ov && (ov.classList.contains('open') || ov.dataset.minimized==='1');
+  return dialogAlive ? joinState.cands : computeJoinCandidates();
+}
+function renderJoinLabels(){
+  const cands = currentJoinLabels();
+  if(cands.length<2) return;
+  cands.forEach(cd=>{
+    const x = cd.pt[0]*state.scale, y = cd.pt[1]*state.scale;
+    layerOverlay.appendChild(el('circle', {cx:x, cy:y, r:5, fill:'none', stroke:'#ff9f0a', 'stroke-width':2, 'pointer-events':'none'}));
+    layerOverlay.appendChild(el('circle', {cx:x+11, cy:y-11, r:8.5, fill:'#ff9f0a', stroke:'#1c1200', 'stroke-width':1, 'pointer-events':'none'}));
+    const t = el('text', {x:x+11, y:y-10.5, 'font-size':10, 'font-weight':'700', fill:'#1c1200', 'text-anchor':'middle', 'dominant-baseline':'middle', 'pointer-events':'none'});
+    t.textContent = cd.n;
+    layerOverlay.appendChild(t);
+  });
+}
+function renderJoinSection(host){
+  const cands = computeJoinCandidates();
+  if(cands.length<2) return;
+  host.appendChild(document.createElement('hr')).className='sep';
+  const f = document.createElement('div'); f.className='field';
+  f.innerHTML = `<label>${translate('Unisci punti')}</label>`;
+  const h = document.createElement('div'); h.className='hint'; h.style.marginBottom='6px';
+  h.textContent = tpl('{n} punti liberi nell\'area selezionata, numerati sul disegno.', {n:cands.length});
+  f.appendChild(h);
+  const b = document.createElement('button'); b.className='btn primary'; b.style.margin='0';
+  b.textContent = translate('🔗 Unisci punti…');
+  b.onclick = openJoinDialog;
+  f.appendChild(b);
+  host.appendChild(f);
+}
+// coppie proposte: ogni volta la coppia di punti più vicina tra quelli ancora liberi
+function suggestJoinPairs(cands){
+  const left = cands.slice(), pairs = [];
+  while(left.length>=2){
+    let best=null;
+    for(let i=0;i<left.length;i++) for(let j=i+1;j<left.length;j++){
+      const d = dist(left[i].pt, left[j].pt);
+      if(!best || d<best.d) best = {i, j, d};
+    }
+    const a = left[best.i], b = left[best.j];
+    pairs.push([Math.min(a.n,b.n), Math.max(a.n,b.n)]);
+    left.splice(best.j,1); left.splice(best.i,1);
+  }
+  return pairs;
+}
+function openJoinDialog(){
+  const cands = computeJoinCandidates();
+  if(cands.length<2){ showToast('Servono almeno 2 punti liberi nell\'area selezionata per unirli.', true); return; }
+  hideContextMenu();
+  joinState.cands = cands;
+  joinState.pairs = suggestJoinPairs(cands);
+  document.getElementById('joinError').style.display='none';
+  renderJoinPairs();
+  openModal('joinModal');
+  renderCanvasOnly();
+}
+function renderJoinPairs(){
+  const host = document.getElementById('joinPairs');
+  host.innerHTML = '';
+  const nums = joinState.cands.map(c=>c.n);
+  joinState.pairs.forEach((pr, k)=>{
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:6px;font-size:12.5px;';
+    const mkSel = (val, onChange)=>{
+      const s = document.createElement('select'); s.style.cssText='width:auto;';
+      nums.forEach(n=>{ const o=document.createElement('option'); o.value=n; o.textContent=n; if(n===val) o.selected=true; s.appendChild(o); });
+      s.onchange = ()=>{ onChange(parseInt(s.value,10)); renderJoinPairs(); };
+      return s;
+    };
+    const lblFrom = document.createElement('span'); lblFrom.textContent = translate('Da');
+    const lblTo = document.createElement('span'); lblTo.textContent = translate('a');
+    const A = joinState.cands.find(c=>c.n===pr[0]), B = joinState.cands.find(c=>c.n===pr[1]);
+    const dd = document.createElement('span'); dd.style.cssText='color:var(--ink-dim);flex:1;';
+    dd.textContent = (A && B && pr[0]!==pr[1]) ? '(' + fmtUnit(dist(A.pt,B.pt)) + ')' : '';
+    const swap = document.createElement('button'); swap.className='iconbtn'; swap.textContent='⇄'; swap.title=translate('Inverti il verso della coppia');
+    swap.onclick = ()=>{ joinState.pairs[k] = [pr[1], pr[0]]; renderJoinPairs(); };
+    const del = document.createElement('button'); del.className='iconbtn'; del.textContent='✕'; del.title=translate('Rimuovi coppia');
+    del.onclick = ()=>{ joinState.pairs.splice(k,1); renderJoinPairs(); };
+    row.append(lblFrom, mkSel(pr[0], v=>joinState.pairs[k][0]=v), lblTo, mkSel(pr[1], v=>joinState.pairs[k][1]=v), dd, swap, del);
+    host.appendChild(row);
+  });
+  if(!joinState.pairs.length){
+    const e = document.createElement('div'); e.className='hint'; e.textContent = translate('Nessuna coppia: aggiungine una.');
+    host.appendChild(e);
+  }
+}
+function validateJoinPairs(){
+  const pairs = joinState.pairs;
+  if(!pairs.length) return translate('Aggiungi almeno una coppia di punti da unire.');
+  const froms = new Set(), tos = new Set();
+  for(const [a,b] of pairs){
+    if(a===b) return tpl('Il punto {n} non può essere unito a se stesso.', {n:a});
+    if(froms.has(a)) return tpl('Il punto {n} compare due volte come punto di partenza.', {n:a});
+    froms.add(a); tos.add(b);
+  }
+  for(const a of froms) if(tos.has(a)) return tpl('Il punto {n} è sia punto di partenza sia punto di arrivo: una catena non si può risolvere, usa coppie che puntano tutte a punti fermi.', {n:a});
+  // i punti non devono essere cambiati da quando è stata aperta la finestra
+  for(const cd of joinState.cands){
+    const s = state.shapes.find(x=>x.id===cd.shapeId);
+    if(!s || !s.points || !s.points[cd.idx] || dist(s.points[cd.idx], cd.pt) > 1e-6)
+      return translate('Il disegno è cambiato da quando hai aperto la finestra: chiudila e riapri "Unisci punti" per rinumerare i punti.');
+  }
+  return null;
+}
+// Fonde le linee aperte (stesso ruolo e livello) che si incontrano in una delle
+// posizioni indicate; una linea con entrambe le estremità nello stesso punto viene chiusa.
+function mergeAtPoints(positions){
+  const eq = (p,q)=> Math.hypot(p[0]-q[0], p[1]-q[1]) < 0.01;
+  let merged=0, closedN=0, changed=true, guard=0;
+  while(changed && guard++<500){
+    changed = false;
+    for(const P of positions){
+      const ends = [];
+      state.shapes.forEach(s=>{
+        if(s.type!=='path' || !s.points || s.closed || s.locked || s.points.length<2) return;
+        if(eq(s.points[0], P)) ends.push({s, first:true});
+        if(eq(s.points[s.points.length-1], P)) ends.push({s, first:false});
+      });
+      if(ends.length!==2) continue; // 3 o più linee nello stesso punto: è un incrocio, non si fonde
+      const A = ends[0], B = ends[1];
+      if(A.s===B.s){
+        if(A.s.points.length>=4){ A.s.points.pop(); if(A.s.smooth) A.s.smooth.pop(); A.s.closed = true; closedN++; changed = true; break; }
+        continue;
+      }
+      if(A.s.style.role!==B.s.style.role || A.s.layerId!==B.s.layerId) continue;
+      const pa = A.s.points.slice(), sa = (A.s.smooth||A.s.points.map(()=>0)).slice();
+      if(A.first){ pa.reverse(); sa.reverse(); }          // l'estremo in comune diventa l'ultimo di A...
+      const pb = B.s.points.slice(), sb = (B.s.smooth||B.s.points.map(()=>0)).slice();
+      if(!B.first){ pb.reverse(); sb.reverse(); }         // ...e il primo di B
+      A.s.points = pa.concat(pb.slice(1)); A.s.smooth = sa.concat(sb.slice(1));
+      if(!A.s.foldDir && B.s.foldDir){ A.s.foldDir = B.s.foldDir; A.s.foldAngle = B.s.foldAngle; }
+      state.shapes = state.shapes.filter(x=>x!==B.s);
+      merged++; changed = true; break;
+    }
+  }
+  return {merged, closed:closedN};
+}
+function applyJoin(){
+  const err = document.getElementById('joinError');
+  const msg = validateJoinPairs();
+  if(msg){ err.textContent = msg; err.style.display=''; return; }
+  const mode = document.getElementById('joinMode').value;
+  const doMerge = document.getElementById('joinMerge').checked;
+  const byN = n=> joinState.cands.find(c=>c.n===n);
+  const touched = new Set(), positions = [];
+  joinState.pairs.forEach(([a,b])=>{
+    const A = byN(a), B = byN(b);
+    const sA = state.shapes.find(s=>s.id===A.shapeId);
+    if(mode==='move'){
+      sA.points[A.idx] = [B.pt[0], B.pt[1]];
+      positions.push(B.pt); touched.add(sA.id); touched.add(B.shapeId);
+    } else {
+      const seg = { id:uid(), type:'path', points:[[A.pt[0],A.pt[1]],[B.pt[0],B.pt[1]]], closed:false, smooth:[0,0],
+                    layerId:sA.layerId, locked:false, visible:true, style:JSON.parse(JSON.stringify(sA.style)) };
+      state.shapes.push(seg);
+      positions.push(A.pt, B.pt); touched.add(seg.id); touched.add(sA.id); touched.add(B.shapeId);
+    }
+  });
+  const r = doMerge ? mergeAtPoints(positions) : {merged:0, closed:0};
+  const n = joinState.pairs.length;
+  closeJoinDialog();
+  state.selection = new Set([...touched].filter(id=>state.shapes.some(s=>s.id===id)));
+  state.joinRegion = null;
+  pushHistory();
+  renderAll();
+  let t = tpl('{n} unioni eseguite.', {n});
+  if(r.merged) t += ' ' + tpl('{n} linee fuse in un unico percorso.', {n:r.merged});
+  if(r.closed) t += ' ' + tpl('{n} percorsi chiusi.', {n:r.closed});
+  showToast(t, false);
+}
+function closeJoinDialog(){
+  const ov = document.getElementById('joinModal');
+  ov.classList.remove('open'); delete ov.dataset.minimized;
+  joinState.cands = []; joinState.pairs = [];
+  renderModalDock();
+  renderCanvasOnly();
+}
+
+
+/* ============================================================
+   FINESTRE RIDUCIBILI A ICONA — le finestre di lavoro si possono
+   ridurre nella barra in basso, modificare il disegno e poi riprenderle
+   esattamente come le si era lasciate.
+============================================================ */
+const MINIMIZABLE_MODALS = ['joinModal','fold3dModal','boxGenModal','historyModal','versionsModal','libraryModal','saveLibraryModal',
+  'pageSizeModal','fontModal','scaleModal','tilePrintModal','printProofModal','cutPreviewModal','weldModal','helpModal'];
+const MODAL_HOOKS = {
+  fold3dModal: { onMinimize: ()=> stopFold3D(), onRestore: ()=> refreshFold3D() },
+  joinModal:   { onMinimize: ()=> renderCanvasOnly(), onRestore: ()=>{
+      if(validateJoinPairs() && joinState.cands.some(cd=>{ const s=state.shapes.find(x=>x.id===cd.shapeId); return !s || !s.points || !s.points[cd.idx] || dist(s.points[cd.idx], cd.pt)>1e-6; })){
+        const err = document.getElementById('joinError');
+        err.textContent = translate('Il disegno è cambiato da quando hai aperto la finestra: chiudila e riapri "Unisci punti" per rinumerare i punti.');
+        err.style.display = '';
+      }
+    } }
+};
+function setupModalMinimize(){
+  MINIMIZABLE_MODALS.forEach(id=>{
+    const ov = document.getElementById(id); if(!ov) return;
+    const head = ov.querySelector('.modal-head'); if(!head) return;
+    const closeBtn = head.querySelector('.iconbtn');
+    ov._closeBtn = closeBtn;
+    const b = document.createElement('button'); b.className='iconbtn'; b.textContent='▁';
+    b.title = 'Riduci a icona: la ritrovi nella barra in basso, modifichi il disegno e poi la riprendi';
+    b.onclick = ()=> minimizeModal(id);
+    head.insertBefore(b, closeBtn);
+  });
+}
+function minimizeModal(id){
+  const ov = document.getElementById(id);
+  ov.classList.remove('open'); ov.dataset.minimized = '1';
+  const hk = MODAL_HOOKS[id]; if(hk && hk.onMinimize) hk.onMinimize();
+  renderModalDock();
+}
+function restoreModal(id){
+  const ov = document.getElementById(id);
+  delete ov.dataset.minimized;
+  ov.parentNode.appendChild(ov); ov.classList.add('open');
+  renderModalDock();
+  const hk = MODAL_HOOKS[id]; if(hk && hk.onRestore) hk.onRestore();
+}
+function renderModalDock(){
+  const dock = document.getElementById('modalDock'); if(!dock) return;
+  const mins = Array.from(document.querySelectorAll('.modal-overlay[data-minimized="1"]'));
+  dock.innerHTML = '';
+  dock.style.display = mins.length ? 'flex' : 'none';
+  mins.forEach(ov=>{
+    const chip = document.createElement('div'); chip.className='dockchip';
+    const title = (ov.querySelector('.modal-head h3')||{}).textContent || ov.id;
+    const open = document.createElement('button'); open.textContent = '▣ ' + title; open.title = translate('Riprendi la finestra');
+    open.onclick = ()=> restoreModal(ov.id);
+    const x = document.createElement('button'); x.textContent = '✕'; x.title = translate('Chiudi la finestra');
+    x.onclick = ()=>{ delete ov.dataset.minimized; if(ov._closeBtn) ov._closeBtn.click(); else ov.classList.remove('open'); renderModalDock(); };
+    chip.append(open, x);
+    dock.appendChild(chip);
   });
 }
 
@@ -5977,10 +6427,11 @@ stage.addEventListener('contextmenu', (e)=>{
     if(hit){
       if(!state.selection.has(hit.id)){ state.selection.clear(); state.selection.add(hit.id); renderAll(); }
       showContextMenu(e.clientX, e.clientY, shapeContextItems(hit));
-    } else if(canvasClipboardShapes && canvasClipboardShapes.length){
-      showContextMenu(e.clientX, e.clientY, [
-        {label:'📌 Incolla qui', action:()=> pasteClipboardShapesAt(mm)}
-      ]);
+    } else {
+      const items = [];
+      if(computeJoinCandidates().length>=2) items.push({label:'🔗 Unisci punti…', action:()=> openJoinDialog()});
+      if(canvasClipboardShapes && canvasClipboardShapes.length) items.push({label:'📌 Incolla qui', action:()=> pasteClipboardShapesAt(mm)});
+      if(items.length) showContextMenu(e.clientX, e.clientY, items);
     }
   }catch(err){
     showToast('Errore imprevisto nel menu contestuale: ' + err.message, true);
@@ -5988,7 +6439,9 @@ stage.addEventListener('contextmenu', (e)=>{
   }
 });
 function shapeContextItems(s){
+  const joinItem = computeJoinCandidates().length>=2 ? [{label:'🔗 Unisci punti…', action:()=> openJoinDialog()}, 'sep'] : [];
   return [
+    ...joinItem,
     {label: state.selection.size>1 ? tpl('📋 Copia ({n})', {n: state.selection.size}) : '📋 Copia', action:()=> copySelectionToClipboard()},
     {label:'⧉ Duplica', action:()=> duplicateShape(s)},
     {label:'🗑 Elimina', action:()=>{ state.selection = new Set([s.id]); deleteSelection(); }},
@@ -6170,7 +6623,7 @@ function handleMouseDown(mm, e){
     const hit = topShapeAt(mm);
     if(hit){
       state.refImageSelected = false;
-      if(!e.shiftKey) state.selection.clear();
+      if(!e.shiftKey){ state.selection.clear(); state.joinRegion = null; }
       state.selection.add(hit.id);
       dragMode='move-shape';
       state.drag = {ids:[...state.selection], lastPt:mm};
@@ -6181,7 +6634,7 @@ function handleMouseDown(mm, e){
       state.drag = {startX:state.refImage.x, startY:state.refImage.y, startMM:mm};
     } else {
       state.refImageSelected = false;
-      if(!e.shiftKey) state.selection.clear();
+      if(!e.shiftKey){ state.selection.clear(); state.joinRegion = null; }
       if(e.altKey){
         dragMode='lasso'; state.drag={points:[mm]};
       } else {
@@ -6386,6 +6839,7 @@ function handleMouseUp(mm, e){
       const x1=Math.max(state.drag.start[0], state.drag.current[0]);
       const y1=Math.max(state.drag.start[1], state.drag.current[1]);
       if((x1-x0) > 1.5/state.scale || (y1-y0) > 1.5/state.scale){
+        state.joinRegion = {type:'rect', x0, y0, x1, y1};
         for(const s of state.shapes){
           if(!isShapeEffVisible(s) || s.locked) continue;
           const b = shapeBBox(s);
@@ -6397,6 +6851,7 @@ function handleMouseUp(mm, e){
   } else if(dragMode==='lasso'){
     if(state.drag && state.drag.points.length>=3){
       const poly = state.drag.points;
+      state.joinRegion = {type:'poly', pts: poly.map(p=>[p[0],p[1]])};
       for(const s of state.shapes){
         if(!isShapeEffVisible(s) || s.locked) continue;
         const b = shapeBBox(s);
@@ -6665,7 +7120,7 @@ window.addEventListener('keydown', (e)=>{
   }
   if((e.ctrlKey||e.metaKey) && k==='a'){
     e.preventDefault();
-    state.selection = new Set(state.shapes.map(s=>s.id));
+    state.selection = new Set(state.shapes.map(s=>s.id)); state.joinRegion = null;
     state.refImageSelected = false;
     renderAll();
     return;
@@ -7462,6 +7917,15 @@ document.getElementById('btnHistory').onclick = openHistoryModal;
 document.getElementById('historyModalClose').onclick = closeHistoryModal;
 setupOverlayClickClose(document.getElementById('historyModal'), closeHistoryModal);
 
+document.getElementById('joinModalClose').onclick = closeJoinDialog;
+setupOverlayClickClose(document.getElementById('joinModal'), closeJoinDialog);
+document.getElementById('joinApply').onclick = applyJoin;
+document.getElementById('joinAddPair').onclick = ()=>{
+  const used = new Set(joinState.pairs.flat());
+  const free = joinState.cands.map(c=>c.n).filter(n=>!used.has(n));
+  const a = free[0] || 1, b = free[1] || (joinState.cands.find(c=>c.n!==a)||{n:a}).n;
+  joinState.pairs.push([a,b]); renderJoinPairs();
+};
 function closeFold3D(){ stopFold3D(); document.getElementById('fold3dModal').classList.remove('open'); }
 document.getElementById('fold3dClose').onclick = closeFold3D;
 setupOverlayClickClose(document.getElementById('fold3dModal'), closeFold3D);
@@ -8213,6 +8677,7 @@ function renderPropPanelInner(){
     host.appendChild(foldHint);
   }
   if(ids.length>1) renderAlignSection(host, ids);
+  if(ids.length) renderJoinSection(host);
 
   if(s.points && ids.length===1){
     const closeBtn = document.createElement('button');
@@ -10918,6 +11383,7 @@ async function init(){
   buildRail();
   buildImageTab();
   buildComponentsTab();
+  setupModalMinimize();
   updateStatusToggles();
   try{
     const savedUnit = localStorage.getItem('spikecut-unit');
