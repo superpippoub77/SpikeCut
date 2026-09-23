@@ -521,6 +521,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
       <button data-action="check-closures">Verifica chiusure percorsi</button>
       <button data-action="check-overlaps">Verifica sovrapposizioni e duplicati</button>
       <button data-action="cut-preview">Anteprima taglio (fustella)</button>
+      <button data-action="fold-3d">🧊 Anteprima 3D piegata</button>
       <div class="menu-sep"></div>
       <button data-action="weld-points">Salda punti vicini…</button>
       <button data-action="close-all-paths">Chiudi tutti i percorsi aperti</button>
@@ -598,7 +599,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.6.1</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.8.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -716,6 +717,27 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
     </div>
     <div style="padding:0 16px 4px;font-size:11.5px;color:var(--ink-dim);">Clic su uno stato per tornarci direttamente, senza premere Annulla/Ripeti passo per passo.</div>
     <div id="historyList" class="modal-body"></div>
+  </div>
+</div>
+
+<div id="fold3dModal" class="modal-overlay">
+  <div class="modal-box" style="width:880px;max-width:96vw;">
+    <div class="modal-head">
+      <h3>Anteprima 3D piegata</h3>
+      <button class="iconbtn" id="fold3dClose" title="Chiudi">✕</button>
+    </div>
+    <div class="modal-body">
+      <canvas id="fold3dCanvas" style="width:100%;height:460px;display:block;border-radius:6px;cursor:grab;touch-action:none;"></canvas>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:10px;">
+        <button class="btn primary" id="fold3dPlay" style="width:auto;margin:0;">▶ Simula piegatura</button>
+        <span style="font-size:12px;color:var(--ink-dim);">Piegatura</span>
+        <input type="range" id="fold3dSlider" min="0" max="100" value="100" style="flex:1;">
+        <span id="fold3dPct" style="font-size:12px;min-width:38px;text-align:right;">100%</span>
+        <button class="btn" id="fold3dReset" style="width:auto;margin:0;">Vista iniziale</button>
+      </div>
+      <div class="hint" id="fold3dInfo" style="margin-top:8px;"></div>
+      <div class="hint">Trascina per ruotare, rotella per lo zoom. Lato chiaro = lato stampato (esterno), lato color cartone = interno. I pannelli sono ricavati dai contorni di TAGLIO chiusi, divisi dalle linee di PIEGA; verso e angolo di ogni piega si impostano nel pannello proprietà della linea.</div>
+    </div>
   </div>
 </div>
 
@@ -1587,6 +1609,24 @@ const I18N = {
     "Salva subito in libreria: sovrascrive il progetto se è già collegato, altrimenti chiede nome e cartella": "Save to library right away: overwrites the project if it’s already linked, otherwise asks for a name and folder",
     "Salvato in libreria.": "Saved to library.",
     "Errore nel salvataggio in libreria: ": "Error saving to the library: ",
+    "Verso della piega": "Fold direction",
+    "⩓ A monte (esterno)": "⩓ Mountain (outward)",
+    "⩔ A valle (interno)": "⩔ Valley (inward)",
+    "Piega a monte: il vertice sporge verso l'esterno": "Mountain fold: the crease points outward",
+    "Piega a valle: il vertice rientra verso l'interno": "Valley fold: the crease points inward",
+    "Angolo di piegatura (°)": "Fold angle (°)",
+    "La freccia e l'angolo compaiono sul disegno solo se scegli un verso di piegatura.": "The arrow and angle appear on the drawing only if you choose a fold direction.",
+    "🧊 Anteprima 3D piegata": "🧊 Folded 3D preview",
+    "Anteprima 3D piegata": "Folded 3D preview",
+    "▶ Simula piegatura": "▶ Simulate folding",
+    "Piegatura": "Folding",
+    "Vista iniziale": "Reset view",
+    "Trascina per ruotare, rotella per lo zoom. Lato chiaro = lato stampato (esterno), lato color cartone = interno. I pannelli sono ricavati dai contorni di TAGLIO chiusi, divisi dalle linee di PIEGA; verso e angolo di ogni piega si impostano nel pannello proprietà della linea.": "Drag to rotate, scroll to zoom. Light side = printed side (outside), cardboard-colored side = inside. Panels come from the closed CUT outlines, split by the FOLD lines; each fold’s direction and angle are set in the line’s properties panel.",
+    "Nessun pannello chiuso trovato: servono contorni di taglio chiusi e linee di piega.": "No closed panel found: closed cut outlines and fold lines are needed.",
+    "{p} pannelli, {h} pieghe collegate.": "{p} panels, {h} connected folds.",
+    "Nessuna piega collega i pannelli: il modello resta piatto.": "No fold connects the panels: the model stays flat.",
+    "{n} pieghe senza verso impostato: considerate a monte, 90°.": "{n} folds without a set direction: treated as mountain, 90°.",
+    "La freccia e l'angolo compaiono sul disegno solo se scegli un verso di piegatura. 90° = angolo retto (parete di scatola), 180° = piega completa su se stessa. Verso e angolo sono usati anche dall'anteprima 3D.": "The arrow and angle appear on the drawing only if you choose a fold direction. 90° = right angle (box wall), 180° = folded completely onto itself. Direction and angle are also used by the 3D preview.",
   },
   de: {
     "1 cm": "1 cm",
@@ -2083,6 +2123,24 @@ const I18N = {
     "Salva subito in libreria: sovrascrive il progetto se è già collegato, altrimenti chiede nome e cartella": "Sofort in der Bibliothek speichern: überschreibt das Projekt, wenn es bereits verknüpft ist, andernfalls wird nach Name und Ordner gefragt",
     "Salvato in libreria.": "In der Bibliothek gespeichert.",
     "Errore nel salvataggio in libreria: ": "Fehler beim Speichern in der Bibliothek: ",
+    "Verso della piega": "Faltrichtung",
+    "⩓ A monte (esterno)": "⩓ Bergfalz (nach außen)",
+    "⩔ A valle (interno)": "⩔ Talfalz (nach innen)",
+    "Piega a monte: il vertice sporge verso l'esterno": "Bergfalz: die Kante zeigt nach außen",
+    "Piega a valle: il vertice rientra verso l'interno": "Talfalz: die Kante zeigt nach innen",
+    "Angolo di piegatura (°)": "Faltwinkel (°)",
+    "La freccia e l'angolo compaiono sul disegno solo se scegli un verso di piegatura.": "Der Pfeil und der Winkel erscheinen in der Zeichnung nur, wenn du eine Faltrichtung wählst.",
+    "🧊 Anteprima 3D piegata": "🧊 3D-Faltvorschau",
+    "Anteprima 3D piegata": "3D-Faltvorschau",
+    "▶ Simula piegatura": "▶ Faltung simulieren",
+    "Piegatura": "Faltung",
+    "Vista iniziale": "Ausgangsansicht",
+    "Trascina per ruotare, rotella per lo zoom. Lato chiaro = lato stampato (esterno), lato color cartone = interno. I pannelli sono ricavati dai contorni di TAGLIO chiusi, divisi dalle linee di PIEGA; verso e angolo di ogni piega si impostano nel pannello proprietà della linea.": "Ziehen zum Drehen, Mausrad zum Zoomen. Helle Seite = bedruckte Seite (außen), kartonfarbene Seite = innen. Die Felder ergeben sich aus den geschlossenen SCHNITT-Konturen, geteilt durch die FALZ-Linien; Richtung und Winkel jedes Falzes werden im Eigenschaftenfeld der Linie eingestellt.",
+    "Nessun pannello chiuso trovato: servono contorni di taglio chiusi e linee di piega.": "Kein geschlossenes Feld gefunden: Es werden geschlossene Schnittkonturen und Falzlinien benötigt.",
+    "{p} pannelli, {h} pieghe collegate.": "{p} Felder, {h} verbundene Falze.",
+    "Nessuna piega collega i pannelli: il modello resta piatto.": "Kein Falz verbindet die Felder: Das Modell bleibt flach.",
+    "{n} pieghe senza verso impostato: considerate a monte, 90°.": "{n} Falze ohne festgelegte Richtung: als Bergfalz, 90° behandelt.",
+    "La freccia e l'angolo compaiono sul disegno solo se scegli un verso di piegatura. 90° = angolo retto (parete di scatola), 180° = piega completa su se stessa. Verso e angolo sono usati anche dall'anteprima 3D.": "Pfeil und Winkel erscheinen in der Zeichnung nur, wenn du eine Faltrichtung wählst. 90° = rechter Winkel (Schachtelwand), 180° = vollständig auf sich selbst gefaltet. Richtung und Winkel werden auch von der 3D-Vorschau verwendet.",
   },
   es: {
     "1 cm": "1 cm",
@@ -2579,6 +2637,24 @@ const I18N = {
     "Salva subito in libreria: sovrascrive il progetto se è già collegato, altrimenti chiede nome e cartella": "Guardar en la biblioteca de inmediato: sobrescribe el proyecto si ya está vinculado, si no pide un nombre y una carpeta",
     "Salvato in libreria.": "Guardado en la biblioteca.",
     "Errore nel salvataggio in libreria: ": "Error al guardar en la biblioteca: ",
+    "Verso della piega": "Dirección del pliegue",
+    "⩓ A monte (esterno)": "⩓ Monte (hacia fuera)",
+    "⩔ A valle (interno)": "⩔ Valle (hacia dentro)",
+    "Piega a monte: il vertice sporge verso l'esterno": "Pliegue de monte: la arista sobresale hacia fuera",
+    "Piega a valle: il vertice rientra verso l'interno": "Pliegue de valle: la arista entra hacia dentro",
+    "Angolo di piegatura (°)": "Ángulo de pliegue (°)",
+    "La freccia e l'angolo compaiono sul disegno solo se scegli un verso di piegatura.": "La flecha y el ángulo aparecen en el dibujo solo si eliges una dirección de pliegue.",
+    "🧊 Anteprima 3D piegata": "🧊 Vista previa 3D plegada",
+    "Anteprima 3D piegata": "Vista previa 3D plegada",
+    "▶ Simula piegatura": "▶ Simular plegado",
+    "Piegatura": "Plegado",
+    "Vista iniziale": "Vista inicial",
+    "Trascina per ruotare, rotella per lo zoom. Lato chiaro = lato stampato (esterno), lato color cartone = interno. I pannelli sono ricavati dai contorni di TAGLIO chiusi, divisi dalle linee di PIEGA; verso e angolo di ogni piega si impostano nel pannello proprietà della linea.": "Arrastra para girar, rueda para el zoom. Lado claro = lado impreso (exterior), lado color cartón = interior. Los paneles se obtienen de los contornos de CORTE cerrados, divididos por las líneas de PLIEGUE; dirección y ángulo de cada pliegue se ajustan en el panel de propiedades de la línea.",
+    "Nessun pannello chiuso trovato: servono contorni di taglio chiusi e linee di piega.": "No se encontró ningún panel cerrado: se necesitan contornos de corte cerrados y líneas de pliegue.",
+    "{p} pannelli, {h} pieghe collegate.": "{p} paneles, {h} pliegues conectados.",
+    "Nessuna piega collega i pannelli: il modello resta piatto.": "Ningún pliegue conecta los paneles: el modelo queda plano.",
+    "{n} pieghe senza verso impostato: considerate a monte, 90°.": "{n} pliegues sin dirección definida: tratados como monte, 90°.",
+    "La freccia e l'angolo compaiono sul disegno solo se scegli un verso di piegatura. 90° = angolo retto (parete di scatola), 180° = piega completa su se stessa. Verso e angolo sono usati anche dall'anteprima 3D.": "La flecha y el ángulo aparecen en el dibujo solo si eliges una dirección de pliegue. 90° = ángulo recto (pared de caja), 180° = plegado completamente sobre sí mismo. La dirección y el ángulo también los usa la vista previa 3D.",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -3075,6 +3151,24 @@ const I18N = {
     "Salva subito in libreria: sovrascrive il progetto se è già collegato, altrimenti chiede nome e cartella": "立即保存到资料库：如果项目已关联则直接覆盖，否则会询问名称和文件夹",
     "Salvato in libreria.": "已保存到资料库。",
     "Errore nel salvataggio in libreria: ": "保存到资料库时出错：",
+    "Verso della piega": "折叠方向",
+    "⩓ A monte (esterno)": "⩓ 山折（向外）",
+    "⩔ A valle (interno)": "⩔ 谷折（向内）",
+    "Piega a monte: il vertice sporge verso l'esterno": "山折：折痕向外凸出",
+    "Piega a valle: il vertice rientra verso l'interno": "谷折：折痕向内凹入",
+    "Angolo di piegatura (°)": "折叠角度（°）",
+    "La freccia e l'angolo compaiono sul disegno solo se scegli un verso di piegatura.": "只有选择了折叠方向后，箭头和角度才会显示在图纸上。",
+    "🧊 Anteprima 3D piegata": "🧊 3D折叠预览",
+    "Anteprima 3D piegata": "3D折叠预览",
+    "▶ Simula piegatura": "▶ 模拟折叠",
+    "Piegatura": "折叠",
+    "Vista iniziale": "初始视图",
+    "Trascina per ruotare, rotella per lo zoom. Lato chiaro = lato stampato (esterno), lato color cartone = interno. I pannelli sono ricavati dai contorni di TAGLIO chiusi, divisi dalle linee di PIEGA; verso e angolo di ogni piega si impostano nel pannello proprietà della linea.": "拖动以旋转，滚轮缩放。浅色面 = 印刷面（外侧），纸板色面 = 内侧。面板由闭合的切割轮廓得出，并由折线分割；每条折线的方向和角度在该线的属性面板中设置。",
+    "Nessun pannello chiuso trovato: servono contorni di taglio chiusi e linee di piega.": "未找到闭合面板：需要闭合的切割轮廓和折线。",
+    "{p} pannelli, {h} pieghe collegate.": "{p} 个面板，{h} 条相连折线。",
+    "Nessuna piega collega i pannelli: il modello resta piatto.": "没有折线连接各面板：模型保持平面。",
+    "{n} pieghe senza verso impostato: considerate a monte, 90°.": "{n} 条折线未设置方向：按山折 90° 处理。",
+    "La freccia e l'angolo compaiono sul disegno solo se scegli un verso di piegatura. 90° = angolo retto (parete di scatola), 180° = piega completa su se stessa. Verso e angolo sono usati anche dall'anteprima 3D.": "只有选择了折叠方向后，箭头和角度才会显示在图纸上。90° = 直角（盒壁），180° = 完全对折。方向和角度也用于3D预览。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -3571,6 +3665,24 @@ const I18N = {
     "Salva subito in libreria: sovrascrive il progetto se è già collegato, altrimenti chiede nome e cartella": "Enregistrer immédiatement dans la bibliothèque : écrase le projet s’il est déjà lié, sinon demande un nom et un dossier",
     "Salvato in libreria.": "Enregistré dans la bibliothèque.",
     "Errore nel salvataggio in libreria: ": "Erreur lors de l’enregistrement dans la bibliothèque : ",
+    "Verso della piega": "Sens du pli",
+    "⩓ A monte (esterno)": "⩓ Montagne (vers l’extérieur)",
+    "⩔ A valle (interno)": "⩔ Vallée (vers l’intérieur)",
+    "Piega a monte: il vertice sporge verso l'esterno": "Pli montagne : l’arête pointe vers l’extérieur",
+    "Piega a valle: il vertice rientra verso l'interno": "Pli vallée : l’arête pointe vers l’intérieur",
+    "Angolo di piegatura (°)": "Angle de pliage (°)",
+    "La freccia e l'angolo compaiono sul disegno solo se scegli un verso di piegatura.": "La flèche et l’angle n’apparaissent sur le dessin que si tu choisis un sens de pliage.",
+    "🧊 Anteprima 3D piegata": "🧊 Aperçu 3D plié",
+    "Anteprima 3D piegata": "Aperçu 3D plié",
+    "▶ Simula piegatura": "▶ Simuler le pliage",
+    "Piegatura": "Pliage",
+    "Vista iniziale": "Vue initiale",
+    "Trascina per ruotare, rotella per lo zoom. Lato chiaro = lato stampato (esterno), lato color cartone = interno. I pannelli sono ricavati dai contorni di TAGLIO chiusi, divisi dalle linee di PIEGA; verso e angolo di ogni piega si impostano nel pannello proprietà della linea.": "Glisse pour faire pivoter, molette pour zoomer. Face claire = face imprimée (extérieur), face couleur carton = intérieur. Les panneaux proviennent des contours de DÉCOUPE fermés, divisés par les lignes de PLI ; le sens et l’angle de chaque pli se règlent dans le panneau de propriétés de la ligne.",
+    "Nessun pannello chiuso trovato: servono contorni di taglio chiusi e linee di piega.": "Aucun panneau fermé trouvé : il faut des contours de découpe fermés et des lignes de pli.",
+    "{p} pannelli, {h} pieghe collegate.": "{p} panneaux, {h} plis reliés.",
+    "Nessuna piega collega i pannelli: il modello resta piatto.": "Aucun pli ne relie les panneaux : le modèle reste à plat.",
+    "{n} pieghe senza verso impostato: considerate a monte, 90°.": "{n} plis sans sens défini : traités comme montagne, 90°.",
+    "La freccia e l'angolo compaiono sul disegno solo se scegli un verso di piegatura. 90° = angolo retto (parete di scatola), 180° = piega completa su se stessa. Verso e angolo sono usati anche dall'anteprima 3D.": "La flèche et l’angle n’apparaissent sur le dessin que si tu choisis un sens de pliage. 90° = angle droit (paroi de boîte), 180° = pli complet sur lui-même. Le sens et l’angle sont aussi utilisés par l’aperçu 3D.",
   },
 };
 let currentLang = 'it';
@@ -4722,6 +4834,37 @@ function renderEndpointMarkers(){
   }
   renderCornerAngles();
 }
+// Frecce (a forma di "monte"/"valle") e angolo di piegatura, disegnate a metà
+// di ogni tratto delle forme con ruolo Piega che hanno un verso impostato.
+// Sono solo un'annotazione visiva: non fanno parte della geometria di taglio.
+function renderFoldIndicators(){
+  for(const s of state.shapes){
+    if(!s.points || s.style.role!=='fold' || !s.foldDir || !isShapeEffVisible(s)) continue;
+    const n = s.points.length;
+    const segCount = s.closed ? n : n-1;
+    for(let i=0;i<segCount;i++){
+      const a = s.points[i], b = s.points[(i+1)%n];
+      const mid = [(a[0]+b[0])/2, (a[1]+b[1])/2];
+      const normal = segNormal(a,b);
+      const sign = s.foldDir==='mountain' ? 1 : -1;
+      const armLen = 3.5/1, apexDist = 4.5; // mm, indipendenti dallo zoom (moltiplicati per scale sotto)
+      const dir = [b[0]-a[0], b[1]-a[1]];
+      const dlen = Math.hypot(dir[0],dir[1]) || 1;
+      const u = [dir[0]/dlen, dir[1]/dlen];
+      const base1 = [mid[0]-u[0]*armLen, mid[1]-u[1]*armLen];
+      const base2 = [mid[0]+u[0]*armLen, mid[1]+u[1]*armLen];
+      const apex = [mid[0]+normal[0]*apexDist*sign, mid[1]+normal[1]*apexDist*sign];
+      const pts = [base1, apex, base2].map(p=>`${p[0]*state.scale} ${p[1]*state.scale}`).join(' L ');
+      layerOverlay.appendChild(el('path', {d:'M '+pts, fill:'none', stroke:'#3572d6', 'stroke-width':1.6, 'stroke-linecap':'round', 'stroke-linejoin':'round', 'pointer-events':'none'}));
+      if(s.foldAngle!=null){
+        const labelPos = [mid[0]+normal[0]*(apexDist+3.5)*sign, mid[1]+normal[1]*(apexDist+3.5)*sign];
+        const t = el('text', {x:labelPos[0]*state.scale, y:labelPos[1]*state.scale, 'font-size':9, fill:'#3572d6', 'text-anchor':'middle', 'dominant-baseline':'middle', 'pointer-events':'none'});
+        t.textContent = Math.round(s.foldAngle)+'°';
+        layerOverlay.appendChild(t);
+      }
+    }
+  }
+}
 
 /* ============================================================
    ANGOLI TRA I SEGMENTI — visibili solo con l'opzione "punti" (●)
@@ -4892,6 +5035,7 @@ function renderCanvasOnly(){
   renderPermanentDimensions();
   renderEndpointMarkers();
   renderGapMarkers();
+  renderFoldIndicators();
   renderTileGuidesOverlay();
   drawRulers();
   updateDrawHint();
@@ -4917,6 +5061,263 @@ const TOOLS = [
   {id:'freehand', key:'b', label:'Matita libera', icon:'M4 17c3-8 5-3 8-9 2 4 4-1 6 2'},
   {id:'text', key:'t', label:'Testo', icon:'M5 4h12M11 4v14'},
 ];
+/* ============================================================
+   ANTEPRIMA 3D PIEGATA — motore geometrico.
+   1) Raccoglie tutti i segmenti di TAGLIO (cut/diecut) e PIEGA (fold).
+   2) Li spezza in ogni punto di contatto/incrocio e ne ricava un grafo planare.
+   3) Estrae le facce chiuse del grafo = i pannelli della fustella.
+   4) I lati di piega condivisi tra due pannelli diventano cerniere: partendo
+      dal pannello più grande, ogni pannello figlio ruota attorno alla sua
+      cerniera (verso e angolo presi dalla linea di piega).
+============================================================ */
+function buildFoldModel(shapes){
+  const TOL = 0.3; // mm
+  const segs = [];
+  const addSeg = (a,b,fold)=>{ if(Math.hypot(a[0]-b[0],a[1]-b[1])>TOL) segs.push({a,b,fold}); };
+  shapes.forEach(s=>{
+    if(typeof isShapeEffVisible==='function' && !isShapeEffVisible(s)) return;
+    const role = s.style && s.style.role;
+    const isFold = role==='fold', isCut = role==='cut' || role==='diecut';
+    if(!isFold && !isCut) return;
+    let pts = null, closed = false;
+    if(s.points){ pts = s.points; closed = !!s.closed; }
+    else if(s.type==='rect' || s.type==='ellipse'){
+      const cx=s.x+s.w/2, cy=s.y+s.h/2;
+      if(s.type==='rect') pts = [[s.x,s.y],[s.x+s.w,s.y],[s.x+s.w,s.y+s.h],[s.x,s.y+s.h]];
+      else { pts=[]; for(let i=0;i<32;i++){ const a=i/32*Math.PI*2; pts.push([cx+Math.cos(a)*s.w/2, cy+Math.sin(a)*s.h/2]); } }
+      if(s.rotation) pts = pts.map(p=>rotatePointAround(p,[cx,cy],s.rotation));
+      closed = true;
+    }
+    if(!pts || pts.length<2) return;
+    const n = pts.length;
+    for(let i=0;i<n-1;i++) addSeg(pts[i], pts[i+1], isFold ? s : null);
+    if(closed && n>2) addSeg(pts[n-1], pts[0], isFold ? s : null);
+  });
+
+  // --- nodi (punti coincidenti entro la tolleranza diventano un unico nodo)
+  const nodes = [];
+  const nodeId = p=>{
+    for(let i=0;i<nodes.length;i++) if(Math.abs(nodes[i][0]-p[0])<TOL && Math.abs(nodes[i][1]-p[1])<TOL) return i;
+    nodes.push([p[0],p[1]]); return nodes.length-1;
+  };
+
+  // --- spezzo ogni segmento dove tocca un estremo altrui o incrocia un altro segmento
+  const edges = new Map(); // "i-j" -> {i,j,fold}
+  segs.forEach((sg, si)=>{
+    const ax=sg.a[0], ay=sg.a[1], dx=sg.b[0]-ax, dy=sg.b[1]-ay;
+    const len2 = dx*dx+dy*dy, len = Math.sqrt(len2);
+    const ts = [0,1];
+    segs.forEach((o, oi)=>{
+      if(oi===si) return;
+      [o.a, o.b].forEach(p=>{
+        const t = ((p[0]-ax)*dx + (p[1]-ay)*dy)/len2;
+        if(t<=TOL/len || t>=1-TOL/len) return;
+        const px = ax+dx*t, py = ay+dy*t;
+        if(Math.hypot(px-p[0], py-p[1])<TOL) ts.push(t);
+      });
+      const ex=o.b[0]-o.a[0], ey=o.b[1]-o.a[1];
+      const den = dx*ey - dy*ex;
+      if(Math.abs(den)<1e-9) return;
+      const t = ((o.a[0]-ax)*ey - (o.a[1]-ay)*ex)/den;
+      const u = ((o.a[0]-ax)*dy - (o.a[1]-ay)*dx)/den;
+      if(t>TOL/len && t<1-TOL/len && u>-1e-6 && u<1+1e-6) ts.push(t);
+    });
+    ts.sort((p,q)=>p-q);
+    for(let k=0;k<ts.length-1;k++){
+      if(ts[k+1]-ts[k] < 1e-6) continue;
+      const i = nodeId([ax+dx*ts[k], ay+dy*ts[k]]);
+      const j = nodeId([ax+dx*ts[k+1], ay+dy*ts[k+1]]);
+      if(i===j) continue;
+      const key = i<j ? i+'-'+j : j+'-'+i;
+      const ex = edges.get(key);
+      if(!ex) edges.set(key, {i:Math.min(i,j), j:Math.max(i,j), fold:sg.fold});
+      else if(sg.fold) ex.fold = sg.fold; // un lato che è sia taglio sia piega vale come piega (cerniera)
+    }
+  });
+
+  // --- adiacenze, eliminando i rami "morti" (linee che finiscono nel vuoto)
+  const adj = nodes.map(()=>new Set());
+  edges.forEach(e=>{ adj[e.i].add(e.j); adj[e.j].add(e.i); });
+  let pruned = true;
+  while(pruned){
+    pruned = false;
+    adj.forEach((set, v)=>{
+      if(set.size===1){ const w=[...set][0]; set.delete(w); adj[w].delete(v); pruned = true; }
+    });
+  }
+  const sorted = adj.map((set, v)=> [...set].sort((a,b)=>
+    Math.atan2(nodes[a][1]-nodes[v][1], nodes[a][0]-nodes[v][0]) - Math.atan2(nodes[b][1]-nodes[v][1], nodes[b][0]-nodes[v][0])));
+
+  // --- estrazione delle facce del grafo planare
+  const visited = new Set();
+  const rawFaces = [];
+  sorted.forEach((list, u)=>{
+    list.forEach(v0=>{
+      if(visited.has(u+'>'+v0)) return;
+      const cyc = []; let a=u, b=v0, guard=0;
+      while(!visited.has(a+'>'+b) && guard++<10000){
+        visited.add(a+'>'+b); cyc.push(a);
+        const lst = sorted[b]; const idx = lst.indexOf(a);
+        const c = lst[(idx-1+lst.length)%lst.length];
+        a=b; b=c;
+      }
+      let area=0;
+      for(let k=0;k<cyc.length;k++){ const p=nodes[cyc[k]], q=nodes[cyc[(k+1)%cyc.length]]; area += p[0]*q[1]-q[0]*p[1]; }
+      rawFaces.push({cyc, area:area/2});
+    });
+  });
+  // con questa regola di attraversamento (coordinate con y verso il basso) le
+  // facce limitate hanno area positiva; il contorno esterno di ogni pezzo è negativo.
+  let faces = rawFaces.filter(f=>f.area > 1).map(f=>({nodes:f.cyc, area:f.area}));
+
+  const faceOfHalf = new Map();
+  faces.forEach((f,fi)=> f.nodes.forEach((v,k)=> faceOfHalf.set(v+'>'+f.nodes[(k+1)%f.nodes.length], fi)));
+  const hinges = [];
+  edges.forEach(e=>{
+    if(!e.fold) return;
+    const f1 = faceOfHalf.get(e.i+'>'+e.j), f2 = faceOfHalf.get(e.j+'>'+e.i);
+    if(f1!=null && f2!=null && f1!==f2) hinges.push({f1, f2, i:e.i, j:e.j, fold:e.fold});
+  });
+
+  // --- i fori (facce senza cerniere interamente dentro un'altra faccia) non sono pannelli
+  const centroid = f=>{ let x=0,y=0; f.nodes.forEach(v=>{ x+=nodes[v][0]; y+=nodes[v][1]; }); return [x/f.nodes.length, y/f.nodes.length]; };
+  const inPoly = (p, f)=>{ let ins=false; const pts=f.nodes.map(v=>nodes[v]);
+    for(let i=0,j=pts.length-1;i<pts.length;j=i++){ const xi=pts[i][0],yi=pts[i][1],xj=pts[j][0],yj=pts[j][1];
+      if(((yi>p[1])!==(yj>p[1])) && (p[0] < (xj-xi)*(p[1]-yi)/(yj-yi)+xi)) ins=!ins; } return ins; };
+  const hinged = new Set(); hinges.forEach(h=>{ hinged.add(h.f1); hinged.add(h.f2); });
+  const keep = faces.map((f,fi)=> hinged.has(fi) || !faces.some((g,gi)=> gi!==fi && g.area>f.area && inPoly(centroid(f), g)));
+  const remap = []; const kept = [];
+  faces.forEach((f,fi)=>{ if(keep[fi]){ remap[fi]=kept.length; kept.push(f); } });
+  const hingesK = hinges.filter(h=>keep[h.f1] && keep[h.f2]).map(h=>Object.assign({}, h, {f1:remap[h.f1], f2:remap[h.f2]}));
+
+  // --- albero di piegatura: dal pannello più grande verso gli altri
+  const root = kept.reduce((best,f,fi)=> f.area>kept[best].area ? fi : best, 0);
+  const parent = kept.map(()=>null), parentHinge = kept.map(()=>null);
+  const order = [];
+  if(kept.length){
+    const seen = new Set([root]); const queue=[root];
+    while(queue.length){
+      const f = queue.shift(); order.push(f);
+      hingesK.forEach(h=>{
+        const other = h.f1===f ? h.f2 : (h.f2===f ? h.f1 : null);
+        if(other==null || seen.has(other)) return;
+        seen.add(other); parent[other]=f; parentHinge[other]=h; queue.push(other);
+      });
+    }
+    kept.forEach((f,fi)=>{ if(!seen.has(fi)) order.push(fi); }); // pezzi staccati: restano piatti
+  }
+  const flat3 = v=>[nodes[v][0], -nodes[v][1], 0]; // y verso l'alto nello spazio 3D
+  return { nodes, faces:kept, hinges:hingesK, root, parent, parentHinge, order, flat3 };
+}
+
+// Trasformazione affine 3D: p' = m·p + t
+function tfApply(T, p){ const m=T.m; return [m[0]*p[0]+m[1]*p[1]+m[2]*p[2]+T.t[0], m[3]*p[0]+m[4]*p[1]+m[5]*p[2]+T.t[1], m[6]*p[0]+m[7]*p[1]+m[8]*p[2]+T.t[2]]; }
+function tfCompose(A, B){ // A dopo B
+  const a=A.m, b=B.m, m=new Array(9);
+  for(let r=0;r<3;r++) for(let c=0;c<3;c++) m[r*3+c]=a[r*3]*b[c]+a[r*3+1]*b[3+c]+a[r*3+2]*b[6+c];
+  const bt = B.t; const t = [a[0]*bt[0]+a[1]*bt[1]+a[2]*bt[2]+A.t[0], a[3]*bt[0]+a[4]*bt[1]+a[5]*bt[2]+A.t[1], a[6]*bt[0]+a[7]*bt[1]+a[8]*bt[2]+A.t[2]];
+  return {m, t};
+}
+function tfRotAxis(P, u, ang){ // rotazione di ang radianti attorno alla retta per P con direzione unitaria u
+  const c=Math.cos(ang), s=Math.sin(ang), C=1-c, x=u[0], y=u[1], z=u[2];
+  const m = [c+x*x*C, x*y*C-z*s, x*z*C+y*s,  y*x*C+z*s, c+y*y*C, y*z*C-x*s,  z*x*C-y*s, z*y*C+x*s, c+z*z*C];
+  const Rp = [m[0]*P[0]+m[1]*P[1]+m[2]*P[2], m[3]*P[0]+m[4]*P[1]+m[5]*P[2], m[6]*P[0]+m[7]*P[1]+m[8]*P[2]];
+  return {m, t:[P[0]-Rp[0], P[1]-Rp[1], P[2]-Rp[2]]};
+}
+// Piega il modello alla frazione frac (0 = piatto, 1 = completamente piegato).
+// Pieghe senza verso impostato: a monte (le pareti si allontanano da chi
+// guarda il lato stampato, che resta così all'esterno), 90°.
+function foldModelAt(model, frac){
+  const I = {m:[1,0,0,0,1,0,0,0,1], t:[0,0,0]};
+  const T = model.faces.map(()=>I);
+  model.order.forEach(fi=>{
+    const pf = model.parent[fi];
+    if(pf==null){ T[fi]=I; return; }
+    const h = model.parentHinge[fi];
+    const P = model.flat3(h.i), Q = model.flat3(h.j);
+    const d = [Q[0]-P[0], Q[1]-P[1], 0], dl = Math.hypot(d[0],d[1]) || 1;
+    const u = [d[0]/dl, d[1]/dl, 0];
+    const f = model.faces[fi];
+    let cx=0, cy=0; f.nodes.forEach(v=>{ const p=model.flat3(v); cx+=p[0]; cy+=p[1]; }); cx/=f.nodes.length; cy/=f.nodes.length;
+    const side = (d[0]*(cy-P[1]) - d[1]*(cx-P[0])) > 0 ? 1 : -1;
+    const dirSign = h.fold.foldDir==='valley' ? 1 : -1;
+    const angDeg = h.fold.foldAngle!=null ? h.fold.foldAngle : 90;
+    const R = tfRotAxis(P, u, side*dirSign*angDeg*Math.PI/180*frac);
+    T[fi] = tfCompose(T[pf], R);
+  });
+  return model.faces.map((f,fi)=>({
+    pts: f.nodes.map(v=>tfApply(T[fi], model.flat3(v))),
+    normal: (()=>{ const m=T[fi].m; return [m[2], m[5], m[8]]; })(),
+    isRoot: fi===model.root
+  }));
+}
+
+/* ---------- visualizzatore 3D (canvas 2D, algoritmo del pittore) ---------- */
+const fold3d = { model:null, frac:1, yaw:-0.6, pitch:0.45, zoom:1, anim:null, drag:null };
+function openFold3D(){
+  const model = buildFoldModel(state.shapes);
+  if(!model.faces.length){ showToast('Nessun pannello chiuso trovato: servono contorni di taglio chiusi e linee di piega.', true); return; }
+  fold3d.model = model; fold3d.yaw=-0.6; fold3d.pitch=0.45; fold3d.zoom=1;
+  const noDir = state.shapes.filter(s=>s.style && s.style.role==='fold' && !s.foldDir && isShapeEffVisible(s)).length;
+  let info = tpl('{p} pannelli, {h} pieghe collegate.', {p:model.faces.length, h:model.hinges.length});
+  if(!model.hinges.length) info += ' ' + translate('Nessuna piega collega i pannelli: il modello resta piatto.');
+  else if(noDir) info += ' ' + tpl('{n} pieghe senza verso impostato: considerate a monte, 90°.', {n:noDir});
+  document.getElementById('fold3dInfo').textContent = info;
+  openModal('fold3dModal');
+  playFold3D();
+}
+function setFold3DFrac(f){
+  fold3d.frac = Math.max(0, Math.min(1, f));
+  document.getElementById('fold3dSlider').value = Math.round(fold3d.frac*100);
+  document.getElementById('fold3dPct').textContent = Math.round(fold3d.frac*100)+'%';
+  renderFold3D();
+}
+function playFold3D(){
+  if(fold3d.anim) cancelAnimationFrame(fold3d.anim);
+  const t0 = performance.now(), DUR = 2400;
+  const step = now=>{
+    const k = Math.min(1, (now-t0)/DUR);
+    setFold3DFrac(k<0.5 ? 2*k*k : 1-Math.pow(-2*k+2,2)/2); // accelera e rallenta
+    fold3d.anim = k<1 ? requestAnimationFrame(step) : null;
+  };
+  fold3d.anim = requestAnimationFrame(step);
+}
+function stopFold3D(){ if(fold3d.anim){ cancelAnimationFrame(fold3d.anim); fold3d.anim=null; } }
+function renderFold3D(){
+  const cv = document.getElementById('fold3dCanvas');
+  if(!fold3d.model || !cv) return;
+  const w = cv.clientWidth || 800, h = cv.clientHeight || 460, dpr = window.devicePixelRatio || 1;
+  if(cv.width!==Math.round(w*dpr) || cv.height!==Math.round(h*dpr)){ cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr); }
+  const ctx = cv.getContext('2d'); if(!ctx) return;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.fillStyle = '#23262b'; ctx.fillRect(0,0,w,h);
+  const faces = foldModelAt(fold3d.model, fold3d.frac);
+  const all = faces.flatMap(f=>f.pts);
+  const C = [0,1,2].map(i=> (Math.min(...all.map(p=>p[i]))+Math.max(...all.map(p=>p[i])))/2);
+  const radius = Math.max(1, ...all.map(p=>Math.hypot(p[0]-C[0], p[1]-C[1], p[2]-C[2])));
+  const cyw=Math.cos(fold3d.yaw), syw=Math.sin(fold3d.yaw), cp=Math.cos(fold3d.pitch), sp=Math.sin(fold3d.pitch);
+  const rot = v=>{ const x1 = v[0]*cyw + v[2]*syw, z1 = -v[0]*syw + v[2]*cyw; return [x1, v[1]*cp - z1*sp, v[1]*sp + z1*cp]; };
+  const camDist = radius*3.2, scale = Math.min(w,h)*0.42/radius*fold3d.zoom;
+  const proj = v=>{ const f = camDist/(camDist - v[2]); return [w/2 + v[0]*scale*f, h/2 - v[1]*scale*f]; };
+  const L = [0.35,0.6,0.72], Ll = Math.hypot(...L); const light = L.map(v=>v/Ll);
+  const items = faces.map(f=>{
+    const vs = f.pts.map(p=> rot([p[0]-C[0], p[1]-C[1], p[2]-C[2]]));
+    return { vs, depth: vs.reduce((a,v)=>a+v[2],0)/vs.length, n: rot(f.normal) };
+  });
+  items.sort((a,b)=> a.depth-b.depth); // prima i pannelli lontani, poi quelli vicini
+  items.forEach(it=>{
+    const front = it.n[2] >= 0;                       // lato stampato rivolto verso chi guarda
+    const nn = front ? it.n : it.n.map(v=>-v);
+    const shade = 0.55 + 0.45*Math.max(0, nn[0]*light[0]+nn[1]*light[1]+nn[2]*light[2]);
+    const base = front ? [244,237,224] : [196,154,100]; // esterno chiaro, interno color cartone
+    ctx.fillStyle = `rgb(${base.map(v=>Math.round(v*shade)).join(',')})`;
+    ctx.beginPath();
+    it.vs.forEach((v,k)=>{ const p = proj(v); if(k) ctx.lineTo(p[0],p[1]); else ctx.moveTo(p[0],p[1]); });
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = 'rgba(30,30,30,0.85)'; ctx.lineWidth = 1; ctx.stroke();
+  });
+}
+
 /* ============================================================
    LIBRERIA COMPONENTI — pezzi pronti (aletta, foro europeo, maniglia,
    linguetta, gancio) da inserire con un clic, poi rifinibili come
@@ -4973,20 +5374,29 @@ function boxPolyShape(points, role){
   return { id:uid(), type:'path', points:points.map(p=>[p[0],p[1]]), closed:true, smooth:points.map(()=>0), locked:false, layerId: state.activeLayerId,
     style:{stroke:rs.stroke, hasRealStroke:true, fill:'none', fillOpacity:1, strokeWidth:1, dash:rs.dash, role} };
 }
-// Scatola americana (RSC — Regular Slotted Container): 4 pannelli laterali in
-// fila (L,W,L,W) più aletta di incollaggio, con 4 alette semplici sopra e 4
-// sotto (versione semplificata a spigoli dritti, senza rifilo angolare).
+// Scatola americana (RSC — Regular Slotted Container): 4 pareti in fila
+// (L,P,L,P) più aletta di incollaggio sull'altezza del corpo; sopra e sotto
+// ogni parete un'aletta alta P/2, separata dalle vicine da un taglio.
 function generateAmericanBox(L, W, H, glueW){
   glueW = glueW || Math.round(Math.max(20, Math.min(L,W)*0.5));
   const flapH = W/2;
   const totalW = glueW + 2*L + 2*W;
   const totalH = flapH*2 + H;
-  const shapes = [ boxRectShape(0,0,totalW,totalH,'cut') ];
-  [glueW, glueW+L, glueW+L+W, glueW+2*L+W].forEach(x=>
-    shapes.push(boxLineShape([x,0],[x,totalH],'fold')));
-  [flapH, flapH+H].forEach(y=>
-    shapes.push(boxLineShape([0,y],[totalW,y],'fold')));
+  const x1 = glueW, x2 = glueW+L, x3 = glueW+L+W, x4 = glueW+2*L+W;
+  const shapes = [ boxPolyShape([[x1,0],[totalW,0],[totalW,totalH],[x1,totalH],[x1,flapH+H],[0,flapH+H],[0,flapH],[x1,flapH]], 'cut') ];
+  [x2,x3,x4].forEach(x=>{
+    shapes.push(boxLineShape([x,0],[x,flapH],'cut'));
+    shapes.push(boxLineShape([x,flapH+H],[x,totalH],'cut'));
+  });
+  [x1,x2,x3,x4].forEach(x=> shapes.push(boxLineShape([x,flapH],[x,flapH+H],'fold')));
+  [flapH, flapH+H].forEach(y=> shapes.push(boxLineShape([x1,y],[totalW,y],'fold')));
+  setDefaultFolds(shapes);
   return {shapes, totalW, totalH};
+}
+// Le fustelle generate hanno il lato stampato all'esterno: tutte le pieghe
+// sono "a monte" a 90° (angolo retto delle pareti).
+function setDefaultFolds(shapes){
+  shapes.forEach(s=>{ if(s.style.role==='fold'){ s.foldDir='mountain'; s.foldAngle=90; } });
 }
 // Astuccio con coperchio a incastro (tuck box): stesso tubo di 4 pannelli,
 // ma sopra e sotto ha alette a trapezio (polvere) sui lati e un'aletta a
@@ -4996,7 +5406,7 @@ function generateTuckBox(L, W, H, glueW){
   const dustH = W*0.4, tuckH = Math.max(12, W*0.25);
   const totalW = glueW + 2*L + 2*W;
   const totalH = H + 2*(dustH + tuckH);
-  const xs = { glue:0, front:glueW, side1:glueW+L, back:glueW+L+W, side2:glueW+L+2*W };
+  const xs = { glue:0, front:glueW, side1:glueW+L, back:glueW+L+W, side2:glueW+2*L+W };
   const shapes = [];
   // corpo principale: rettangolo di taglio, alto H, tra le due fasce di alette
   const bodyY0 = dustH+tuckH, bodyY1 = bodyY0+H;
@@ -5032,7 +5442,7 @@ function generateTuckBox(L, W, H, glueW){
   }
   addEnd(bodyY0, -1); // fasce superiori (sopra il corpo, y decrescente)
   addEnd(bodyY1, +1); // fasce inferiori (sotto il corpo, y crescente)
-
+  setDefaultFolds(shapes);
   return {shapes, totalW, totalH};
 }
 const COMPONENT_LIBRARY = [
@@ -6142,6 +6552,7 @@ function handleMenuAction(e){
   else if(action==='check-closures') checkClosures();
   else if(action==='check-overlaps') checkOverlapsAndDuplicates();
   else if(action==='generate-box') openModal('boxGenModal');
+  else if(action==='fold-3d') openFold3D();
   else if(action==='cut-preview') openCutPreview();
   else if(action==='weld-points') openWeldModal();
   else if(action==='close-all-paths') closeAllOpenPaths();
@@ -6765,6 +7176,25 @@ document.getElementById('btnHistory').onclick = openHistoryModal;
 document.getElementById('historyModalClose').onclick = closeHistoryModal;
 setupOverlayClickClose(document.getElementById('historyModal'), closeHistoryModal);
 
+function closeFold3D(){ stopFold3D(); document.getElementById('fold3dModal').classList.remove('open'); }
+document.getElementById('fold3dClose').onclick = closeFold3D;
+setupOverlayClickClose(document.getElementById('fold3dModal'), closeFold3D);
+document.getElementById('fold3dPlay').onclick = playFold3D;
+document.getElementById('fold3dSlider').oninput = e=>{ stopFold3D(); setFold3DFrac(e.target.value/100); };
+document.getElementById('fold3dReset').onclick = ()=>{ fold3d.yaw=-0.6; fold3d.pitch=0.45; fold3d.zoom=1; renderFold3D(); };
+(()=>{
+  const cv = document.getElementById('fold3dCanvas');
+  cv.addEventListener('mousedown', e=>{ fold3d.drag = {x:e.clientX, y:e.clientY}; cv.style.cursor='grabbing'; });
+  window.addEventListener('mousemove', e=>{
+    if(!fold3d.drag) return;
+    fold3d.yaw += (e.clientX-fold3d.drag.x)*0.01;
+    fold3d.pitch = Math.max(-1.5, Math.min(1.5, fold3d.pitch + (e.clientY-fold3d.drag.y)*0.01));
+    fold3d.drag = {x:e.clientX, y:e.clientY};
+    renderFold3D();
+  });
+  window.addEventListener('mouseup', ()=>{ if(fold3d.drag){ fold3d.drag=null; cv.style.cursor='grab'; } });
+  cv.addEventListener('wheel', e=>{ e.preventDefault(); fold3d.zoom = Math.max(0.3, Math.min(4, fold3d.zoom*Math.exp(-e.deltaY*0.0015))); renderFold3D(); }, {passive:false});
+})();
 function closeBoxGenModal(){ document.getElementById('boxGenModal').classList.remove('open'); }
 document.getElementById('boxGenModalClose').onclick = closeBoxGenModal;
 setupOverlayClickClose(document.getElementById('boxGenModal'), closeBoxGenModal);
@@ -7467,6 +7897,35 @@ function renderPropPanelInner(){
     host.appendChild(flipField);
   }
   if(ids.length===1) renderGeometrySection(host, s);
+
+  if(ids.length===1 && s.points && s.style.role==='fold'){
+    host.appendChild(document.createElement('hr')).className='sep';
+    const dirField = document.createElement('div'); dirField.className='field';
+    dirField.innerHTML = `<label>Verso della piega</label>`;
+    const dirGrid = document.createElement('div'); dirGrid.className='rolepicker';
+    const mkFoldBtn = (label, titleTxt, val)=>{
+      const b = document.createElement('button'); b.className='rolebtn'+(s.foldDir===val?' active':''); b.textContent=label; b.title=titleTxt;
+      b.onclick = ()=>{ s.foldDir = (s.foldDir===val ? null : val); if(s.foldDir && s.foldAngle==null) s.foldAngle = 90; pushHistory(); renderAll(); };
+      return b;
+    };
+    dirGrid.appendChild(mkFoldBtn('⩓ A monte (esterno)', 'Piega a monte: il vertice sporge verso l\'esterno', 'mountain'));
+    dirGrid.appendChild(mkFoldBtn('⩔ A valle (interno)', 'Piega a valle: il vertice rientra verso l\'interno', 'valley'));
+    dirField.appendChild(dirGrid);
+    host.appendChild(dirField);
+
+    const angleField = document.createElement('div'); angleField.className='field'; angleField.style.marginTop='8px';
+    angleField.innerHTML = `<label>Angolo di piegatura (°)</label>`;
+    const angleInp = document.createElement('input'); angleInp.type='number'; angleInp.min='0'; angleInp.max='360'; angleInp.step='1';
+    angleInp.value = s.foldAngle!=null ? s.foldAngle : 90;
+    angleInp.oninput = ()=>{ const v = parseFloat(angleInp.value); if(!isNaN(v)){ s.foldAngle = v; renderCanvasOnly(); } };
+    angleInp.onchange = ()=> pushHistory();
+    angleField.appendChild(angleInp);
+    host.appendChild(angleField);
+
+    const foldHint = document.createElement('div'); foldHint.className='hint'; foldHint.style.marginTop='6px';
+    foldHint.textContent = 'La freccia e l\'angolo compaiono sul disegno solo se scegli un verso di piegatura. 90° = angolo retto (parete di scatola), 180° = piega completa su se stessa. Verso e angolo sono usati anche dall\'anteprima 3D.';
+    host.appendChild(foldHint);
+  }
   if(ids.length>1) renderAlignSection(host, ids);
 
   if(s.points && ids.length===1){

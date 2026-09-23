@@ -37,6 +37,27 @@ Menu File → "📦 Genera scatola…": inserendo Larghezza, Profondità e Altez
 sopra e sotto, oppure **astuccio con coperchio a incastro**, con alette a
 polvere sui lati e aletta a incastro davanti/dietro. L'aletta di
 incollaggio si può impostare a mano o lasciare calcolare automaticamente.
+Le pieghe delle fustelle generate sono già impostate "a monte", 90°, così
+l'anteprima 3D le chiude subito correttamente.
+
+### Verso e angolo delle pieghe
+Selezionando una linea con ruolo **Piega**, il pannello proprietà permette
+di scegliere il verso — **a monte** (esterno) o **a valle** (interno) — e
+l'**angolo di piegatura** (90° = angolo retto di una parete, 180° = piega
+completa su se stessa). Sul disegno compare a metà di ogni tratto una
+freccia a V che indica il verso, con l'angolo accanto.
+
+### Anteprima 3D piegata (menu Strumenti)
+Ricava i pannelli dai contorni di **taglio** chiusi, divisi dalle linee di
+**piega**, e li piega in 3D usando verso e angolo di ogni piega (quelle
+senza verso impostato sono considerate a monte, 90°). "▶ Simula piegatura"
+anima il passaggio da foglio piatto a scatola chiusa; il cursore permette di
+fermarsi a qualunque punto intermedio. Trascina per ruotare, rotella per lo
+zoom. Lato chiaro = lato stampato (esterno), color cartone = interno.
+Limiti attuali: i tratti curvi sono approssimati con segmenti dritti, i fori
+non vengono ritagliati dal pannello nella vista 3D, e le pareti che si
+compenetrano (se gli angoli non sono coerenti) vengono mostrate così come
+risultano, senza correzioni automatiche.
 
 
 ### Lingua dell'interfaccia
