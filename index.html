@@ -608,7 +608,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.10.1</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.12.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1138,6 +1138,36 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 <div id="toastHost"></div>
 <div id="ctxMenu"></div>
 
+<script id="lib-polygon-clipping">
+/* polygon-clipping 0.15.7 — (c) Mike Fogel, licenza MIT (vedi LICENSE-polygon-clipping.md).
+   Include splaytree (MIT, (c) Alexander Milevski) e robust-predicates (Unlicense).
+   Usata per le operazioni booleane tra forme (unione, sottrazione, intersezione, esclusione). */
+!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define(e):(t="undefined"!=typeof globalThis?globalThis:t||self).polygonClipping=e()}(this,(function(){"use strict";
+/**
+     * splaytree v3.1.2
+     * Fast Splay tree for Node and browser
+     *
+     * @author Alexander Milevski <info@w8r.name>
+     * @license MIT
+     * @preserve
+     */
+/*! *****************************************************************************
+    Copyright (c) Microsoft Corporation. All rights reserved.
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+    this file except in compliance with the License. You may obtain a copy of the
+    License at http://www.apache.org/licenses/LICENSE-2.0
+
+    THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+    WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+    MERCHANTABLITY OR NON-INFRINGEMENT.
+
+    See the Apache Version 2.0 License for specific language governing permissions
+    and limitations under the License.
+    ***************************************************************************** */function t(t,e){var n,r,i,o,s={label:0,sent:function(){if(1&i[0])throw i[1];return i[1]},trys:[],ops:[]};return o={next:l(0),throw:l(1),return:l(2)},"function"==typeof Symbol&&(o[Symbol.iterator]=function(){return this}),o;function l(o){return function(l){return function(o){if(n)throw new TypeError("Generator is already executing.");for(;s;)try{if(n=1,r&&(i=2&o[0]?r.return:o[0]?r.throw||((i=r.return)&&i.call(r),0):r.next)&&!(i=i.call(r,o[1])).done)return i;switch(r=0,i&&(o=[2&o[0],i.value]),o[0]){case 0:case 1:i=o;break;case 4:return s.label++,{value:o[1],done:!1};case 5:s.label++,r=o[1],o=[0];continue;case 7:o=s.ops.pop(),s.trys.pop();continue;default:if(!(i=s.trys,(i=i.length>0&&i[i.length-1])||6!==o[0]&&2!==o[0])){s=0;continue}if(3===o[0]&&(!i||o[1]>i[0]&&o[1]<i[3])){s.label=o[1];break}if(6===o[0]&&s.label<i[1]){s.label=i[1],i=o;break}if(i&&s.label<i[2]){s.label=i[2],s.ops.push(o);break}i[2]&&s.ops.pop(),s.trys.pop();continue}o=e.call(t,s)}catch(t){o=[6,t],r=0}finally{n=i=0}if(5&o[0])throw o[1];return{value:o[0]?o[1]:void 0,done:!0}}([o,l])}}}var e=function(t,e){this.next=null,this.key=t,this.data=e,this.left=null,this.right=null};function n(t,e){return t>e?1:t<e?-1:0}function r(t,n,r){for(var i=new e(null,null),o=i,s=i;;){var l=r(t,n.key);if(l<0){if(null===n.left)break;if(r(t,n.left.key)<0){var h=n.left;if(n.left=h.right,h.right=n,null===(n=h).left)break}s.left=n,s=n,n=n.left}else{if(!(l>0))break;if(null===n.right)break;if(r(t,n.right.key)>0){h=n.right;if(n.right=h.left,h.left=n,null===(n=h).right)break}o.right=n,o=n,n=n.right}}return o.right=n.left,s.left=n.right,n.left=i.right,n.right=i.left,n}function i(t,n,i,o){var s=new e(t,n);if(null===i)return s.left=s.right=null,s;var l=o(t,(i=r(t,i,o)).key);return l<0?(s.left=i.left,s.right=i,i.left=null):l>=0&&(s.right=i.right,s.left=i,i.right=null),s}function o(t,e,n){var i=null,o=null;if(e){var s=n((e=r(t,e,n)).key,t);0===s?(i=e.left,o=e.right):s<0?(o=e.right,e.right=null,i=e):(i=e.left,e.left=null,o=e)}return{left:i,right:o}}function s(t,e,n,r,i){if(t){r(e+(n?"└── ":"├── ")+i(t)+"\n");var o=e+(n?"    ":"│   ");t.left&&s(t.left,o,!1,r,i),t.right&&s(t.right,o,!0,r,i)}}var l=function(){function l(t){void 0===t&&(t=n),this._root=null,this._size=0,this._comparator=t}return l.prototype.insert=function(t,e){return this._size++,this._root=i(t,e,this._root,this._comparator)},l.prototype.add=function(t,n){var i=new e(t,n);null===this._root&&(i.left=i.right=null,this._size++,this._root=i);var o=this._comparator,s=r(t,this._root,o),l=o(t,s.key);return 0===l?this._root=s:(l<0?(i.left=s.left,i.right=s,s.left=null):l>0&&(i.right=s.right,i.left=s,s.right=null),this._size++,this._root=i),this._root},l.prototype.remove=function(t){this._root=this._remove(t,this._root,this._comparator)},l.prototype._remove=function(t,e,n){var i;return null===e?null:0===n(t,(e=r(t,e,n)).key)?(null===e.left?i=e.right:(i=r(t,e.left,n)).right=e.right,this._size--,i):e},l.prototype.pop=function(){var t=this._root;if(t){for(;t.left;)t=t.left;return this._root=r(t.key,this._root,this._comparator),this._root=this._remove(t.key,this._root,this._comparator),{key:t.key,data:t.data}}return null},l.prototype.findStatic=function(t){for(var e=this._root,n=this._comparator;e;){var r=n(t,e.key);if(0===r)return e;e=r<0?e.left:e.right}return null},l.prototype.find=function(t){return this._root&&(this._root=r(t,this._root,this._comparator),0!==this._comparator(t,this._root.key))?null:this._root},l.prototype.contains=function(t){for(var e=this._root,n=this._comparator;e;){var r=n(t,e.key);if(0===r)return!0;e=r<0?e.left:e.right}return!1},l.prototype.forEach=function(t,e){for(var n=this._root,r=[],i=!1;!i;)null!==n?(r.push(n),n=n.left):0!==r.length?(n=r.pop(),t.call(e,n),n=n.right):i=!0;return this},l.prototype.range=function(t,e,n,r){for(var i=[],o=this._comparator,s=this._root;0!==i.length||s;)if(s)i.push(s),s=s.left;else{if(o((s=i.pop()).key,e)>0)break;if(o(s.key,t)>=0&&n.call(r,s))return this;s=s.right}return this},l.prototype.keys=function(){var t=[];return this.forEach((function(e){var n=e.key;return t.push(n)})),t},l.prototype.values=function(){var t=[];return this.forEach((function(e){var n=e.data;return t.push(n)})),t},l.prototype.min=function(){return this._root?this.minNode(this._root).key:null},l.prototype.max=function(){return this._root?this.maxNode(this._root).key:null},l.prototype.minNode=function(t){if(void 0===t&&(t=this._root),t)for(;t.left;)t=t.left;return t},l.prototype.maxNode=function(t){if(void 0===t&&(t=this._root),t)for(;t.right;)t=t.right;return t},l.prototype.at=function(t){for(var e=this._root,n=!1,r=0,i=[];!n;)if(e)i.push(e),e=e.left;else if(i.length>0){if(e=i.pop(),r===t)return e;r++,e=e.right}else n=!0;return null},l.prototype.next=function(t){var e=this._root,n=null;if(t.right){for(n=t.right;n.left;)n=n.left;return n}for(var r=this._comparator;e;){var i=r(t.key,e.key);if(0===i)break;i<0?(n=e,e=e.left):e=e.right}return n},l.prototype.prev=function(t){var e=this._root,n=null;if(null!==t.left){for(n=t.left;n.right;)n=n.right;return n}for(var r=this._comparator;e;){var i=r(t.key,e.key);if(0===i)break;i<0?e=e.left:(n=e,e=e.right)}return n},l.prototype.clear=function(){return this._root=null,this._size=0,this},l.prototype.toList=function(){return function(t){var n=t,r=[],i=!1,o=new e(null,null),s=o;for(;!i;)n?(r.push(n),n=n.left):r.length>0?n=(n=s=s.next=r.pop()).right:i=!0;return s.next=null,o.next}(this._root)},l.prototype.load=function(t,n,r){void 0===n&&(n=[]),void 0===r&&(r=!1);var i=t.length,o=this._comparator;if(r&&f(t,n,0,i-1,o),null===this._root)this._root=h(t,n,0,i),this._size=i;else{var s=function(t,n,r){var i=new e(null,null),o=i,s=t,l=n;for(;null!==s&&null!==l;)r(s.key,l.key)<0?(o.next=s,s=s.next):(o.next=l,l=l.next),o=o.next;null!==s?o.next=s:null!==l&&(o.next=l);return i.next}(this.toList(),function(t,n){for(var r=new e(null,null),i=r,o=0;o<t.length;o++)i=i.next=new e(t[o],n[o]);return i.next=null,r.next}(t,n),o);i=this._size+i,this._root=u({head:s},0,i)}return this},l.prototype.isEmpty=function(){return null===this._root},Object.defineProperty(l.prototype,"size",{get:function(){return this._size},enumerable:!0,configurable:!0}),Object.defineProperty(l.prototype,"root",{get:function(){return this._root},enumerable:!0,configurable:!0}),l.prototype.toString=function(t){void 0===t&&(t=function(t){return String(t.key)});var e=[];return s(this._root,"",!0,(function(t){return e.push(t)}),t),e.join("")},l.prototype.update=function(t,e,n){var s=this._comparator,l=o(t,this._root,s),h=l.left,u=l.right;s(t,e)<0?u=i(e,n,u,s):h=i(e,n,h,s),this._root=function(t,e,n){return null===e?t:(null===t||((e=r(t.key,e,n)).left=t),e)}(h,u,s)},l.prototype.split=function(t){return o(t,this._root,this._comparator)},l.prototype[Symbol.iterator]=function(){var e,n,r;return t(this,(function(t){switch(t.label){case 0:e=this._root,n=[],r=!1,t.label=1;case 1:return r?[3,6]:null===e?[3,2]:(n.push(e),e=e.left,[3,5]);case 2:return 0===n.length?[3,4]:[4,e=n.pop()];case 3:return t.sent(),e=e.right,[3,5];case 4:r=!0,t.label=5;case 5:return[3,1];case 6:return[2]}}))},l}();function h(t,n,r,i){var o=i-r;if(o>0){var s=r+Math.floor(o/2),l=t[s],u=n[s],f=new e(l,u);return f.left=h(t,n,r,s),f.right=h(t,n,s+1,i),f}return null}function u(t,e,n){var r=n-e;if(r>0){var i=e+Math.floor(r/2),o=u(t,e,i),s=t.head;return s.left=o,t.head=t.head.next,s.right=u(t,i+1,n),s}return null}function f(t,e,n,r,i){if(!(n>=r)){for(var o=t[n+r>>1],s=n-1,l=r+1;;){do{s++}while(i(t[s],o)<0);do{l--}while(i(t[l],o)>0);if(s>=l)break;var h=t[s];t[s]=t[l],t[l]=h,h=e[s],e[s]=e[l],e[l]=h}f(t,e,n,l,i),f(t,e,l+1,r,i)}}const c=(t,e)=>t.ll.x<=e.x&&e.x<=t.ur.x&&t.ll.y<=e.y&&e.y<=t.ur.y,p=(t,e)=>{if(e.ur.x<t.ll.x||t.ur.x<e.ll.x||e.ur.y<t.ll.y||t.ur.y<e.ll.y)return null;const n=t.ll.x<e.ll.x?e.ll.x:t.ll.x,r=t.ur.x<e.ur.x?t.ur.x:e.ur.x;return{ll:{x:n,y:t.ll.y<e.ll.y?e.ll.y:t.ll.y},ur:{x:r,y:t.ur.y<e.ur.y?t.ur.y:e.ur.y}}};let g=Number.EPSILON;void 0===g&&(g=Math.pow(2,-52));const a=g*g,y=(t,e)=>{if(-g<t&&t<g&&-g<e&&e<g)return 0;const n=t-e;return n*n<a*t*e?0:t<e?-1:1};class x{constructor(){this.tree=new l,this.round(0)}round(t){const e=this.tree.add(t),n=this.tree.prev(e);if(null!==n&&0===y(e.key,n.key))return this.tree.remove(t),n.key;const r=this.tree.next(e);return null!==r&&0===y(e.key,r.key)?(this.tree.remove(t),r.key):t}}const b=new class{constructor(){this.reset()}reset(){this.xRounder=new x,this.yRounder=new x}round(t,e){return{x:this.xRounder.round(t),y:this.yRounder.round(e)}}},v=11102230246251565e-32,d=134217729,m=(3+8*v)*v;function E(t,e,n,r,i){let o,s,l,h,u=e[0],f=r[0],c=0,p=0;f>u==f>-u?(o=u,u=e[++c]):(o=f,f=r[++p]);let g=0;if(c<t&&p<n)for(f>u==f>-u?(s=u+o,l=o-(s-u),u=e[++c]):(s=f+o,l=o-(s-f),f=r[++p]),o=s,0!==l&&(i[g++]=l);c<t&&p<n;)f>u==f>-u?(s=o+u,h=s-o,l=o-(s-h)+(u-h),u=e[++c]):(s=o+f,h=s-o,l=o-(s-h)+(f-h),f=r[++p]),o=s,0!==l&&(i[g++]=l);for(;c<t;)s=o+u,h=s-o,l=o-(s-h)+(u-h),u=e[++c],o=s,0!==l&&(i[g++]=l);for(;p<n;)s=o+f,h=s-o,l=o-(s-h)+(f-h),f=r[++p],o=s,0!==l&&(i[g++]=l);return 0===o&&0!==g||(i[g++]=o),g}function S(t){return new Float64Array(t)}const _=22204460492503146e-32,w=11093356479670487e-47,k=S(4),R=S(8),I=S(12),P=S(16),N=S(4);function A(t,e,n,r,i,o){const s=(e-o)*(n-i),l=(t-i)*(r-o),h=s-l,u=Math.abs(s+l);return Math.abs(h)>=33306690738754716e-32*u?h:-function(t,e,n,r,i,o,s){let l,h,u,f,c,p,g,a,y,x,b,v,S,A,O,L,$,M;const z=t-i,B=n-i,G=e-o,T=r-o;A=z*T,p=d*z,g=p-(p-z),a=z-g,p=d*T,y=p-(p-T),x=T-y,O=a*x-(A-g*y-a*y-g*x),L=G*B,p=d*G,g=p-(p-G),a=G-g,p=d*B,y=p-(p-B),x=B-y,$=a*x-(L-g*y-a*y-g*x),b=O-$,c=O-b,k[0]=O-(b+c)+(c-$),v=A+b,c=v-A,S=A-(v-c)+(b-c),b=S-L,c=S-b,k[1]=S-(b+c)+(c-L),M=v+b,c=M-v,k[2]=v-(M-c)+(b-c),k[3]=M;let q=function(t,e){let n=e[0];for(let r=1;r<t;r++)n+=e[r];return n}(4,k),C=_*s;if(q>=C||-q>=C)return q;if(c=t-z,l=t-(z+c)+(c-i),c=n-B,u=n-(B+c)+(c-i),c=e-G,h=e-(G+c)+(c-o),c=r-T,f=r-(T+c)+(c-o),0===l&&0===h&&0===u&&0===f)return q;if(C=w*s+m*Math.abs(q),q+=z*f+T*l-(G*u+B*h),q>=C||-q>=C)return q;A=l*T,p=d*l,g=p-(p-l),a=l-g,p=d*T,y=p-(p-T),x=T-y,O=a*x-(A-g*y-a*y-g*x),L=h*B,p=d*h,g=p-(p-h),a=h-g,p=d*B,y=p-(p-B),x=B-y,$=a*x-(L-g*y-a*y-g*x),b=O-$,c=O-b,N[0]=O-(b+c)+(c-$),v=A+b,c=v-A,S=A-(v-c)+(b-c),b=S-L,c=S-b,N[1]=S-(b+c)+(c-L),M=v+b,c=M-v,N[2]=v-(M-c)+(b-c),N[3]=M;const F=E(4,k,4,N,R);A=z*f,p=d*z,g=p-(p-z),a=z-g,p=d*f,y=p-(p-f),x=f-y,O=a*x-(A-g*y-a*y-g*x),L=G*u,p=d*G,g=p-(p-G),a=G-g,p=d*u,y=p-(p-u),x=u-y,$=a*x-(L-g*y-a*y-g*x),b=O-$,c=O-b,N[0]=O-(b+c)+(c-$),v=A+b,c=v-A,S=A-(v-c)+(b-c),b=S-L,c=S-b,N[1]=S-(b+c)+(c-L),M=v+b,c=M-v,N[2]=v-(M-c)+(b-c),N[3]=M;const j=E(F,R,4,N,I);A=l*f,p=d*l,g=p-(p-l),a=l-g,p=d*f,y=p-(p-f),x=f-y,O=a*x-(A-g*y-a*y-g*x),L=h*u,p=d*h,g=p-(p-h),a=h-g,p=d*u,y=p-(p-u),x=u-y,$=a*x-(L-g*y-a*y-g*x),b=O-$,c=O-b,N[0]=O-(b+c)+(c-$),v=A+b,c=v-A,S=A-(v-c)+(b-c),b=S-L,c=S-b,N[1]=S-(b+c)+(c-L),M=v+b,c=M-v,N[2]=v-(M-c)+(b-c),N[3]=M;const U=E(j,I,4,N,P);return P[U-1]}(t,e,n,r,i,o,u)}const O=(t,e)=>t.x*e.y-t.y*e.x,L=(t,e)=>t.x*e.x+t.y*e.y,$=(t,e,n)=>{const r=A(t.x,t.y,e.x,e.y,n.x,n.y);return r>0?-1:r<0?1:0},M=t=>Math.sqrt(L(t,t)),z=(t,e,n)=>{const r={x:e.x-t.x,y:e.y-t.y},i={x:n.x-t.x,y:n.y-t.y};return O(i,r)/M(i)/M(r)},B=(t,e,n)=>{const r={x:e.x-t.x,y:e.y-t.y},i={x:n.x-t.x,y:n.y-t.y};return L(i,r)/M(i)/M(r)},G=(t,e,n)=>0===e.y?null:{x:t.x+e.x/e.y*(n-t.y),y:n},T=(t,e,n)=>0===e.x?null:{x:n,y:t.y+e.y/e.x*(n-t.x)};class q{static compare(t,e){const n=q.comparePoints(t.point,e.point);return 0!==n?n:(t.point!==e.point&&t.link(e),t.isLeft!==e.isLeft?t.isLeft?1:-1:F.compare(t.segment,e.segment))}static comparePoints(t,e){return t.x<e.x?-1:t.x>e.x?1:t.y<e.y?-1:t.y>e.y?1:0}constructor(t,e){void 0===t.events?t.events=[this]:t.events.push(this),this.point=t,this.isLeft=e}link(t){if(t.point===this.point)throw new Error("Tried to link already linked events");const e=t.point.events;for(let t=0,n=e.length;t<n;t++){const n=e[t];this.point.events.push(n),n.point=this.point}this.checkForConsuming()}checkForConsuming(){const t=this.point.events.length;for(let e=0;e<t;e++){const n=this.point.events[e];if(void 0===n.segment.consumedBy)for(let r=e+1;r<t;r++){const t=this.point.events[r];void 0===t.consumedBy&&(n.otherSE.point.events===t.otherSE.point.events&&n.segment.consume(t.segment))}}}getAvailableLinkedEvents(){const t=[];for(let e=0,n=this.point.events.length;e<n;e++){const n=this.point.events[e];n!==this&&!n.segment.ringOut&&n.segment.isInResult()&&t.push(n)}return t}getLeftmostComparator(t){const e=new Map,n=n=>{const r=n.otherSE;e.set(n,{sine:z(this.point,t.point,r.point),cosine:B(this.point,t.point,r.point)})};return(t,r)=>{e.has(t)||n(t),e.has(r)||n(r);const{sine:i,cosine:o}=e.get(t),{sine:s,cosine:l}=e.get(r);return i>=0&&s>=0?o<l?1:o>l?-1:0:i<0&&s<0?o<l?-1:o>l?1:0:s<i?-1:s>i?1:0}}}let C=0;class F{static compare(t,e){const n=t.leftSE.point.x,r=e.leftSE.point.x,i=t.rightSE.point.x,o=e.rightSE.point.x;if(o<n)return 1;if(i<r)return-1;const s=t.leftSE.point.y,l=e.leftSE.point.y,h=t.rightSE.point.y,u=e.rightSE.point.y;if(n<r){if(l<s&&l<h)return 1;if(l>s&&l>h)return-1;const n=t.comparePoint(e.leftSE.point);if(n<0)return 1;if(n>0)return-1;const r=e.comparePoint(t.rightSE.point);return 0!==r?r:-1}if(n>r){if(s<l&&s<u)return-1;if(s>l&&s>u)return 1;const n=e.comparePoint(t.leftSE.point);if(0!==n)return n;const r=t.comparePoint(e.rightSE.point);return r<0?1:r>0?-1:1}if(s<l)return-1;if(s>l)return 1;if(i<o){const n=e.comparePoint(t.rightSE.point);if(0!==n)return n}if(i>o){const n=t.comparePoint(e.rightSE.point);if(n<0)return 1;if(n>0)return-1}if(i!==o){const t=h-s,e=i-n,f=u-l,c=o-r;if(t>e&&f<c)return 1;if(t<e&&f>c)return-1}return i>o?1:i<o||h<u?-1:h>u?1:t.id<e.id?-1:t.id>e.id?1:0}constructor(t,e,n,r){this.id=++C,this.leftSE=t,t.segment=this,t.otherSE=e,this.rightSE=e,e.segment=this,e.otherSE=t,this.rings=n,this.windings=r}static fromRing(t,e,n){let r,i,o;const s=q.comparePoints(t,e);if(s<0)r=t,i=e,o=1;else{if(!(s>0))throw new Error(`Tried to create degenerate segment at [${t.x}, ${t.y}]`);r=e,i=t,o=-1}const l=new q(r,!0),h=new q(i,!1);return new F(l,h,[n],[o])}replaceRightSE(t){this.rightSE=t,this.rightSE.segment=this,this.rightSE.otherSE=this.leftSE,this.leftSE.otherSE=this.rightSE}bbox(){const t=this.leftSE.point.y,e=this.rightSE.point.y;return{ll:{x:this.leftSE.point.x,y:t<e?t:e},ur:{x:this.rightSE.point.x,y:t>e?t:e}}}vector(){return{x:this.rightSE.point.x-this.leftSE.point.x,y:this.rightSE.point.y-this.leftSE.point.y}}isAnEndpoint(t){return t.x===this.leftSE.point.x&&t.y===this.leftSE.point.y||t.x===this.rightSE.point.x&&t.y===this.rightSE.point.y}comparePoint(t){if(this.isAnEndpoint(t))return 0;const e=this.leftSE.point,n=this.rightSE.point,r=this.vector();if(e.x===n.x)return t.x===e.x?0:t.x<e.x?1:-1;const i=(t.y-e.y)/r.y,o=e.x+i*r.x;if(t.x===o)return 0;const s=(t.x-e.x)/r.x,l=e.y+s*r.y;return t.y===l?0:t.y<l?-1:1}getIntersection(t){const e=this.bbox(),n=t.bbox(),r=p(e,n);if(null===r)return null;const i=this.leftSE.point,o=this.rightSE.point,s=t.leftSE.point,l=t.rightSE.point,h=c(e,s)&&0===this.comparePoint(s),u=c(n,i)&&0===t.comparePoint(i),f=c(e,l)&&0===this.comparePoint(l),g=c(n,o)&&0===t.comparePoint(o);if(u&&h)return g&&!f?o:!g&&f?l:null;if(u)return f&&i.x===l.x&&i.y===l.y?null:i;if(h)return g&&o.x===s.x&&o.y===s.y?null:s;if(g&&f)return null;if(g)return o;if(f)return l;const a=((t,e,n,r)=>{if(0===e.x)return T(n,r,t.x);if(0===r.x)return T(t,e,n.x);if(0===e.y)return G(n,r,t.y);if(0===r.y)return G(t,e,n.y);const i=O(e,r);if(0==i)return null;const o={x:n.x-t.x,y:n.y-t.y},s=O(o,e)/i,l=O(o,r)/i;return{x:(t.x+l*e.x+(n.x+s*r.x))/2,y:(t.y+l*e.y+(n.y+s*r.y))/2}})(i,this.vector(),s,t.vector());return null===a?null:c(r,a)?b.round(a.x,a.y):null}split(t){const e=[],n=void 0!==t.events,r=new q(t,!0),i=new q(t,!1),o=this.rightSE;this.replaceRightSE(i),e.push(i),e.push(r);const s=new F(r,o,this.rings.slice(),this.windings.slice());return q.comparePoints(s.leftSE.point,s.rightSE.point)>0&&s.swapEvents(),q.comparePoints(this.leftSE.point,this.rightSE.point)>0&&this.swapEvents(),n&&(r.checkForConsuming(),i.checkForConsuming()),e}swapEvents(){const t=this.rightSE;this.rightSE=this.leftSE,this.leftSE=t,this.leftSE.isLeft=!0,this.rightSE.isLeft=!1;for(let t=0,e=this.windings.length;t<e;t++)this.windings[t]*=-1}consume(t){let e=this,n=t;for(;e.consumedBy;)e=e.consumedBy;for(;n.consumedBy;)n=n.consumedBy;const r=F.compare(e,n);if(0!==r){if(r>0){const t=e;e=n,n=t}if(e.prev===n){const t=e;e=n,n=t}for(let t=0,r=n.rings.length;t<r;t++){const r=n.rings[t],i=n.windings[t],o=e.rings.indexOf(r);-1===o?(e.rings.push(r),e.windings.push(i)):e.windings[o]+=i}n.rings=null,n.windings=null,n.consumedBy=e,n.leftSE.consumedBy=e.leftSE,n.rightSE.consumedBy=e.rightSE}}prevInResult(){return void 0!==this._prevInResult||(this.prev?this.prev.isInResult()?this._prevInResult=this.prev:this._prevInResult=this.prev.prevInResult():this._prevInResult=null),this._prevInResult}beforeState(){if(void 0!==this._beforeState)return this._beforeState;if(this.prev){const t=this.prev.consumedBy||this.prev;this._beforeState=t.afterState()}else this._beforeState={rings:[],windings:[],multiPolys:[]};return this._beforeState}afterState(){if(void 0!==this._afterState)return this._afterState;const t=this.beforeState();this._afterState={rings:t.rings.slice(0),windings:t.windings.slice(0),multiPolys:[]};const e=this._afterState.rings,n=this._afterState.windings,r=this._afterState.multiPolys;for(let t=0,r=this.rings.length;t<r;t++){const r=this.rings[t],i=this.windings[t],o=e.indexOf(r);-1===o?(e.push(r),n.push(i)):n[o]+=i}const i=[],o=[];for(let t=0,r=e.length;t<r;t++){if(0===n[t])continue;const r=e[t],s=r.poly;if(-1===o.indexOf(s))if(r.isExterior)i.push(s);else{-1===o.indexOf(s)&&o.push(s);const t=i.indexOf(r.poly);-1!==t&&i.splice(t,1)}}for(let t=0,e=i.length;t<e;t++){const e=i[t].multiPoly;-1===r.indexOf(e)&&r.push(e)}return this._afterState}isInResult(){if(this.consumedBy)return!1;if(void 0!==this._isInResult)return this._isInResult;const t=this.beforeState().multiPolys,e=this.afterState().multiPolys;switch(H.type){case"union":{const n=0===t.length,r=0===e.length;this._isInResult=n!==r;break}case"intersection":{let n,r;t.length<e.length?(n=t.length,r=e.length):(n=e.length,r=t.length),this._isInResult=r===H.numMultiPolys&&n<r;break}case"xor":{const n=Math.abs(t.length-e.length);this._isInResult=n%2==1;break}case"difference":{const n=t=>1===t.length&&t[0].isSubject;this._isInResult=n(t)!==n(e);break}default:throw new Error(`Unrecognized operation type found ${H.type}`)}return this._isInResult}}class j{constructor(t,e,n){if(!Array.isArray(t)||0===t.length)throw new Error("Input geometry is not a valid Polygon or MultiPolygon");if(this.poly=e,this.isExterior=n,this.segments=[],"number"!=typeof t[0][0]||"number"!=typeof t[0][1])throw new Error("Input geometry is not a valid Polygon or MultiPolygon");const r=b.round(t[0][0],t[0][1]);this.bbox={ll:{x:r.x,y:r.y},ur:{x:r.x,y:r.y}};let i=r;for(let e=1,n=t.length;e<n;e++){if("number"!=typeof t[e][0]||"number"!=typeof t[e][1])throw new Error("Input geometry is not a valid Polygon or MultiPolygon");let n=b.round(t[e][0],t[e][1]);n.x===i.x&&n.y===i.y||(this.segments.push(F.fromRing(i,n,this)),n.x<this.bbox.ll.x&&(this.bbox.ll.x=n.x),n.y<this.bbox.ll.y&&(this.bbox.ll.y=n.y),n.x>this.bbox.ur.x&&(this.bbox.ur.x=n.x),n.y>this.bbox.ur.y&&(this.bbox.ur.y=n.y),i=n)}r.x===i.x&&r.y===i.y||this.segments.push(F.fromRing(i,r,this))}getSweepEvents(){const t=[];for(let e=0,n=this.segments.length;e<n;e++){const n=this.segments[e];t.push(n.leftSE),t.push(n.rightSE)}return t}}class U{constructor(t,e){if(!Array.isArray(t))throw new Error("Input geometry is not a valid Polygon or MultiPolygon");this.exteriorRing=new j(t[0],this,!0),this.bbox={ll:{x:this.exteriorRing.bbox.ll.x,y:this.exteriorRing.bbox.ll.y},ur:{x:this.exteriorRing.bbox.ur.x,y:this.exteriorRing.bbox.ur.y}},this.interiorRings=[];for(let e=1,n=t.length;e<n;e++){const n=new j(t[e],this,!1);n.bbox.ll.x<this.bbox.ll.x&&(this.bbox.ll.x=n.bbox.ll.x),n.bbox.ll.y<this.bbox.ll.y&&(this.bbox.ll.y=n.bbox.ll.y),n.bbox.ur.x>this.bbox.ur.x&&(this.bbox.ur.x=n.bbox.ur.x),n.bbox.ur.y>this.bbox.ur.y&&(this.bbox.ur.y=n.bbox.ur.y),this.interiorRings.push(n)}this.multiPoly=e}getSweepEvents(){const t=this.exteriorRing.getSweepEvents();for(let e=0,n=this.interiorRings.length;e<n;e++){const n=this.interiorRings[e].getSweepEvents();for(let e=0,r=n.length;e<r;e++)t.push(n[e])}return t}}class Y{constructor(t,e){if(!Array.isArray(t))throw new Error("Input geometry is not a valid Polygon or MultiPolygon");try{"number"==typeof t[0][0][0]&&(t=[t])}catch(t){}this.polys=[],this.bbox={ll:{x:Number.POSITIVE_INFINITY,y:Number.POSITIVE_INFINITY},ur:{x:Number.NEGATIVE_INFINITY,y:Number.NEGATIVE_INFINITY}};for(let e=0,n=t.length;e<n;e++){const n=new U(t[e],this);n.bbox.ll.x<this.bbox.ll.x&&(this.bbox.ll.x=n.bbox.ll.x),n.bbox.ll.y<this.bbox.ll.y&&(this.bbox.ll.y=n.bbox.ll.y),n.bbox.ur.x>this.bbox.ur.x&&(this.bbox.ur.x=n.bbox.ur.x),n.bbox.ur.y>this.bbox.ur.y&&(this.bbox.ur.y=n.bbox.ur.y),this.polys.push(n)}this.isSubject=e}getSweepEvents(){const t=[];for(let e=0,n=this.polys.length;e<n;e++){const n=this.polys[e].getSweepEvents();for(let e=0,r=n.length;e<r;e++)t.push(n[e])}return t}}class V{static factory(t){const e=[];for(let n=0,r=t.length;n<r;n++){const r=t[n];if(!r.isInResult()||r.ringOut)continue;let i=null,o=r.leftSE,s=r.rightSE;const l=[o],h=o.point,u=[];for(;i=o,o=s,l.push(o),o.point!==h;)for(;;){const t=o.getAvailableLinkedEvents();if(0===t.length){const t=l[0].point,e=l[l.length-1].point;throw new Error(`Unable to complete output ring starting at [${t.x}, ${t.y}]. Last matching segment found ends at [${e.x}, ${e.y}].`)}if(1===t.length){s=t[0].otherSE;break}let n=null;for(let t=0,e=u.length;t<e;t++)if(u[t].point===o.point){n=t;break}if(null!==n){const t=u.splice(n)[0],r=l.splice(t.index);r.unshift(r[0].otherSE),e.push(new V(r.reverse()));continue}u.push({index:l.length,point:o.point});const r=o.getLeftmostComparator(i);s=t.sort(r)[0].otherSE;break}e.push(new V(l))}return e}constructor(t){this.events=t;for(let e=0,n=t.length;e<n;e++)t[e].segment.ringOut=this;this.poly=null}getGeom(){let t=this.events[0].point;const e=[t];for(let n=1,r=this.events.length-1;n<r;n++){const r=this.events[n].point,i=this.events[n+1].point;0!==$(r,t,i)&&(e.push(r),t=r)}if(1===e.length)return null;const n=e[0],r=e[1];0===$(n,t,r)&&e.shift(),e.push(e[0]);const i=this.isExteriorRing()?1:-1,o=this.isExteriorRing()?0:e.length-1,s=this.isExteriorRing()?e.length:-1,l=[];for(let t=o;t!=s;t+=i)l.push([e[t].x,e[t].y]);return l}isExteriorRing(){if(void 0===this._isExteriorRing){const t=this.enclosingRing();this._isExteriorRing=!t||!t.isExteriorRing()}return this._isExteriorRing}enclosingRing(){return void 0===this._enclosingRing&&(this._enclosingRing=this._calcEnclosingRing()),this._enclosingRing}_calcEnclosingRing(){let t=this.events[0];for(let e=1,n=this.events.length;e<n;e++){const n=this.events[e];q.compare(t,n)>0&&(t=n)}let e=t.segment.prevInResult(),n=e?e.prevInResult():null;for(;;){if(!e)return null;if(!n)return e.ringOut;if(n.ringOut!==e.ringOut)return n.ringOut.enclosingRing()!==e.ringOut?e.ringOut:e.ringOut.enclosingRing();e=n.prevInResult(),n=e?e.prevInResult():null}}}class X{constructor(t){this.exteriorRing=t,t.poly=this,this.interiorRings=[]}addInterior(t){this.interiorRings.push(t),t.poly=this}getGeom(){const t=[this.exteriorRing.getGeom()];if(null===t[0])return null;for(let e=0,n=this.interiorRings.length;e<n;e++){const n=this.interiorRings[e].getGeom();null!==n&&t.push(n)}return t}}class Q{constructor(t){this.rings=t,this.polys=this._composePolys(t)}getGeom(){const t=[];for(let e=0,n=this.polys.length;e<n;e++){const n=this.polys[e].getGeom();null!==n&&t.push(n)}return t}_composePolys(t){const e=[];for(let n=0,r=t.length;n<r;n++){const r=t[n];if(!r.poly)if(r.isExteriorRing())e.push(new X(r));else{const t=r.enclosingRing();t.poly||e.push(new X(t)),t.poly.addInterior(r)}}return e}}class W{constructor(t){let e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:F.compare;this.queue=t,this.tree=new l(e),this.segments=[]}process(t){const e=t.segment,n=[];if(t.consumedBy)return t.isLeft?this.queue.remove(t.otherSE):this.tree.remove(e),n;const r=t.isLeft?this.tree.add(e):this.tree.find(e);if(!r)throw new Error(`Unable to find segment #${e.id} [${e.leftSE.point.x}, ${e.leftSE.point.y}] -> [${e.rightSE.point.x}, ${e.rightSE.point.y}] in SweepLine tree.`);let i,o,s=r,l=r;for(;void 0===i;)s=this.tree.prev(s),null===s?i=null:void 0===s.key.consumedBy&&(i=s.key);for(;void 0===o;)l=this.tree.next(l),null===l?o=null:void 0===l.key.consumedBy&&(o=l.key);if(t.isLeft){let r=null;if(i){const t=i.getIntersection(e);if(null!==t&&(e.isAnEndpoint(t)||(r=t),!i.isAnEndpoint(t))){const e=this._splitSafely(i,t);for(let t=0,r=e.length;t<r;t++)n.push(e[t])}}let s=null;if(o){const t=o.getIntersection(e);if(null!==t&&(e.isAnEndpoint(t)||(s=t),!o.isAnEndpoint(t))){const e=this._splitSafely(o,t);for(let t=0,r=e.length;t<r;t++)n.push(e[t])}}if(null!==r||null!==s){let t=null;if(null===r)t=s;else if(null===s)t=r;else{t=q.comparePoints(r,s)<=0?r:s}this.queue.remove(e.rightSE),n.push(e.rightSE);const i=e.split(t);for(let t=0,e=i.length;t<e;t++)n.push(i[t])}n.length>0?(this.tree.remove(e),n.push(t)):(this.segments.push(e),e.prev=i)}else{if(i&&o){const t=i.getIntersection(o);if(null!==t){if(!i.isAnEndpoint(t)){const e=this._splitSafely(i,t);for(let t=0,r=e.length;t<r;t++)n.push(e[t])}if(!o.isAnEndpoint(t)){const e=this._splitSafely(o,t);for(let t=0,r=e.length;t<r;t++)n.push(e[t])}}}this.tree.remove(e)}return n}_splitSafely(t,e){this.tree.remove(t);const n=t.rightSE;this.queue.remove(n);const r=t.split(e);return r.push(n),void 0===t.consumedBy&&this.tree.add(t),r}}const Z="undefined"!=typeof process&&process.env.POLYGON_CLIPPING_MAX_QUEUE_SIZE||1e6,D="undefined"!=typeof process&&process.env.POLYGON_CLIPPING_MAX_SWEEPLINE_SEGMENTS||1e6;const H=new class{run(t,e,n){H.type=t,b.reset();const r=[new Y(e,!0)];for(let t=0,e=n.length;t<e;t++)r.push(new Y(n[t],!1));if(H.numMultiPolys=r.length,"difference"===H.type){const t=r[0];let e=1;for(;e<r.length;)null!==p(r[e].bbox,t.bbox)?e++:r.splice(e,1)}if("intersection"===H.type)for(let t=0,e=r.length;t<e;t++){const e=r[t];for(let n=t+1,i=r.length;n<i;n++)if(null===p(e.bbox,r[n].bbox))return[]}const i=new l(q.compare);for(let t=0,e=r.length;t<e;t++){const e=r[t].getSweepEvents();for(let t=0,n=e.length;t<n;t++)if(i.insert(e[t]),i.size>Z)throw new Error("Infinite loop when putting segment endpoints in a priority queue (queue size too big).")}const o=new W(i);let s=i.size,h=i.pop();for(;h;){const t=h.key;if(i.size===s){const e=t.segment;throw new Error(`Unable to pop() ${t.isLeft?"left":"right"} SweepEvent [${t.point.x}, ${t.point.y}] from segment #${e.id} [${e.leftSE.point.x}, ${e.leftSE.point.y}] -> [${e.rightSE.point.x}, ${e.rightSE.point.y}] from queue.`)}if(i.size>Z)throw new Error("Infinite loop when passing sweep line over endpoints (queue size too big).");if(o.segments.length>D)throw new Error("Infinite loop when passing sweep line over endpoints (too many sweep line segments).");const e=o.process(t);for(let t=0,n=e.length;t<n;t++){const n=e[t];void 0===n.consumedBy&&i.insert(n)}s=i.size,h=i.pop()}b.reset();const u=V.factory(o.segments);return new Q(u).getGeom()}};var J={union:function(t){for(var e=arguments.length,n=new Array(e>1?e-1:0),r=1;r<e;r++)n[r-1]=arguments[r];return H.run("union",t,n)},intersection:function(t){for(var e=arguments.length,n=new Array(e>1?e-1:0),r=1;r<e;r++)n[r-1]=arguments[r];return H.run("intersection",t,n)},xor:function(t){for(var e=arguments.length,n=new Array(e>1?e-1:0),r=1;r<e;r++)n[r-1]=arguments[r];return H.run("xor",t,n)},difference:function(t){for(var e=arguments.length,n=new Array(e>1?e-1:0),r=1;r<e;r++)n[r-1]=arguments[r];return H.run("difference",t,n)}};return J}));
+
+
+</script>
 <script>
 (function(){
 "use strict";
@@ -1714,6 +1744,46 @@ const I18N = {
     "Riprendi la finestra": "Resume the window",
     "Chiudi la finestra": "Close the window",
     "Elementi evidenziati sul disegno (cerchi rossi): correggili e riprendi l'anteprima 3D dalla barra in basso.": "Items highlighted on the drawing (red circles): fix them and resume the 3D preview from the bar at the bottom.",
+    "🔗 Ricollega": "🔗 Relink",
+    "⛓ Scollega": "⛓ Detach",
+    "Riattiva il collegamento con i punti coincidenti delle altre linee": "Restore the link with the coincident points of other lines",
+    "Scollega questo punto dalle altre linee: potrai spostarlo da solo": "Detach this point from the other lines: you can move it on its own",
+    "Punto {n} ricollegato.": "Point {n} relinked.",
+    "Punto {n} scollegato: ora si sposta senza trascinare le altre linee.": "Point {n} detached: it now moves without dragging the other lines.",
+    "Nessun punto collegato ad altre linee nella selezione.": "No point linked to other lines in the selection.",
+    "{n} punti scollegati: ora si spostano senza trascinare le altre linee.": "{n} points detached: they now move without dragging the other lines.",
+    "Nessun punto scollegato nella selezione.": "No detached point in the selection.",
+    "{n} punti ricollegati (quelli che coincidono con altre linee tornano uniti).": "{n} points relinked (those coinciding with other lines are joined again).",
+    "⛓ Scollega tutti i vertici ({n})": "⛓ Detach all vertices ({n})",
+    "🔗 Ricollega tutti i vertici ({n})": "🔗 Relink all vertices ({n})",
+    "Collegamenti dei punti": "Point links",
+    "{a} punti uniti ad altre linee, {b} scollegati (maniglie viola tratteggiate).": "{a} points joined to other lines, {b} detached (dashed purple handles).",
+    "⛓ Scollega tutti i vertici": "⛓ Detach all vertices",
+    "I punti di queste forme non trascineranno più le linee collegate, e non verranno trascinati da loro": "The points of these shapes will no longer drag the linked lines, nor be dragged by them",
+    "🔗 Ricollega tutti i vertici": "🔗 Relink all vertices",
+    "⛓ Scollega il punto {n}": "⛓ Detach point {n}",
+    "🔗 Ricollega il punto {n}": "🔗 Relink point {n}",
+    "Il punto {n} non è unito ad altre linee": "Point {n} isn’t joined to other lines",
+    "🗑 Elimina il punto {n}": "🗑 Delete point {n}",
+    "⊕ Unione": "⊕ Union",
+    "⊖ Sottrai": "⊖ Subtract",
+    "⊗ Intersezione": "⊗ Intersection",
+    "⊘ Esclusione": "⊘ Exclusion",
+    "Operazioni booleane": "Boolean operations",
+    "Unisce le forme in un unico contorno": "Merges the shapes into a single outline",
+    "Toglie dalla forma più in basso quelle che le stanno sopra": "Removes the shapes on top from the bottom-most shape",
+    "Tiene solo la parte comune a tutte le forme": "Keeps only the part common to all shapes",
+    "Tiene le parti non sovrapposte, togliendo quelle comuni": "Keeps the non-overlapping parts, removing the shared ones",
+    "Valgono per percorsi chiusi, rettangoli ed ellissi; il risultato prende lo stile della forma più in basso.": "They work on closed paths, rectangles and ellipses; the result takes the style of the bottom-most shape.",
+    "Libreria per le operazioni booleane non disponibile.": "Boolean operations library not available.",
+    "Servono almeno 2 forme chiuse selezionate (percorsi chiusi, rettangoli o ellissi).": "At least 2 closed shapes must be selected (closed paths, rectangles or ellipses).",
+    "Operazione non riuscita: ": "Operation failed: ",
+    "Il risultato è vuoto: le forme selezionate non si sovrappongono.": "The result is empty: the selected shapes don’t overlap.",
+    "{op}: {n} forme combinate in {r}.": "{op}: {n} shapes combined into {r}.",
+    "una forma": "one shape",
+    "{n} forme": "{n} shapes",
+    "{n} fori interni creati come linee separate.": "{n} inner holes created as separate lines.",
+    "{n} forme ignorate perché aperte o non geometriche.": "{n} shapes ignored because they are open or not geometric.",
   },
   de: {
     "1 cm": "1 cm",
@@ -2280,6 +2350,46 @@ const I18N = {
     "Riprendi la finestra": "Fenster wiederherstellen",
     "Chiudi la finestra": "Fenster schließen",
     "Elementi evidenziati sul disegno (cerchi rossi): correggili e riprendi l'anteprima 3D dalla barra in basso.": "Elemente in der Zeichnung markiert (rote Kreise): Korrigiere sie und nimm die 3D-Vorschau über die Leiste unten wieder auf.",
+    "🔗 Ricollega": "🔗 Neu verbinden",
+    "⛓ Scollega": "⛓ Trennen",
+    "Riattiva il collegamento con i punti coincidenti delle altre linee": "Verbindung mit den deckungsgleichen Punkten anderer Linien wiederherstellen",
+    "Scollega questo punto dalle altre linee: potrai spostarlo da solo": "Diesen Punkt von den anderen Linien trennen: Du kannst ihn allein verschieben",
+    "Punto {n} ricollegato.": "Punkt {n} wieder verbunden.",
+    "Punto {n} scollegato: ora si sposta senza trascinare le altre linee.": "Punkt {n} getrennt: Er bewegt sich jetzt, ohne die anderen Linien mitzuziehen.",
+    "Nessun punto collegato ad altre linee nella selezione.": "Kein Punkt der Auswahl ist mit anderen Linien verbunden.",
+    "{n} punti scollegati: ora si spostano senza trascinare le altre linee.": "{n} Punkte getrennt: Sie bewegen sich jetzt, ohne die anderen Linien mitzuziehen.",
+    "Nessun punto scollegato nella selezione.": "Kein getrennter Punkt in der Auswahl.",
+    "{n} punti ricollegati (quelli che coincidono con altre linee tornano uniti).": "{n} Punkte wieder verbunden (die mit anderen Linien deckungsgleichen sind wieder vereint).",
+    "⛓ Scollega tutti i vertici ({n})": "⛓ Alle Eckpunkte trennen ({n})",
+    "🔗 Ricollega tutti i vertici ({n})": "🔗 Alle Eckpunkte neu verbinden ({n})",
+    "Collegamenti dei punti": "Punktverbindungen",
+    "{a} punti uniti ad altre linee, {b} scollegati (maniglie viola tratteggiate).": "{a} Punkte mit anderen Linien verbunden, {b} getrennt (violett gestrichelte Griffe).",
+    "⛓ Scollega tutti i vertici": "⛓ Alle Eckpunkte trennen",
+    "I punti di queste forme non trascineranno più le linee collegate, e non verranno trascinati da loro": "Die Punkte dieser Formen ziehen die verbundenen Linien nicht mehr mit und werden auch nicht von ihnen mitgezogen",
+    "🔗 Ricollega tutti i vertici": "🔗 Alle Eckpunkte neu verbinden",
+    "⛓ Scollega il punto {n}": "⛓ Punkt {n} trennen",
+    "🔗 Ricollega il punto {n}": "🔗 Punkt {n} neu verbinden",
+    "Il punto {n} non è unito ad altre linee": "Punkt {n} ist mit keiner anderen Linie verbunden",
+    "🗑 Elimina il punto {n}": "🗑 Punkt {n} löschen",
+    "⊕ Unione": "⊕ Vereinigen",
+    "⊖ Sottrai": "⊖ Subtrahieren",
+    "⊗ Intersezione": "⊗ Schnittmenge",
+    "⊘ Esclusione": "⊘ Ausschluss",
+    "Operazioni booleane": "Boolesche Operationen",
+    "Unisce le forme in un unico contorno": "Vereinigt die Formen zu einer einzigen Kontur",
+    "Toglie dalla forma più in basso quelle che le stanno sopra": "Entfernt die darüberliegenden Formen von der untersten Form",
+    "Tiene solo la parte comune a tutte le forme": "Behält nur den allen Formen gemeinsamen Teil",
+    "Tiene le parti non sovrapposte, togliendo quelle comuni": "Behält die nicht überlappenden Teile und entfernt die gemeinsamen",
+    "Valgono per percorsi chiusi, rettangoli ed ellissi; il risultato prende lo stile della forma più in basso.": "Gilt für geschlossene Pfade, Rechtecke und Ellipsen; das Ergebnis übernimmt den Stil der untersten Form.",
+    "Libreria per le operazioni booleane non disponibile.": "Bibliothek für boolesche Operationen nicht verfügbar.",
+    "Servono almeno 2 forme chiuse selezionate (percorsi chiusi, rettangoli o ellissi).": "Es müssen mindestens 2 geschlossene Formen ausgewählt sein (geschlossene Pfade, Rechtecke oder Ellipsen).",
+    "Operazione non riuscita: ": "Vorgang fehlgeschlagen: ",
+    "Il risultato è vuoto: le forme selezionate non si sovrappongono.": "Das Ergebnis ist leer: Die ausgewählten Formen überlappen sich nicht.",
+    "{op}: {n} forme combinate in {r}.": "{op}: {n} Formen zu {r} kombiniert.",
+    "una forma": "eine Form",
+    "{n} forme": "{n} Formen",
+    "{n} fori interni creati come linee separate.": "{n} innere Löcher als eigene Linien erstellt.",
+    "{n} forme ignorate perché aperte o non geometriche.": "{n} Formen ignoriert, weil sie offen oder nicht geometrisch sind.",
   },
   es: {
     "1 cm": "1 cm",
@@ -2846,6 +2956,46 @@ const I18N = {
     "Riprendi la finestra": "Retomar la ventana",
     "Chiudi la finestra": "Cerrar la ventana",
     "Elementi evidenziati sul disegno (cerchi rossi): correggili e riprendi l'anteprima 3D dalla barra in basso.": "Elementos resaltados en el dibujo (círculos rojos): corrígelos y retoma la vista previa 3D desde la barra inferior.",
+    "🔗 Ricollega": "🔗 Volver a unir",
+    "⛓ Scollega": "⛓ Separar",
+    "Riattiva il collegamento con i punti coincidenti delle altre linee": "Restablecer la unión con los puntos coincidentes de otras líneas",
+    "Scollega questo punto dalle altre linee: potrai spostarlo da solo": "Separa este punto de las demás líneas: podrás moverlo por sí solo",
+    "Punto {n} ricollegato.": "Punto {n} unido de nuevo.",
+    "Punto {n} scollegato: ora si sposta senza trascinare le altre linee.": "Punto {n} separado: ahora se mueve sin arrastrar las demás líneas.",
+    "Nessun punto collegato ad altre linee nella selezione.": "Ningún punto de la selección está unido a otras líneas.",
+    "{n} punti scollegati: ora si spostano senza trascinare le altre linee.": "{n} puntos separados: ahora se mueven sin arrastrar las demás líneas.",
+    "Nessun punto scollegato nella selezione.": "Ningún punto separado en la selección.",
+    "{n} punti ricollegati (quelli che coincidono con altre linee tornano uniti).": "{n} puntos unidos de nuevo (los que coinciden con otras líneas vuelven a estar unidos).",
+    "⛓ Scollega tutti i vertici ({n})": "⛓ Separar todos los vértices ({n})",
+    "🔗 Ricollega tutti i vertici ({n})": "🔗 Volver a unir todos los vértices ({n})",
+    "Collegamenti dei punti": "Uniones de los puntos",
+    "{a} punti uniti ad altre linee, {b} scollegati (maniglie viola tratteggiate).": "{a} puntos unidos a otras líneas, {b} separados (tiradores morados discontinuos).",
+    "⛓ Scollega tutti i vertici": "⛓ Separar todos los vértices",
+    "I punti di queste forme non trascineranno più le linee collegate, e non verranno trascinati da loro": "Los puntos de estas formas ya no arrastrarán las líneas unidas ni serán arrastrados por ellas",
+    "🔗 Ricollega tutti i vertici": "🔗 Volver a unir todos los vértices",
+    "⛓ Scollega il punto {n}": "⛓ Separar el punto {n}",
+    "🔗 Ricollega il punto {n}": "🔗 Volver a unir el punto {n}",
+    "Il punto {n} non è unito ad altre linee": "El punto {n} no está unido a otras líneas",
+    "🗑 Elimina il punto {n}": "🗑 Eliminar el punto {n}",
+    "⊕ Unione": "⊕ Unión",
+    "⊖ Sottrai": "⊖ Restar",
+    "⊗ Intersezione": "⊗ Intersección",
+    "⊘ Esclusione": "⊘ Exclusión",
+    "Operazioni booleane": "Operaciones booleanas",
+    "Unisce le forme in un unico contorno": "Une las formas en un único contorno",
+    "Toglie dalla forma più in basso quelle che le stanno sopra": "Quita de la forma más baja las que están encima",
+    "Tiene solo la parte comune a tutte le forme": "Conserva solo la parte común a todas las formas",
+    "Tiene le parti non sovrapposte, togliendo quelle comuni": "Conserva las partes no superpuestas, quitando las comunes",
+    "Valgono per percorsi chiusi, rettangoli ed ellissi; il risultato prende lo stile della forma più in basso.": "Sirven para trazados cerrados, rectángulos y elipses; el resultado toma el estilo de la forma más baja.",
+    "Libreria per le operazioni booleane non disponibile.": "Biblioteca de operaciones booleanas no disponible.",
+    "Servono almeno 2 forme chiuse selezionate (percorsi chiusi, rettangoli o ellissi).": "Se necesitan al menos 2 formas cerradas seleccionadas (trazados cerrados, rectángulos o elipses).",
+    "Operazione non riuscita: ": "La operación no se pudo realizar: ",
+    "Il risultato è vuoto: le forme selezionate non si sovrappongono.": "El resultado está vacío: las formas seleccionadas no se superponen.",
+    "{op}: {n} forme combinate in {r}.": "{op}: {n} formas combinadas en {r}.",
+    "una forma": "una forma",
+    "{n} forme": "{n} formas",
+    "{n} fori interni creati come linee separate.": "{n} agujeros interiores creados como líneas separadas.",
+    "{n} forme ignorate perché aperte o non geometriche.": "{n} formas ignoradas por estar abiertas o no ser geométricas.",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -3412,6 +3562,46 @@ const I18N = {
     "Riprendi la finestra": "恢复窗口",
     "Chiudi la finestra": "关闭窗口",
     "Elementi evidenziati sul disegno (cerchi rossi): correggili e riprendi l'anteprima 3D dalla barra in basso.": "已在图纸上标出相关元素（红色圆圈）：修正后从底部栏恢复3D预览。",
+    "🔗 Ricollega": "🔗 重新连接",
+    "⛓ Scollega": "⛓ 断开",
+    "Riattiva il collegamento con i punti coincidenti delle altre linee": "恢复与其他线重合点的连接",
+    "Scollega questo punto dalle altre linee: potrai spostarlo da solo": "将此点与其他线断开：可单独移动",
+    "Punto {n} ricollegato.": "点 {n} 已重新连接。",
+    "Punto {n} scollegato: ora si sposta senza trascinare le altre linee.": "点 {n} 已断开：现在移动时不会带动其他线。",
+    "Nessun punto collegato ad altre linee nella selezione.": "所选内容中没有与其他线相连的点。",
+    "{n} punti scollegati: ora si spostano senza trascinare le altre linee.": "已断开 {n} 个点：现在移动时不会带动其他线。",
+    "Nessun punto scollegato nella selezione.": "所选内容中没有已断开的点。",
+    "{n} punti ricollegati (quelli che coincidono con altre linee tornano uniti).": "已重新连接 {n} 个点（与其他线重合的点重新相连）。",
+    "⛓ Scollega tutti i vertici ({n})": "⛓ 断开所有顶点（{n}）",
+    "🔗 Ricollega tutti i vertici ({n})": "🔗 重新连接所有顶点（{n}）",
+    "Collegamenti dei punti": "点的连接",
+    "{a} punti uniti ad altre linee, {b} scollegati (maniglie viola tratteggiate).": "{a} 个点与其他线相连，{b} 个已断开（紫色虚线手柄）。",
+    "⛓ Scollega tutti i vertici": "⛓ 断开所有顶点",
+    "I punti di queste forme non trascineranno più le linee collegate, e non verranno trascinati da loro": "这些形状的点将不再带动相连的线，也不会被它们带动",
+    "🔗 Ricollega tutti i vertici": "🔗 重新连接所有顶点",
+    "⛓ Scollega il punto {n}": "⛓ 断开点 {n}",
+    "🔗 Ricollega il punto {n}": "🔗 重新连接点 {n}",
+    "Il punto {n} non è unito ad altre linee": "点 {n} 未与其他线相连",
+    "🗑 Elimina il punto {n}": "🗑 删除点 {n}",
+    "⊕ Unione": "⊕ 合并",
+    "⊖ Sottrai": "⊖ 减去",
+    "⊗ Intersezione": "⊗ 相交",
+    "⊘ Esclusione": "⊘ 排除",
+    "Operazioni booleane": "布尔运算",
+    "Unisce le forme in un unico contorno": "将形状合并为单一轮廓",
+    "Toglie dalla forma più in basso quelle che le stanno sopra": "从最底层的形状中减去其上方的形状",
+    "Tiene solo la parte comune a tutte le forme": "只保留所有形状的公共部分",
+    "Tiene le parti non sovrapposte, togliendo quelle comuni": "保留不重叠的部分，去除重叠部分",
+    "Valgono per percorsi chiusi, rettangoli ed ellissi; il risultato prende lo stile della forma più in basso.": "适用于闭合路径、矩形和椭圆；结果采用最底层形状的样式。",
+    "Libreria per le operazioni booleane non disponibile.": "布尔运算库不可用。",
+    "Servono almeno 2 forme chiuse selezionate (percorsi chiusi, rettangoli o ellissi).": "至少需要选中 2 个闭合形状（闭合路径、矩形或椭圆）。",
+    "Operazione non riuscita: ": "操作失败：",
+    "Il risultato è vuoto: le forme selezionate non si sovrappongono.": "结果为空：所选形状没有重叠。",
+    "{op}: {n} forme combinate in {r}.": "{op}：{n} 个形状合成为 {r}。",
+    "una forma": "一个形状",
+    "{n} forme": "{n} 个形状",
+    "{n} fori interni creati come linee separate.": "已将 {n} 个内部孔创建为独立线条。",
+    "{n} forme ignorate perché aperte o non geometriche.": "已忽略 {n} 个开放或非几何形状。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -3978,6 +4168,46 @@ const I18N = {
     "Riprendi la finestra": "Reprendre la fenêtre",
     "Chiudi la finestra": "Fermer la fenêtre",
     "Elementi evidenziati sul disegno (cerchi rossi): correggili e riprendi l'anteprima 3D dalla barra in basso.": "Éléments mis en évidence sur le dessin (cercles rouges) : corrige-les et reprends l’aperçu 3D depuis la barre en bas.",
+    "🔗 Ricollega": "🔗 Relier",
+    "⛓ Scollega": "⛓ Détacher",
+    "Riattiva il collegamento con i punti coincidenti delle altre linee": "Rétablir le lien avec les points coïncidents des autres lignes",
+    "Scollega questo punto dalle altre linee: potrai spostarlo da solo": "Détache ce point des autres lignes : tu pourras le déplacer seul",
+    "Punto {n} ricollegato.": "Point {n} relié à nouveau.",
+    "Punto {n} scollegato: ora si sposta senza trascinare le altre linee.": "Point {n} détaché : il se déplace désormais sans entraîner les autres lignes.",
+    "Nessun punto collegato ad altre linee nella selezione.": "Aucun point de la sélection n’est relié à d’autres lignes.",
+    "{n} punti scollegati: ora si spostano senza trascinare le altre linee.": "{n} points détachés : ils se déplacent désormais sans entraîner les autres lignes.",
+    "Nessun punto scollegato nella selezione.": "Aucun point détaché dans la sélection.",
+    "{n} punti ricollegati (quelli che coincidono con altre linee tornano uniti).": "{n} points reliés à nouveau (ceux qui coïncident avec d’autres lignes sont à nouveau joints).",
+    "⛓ Scollega tutti i vertici ({n})": "⛓ Détacher tous les sommets ({n})",
+    "🔗 Ricollega tutti i vertici ({n})": "🔗 Relier tous les sommets ({n})",
+    "Collegamenti dei punti": "Liens des points",
+    "{a} punti uniti ad altre linee, {b} scollegati (maniglie viola tratteggiate).": "{a} points joints à d’autres lignes, {b} détachés (poignées violettes en pointillé).",
+    "⛓ Scollega tutti i vertici": "⛓ Détacher tous les sommets",
+    "I punti di queste forme non trascineranno più le linee collegate, e non verranno trascinati da loro": "Les points de ces formes n’entraîneront plus les lignes reliées et ne seront plus entraînés par elles",
+    "🔗 Ricollega tutti i vertici": "🔗 Relier tous les sommets",
+    "⛓ Scollega il punto {n}": "⛓ Détacher le point {n}",
+    "🔗 Ricollega il punto {n}": "🔗 Relier le point {n}",
+    "Il punto {n} non è unito ad altre linee": "Le point {n} n’est joint à aucune autre ligne",
+    "🗑 Elimina il punto {n}": "🗑 Supprimer le point {n}",
+    "⊕ Unione": "⊕ Union",
+    "⊖ Sottrai": "⊖ Soustraire",
+    "⊗ Intersezione": "⊗ Intersection",
+    "⊘ Esclusione": "⊘ Exclusion",
+    "Operazioni booleane": "Opérations booléennes",
+    "Unisce le forme in un unico contorno": "Réunit les formes en un seul contour",
+    "Toglie dalla forma più in basso quelle che le stanno sopra": "Retire de la forme la plus basse celles qui sont au-dessus",
+    "Tiene solo la parte comune a tutte le forme": "Garde uniquement la partie commune à toutes les formes",
+    "Tiene le parti non sovrapposte, togliendo quelle comuni": "Garde les parties non superposées en retirant les parties communes",
+    "Valgono per percorsi chiusi, rettangoli ed ellissi; il risultato prende lo stile della forma più in basso.": "Elles s’appliquent aux tracés fermés, rectangles et ellipses ; le résultat prend le style de la forme la plus basse.",
+    "Libreria per le operazioni booleane non disponibile.": "Bibliothèque des opérations booléennes indisponible.",
+    "Servono almeno 2 forme chiuse selezionate (percorsi chiusi, rettangoli o ellissi).": "Il faut sélectionner au moins 2 formes fermées (tracés fermés, rectangles ou ellipses).",
+    "Operazione non riuscita: ": "Échec de l’opération : ",
+    "Il risultato è vuoto: le forme selezionate non si sovrappongono.": "Le résultat est vide : les formes sélectionnées ne se chevauchent pas.",
+    "{op}: {n} forme combinate in {r}.": "{op} : {n} formes combinées en {r}.",
+    "una forma": "une forme",
+    "{n} forme": "{n} formes",
+    "{n} fori interni creati come linee separate.": "{n} trous intérieurs créés comme lignes séparées.",
+    "{n} forme ignorate perché aperte o non geometriche.": "{n} formes ignorées car ouvertes ou non géométriques.",
   },
 };
 let currentLang = 'it';
@@ -4430,12 +4660,33 @@ function tracedpathWorldEndpoints(s){
 }
 // Elenco unificato di tutti i punti "di collegamento" del disegno: vertici di linee/percorsi
 // ED estremi aperti di curve/archi (tracedpath), altrimenti esclusi dal sistema di saldatura.
+/* Scollegamento: un vertice "scollegato" resta dov'è ma non è più unito ai
+   punti coincidenti delle altre linee — non li trascina e non viene trascinato,
+   e conta come punto libero. Gli indici scollegati stanno in s.detached. */
+function isPtDetached(s, idx){ return !!(s && s.detached && s.detached.indexOf(idx)>=0); }
+function setPtDetached(s, idx, on){
+  const d = (s.detached||[]).filter(i=> i!==idx && s.points && i<s.points.length);
+  if(on) d.push(idx);
+  d.sort((a,b)=>a-b);
+  if(d.length) s.detached = d; else delete s.detached;
+}
+// quando si inserisce (delta +1) o elimina (delta -1) un vertice in posizione "at"
+function shiftDetachedIndices(s, at, delta){
+  if(!s.detached) return;
+  const d = s.detached.filter(i=> !(delta<0 && i===at)).map(i=> delta<0 ? (i>at ? i-1 : i) : (i>=at ? i+1 : i));
+  if(d.length) s.detached = d; else delete s.detached;
+}
+function isVertexLinked(s, idx, all){
+  if(isPtDetached(s, idx)) return false;
+  const p = s.points[idx];
+  return all.some(o=> !(o.shapeId===s.id && o.kind==='vertex' && o.idx===idx) && !o.det && pointsEqual(o.pt, p));
+}
 function collectConnectionPoints(){
   const pts = [];
   for(const s of state.shapes){
     if(!isShapeEffVisible(s)) continue;
     if(s.points){
-      s.points.forEach((p, idx)=> pts.push({shapeId:s.id, kind:'vertex', idx, pt:p}));
+      s.points.forEach((p, idx)=> pts.push({shapeId:s.id, kind:'vertex', idx, pt:p, det:isPtDetached(s, idx)}));
     } else if(s.type==='tracedpath'){
       tracedpathWorldEndpoints(s).forEach(e=> pts.push({shapeId:s.id, kind:'tracedend', subIdx:e.subIdx, which:e.which, pt:e.pt}));
     }
@@ -4454,6 +4705,7 @@ async function deletePointFromShape(s, idx){
   if(!ok) return;
   s.points.splice(idx, 1);
   if(s.smooth) s.smooth.splice(idx, 1);
+  shiftDetachedIndices(s, idx, -1);
   state.hoverSegment = null;
   pushHistory();
   renderAll();
@@ -4461,12 +4713,15 @@ async function deletePointFromShape(s, idx){
 }
 function moveConnectedVertex(shape, idx, newPt){
   const oldPt = shape.points[idx];
-  for(const other of state.shapes){
-    if(other.locked || !other.points) continue;
-    other.points.forEach((p,i)=>{
-      if(other===shape && i===idx) return;
-      if(pointsEqual(p, oldPt)) other.points[i] = [newPt[0], newPt[1]];
-    });
+  if(!isPtDetached(shape, idx)){
+    for(const other of state.shapes){
+      if(other.locked || !other.points) continue;
+      other.points.forEach((p,i)=>{
+        if(other===shape && i===idx) return;
+        if(isPtDetached(other, i)) return; // punto scollegato: resta dov'è
+        if(pointsEqual(p, oldPt)) other.points[i] = [newPt[0], newPt[1]];
+      });
+    }
   }
   shape.points[idx] = newPt;
 }
@@ -4481,7 +4736,7 @@ function moveShapesBy(ids, dx, dy){
   for(const id of ids){
     const s = state.shapes.find(x=>x.id===id);
     if(!s || s.locked || !s.points) continue;
-    s.points.forEach(p=> movingPts.push([p[0], p[1]]));
+    s.points.forEach((p,i)=>{ if(!isPtDetached(s, i)) movingPts.push([p[0], p[1]]); });
   }
   if(movingPts.length){
     const moved = new Set();
@@ -4489,7 +4744,7 @@ function moveShapesBy(ids, dx, dy){
       if(idSet.has(other.id) || other.locked || !other.points) continue;
       other.points.forEach((p, idx)=>{
         const key = other.id+'#'+idx;
-        if(moved.has(key)) return;
+        if(moved.has(key) || isPtDetached(other, idx)) return;
         for(const mp of movingPts){
           if(pointsEqual(p, mp)){
             other.points[idx] = [p[0]+dx, p[1]+dy];
@@ -4756,7 +5011,8 @@ function renderSelectionHandles(){
       // vertex handles (only editable in select tool & single selection)
       if(state.selection.size===1){
         s.points.forEach((p, idx)=>{
-          const h = el('circle', {cx:p[0]*state.scale, cy:p[1]*state.scale, r:4.5, fill:'#fff', stroke:'var(--brass)', 'stroke-width':1.6, 'data-vertex':idx, 'data-shape':s.id, style:'cursor:move'});
+          const det = isPtDetached(s, idx);
+          const h = el('circle', {cx:p[0]*state.scale, cy:p[1]*state.scale, r:4.5, fill:'#fff', stroke: det ? '#a970ff' : 'var(--brass)', 'stroke-width':1.6, 'stroke-dasharray': det ? '2.5,1.5' : '', 'data-vertex':idx, 'data-shape':s.id, style:'cursor:move'});
           layerOverlay.appendChild(h);
         });
         // maniglia di rotazione: ruota l'intera linea/percorso attorno al centro del suo riquadro
@@ -5112,7 +5368,7 @@ function renderEndpointMarkers(){
     if(s.points.length<2) continue;
     [0, s.points.length-1].forEach(idx=>{
       const p = s.points[idx];
-      const hasMatch = allPoints.some(o => !(o.shapeId===s.id && o.kind==='vertex' && o.idx===idx) && pointsEqual(o.pt, p));
+      const hasMatch = isVertexLinked(s, idx, allPoints);
       layerOverlay.appendChild(el('circle', {
         cx:p[0]*state.scale, cy:p[1]*state.scale, r:3.4,
         fill: hasMatch ? '#2f9e5a' : '#ff9f0a', stroke:'#1c1200', 'stroke-width':0.8, opacity:0.95
@@ -5807,7 +6063,7 @@ function computeJoinCandidates(){
     [0, s.points.length-1].forEach(idx=>{
       const p = s.points[idx];
       if(!inRegion(p)) return;
-      const linked = all.some(o=> !(o.shapeId===s.id && o.kind==='vertex' && o.idx===idx) && pointsEqual(o.pt, p));
+      const linked = isVertexLinked(s, idx, all);
       if(!linked) out.push({shapeId:s.id, idx, pt:[p[0],p[1]]});
     });
   });
@@ -5938,15 +6194,23 @@ function mergeAtPoints(positions){
       if(ends.length!==2) continue; // 3 o più linee nello stesso punto: è un incrocio, non si fonde
       const A = ends[0], B = ends[1];
       if(A.s===B.s){
-        if(A.s.points.length>=4){ A.s.points.pop(); if(A.s.smooth) A.s.smooth.pop(); A.s.closed = true; closedN++; changed = true; break; }
+        if(A.s.points.length>=4){
+          const last = A.s.points.length-1;
+          A.s.points.pop(); if(A.s.smooth) A.s.smooth.pop();
+          setPtDetached(A.s, last, false); setPtDetached(A.s, 0, false);
+          A.s.closed = true; closedN++; changed = true; break;
+        }
         continue;
       }
       if(A.s.style.role!==B.s.style.role || A.s.layerId!==B.s.layerId) continue;
-      const pa = A.s.points.slice(), sa = (A.s.smooth||A.s.points.map(()=>0)).slice();
-      if(A.first){ pa.reverse(); sa.reverse(); }          // l'estremo in comune diventa l'ultimo di A...
-      const pb = B.s.points.slice(), sb = (B.s.smooth||B.s.points.map(()=>0)).slice();
-      if(!B.first){ pb.reverse(); sb.reverse(); }         // ...e il primo di B
+      const pa = A.s.points.slice(), sa = (A.s.smooth||A.s.points.map(()=>0)).slice(), da = A.s.points.map((_,i)=>isPtDetached(A.s,i));
+      if(A.first){ pa.reverse(); sa.reverse(); da.reverse(); } // l'estremo in comune diventa l'ultimo di A...
+      const pb = B.s.points.slice(), sb = (B.s.smooth||B.s.points.map(()=>0)).slice(), db = B.s.points.map((_,i)=>isPtDetached(B.s,i));
+      if(!B.first){ pb.reverse(); sb.reverse(); db.reverse(); } // ...e il primo di B
       A.s.points = pa.concat(pb.slice(1)); A.s.smooth = sa.concat(sb.slice(1));
+      const dm = da.concat(db.slice(1)); dm[pa.length-1] = false;
+      const det = dm.map((v,i)=> v ? i : -1).filter(i=>i>=0);
+      if(det.length) A.s.detached = det; else delete A.s.detached;
       if(!A.s.foldDir && B.s.foldDir){ A.s.foldDir = B.s.foldDir; A.s.foldAngle = B.s.foldAngle; }
       state.shapes = state.shapes.filter(x=>x!==B.s);
       merged++; changed = true; break;
@@ -5965,6 +6229,8 @@ function applyJoin(){
   joinState.pairs.forEach(([a,b])=>{
     const A = byN(a), B = byN(b);
     const sA = state.shapes.find(s=>s.id===A.shapeId);
+    const sB = state.shapes.find(s=>s.id===B.shapeId);
+    setPtDetached(sA, A.idx, false); if(sB) setPtDetached(sB, B.idx, false);
     if(mode==='move'){
       sA.points[A.idx] = [B.pt[0], B.pt[1]];
       positions.push(B.pt); touched.add(sA.id); touched.add(B.shapeId);
@@ -6053,6 +6319,198 @@ function renderModalDock(){
     chip.append(open, x);
     dock.appendChild(chip);
   });
+}
+
+
+/* ---------- comandi di scollegamento / ricollegamento ---------- */
+function setPointLink(s, idx, relink){
+  setPtDetached(s, idx, !relink);
+  pushHistory(); renderAll();
+  showToast(relink ? tpl('Punto {n} ricollegato.', {n:idx+1}) : tpl('Punto {n} scollegato: ora si sposta senza trascinare le altre linee.', {n:idx+1}), false);
+}
+function linkStats(ids){
+  const all = collectConnectionPoints();
+  let linked = 0, detached = 0;
+  ids.forEach(id=>{
+    const s = state.shapes.find(x=>x.id===id);
+    if(!s || !s.points || s.locked) return;
+    s.points.forEach((p,i)=>{ if(isPtDetached(s,i)) detached++; else if(isVertexLinked(s,i,all)) linked++; });
+  });
+  return {linked, detached};
+}
+function detachShapes(ids){
+  const all = collectConnectionPoints();
+  let n = 0;
+  ids.forEach(id=>{
+    const s = state.shapes.find(x=>x.id===id);
+    if(!s || !s.points || s.locked) return;
+    s.points.forEach((p,i)=>{ if(isVertexLinked(s,i,all)){ setPtDetached(s,i,true); n++; } });
+  });
+  if(!n){ showToast('Nessun punto collegato ad altre linee nella selezione.', true); return; }
+  pushHistory(); renderAll();
+  showToast(tpl('{n} punti scollegati: ora si spostano senza trascinare le altre linee.', {n}), false);
+}
+function reattachShapes(ids){
+  let n = 0;
+  ids.forEach(id=>{
+    const s = state.shapes.find(x=>x.id===id);
+    if(!s || !s.detached || s.locked) return;
+    n += s.detached.length; delete s.detached;
+  });
+  if(!n){ showToast('Nessun punto scollegato nella selezione.', true); return; }
+  pushHistory(); renderAll();
+  showToast(tpl('{n} punti ricollegati (quelli che coincidono con altre linee tornano uniti).', {n}), false);
+}
+function linkContextItems(ids){
+  const st = linkStats(ids), items = [];
+  if(st.linked) items.push({label: tpl('⛓ Scollega tutti i vertici ({n})', {n:st.linked}), action:()=> detachShapes(ids)});
+  if(st.detached) items.push({label: tpl('🔗 Ricollega tutti i vertici ({n})', {n:st.detached}), action:()=> reattachShapes(ids)});
+  return items;
+}
+function renderLinkSection(host, ids){
+  const st = linkStats(ids);
+  if(!st.linked && !st.detached) return;
+  host.appendChild(document.createElement('hr')).className='sep';
+  const f = document.createElement('div'); f.className='field';
+  f.innerHTML = `<label>${translate('Collegamenti dei punti')}</label>`;
+  const h = document.createElement('div'); h.className='hint'; h.style.marginBottom='6px';
+  h.textContent = tpl('{a} punti uniti ad altre linee, {b} scollegati (maniglie viola tratteggiate).', {a:st.linked, b:st.detached});
+  f.appendChild(h);
+  const row = document.createElement('div'); row.style.cssText='display:flex;gap:6px;flex-wrap:wrap;';
+  if(st.linked){
+    const b = document.createElement('button'); b.className='btn'; b.style.cssText='width:auto;margin:0;';
+    b.textContent = translate('⛓ Scollega tutti i vertici');
+    b.title = translate('I punti di queste forme non trascineranno più le linee collegate, e non verranno trascinati da loro');
+    b.onclick = ()=> detachShapes(ids); row.appendChild(b);
+  }
+  if(st.detached){
+    const b = document.createElement('button'); b.className='btn'; b.style.cssText='width:auto;margin:0;';
+    b.textContent = translate('🔗 Ricollega tutti i vertici');
+    b.onclick = ()=> reattachShapes(ids); row.appendChild(b);
+  }
+  f.appendChild(row);
+  host.appendChild(f);
+}
+
+
+/* ============================================================
+   OPERAZIONI BOOLEANE — unione, sottrazione, intersezione ed
+   esclusione tra forme chiuse (libreria polygon-clipping).
+============================================================ */
+// converte il "d" generato da buildSmoothPathD (solo M, L, C, Z assoluti) in una spezzata
+function flattenPathD(d, steps){
+  steps = steps || 16;
+  const tk = d.match(/[MLCZ]|-?\d*\.?\d+(?:e[-+]?\d+)?/gi) || [];
+  const pts = []; let i = 0, cmd = null, cur = null;
+  const num = ()=> parseFloat(tk[i++]);
+  while(i < tk.length){
+    if(/^[MLCZ]$/i.test(tk[i])) cmd = tk[i++].toUpperCase();
+    if(cmd==='Z') continue;
+    if(cmd==='M' || cmd==='L'){ cur = [num(), num()]; pts.push(cur); }
+    else if(cmd==='C'){
+      const c1=[num(),num()], c2=[num(),num()], e=[num(),num()], s=cur;
+      for(let k=1;k<=steps;k++){
+        const t=k/steps, u=1-t;
+        pts.push([u*u*u*s[0]+3*u*u*t*c1[0]+3*u*t*t*c2[0]+t*t*t*e[0], u*u*u*s[1]+3*u*u*t*c1[1]+3*u*t*t*c2[1]+t*t*t*e[1]]);
+      }
+      cur = e;
+    } else i++;
+  }
+  return pts;
+}
+// anello chiuso (primo punto ripetuto in fondo) in mm, oppure null se la forma non è chiusa
+function shapeToRing(s){
+  let pts = null;
+  if((s.type==='path' || s.type==='freehand') && s.points && s.closed && s.points.length>=3){
+    pts = (s.smooth && s.smooth.some(v=>v>0)) ? flattenPathD(buildSmoothPathD(s.points, true, s.smooth, 1)) : s.points.map(p=>[p[0],p[1]]);
+  } else if(s.type==='rect' || s.type==='ellipse'){
+    const cx = s.x+s.w/2, cy = s.y+s.h/2;
+    if(s.type==='rect') pts = [[s.x,s.y],[s.x+s.w,s.y],[s.x+s.w,s.y+s.h],[s.x,s.y+s.h]];
+    else { pts = []; for(let k=0;k<96;k++){ const a=k/96*Math.PI*2; pts.push([cx+Math.cos(a)*Math.abs(s.w)/2, cy+Math.sin(a)*Math.abs(s.h)/2]); } }
+    if(s.rotation) pts = pts.map(p=>rotatePointAround(p,[cx,cy],s.rotation));
+  }
+  if(!pts) return null;
+  const clean = pts.filter((p,k)=> k===0 || Math.hypot(p[0]-pts[k-1][0], p[1]-pts[k-1][1]) > 1e-6);
+  while(clean.length>1 && Math.hypot(clean[0][0]-clean[clean.length-1][0], clean[0][1]-clean[clean.length-1][1]) < 1e-6) clean.pop();
+  if(clean.length<3) return null;
+  return clean.concat([[clean[0][0], clean[0][1]]]);
+}
+// toglie i punti allineati (le spezzate dei cerchi restano; i lati dritti si puliscono)
+function dropCollinear(pts){
+  let out = pts.slice(), changed = true;
+  while(changed && out.length>3){
+    changed = false;
+    for(let k=0;k<out.length;k++){
+      const a=out[(k-1+out.length)%out.length], b=out[k], c=out[(k+1)%out.length];
+      const cross = (b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0]);
+      if(Math.abs(cross) < 1e-7){ out.splice(k,1); changed = true; break; }
+    }
+  }
+  return out;
+}
+const BOOL_OPS = {
+  union:        {label:'⊕ Unione',       fn:'union'},
+  difference:   {label:'⊖ Sottrai',      fn:'difference'},
+  intersection: {label:'⊗ Intersezione', fn:'intersection'},
+  xor:          {label:'⊘ Esclusione',   fn:'xor'}
+};
+function booleanOp(op){
+  if(typeof polygonClipping==='undefined'){ showToast('Libreria per le operazioni booleane non disponibile.', true); return; }
+  const ids = new Set(state.selection);
+  const ordered = shapesInZOrder().filter(s=>ids.has(s.id) && !s.locked); // dal basso verso l'alto
+  const usable = [], skipped = [];
+  ordered.forEach(s=>{ const r = shapeToRing(s); if(r) usable.push({s, geom:[[r]]}); else skipped.push(s); });
+  if(usable.length<2){ showToast('Servono almeno 2 forme chiuse selezionate (percorsi chiusi, rettangoli o ellissi).', true); return; }
+  const base = usable[0];
+  let res;
+  try{ res = polygonClipping[BOOL_OPS[op].fn](base.geom, ...usable.slice(1).map(u=>u.geom)); }
+  catch(err){ showToast(translate('Operazione non riuscita: ') + err.message, true); return; }
+  if(!res.length){ showToast('Il risultato è vuoto: le forme selezionate non si sovrappongono.', true); return; }
+  const newShapes = [];
+  let holes = 0;
+  res.forEach(poly=> poly.forEach((ring, ri)=>{
+    const pts = dropCollinear(ring.slice(0,-1).map(p=>[p[0],p[1]]));
+    if(pts.length<3) return;
+    const st = JSON.parse(JSON.stringify(base.s.style));
+    if(ri>0){ st.fill = 'none'; holes++; } // i fori sono linee a sé: per la fustella sono un taglio interno
+    newShapes.push({ id:uid(), type:'path', points:pts, closed:true, smooth:pts.map(()=>0), style:st,
+                     visible:true, locked:false, layerId:base.s.layerId });
+  }));
+  const used = new Set(usable.map(u=>u.s.id));
+  const at = state.shapes.findIndex(s=>s.id===base.s.id);
+  state.shapes = state.shapes.filter(s=>!used.has(s.id));
+  state.shapes.splice(Math.min(at, state.shapes.length), 0, ...newShapes);
+  state.selection = new Set(newShapes.map(s=>s.id));
+  state.joinRegion = null;
+  pushHistory(); renderAll();
+  let t = tpl('{op}: {n} forme combinate in {r}.', {op: translate(BOOL_OPS[op].label).replace(/^\S+\s/,''), n: usable.length, r: newShapes.length===1 ? translate('una forma') : tpl('{n} forme', {n:newShapes.length})});
+  if(holes) t += ' ' + tpl('{n} fori interni creati come linee separate.', {n:holes});
+  if(skipped.length) t += ' ' + tpl('{n} forme ignorate perché aperte o non geometriche.', {n:skipped.length});
+  showToast(t, false);
+}
+function renderBooleanSection(host, ids){
+  if(ids.length<2) return;
+  host.appendChild(document.createElement('hr')).className='sep';
+  const f = document.createElement('div'); f.className='field';
+  f.innerHTML = `<label>${translate('Operazioni booleane')}</label>`;
+  const g = document.createElement('div'); g.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:6px;';
+  const tips = {
+    union: 'Unisce le forme in un unico contorno',
+    difference: 'Toglie dalla forma più in basso quelle che le stanno sopra',
+    intersection: 'Tiene solo la parte comune a tutte le forme',
+    xor: 'Tiene le parti non sovrapposte, togliendo quelle comuni'
+  };
+  Object.keys(BOOL_OPS).forEach(op=>{
+    const b = document.createElement('button'); b.className='btn'; b.style.margin='0';
+    b.textContent = translate(BOOL_OPS[op].label); b.title = translate(tips[op]);
+    b.onclick = ()=> booleanOp(op);
+    g.appendChild(b);
+  });
+  f.appendChild(g);
+  const h = document.createElement('div'); h.className='hint'; h.style.marginTop='6px';
+  h.textContent = translate('Valgono per percorsi chiusi, rettangoli ed ellissi; il risultato prende lo stile della forma più in basso.');
+  f.appendChild(h);
+  host.appendChild(f);
 }
 
 /* ============================================================
@@ -6424,6 +6882,20 @@ stage.addEventListener('contextmenu', (e)=>{
     e.preventDefault();
     if(state.tool !== 'select') return; // coerente con le altre interazioni: solo in modalità Selezione
     const mm = clientToMM(e.clientX, e.clientY);
+    const vt = e.target && e.target.dataset && e.target.dataset.vertex!=null && e.target.dataset.shape ? e.target : null;
+    if(vt){
+      const s = state.shapes.find(x=>x.id===vt.dataset.shape), idx = parseInt(vt.dataset.vertex, 10);
+      if(s && s.points && s.points[idx]){
+        const det = isPtDetached(s, idx), linked = isVertexLinked(s, idx, collectConnectionPoints());
+        const items = [];
+        if(linked) items.push({label: tpl('⛓ Scollega il punto {n}', {n:idx+1}), action:()=> setPointLink(s, idx, false)});
+        if(det) items.push({label: tpl('🔗 Ricollega il punto {n}', {n:idx+1}), action:()=> setPointLink(s, idx, true)});
+        if(!linked && !det) items.push({label: tpl('Il punto {n} non è unito ad altre linee', {n:idx+1}), disabled:true, action:()=>{}});
+        if(s.points.length>2) items.push('sep', {label: tpl('🗑 Elimina il punto {n}', {n:idx+1}), action:()=> deletePointFromShape(s, idx)});
+        showContextMenu(e.clientX, e.clientY, items);
+        return;
+      }
+    }
     const hit = topShapeAt(mm);
     if(hit){
       if(!state.selection.has(hit.id)){ state.selection.clear(); state.selection.add(hit.id); renderAll(); }
@@ -6440,9 +6912,12 @@ stage.addEventListener('contextmenu', (e)=>{
   }
 });
 function shapeContextItems(s){
-  const joinItem = computeJoinCandidates().length>=2 ? [{label:'🔗 Unisci punti…', action:()=> openJoinDialog()}, 'sep'] : [];
+  const joinItem = computeJoinCandidates().length>=2 ? [{label:'🔗 Unisci punti…', action:()=> openJoinDialog()}] : [];
+  const linkItems = linkContextItems([...state.selection]);
+  const boolItems = state.selection.size>1 ? Object.keys(BOOL_OPS).map(op=>({label: BOOL_OPS[op].label, action:()=> booleanOp(op)})) : [];
+  const top = [...joinItem, ...linkItems, ...(boolItems.length && (joinItem.length || linkItems.length) ? ['sep'] : []), ...boolItems];
   return [
-    ...joinItem,
+    ...top, ...(top.length ? ['sep'] : []),
     {label: state.selection.size>1 ? tpl('📋 Copia ({n})', {n: state.selection.size}) : '📋 Copia', action:()=> copySelectionToClipboard()},
     {label:'⧉ Duplica', action:()=> duplicateShape(s)},
     {label:'🗑 Elimina', action:()=>{ state.selection = new Set([s.id]); deleteSelection(); }},
@@ -6961,6 +7436,7 @@ function openSegmentInlineEditor(s, idx, clickMM, clientX, clientY){
   box.querySelector('#segEditAddVertex').onclick = ()=>{
     const insertAt = isClosingSeg ? n : idx+1;
     s.points.splice(insertAt, 0, clickMM);
+    shiftDetachedIndices(s, insertAt, +1);
     if(!s.smooth) s.smooth = s.points.map(()=>0);
     else s.smooth.splice(insertAt, 0, 0);
     pushHistory(); renderAll();
@@ -8678,6 +9154,8 @@ function renderPropPanelInner(){
     host.appendChild(foldHint);
   }
   if(ids.length>1) renderAlignSection(host, ids);
+  if(ids.length>1) renderBooleanSection(host, ids);
+  if(ids.length) renderLinkSection(host, ids);
   if(ids.length) renderJoinSection(host);
 
   if(s.points && ids.length===1){
@@ -9128,6 +9606,7 @@ function renderGeometrySection(host, s){
       offField.appendChild(row);
       host.appendChild(offField);
     }
+    const linkAllPts = collectConnectionPoints();
     const n = s.points.length;
     if(n <= 20){
       s.points.forEach((p, i)=>{
@@ -9146,6 +9625,14 @@ function renderGeometrySection(host, s){
           delBtn.className='iconbtn'; delBtn.style.cssText='padding:1px 6px;font-size:11px;';
           delBtn.onclick = (e)=>{ e.stopPropagation(); deletePointFromShape(s, i); };
           lab.appendChild(delBtn);
+        }
+        if(isVertexLinked(s, i, linkAllPts) || isPtDetached(s, i)){
+          const det = isPtDetached(s, i);
+          const lk = document.createElement('button'); lk.className='iconbtn'; lk.style.cssText='padding:1px 6px;font-size:11px;' + (det ? 'color:#a970ff;' : '');
+          lk.textContent = det ? translate('🔗 Ricollega') : translate('⛓ Scollega');
+          lk.title = det ? translate('Riattiva il collegamento con i punti coincidenti delle altre linee') : translate('Scollega questo punto dalle altre linee: potrai spostarlo da solo');
+          lk.onclick = (e)=>{ e.stopPropagation(); setPointLink(s, i, det); };
+          lab.insertBefore(lk, lab.children[1] || null);
         }
         block.appendChild(lab);
         coordRow('X', p[0], v=>moveConnectedVertex(s, i, [v, s.points[i][1]]),
@@ -10188,7 +10675,7 @@ function findOpenIssues(){
     if(s.points.length<2) continue;
     [0, s.points.length-1].forEach(idx=>{
       const p = s.points[idx];
-      const hasMatch = allPoints.some(o => !(o.shapeId===s.id && o.kind==='vertex' && o.idx===idx) && pointsEqual(o.pt, p));
+      const hasMatch = isVertexLinked(s, idx, allPoints);
       if(!hasMatch) issues.push({shapeId:s.id, idx, pt:p});
     });
   }
@@ -10367,6 +10854,7 @@ function weldPointsToSegments(toleranceMM){
             t = clamp(t,0,1);
             const proj = [a[0]+t*abx, a[1]+t*aby];
             other.points.splice(i+1, 0, proj);
+            shiftDetachedIndices(other, i+1, +1);
             if(other.smooth) other.smooth.splice(i+1, 0, 0); else other.smooth = other.points.map(()=>0);
             s.points[idx] = [proj[0], proj[1]];
             count++; done = true;

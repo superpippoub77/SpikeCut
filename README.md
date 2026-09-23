@@ -119,6 +119,24 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   stesso ruolo e livello vengono fuse in un unico percorso, e una linea che
   si richiude su se stessa diventa un percorso chiuso. Le catene (un punto
   sia di partenza sia di arrivo) vengono segnalate e bloccate.
+- **Scollega / Ricollega**: i punti che coincidono sono uniti (spostandone
+  uno si trascina l'altro). Un punto si può scollegare restando dov'è: dal
+  tasto destro direttamente sulla sua maniglia, oppure con "⛓ Scollega" accanto
+  al punto nel pannello coordinate. Con "⛓ Scollega tutti i vertici" (pannello
+  proprietà o tasto destro sulla forma) si scollegano in un colpo tutti i punti
+  della forma o delle forme selezionate: spostandole, le linee collegate restano
+  ferme. I punti scollegati hanno la maniglia viola tratteggiata, contano come
+  punti liberi (quindi compaiono anche in "Unisci punti") e si ricollegano con
+  "🔗 Ricollega" o unendoli di nuovo.
+- **Operazioni booleane** (con 2 o più forme selezionate, dal pannello
+  proprietà o dal tasto destro): ⊕ Unione, ⊖ Sottrai (toglie dalla forma più
+  in basso quelle che le stanno sopra), ⊗ Intersezione, ⊘ Esclusione. Valgono
+  per percorsi chiusi, rettangoli ed ellissi (anche ruotati; le curve vengono
+  campionate); le linee aperte vengono ignorate con un avviso. Il risultato
+  prende stile e livello della forma più in basso; i fori interni diventano
+  linee chiuse separate (per la fustella sono tagli interni; se la forma è
+  riempita, il foro compare come contorno). Usa la libreria polygon-clipping
+  (MIT, inclusa nel file: vedi LICENSE-polygon-clipping.md).
 - **Finestre riducibili a icona**: le finestre di lavoro (Unisci punti,
   Anteprima 3D, Genera scatola, Libreria, Cronologia, Salda punti, Stampa…)
   hanno il pulsante ▁ nell'intestazione: la finestra si riduce nella barra
