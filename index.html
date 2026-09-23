@@ -598,7 +598,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.5.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.6.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1584,6 +1584,9 @@ const I18N = {
     "Errore nel caricamento dei componenti condivisi.": "Error loading shared components.",
     "Questo progetto condiviso non contiene forme da inserire.": "This shared project contains no shapes to insert.",
     "\"{name}\" inserito al centro del foglio: spostalo e adattalo come preferisci.": "\"{name}\" inserted at the center of the sheet: move and adjust it as you like.",
+    "Salva subito in libreria: sovrascrive il progetto se è già collegato, altrimenti chiede nome e cartella": "Save to library right away: overwrites the project if it’s already linked, otherwise asks for a name and folder",
+    "Salvato in libreria.": "Saved to library.",
+    "Errore nel salvataggio in libreria: ": "Error saving to the library: ",
   },
   de: {
     "1 cm": "1 cm",
@@ -2077,6 +2080,9 @@ const I18N = {
     "Errore nel caricamento dei componenti condivisi.": "Fehler beim Laden der geteilten Komponenten.",
     "Questo progetto condiviso non contiene forme da inserire.": "Dieses geteilte Projekt enthält keine einfügbaren Formen.",
     "\"{name}\" inserito al centro del foglio: spostalo e adattalo come preferisci.": "\"{name}\" in der Mitte des Blatts eingefügt: verschiebe und passe es nach Belieben an.",
+    "Salva subito in libreria: sovrascrive il progetto se è già collegato, altrimenti chiede nome e cartella": "Sofort in der Bibliothek speichern: überschreibt das Projekt, wenn es bereits verknüpft ist, andernfalls wird nach Name und Ordner gefragt",
+    "Salvato in libreria.": "In der Bibliothek gespeichert.",
+    "Errore nel salvataggio in libreria: ": "Fehler beim Speichern in der Bibliothek: ",
   },
   es: {
     "1 cm": "1 cm",
@@ -2570,6 +2576,9 @@ const I18N = {
     "Errore nel caricamento dei componenti condivisi.": "Error al cargar los componentes compartidos.",
     "Questo progetto condiviso non contiene forme da inserire.": "Este proyecto compartido no contiene formas para insertar.",
     "\"{name}\" inserito al centro del foglio: spostalo e adattalo come preferisci.": "\"{name}\" insertado en el centro de la hoja: muévelo y ajústalo como prefieras.",
+    "Salva subito in libreria: sovrascrive il progetto se è già collegato, altrimenti chiede nome e cartella": "Guardar en la biblioteca de inmediato: sobrescribe el proyecto si ya está vinculado, si no pide un nombre y una carpeta",
+    "Salvato in libreria.": "Guardado en la biblioteca.",
+    "Errore nel salvataggio in libreria: ": "Error al guardar en la biblioteca: ",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -3063,6 +3072,9 @@ const I18N = {
     "Errore nel caricamento dei componenti condivisi.": "加载共享组件时出错。",
     "Questo progetto condiviso non contiene forme da inserire.": "此共享项目不包含可插入的形状。",
     "\"{name}\" inserito al centro del foglio: spostalo e adattalo come preferisci.": "\"{name}\" 已插入图纸中心：可随意移动和调整。",
+    "Salva subito in libreria: sovrascrive il progetto se è già collegato, altrimenti chiede nome e cartella": "立即保存到资料库：如果项目已关联则直接覆盖，否则会询问名称和文件夹",
+    "Salvato in libreria.": "已保存到资料库。",
+    "Errore nel salvataggio in libreria: ": "保存到资料库时出错：",
   },
   fr: {
     "1 cm": "1 cm",
@@ -3556,6 +3568,9 @@ const I18N = {
     "Errore nel caricamento dei componenti condivisi.": "Erreur lors du chargement des composants partagés.",
     "Questo progetto condiviso non contiene forme da inserire.": "Ce projet partagé ne contient aucune forme à insérer.",
     "\"{name}\" inserito al centro del foglio: spostalo e adattalo come preferisci.": "« {name} » inséré au centre de la feuille : déplace-le et ajuste-le comme tu veux.",
+    "Salva subito in libreria: sovrascrive il progetto se è già collegato, altrimenti chiede nome e cartella": "Enregistrer immédiatement dans la bibliothèque : écrase le projet s’il est déjà lié, sinon demande un nom et un dossier",
+    "Salvato in libreria.": "Enregistré dans la bibliothèque.",
+    "Errore nel salvataggio in libreria: ": "Erreur lors de l’enregistrement dans la bibliothèque : ",
   },
 };
 let currentLang = 'it';
@@ -6149,6 +6164,23 @@ async function apiFetch(path, opts){
 function escapeHTML(s){
   return String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 }
+// Salvataggio rapido: se il progetto è già collegato a un elemento della
+// libreria, lo sovrascrive direttamente senza aprire nessuna finestra —
+// è il caso più comune (risalvare il proprio progetto già aperto). Solo
+// la PRIMA volta (nessun collegamento ancora) serve scegliere nome e
+// cartella, quindi in quel caso apre comunque la finestra completa.
+async function quickSaveToLibrary(){
+  if(!currentUser){ openAccountModal('login'); showToast('Accedi al tuo account per salvare in libreria.', true); return; }
+  if(!state.libraryId){ saveToLibrary(); return; }
+  const name = document.getElementById('filename').value.trim() || 'disegno';
+  try{
+    const payload = { id: state.libraryId, name, shared: !!state.librarySharedLast, folderId: state.libraryFolderId,
+      page: state.page, shapes: state.shapes, refImage: state.refImage, layers: state.layers,
+      activeLayerId: state.activeLayerId, customFonts: state.customFonts, projectInfo: state.projectInfo };
+    await apiFetch('save.php', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    showToast('Salvato in libreria.', false);
+  }catch(err){ showToast('Errore nel salvataggio in libreria: ' + err.message, true); }
+}
 async function saveToLibrary(){
   if(!currentUser){ openAccountModal('login'); showToast('Accedi al tuo account per salvare in libreria.', true); return; }
   document.getElementById('saveLibName').value = document.getElementById('filename').value || 'disegno';
@@ -6834,7 +6866,7 @@ function updateAccountUIInner(){
   const libBtn = document.getElementById('btnSaveLibraryTop');
   libBtn.disabled = !currentUser;
   libBtn.title = currentUser
-    ? 'Salva in libreria (server) — scegli se privato o condiviso con tutti gli utenti'
+    ? 'Salva subito in libreria: sovrascrive il progetto se è già collegato, altrimenti chiede nome e cartella'
     : 'Accedi al tuo account per salvare in libreria (server)';
   const openLibBtn = document.getElementById('btnOpenLibraryTop');
   openLibBtn.disabled = !currentUser;
@@ -9954,7 +9986,7 @@ document.getElementById('btnQuickSave').onclick = ()=>{
   clearTimeout(state.autosaveTimer);
   doAutosave();
 };
-document.getElementById('btnSaveLibraryTop').onclick = saveToLibrary;
+document.getElementById('btnSaveLibraryTop').onclick = quickSaveToLibrary;
 document.getElementById('btnOpenLibraryTop').onclick = openLibraryModal;
 async function tryRestore(){
   try{

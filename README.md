@@ -180,7 +180,13 @@ Due sistemi indipendenti, con scopi diversi:
   questo browser/computer: utile per non perdere il lavoro chiudendo per
   sbaglio la scheda, ma non è condiviso tra dispositivi.
 - **☁ Libreria** (server) — richiede un account (vedi sotto), salva sul
-  server ed è raggiungibile da qualunque dispositivo.
+  server ed è raggiungibile da qualunque dispositivo. Se il progetto è
+  già collegato alla libreria (perché l'hai aperto da lì, o già salvato
+  in precedenza), un clic lo sovrascrive **subito**, senza aprire nessuna
+  finestra. La finestra completa (nome, cartella, condivisione) compare
+  solo la prima volta, oppure richiamandola apposta dal menu File →
+  "Salva in libreria (server)" — utile per salvare con un altro nome o
+  in un'altra cartella senza toccare l'originale.
 
 C'è anche l'esportazione/importazione di un file progetto `.json` da
 scaricare e riaprire manualmente, indipendente da entrambi i sistemi sopra.
