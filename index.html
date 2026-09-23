@@ -599,7 +599,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.8.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.9.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -736,6 +736,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
         <button class="btn" id="fold3dReset" style="width:auto;margin:0;">Vista iniziale</button>
       </div>
       <div class="hint" id="fold3dInfo" style="margin-top:8px;"></div>
+      <div id="fold3dCheck" style="max-height:190px;overflow:auto;"></div>
       <div class="hint">Trascina per ruotare, rotella per lo zoom. Lato chiaro = lato stampato (esterno), lato color cartone = interno. I pannelli sono ricavati dai contorni di TAGLIO chiusi, divisi dalle linee di PIEGA; verso e angolo di ogni piega si impostano nel pannello proprietà della linea.</div>
     </div>
   </div>
@@ -1627,6 +1628,30 @@ const I18N = {
     "Nessuna piega collega i pannelli: il modello resta piatto.": "No fold connects the panels: the model stays flat.",
     "{n} pieghe senza verso impostato: considerate a monte, 90°.": "{n} folds without a set direction: treated as mountain, 90°.",
     "La freccia e l'angolo compaiono sul disegno solo se scegli un verso di piegatura. 90° = angolo retto (parete di scatola), 180° = piega completa su se stessa. Verso e angolo sono usati anche dall'anteprima 3D.": "The arrow and angle appear on the drawing only if you choose a fold direction. 90° = right angle (box wall), 180° = folded completely onto itself. Direction and angle are also used by the 3D preview.",
+    "Piega che non arriva al contorno: si ferma a {gaps} da un'altra linea, quindi non divide nessun pannello.": "Fold that doesn’t reach the outline: it stops {gaps} from another line, so it doesn’t split any panel.",
+    "Piega con un'estremità nel vuoto: proseguendo nella sua direzione non incontra nessuna linea di taglio o piega.": "Fold with a loose end: continuing in its direction it meets no cut or fold line.",
+    "Piega che non divide nessun pannello: termina all'interno di un pannello senza separarlo in due parti.": "Fold that doesn’t split any panel: it ends inside a panel without dividing it in two.",
+    "Piega sovrapposta al bordo esterno della fustella: da un lato non c'è nessun pannello da piegare.": "Fold lying on the outer edge of the dieline: on one side there is no panel to fold.",
+    "Piega che non separa due pannelli distinti: il contorno di taglio intorno non è chiuso da entrambi i lati.": "Fold that doesn’t separate two distinct panels: the surrounding cut outline isn’t closed on both sides.",
+    "Usata solo in parte ({pct}%).": "Only partly used ({pct}%).",
+    "Linea di taglio aperta: all'estremità mancano {gaps} per chiudere il contorno.": "Open cut line: {gaps} are missing at the end to close the outline.",
+    "Linea di taglio che non chiude nessun contorno: i suoi tratti finiscono nel vuoto.": "Cut line that closes no outline: its segments end in empty space.",
+    "Contorno di taglio non chiuso: il primo e l'ultimo punto distano {d} mm (selezionalo e usa \"Chiudi percorso\" nel pannello proprietà).": "Cut outline not closed: the first and last points are {d} mm apart (select it and use \"Close path\" in the properties panel).",
+    "Puoi usare Strumenti → Salda punti vicini o Chiudi tutti i percorsi aperti.": "You can use Tools → Weld nearby points or Close all open paths.",
+    "{n} pannelli non sono collegati al resto da nessuna piega: restano piatti.": "{n} panels aren’t connected to the rest by any fold: they stay flat.",
+    "Nessun pannello chiuso: le linee di taglio non formano nessun contorno chiuso.": "No closed panel: the cut lines don’t form any closed outline.",
+    "Il disegno non ha linee con ruolo Taglio: se il contorno è disegnato con il ruolo Disegno, assegnagli il ruolo Taglio.": "The drawing has no lines with the Cut role: if the outline is drawn with the Design role, give it the Cut role.",
+    "{n} elementi con ruolo Taglio o Piega non sono linee o forme geometriche (es. tracciati vettorizzati, testo, immagini) e vengono ignorati.": "{n} items with the Cut or Fold role aren’t lines or geometric shapes (e.g. vectorized traces, text, images) and are ignored.",
+    "{n} linee di taglio o piega su livelli nascosti sono state ignorate.": "{n} cut or fold lines on hidden layers were ignored.",
+    "{n} linee curve sono approssimate con segmenti dritti nella vista 3D.": "{n} curved lines are approximated with straight segments in the 3D view.",
+    "Controllo del disegno: {n} problemi trovati — la simulazione potrebbe non tenere conto di tutto.": "Drawing check: {n} problems found — the simulation may not account for everything.",
+    "Controllo del disegno: tutte le linee di taglio e piega sono state considerate.": "Drawing check: all cut and fold lines have been taken into account.",
+    "Mostra sul disegno": "Show on drawing",
+    "🔧 Allunga automaticamente {n} pieghe fino al contorno": "🔧 Automatically extend {n} folds to the outline",
+    "Prolunga le estremità delle pieghe che si fermano a meno di {mm} mm da un'altra linea, nella loro stessa direzione.": "Extends the ends of folds that stop less than {mm} mm from another line, in their own direction.",
+    "Elementi evidenziati sul disegno (cerchi rossi): correggili e riapri l'anteprima 3D.": "Items highlighted on the drawing (red circles): fix them and reopen the 3D preview.",
+    "{n} pieghe allungate fino al contorno.": "{n} folds extended to the outline.",
+    "Nessun pannello da piegare: vedi il controllo del disegno qui sotto.": "No panel to fold: see the drawing check below.",
   },
   de: {
     "1 cm": "1 cm",
@@ -2141,6 +2166,30 @@ const I18N = {
     "Nessuna piega collega i pannelli: il modello resta piatto.": "Kein Falz verbindet die Felder: Das Modell bleibt flach.",
     "{n} pieghe senza verso impostato: considerate a monte, 90°.": "{n} Falze ohne festgelegte Richtung: als Bergfalz, 90° behandelt.",
     "La freccia e l'angolo compaiono sul disegno solo se scegli un verso di piegatura. 90° = angolo retto (parete di scatola), 180° = piega completa su se stessa. Verso e angolo sono usati anche dall'anteprima 3D.": "Pfeil und Winkel erscheinen in der Zeichnung nur, wenn du eine Faltrichtung wählst. 90° = rechter Winkel (Schachtelwand), 180° = vollständig auf sich selbst gefaltet. Richtung und Winkel werden auch von der 3D-Vorschau verwendet.",
+    "Piega che non arriva al contorno: si ferma a {gaps} da un'altra linea, quindi non divide nessun pannello.": "Falz, der die Kontur nicht erreicht: Er endet {gaps} vor einer anderen Linie und teilt daher kein Feld.",
+    "Piega con un'estremità nel vuoto: proseguendo nella sua direzione non incontra nessuna linea di taglio o piega.": "Falz mit einem freien Ende: In seiner Richtung verlängert trifft er auf keine Schnitt- oder Falzlinie.",
+    "Piega che non divide nessun pannello: termina all'interno di un pannello senza separarlo in due parti.": "Falz, der kein Feld teilt: Er endet innerhalb eines Felds, ohne es in zwei Teile zu trennen.",
+    "Piega sovrapposta al bordo esterno della fustella: da un lato non c'è nessun pannello da piegare.": "Falz auf dem Außenrand der Stanzform: Auf einer Seite gibt es kein Feld zum Falten.",
+    "Piega che non separa due pannelli distinti: il contorno di taglio intorno non è chiuso da entrambi i lati.": "Falz, der keine zwei getrennten Felder trennt: Die umgebende Schnittkontur ist nicht auf beiden Seiten geschlossen.",
+    "Usata solo in parte ({pct}%).": "Nur teilweise verwendet ({pct}%).",
+    "Linea di taglio aperta: all'estremità mancano {gaps} per chiudere il contorno.": "Offene Schnittlinie: Am Ende fehlen {gaps}, um die Kontur zu schließen.",
+    "Linea di taglio che non chiude nessun contorno: i suoi tratti finiscono nel vuoto.": "Schnittlinie, die keine Kontur schließt: Ihre Abschnitte enden im Leeren.",
+    "Contorno di taglio non chiuso: il primo e l'ultimo punto distano {d} mm (selezionalo e usa \"Chiudi percorso\" nel pannello proprietà).": "Schnittkontur nicht geschlossen: Der erste und der letzte Punkt liegen {d} mm auseinander (wähle sie aus und nutze \"Pfad schließen\" im Eigenschaftenfeld).",
+    "Puoi usare Strumenti → Salda punti vicini o Chiudi tutti i percorsi aperti.": "Du kannst Werkzeuge → Nahe Punkte verschweißen oder Alle offenen Pfade schließen verwenden.",
+    "{n} pannelli non sono collegati al resto da nessuna piega: restano piatti.": "{n} Felder sind durch keinen Falz mit dem Rest verbunden: Sie bleiben flach.",
+    "Nessun pannello chiuso: le linee di taglio non formano nessun contorno chiuso.": "Kein geschlossenes Feld: Die Schnittlinien bilden keine geschlossene Kontur.",
+    "Il disegno non ha linee con ruolo Taglio: se il contorno è disegnato con il ruolo Disegno, assegnagli il ruolo Taglio.": "Die Zeichnung hat keine Linien mit der Rolle Schnitt: Wenn die Kontur mit der Rolle Zeichnung gezeichnet ist, weise ihr die Rolle Schnitt zu.",
+    "{n} elementi con ruolo Taglio o Piega non sono linee o forme geometriche (es. tracciati vettorizzati, testo, immagini) e vengono ignorati.": "{n} Elemente mit der Rolle Schnitt oder Falz sind keine Linien oder geometrischen Formen (z.B. vektorisierte Pfade, Text, Bilder) und werden ignoriert.",
+    "{n} linee di taglio o piega su livelli nascosti sono state ignorate.": "{n} Schnitt- oder Falzlinien auf ausgeblendeten Ebenen wurden ignoriert.",
+    "{n} linee curve sono approssimate con segmenti dritti nella vista 3D.": "{n} gekrümmte Linien werden in der 3D-Ansicht durch gerade Abschnitte angenähert.",
+    "Controllo del disegno: {n} problemi trovati — la simulazione potrebbe non tenere conto di tutto.": "Zeichnungsprüfung: {n} Probleme gefunden — die Simulation berücksichtigt möglicherweise nicht alles.",
+    "Controllo del disegno: tutte le linee di taglio e piega sono state considerate.": "Zeichnungsprüfung: Alle Schnitt- und Falzlinien wurden berücksichtigt.",
+    "Mostra sul disegno": "In der Zeichnung zeigen",
+    "🔧 Allunga automaticamente {n} pieghe fino al contorno": "🔧 {n} Falze automatisch bis zur Kontur verlängern",
+    "Prolunga le estremità delle pieghe che si fermano a meno di {mm} mm da un'altra linea, nella loro stessa direzione.": "Verlängert die Enden von Falzen, die weniger als {mm} mm vor einer anderen Linie enden, in ihrer eigenen Richtung.",
+    "Elementi evidenziati sul disegno (cerchi rossi): correggili e riapri l'anteprima 3D.": "Elemente in der Zeichnung markiert (rote Kreise): Korrigiere sie und öffne die 3D-Vorschau erneut.",
+    "{n} pieghe allungate fino al contorno.": "{n} Falze bis zur Kontur verlängert.",
+    "Nessun pannello da piegare: vedi il controllo del disegno qui sotto.": "Kein Feld zum Falten: siehe die Zeichnungsprüfung unten.",
   },
   es: {
     "1 cm": "1 cm",
@@ -2655,6 +2704,30 @@ const I18N = {
     "Nessuna piega collega i pannelli: il modello resta piatto.": "Ningún pliegue conecta los paneles: el modelo queda plano.",
     "{n} pieghe senza verso impostato: considerate a monte, 90°.": "{n} pliegues sin dirección definida: tratados como monte, 90°.",
     "La freccia e l'angolo compaiono sul disegno solo se scegli un verso di piegatura. 90° = angolo retto (parete di scatola), 180° = piega completa su se stessa. Verso e angolo sono usati anche dall'anteprima 3D.": "La flecha y el ángulo aparecen en el dibujo solo si eliges una dirección de pliegue. 90° = ángulo recto (pared de caja), 180° = plegado completamente sobre sí mismo. La dirección y el ángulo también los usa la vista previa 3D.",
+    "Piega che non arriva al contorno: si ferma a {gaps} da un'altra linea, quindi non divide nessun pannello.": "Pliegue que no llega al contorno: se detiene a {gaps} de otra línea, así que no divide ningún panel.",
+    "Piega con un'estremità nel vuoto: proseguendo nella sua direzione non incontra nessuna linea di taglio o piega.": "Pliegue con un extremo suelto: siguiendo su dirección no encuentra ninguna línea de corte o pliegue.",
+    "Piega che non divide nessun pannello: termina all'interno di un pannello senza separarlo in due parti.": "Pliegue que no divide ningún panel: termina dentro de un panel sin separarlo en dos partes.",
+    "Piega sovrapposta al bordo esterno della fustella: da un lato non c'è nessun pannello da piegare.": "Pliegue sobre el borde exterior del troquel: por un lado no hay ningún panel que plegar.",
+    "Piega che non separa due pannelli distinti: il contorno di taglio intorno non è chiuso da entrambi i lati.": "Pliegue que no separa dos paneles distintos: el contorno de corte alrededor no está cerrado por ambos lados.",
+    "Usata solo in parte ({pct}%).": "Usado solo en parte ({pct}%).",
+    "Linea di taglio aperta: all'estremità mancano {gaps} per chiudere il contorno.": "Línea de corte abierta: en el extremo faltan {gaps} para cerrar el contorno.",
+    "Linea di taglio che non chiude nessun contorno: i suoi tratti finiscono nel vuoto.": "Línea de corte que no cierra ningún contorno: sus tramos terminan en el vacío.",
+    "Contorno di taglio non chiuso: il primo e l'ultimo punto distano {d} mm (selezionalo e usa \"Chiudi percorso\" nel pannello proprietà).": "Contorno de corte no cerrado: el primer y el último punto distan {d} mm (selecciónalo y usa \"Cerrar trazado\" en el panel de propiedades).",
+    "Puoi usare Strumenti → Salda punti vicini o Chiudi tutti i percorsi aperti.": "Puedes usar Herramientas → Soldar puntos cercanos o Cerrar todos los trazados abiertos.",
+    "{n} pannelli non sono collegati al resto da nessuna piega: restano piatti.": "{n} paneles no están conectados al resto por ningún pliegue: quedan planos.",
+    "Nessun pannello chiuso: le linee di taglio non formano nessun contorno chiuso.": "Ningún panel cerrado: las líneas de corte no forman ningún contorno cerrado.",
+    "Il disegno non ha linee con ruolo Taglio: se il contorno è disegnato con il ruolo Disegno, assegnagli il ruolo Taglio.": "El dibujo no tiene líneas con el rol Corte: si el contorno está dibujado con el rol Dibujo, asígnale el rol Corte.",
+    "{n} elementi con ruolo Taglio o Piega non sono linee o forme geometriche (es. tracciati vettorizzati, testo, immagini) e vengono ignorati.": "{n} elementos con rol Corte o Pliegue no son líneas ni formas geométricas (p. ej. trazados vectorizados, texto, imágenes) y se ignoran.",
+    "{n} linee di taglio o piega su livelli nascosti sono state ignorate.": "Se ignoraron {n} líneas de corte o pliegue en capas ocultas.",
+    "{n} linee curve sono approssimate con segmenti dritti nella vista 3D.": "{n} líneas curvas se aproximan con segmentos rectos en la vista 3D.",
+    "Controllo del disegno: {n} problemi trovati — la simulazione potrebbe non tenere conto di tutto.": "Control del dibujo: {n} problemas encontrados — la simulación podría no tener en cuenta todo.",
+    "Controllo del disegno: tutte le linee di taglio e piega sono state considerate.": "Control del dibujo: se han tenido en cuenta todas las líneas de corte y pliegue.",
+    "Mostra sul disegno": "Mostrar en el dibujo",
+    "🔧 Allunga automaticamente {n} pieghe fino al contorno": "🔧 Alargar automáticamente {n} pliegues hasta el contorno",
+    "Prolunga le estremità delle pieghe che si fermano a meno di {mm} mm da un'altra linea, nella loro stessa direzione.": "Prolonga los extremos de los pliegues que se detienen a menos de {mm} mm de otra línea, en su misma dirección.",
+    "Elementi evidenziati sul disegno (cerchi rossi): correggili e riapri l'anteprima 3D.": "Elementos resaltados en el dibujo (círculos rojos): corrígelos y vuelve a abrir la vista previa 3D.",
+    "{n} pieghe allungate fino al contorno.": "{n} pliegues alargados hasta el contorno.",
+    "Nessun pannello da piegare: vedi il controllo del disegno qui sotto.": "Ningún panel que plegar: consulta el control del dibujo más abajo.",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -3169,6 +3242,30 @@ const I18N = {
     "Nessuna piega collega i pannelli: il modello resta piatto.": "没有折线连接各面板：模型保持平面。",
     "{n} pieghe senza verso impostato: considerate a monte, 90°.": "{n} 条折线未设置方向：按山折 90° 处理。",
     "La freccia e l'angolo compaiono sul disegno solo se scegli un verso di piegatura. 90° = angolo retto (parete di scatola), 180° = piega completa su se stessa. Verso e angolo sono usati anche dall'anteprima 3D.": "只有选择了折叠方向后，箭头和角度才会显示在图纸上。90° = 直角（盒壁），180° = 完全对折。方向和角度也用于3D预览。",
+    "Piega che non arriva al contorno: si ferma a {gaps} da un'altra linea, quindi non divide nessun pannello.": "折线未到达轮廓：距另一条线还有 {gaps}，因此没有分割任何面板。",
+    "Piega con un'estremità nel vuoto: proseguendo nella sua direzione non incontra nessuna linea di taglio o piega.": "折线有一端悬空：沿其方向延伸也不会碰到任何切割线或折线。",
+    "Piega che non divide nessun pannello: termina all'interno di un pannello senza separarlo in due parti.": "折线没有分割任何面板：它在面板内部结束，没有将其分成两部分。",
+    "Piega sovrapposta al bordo esterno della fustella: da un lato non c'è nessun pannello da piegare.": "折线与刀模外边缘重合：一侧没有可折叠的面板。",
+    "Piega che non separa due pannelli distinti: il contorno di taglio intorno non è chiuso da entrambi i lati.": "折线没有分隔两个独立面板：周围的切割轮廓两侧并未闭合。",
+    "Usata solo in parte ({pct}%).": "仅部分使用（{pct}%）。",
+    "Linea di taglio aperta: all'estremità mancano {gaps} per chiudere il contorno.": "切割线未闭合：端点处还差 {gaps} 才能闭合轮廓。",
+    "Linea di taglio che non chiude nessun contorno: i suoi tratti finiscono nel vuoto.": "切割线没有闭合任何轮廓：其线段末端悬空。",
+    "Contorno di taglio non chiuso: il primo e l'ultimo punto distano {d} mm (selezionalo e usa \"Chiudi percorso\" nel pannello proprietà).": "切割轮廓未闭合：首末两点相距 {d} 毫米（选中它并在属性面板中使用\"闭合路径\"）。",
+    "Puoi usare Strumenti → Salda punti vicini o Chiudi tutti i percorsi aperti.": "可以使用 工具 → 焊接邻近点 或 闭合所有开放路径。",
+    "{n} pannelli non sono collegati al resto da nessuna piega: restano piatti.": "{n} 个面板没有通过任何折线与其余部分相连：保持平面。",
+    "Nessun pannello chiuso: le linee di taglio non formano nessun contorno chiuso.": "没有闭合面板：切割线没有形成任何闭合轮廓。",
+    "Il disegno non ha linee con ruolo Taglio: se il contorno è disegnato con il ruolo Disegno, assegnagli il ruolo Taglio.": "图纸中没有切割角色的线条：如果轮廓是用绘图角色画的，请将其改为切割角色。",
+    "{n} elementi con ruolo Taglio o Piega non sono linee o forme geometriche (es. tracciati vettorizzati, testo, immagini) e vengono ignorati.": "{n} 个切割或折线角色的元素不是线条或几何形状（如矢量化路径、文字、图像），已被忽略。",
+    "{n} linee di taglio o piega su livelli nascosti sono state ignorate.": "已忽略隐藏图层上的 {n} 条切割线或折线。",
+    "{n} linee curve sono approssimate con segmenti dritti nella vista 3D.": "3D视图中 {n} 条曲线以直线段近似表示。",
+    "Controllo del disegno: {n} problemi trovati — la simulazione potrebbe non tenere conto di tutto.": "图纸检查：发现 {n} 个问题 — 模拟可能未考虑全部内容。",
+    "Controllo del disegno: tutte le linee di taglio e piega sono state considerate.": "图纸检查：所有切割线和折线均已考虑。",
+    "Mostra sul disegno": "在图纸上显示",
+    "🔧 Allunga automaticamente {n} pieghe fino al contorno": "🔧 自动将 {n} 条折线延长至轮廓",
+    "Prolunga le estremità delle pieghe che si fermano a meno di {mm} mm da un'altra linea, nella loro stessa direzione.": "将距另一条线不足 {mm} 毫米的折线端点沿其方向延长。",
+    "Elementi evidenziati sul disegno (cerchi rossi): correggili e riapri l'anteprima 3D.": "已在图纸上标出相关元素（红色圆圈）：修正后重新打开3D预览。",
+    "{n} pieghe allungate fino al contorno.": "已将 {n} 条折线延长至轮廓。",
+    "Nessun pannello da piegare: vedi il controllo del disegno qui sotto.": "没有可折叠的面板：请查看下方的图纸检查。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -3683,6 +3780,30 @@ const I18N = {
     "Nessuna piega collega i pannelli: il modello resta piatto.": "Aucun pli ne relie les panneaux : le modèle reste à plat.",
     "{n} pieghe senza verso impostato: considerate a monte, 90°.": "{n} plis sans sens défini : traités comme montagne, 90°.",
     "La freccia e l'angolo compaiono sul disegno solo se scegli un verso di piegatura. 90° = angolo retto (parete di scatola), 180° = piega completa su se stessa. Verso e angolo sono usati anche dall'anteprima 3D.": "La flèche et l’angle n’apparaissent sur le dessin que si tu choisis un sens de pliage. 90° = angle droit (paroi de boîte), 180° = pli complet sur lui-même. Le sens et l’angle sont aussi utilisés par l’aperçu 3D.",
+    "Piega che non arriva al contorno: si ferma a {gaps} da un'altra linea, quindi non divide nessun pannello.": "Pli qui n’atteint pas le contour : il s’arrête à {gaps} d’une autre ligne et ne divise donc aucun panneau.",
+    "Piega con un'estremità nel vuoto: proseguendo nella sua direzione non incontra nessuna linea di taglio o piega.": "Pli avec une extrémité libre : en continuant dans sa direction, il ne rencontre aucune ligne de découpe ou de pli.",
+    "Piega che non divide nessun pannello: termina all'interno di un pannello senza separarlo in due parti.": "Pli qui ne divise aucun panneau : il se termine à l’intérieur d’un panneau sans le séparer en deux.",
+    "Piega sovrapposta al bordo esterno della fustella: da un lato non c'è nessun pannello da piegare.": "Pli superposé au bord extérieur de la forme de découpe : d’un côté, il n’y a aucun panneau à plier.",
+    "Piega che non separa due pannelli distinti: il contorno di taglio intorno non è chiuso da entrambi i lati.": "Pli qui ne sépare pas deux panneaux distincts : le contour de découpe autour n’est pas fermé des deux côtés.",
+    "Usata solo in parte ({pct}%).": "Utilisé seulement en partie ({pct}%).",
+    "Linea di taglio aperta: all'estremità mancano {gaps} per chiudere il contorno.": "Ligne de découpe ouverte : il manque {gaps} à l’extrémité pour fermer le contour.",
+    "Linea di taglio che non chiude nessun contorno: i suoi tratti finiscono nel vuoto.": "Ligne de découpe qui ne ferme aucun contour : ses segments se terminent dans le vide.",
+    "Contorno di taglio non chiuso: il primo e l'ultimo punto distano {d} mm (selezionalo e usa \"Chiudi percorso\" nel pannello proprietà).": "Contour de découpe non fermé : le premier et le dernier point sont à {d} mm l’un de l’autre (sélectionne-le et utilise « Fermer le tracé » dans le panneau de propriétés).",
+    "Puoi usare Strumenti → Salda punti vicini o Chiudi tutti i percorsi aperti.": "Tu peux utiliser Outils → Souder les points proches ou Fermer tous les tracés ouverts.",
+    "{n} pannelli non sono collegati al resto da nessuna piega: restano piatti.": "{n} panneaux ne sont reliés au reste par aucun pli : ils restent à plat.",
+    "Nessun pannello chiuso: le linee di taglio non formano nessun contorno chiuso.": "Aucun panneau fermé : les lignes de découpe ne forment aucun contour fermé.",
+    "Il disegno non ha linee con ruolo Taglio: se il contorno è disegnato con il ruolo Disegno, assegnagli il ruolo Taglio.": "Le dessin n’a aucune ligne avec le rôle Découpe : si le contour est tracé avec le rôle Dessin, donne-lui le rôle Découpe.",
+    "{n} elementi con ruolo Taglio o Piega non sono linee o forme geometriche (es. tracciati vettorizzati, testo, immagini) e vengono ignorati.": "{n} éléments avec le rôle Découpe ou Pli ne sont pas des lignes ou des formes géométriques (ex. tracés vectorisés, texte, images) et sont ignorés.",
+    "{n} linee di taglio o piega su livelli nascosti sono state ignorate.": "{n} lignes de découpe ou de pli sur des calques masqués ont été ignorées.",
+    "{n} linee curve sono approssimate con segmenti dritti nella vista 3D.": "{n} lignes courbes sont approximées par des segments droits dans la vue 3D.",
+    "Controllo del disegno: {n} problemi trovati — la simulazione potrebbe non tenere conto di tutto.": "Contrôle du dessin : {n} problèmes trouvés — la simulation pourrait ne pas tout prendre en compte.",
+    "Controllo del disegno: tutte le linee di taglio e piega sono state considerate.": "Contrôle du dessin : toutes les lignes de découpe et de pli ont été prises en compte.",
+    "Mostra sul disegno": "Afficher sur le dessin",
+    "🔧 Allunga automaticamente {n} pieghe fino al contorno": "🔧 Prolonger automatiquement {n} plis jusqu’au contour",
+    "Prolunga le estremità delle pieghe che si fermano a meno di {mm} mm da un'altra linea, nella loro stessa direzione.": "Prolonge les extrémités des plis qui s’arrêtent à moins de {mm} mm d’une autre ligne, dans leur propre direction.",
+    "Elementi evidenziati sul disegno (cerchi rossi): correggili e riapri l'anteprima 3D.": "Éléments mis en évidence sur le dessin (cercles rouges) : corrige-les et rouvre l’aperçu 3D.",
+    "{n} pieghe allungate fino al contorno.": "{n} plis prolongés jusqu’au contour.",
+    "Nessun pannello da piegare: vedi il controllo del disegno qui sotto.": "Aucun panneau à plier : vois le contrôle du dessin ci-dessous.",
   },
 };
 let currentLang = 'it';
@@ -4216,6 +4337,7 @@ function moveShapesBy(ids, dx, dy){
    HISTORY (undo/redo)
 ============================================================ */
 function pushHistory(){
+  state.foldCheckMarkers = null; // i cerchi del controllo 3D spariscono alla prima modifica
   const snap = JSON.stringify({shapes:state.shapes, layers:state.layers});
   state.history = state.history.slice(0, state.histIndex+1);
   state.historyTimes = (state.historyTimes||[]).slice(0, state.histIndex+1);
@@ -4838,6 +4960,9 @@ function renderEndpointMarkers(){
 // di ogni tratto delle forme con ruolo Piega che hanno un verso impostato.
 // Sono solo un'annotazione visiva: non fanno parte della geometria di taglio.
 function renderFoldIndicators(){
+  (state.foldCheckMarkers||[]).forEach(p=>{
+    layerOverlay.appendChild(el('circle', {cx:p[0]*state.scale, cy:p[1]*state.scale, r:10, fill:'rgba(255,59,48,0.15)', stroke:'#ff3b30', 'stroke-width':2, 'pointer-events':'none'}));
+  });
   for(const s of state.shapes){
     if(!s.points || s.style.role!=='fold' || !s.foldDir || !isShapeEffVisible(s)) continue;
     const n = s.points.length;
@@ -5072,13 +5197,14 @@ const TOOLS = [
 ============================================================ */
 function buildFoldModel(shapes){
   const TOL = 0.3; // mm
-  const segs = [];
-  const addSeg = (a,b,fold)=>{ if(Math.hypot(a[0]-b[0],a[1]-b[1])>TOL) segs.push({a,b,fold}); };
+  const segs = [], unsupported = [], curved = [], hidden = [];
+  const addSeg = (a,b,fold,src)=>{ if(Math.hypot(a[0]-b[0],a[1]-b[1])>TOL) segs.push({a,b,fold,src}); };
   shapes.forEach(s=>{
-    if(typeof isShapeEffVisible==='function' && !isShapeEffVisible(s)) return;
     const role = s.style && s.style.role;
     const isFold = role==='fold', isCut = role==='cut' || role==='diecut';
     if(!isFold && !isCut) return;
+    if(typeof isShapeEffVisible==='function' && !isShapeEffVisible(s)){ hidden.push(s); return; }
+    if(s.smooth && s.smooth.some(v=>v)) curved.push(s);
     let pts = null, closed = false;
     if(s.points){ pts = s.points; closed = !!s.closed; }
     else if(s.type==='rect' || s.type==='ellipse'){
@@ -5088,10 +5214,10 @@ function buildFoldModel(shapes){
       if(s.rotation) pts = pts.map(p=>rotatePointAround(p,[cx,cy],s.rotation));
       closed = true;
     }
-    if(!pts || pts.length<2) return;
+    if(!pts || pts.length<2){ unsupported.push(s); return; }
     const n = pts.length;
-    for(let i=0;i<n-1;i++) addSeg(pts[i], pts[i+1], isFold ? s : null);
-    if(closed && n>2) addSeg(pts[n-1], pts[0], isFold ? s : null);
+    for(let i=0;i<n-1;i++) addSeg(pts[i], pts[i+1], isFold ? s : null, s);
+    if(closed && n>2) addSeg(pts[n-1], pts[0], isFold ? s : null, s);
   });
 
   // --- nodi (punti coincidenti entro la tolleranza diventano un unico nodo)
@@ -5130,8 +5256,8 @@ function buildFoldModel(shapes){
       if(i===j) continue;
       const key = i<j ? i+'-'+j : j+'-'+i;
       const ex = edges.get(key);
-      if(!ex) edges.set(key, {i:Math.min(i,j), j:Math.max(i,j), fold:sg.fold});
-      else if(sg.fold) ex.fold = sg.fold; // un lato che è sia taglio sia piega vale come piega (cerniera)
+      if(!ex) edges.set(key, {i:Math.min(i,j), j:Math.max(i,j), fold:sg.fold, srcs:new Set([sg.src])});
+      else { if(sg.fold) ex.fold = sg.fold; ex.srcs.add(sg.src); } // un lato che è sia taglio sia piega vale come piega (cerniera)
     }
   });
 
@@ -5145,6 +5271,7 @@ function buildFoldModel(shapes){
       if(set.size===1){ const w=[...set][0]; set.delete(w); adj[w].delete(v); pruned = true; }
     });
   }
+  edges.forEach(e=>{ e.pruned = !adj[e.i].has(e.j); });
   const sorted = adj.map((set, v)=> [...set].sort((a,b)=>
     Math.atan2(nodes[a][1]-nodes[v][1], nodes[a][0]-nodes[v][0]) - Math.atan2(nodes[b][1]-nodes[v][1], nodes[b][0]-nodes[v][0])));
 
@@ -5189,11 +5316,16 @@ function buildFoldModel(shapes){
   const remap = []; const kept = [];
   faces.forEach((f,fi)=>{ if(keep[fi]){ remap[fi]=kept.length; kept.push(f); } });
   const hingesK = hinges.filter(h=>keep[h.f1] && keep[h.f2]).map(h=>Object.assign({}, h, {f1:remap[h.f1], f2:remap[h.f2]}));
+  edges.forEach(e=>{
+    const fa = faceOfHalf.get(e.i+'>'+e.j), fb = faceOfHalf.get(e.j+'>'+e.i);
+    e.fa = fa!=null && keep[fa] ? remap[fa] : null;
+    e.fb = fb!=null && keep[fb] ? remap[fb] : null;
+  });
 
   // --- albero di piegatura: dal pannello più grande verso gli altri
   const root = kept.reduce((best,f,fi)=> f.area>kept[best].area ? fi : best, 0);
   const parent = kept.map(()=>null), parentHinge = kept.map(()=>null);
-  const order = [];
+  const order = []; const unreached = [];
   if(kept.length){
     const seen = new Set([root]); const queue=[root];
     while(queue.length){
@@ -5204,10 +5336,11 @@ function buildFoldModel(shapes){
         seen.add(other); parent[other]=f; parentHinge[other]=h; queue.push(other);
       });
     }
-    kept.forEach((f,fi)=>{ if(!seen.has(fi)) order.push(fi); }); // pezzi staccati: restano piatti
+    kept.forEach((f,fi)=>{ if(!seen.has(fi)){ order.push(fi); unreached.push(fi); } }); // pezzi staccati: restano piatti
   }
   const flat3 = v=>[nodes[v][0], -nodes[v][1], 0]; // y verso l'alto nello spazio 3D
-  return { nodes, faces:kept, hinges:hingesK, root, parent, parentHinge, order, flat3 };
+  return { nodes, faces:kept, hinges:hingesK, root, parent, parentHinge, order, flat3,
+           segs, edges:[...edges.values()], unreached, unsupported, curved, hidden, TOL };
 }
 
 // Trasformazione affine 3D: p' = m·p + t
@@ -5252,19 +5385,167 @@ function foldModelAt(model, frac){
   }));
 }
 
+
+/* ---------- controllo del disegno prima della simulazione 3D ----------
+   Dice cosa il motore NON ha potuto usare e perché, con gli elementi da
+   evidenziare sul disegno e, dove possibile, una correzione automatica. */
+const FOLD_FIX_MAX = 5; // mm: una piega che si ferma entro questa distanza dal contorno viene allungata dalla correzione automatica
+function checkFoldModel(model){
+  const issues = [];
+  const elen = e=> Math.hypot(model.nodes[e.i][0]-model.nodes[e.j][0], model.nodes[e.i][1]-model.nodes[e.j][1]);
+  const foldStats = new Map(), cutOpen = new Map();
+  model.edges.forEach(e=>{
+    const L = elen(e);
+    e.srcs.forEach(src=>{
+      if(src.style.role==='fold'){
+        const st = foldStats.get(src) || {tot:0, hinge:0, pruned:0, border:0, same:0};
+        st.tot += L;
+        if(e.pruned) st.pruned += L;
+        else if(e.fa==null || e.fb==null) st.border += L;
+        else if(e.fa===e.fb) st.same += L;
+        else st.hinge += L;
+        foldStats.set(src, st);
+      } else if(e.pruned) cutOpen.set(src, (cutOpen.get(src)||0) + L);
+    });
+  });
+  // estremità libere di una forma aperta: nessun'altra linea passa di lì
+  const segDist = (p,a,b)=>{ const dx=b[0]-a[0], dy=b[1]-a[1], l2=dx*dx+dy*dy; let t = l2 ? ((p[0]-a[0])*dx+(p[1]-a[1])*dy)/l2 : 0; t=Math.max(0,Math.min(1,t)); return Math.hypot(a[0]+dx*t-p[0], a[1]+dy*t-p[1]); };
+  const freeEnds = s=>{
+    if(!s.points || s.closed || s.points.length<2) return [];
+    const others = model.segs.filter(g=>g.src!==s);
+    const n = s.points.length, out = [];
+    [[0,1],[n-1,n-2]].forEach(([idx, prevIdx])=>{
+      const P = s.points[idx];
+      if(others.some(g=>segDist(P,g.a,g.b) < model.TOL)) return;
+      const Q = s.points[prevIdx], dl = Math.hypot(P[0]-Q[0], P[1]-Q[1]) || 1;
+      const d = [(P[0]-Q[0])/dl, (P[1]-Q[1])/dl];
+      let best = null;
+      others.forEach(g=>{ // proseguo la linea nella sua direzione finché incontra un'altra linea
+        const ex=g.b[0]-g.a[0], ey=g.b[1]-g.a[1], den = d[0]*ey - d[1]*ex;
+        if(Math.abs(den)<1e-9) return;
+        const t = ((g.a[0]-P[0])*ey - (g.a[1]-P[1])*ex)/den;
+        const u = ((g.a[0]-P[0])*d[1] - (g.a[1]-P[1])*d[0])/den;
+        if(t>0 && u>=-1e-6 && u<=1+1e-6 && (best==null || t<best)) best = t;
+      });
+      out.push({shape:s, idx, pt:P, gap:best, target: best!=null ? [P[0]+d[0]*best, P[1]+d[1]*best] : null});
+    });
+    return out;
+  };
+  const fixes = [];
+  const fmt = v=> (Math.round(v*10)/10).toString().replace('.', ',');
+  foldStats.forEach((st, s)=>{
+    if(st.hinge >= st.tot*0.98 - 0.2) return; // usata (quasi) per intero
+    const partial = st.hinge > 0.5;
+    const pct = Math.round(st.hinge/st.tot*100);
+    const main = Math.max(st.pruned, st.border, st.same);
+    let text;
+    const ends = freeEnds(s);
+    if(main===st.pruned){
+      if(ends.length){
+        const gaps = ends.filter(e=>e.gap!=null).map(e=>fmt(e.gap)+' mm');
+        text = gaps.length
+          ? tpl('Piega che non arriva al contorno: si ferma a {gaps} da un\'altra linea, quindi non divide nessun pannello.', {gaps: gaps.join(' e ')})
+          : translate('Piega con un\'estremità nel vuoto: proseguendo nella sua direzione non incontra nessuna linea di taglio o piega.');
+      } else text = translate('Piega che non divide nessun pannello: termina all\'interno di un pannello senza separarlo in due parti.');
+      ends.forEach(e=>{ if(e.gap!=null && e.gap<=FOLD_FIX_MAX) fixes.push(e); });
+    } else if(main===st.border){
+      text = translate('Piega sovrapposta al bordo esterno della fustella: da un lato non c\'è nessun pannello da piegare.');
+    } else {
+      text = translate('Piega che non separa due pannelli distinti: il contorno di taglio intorno non è chiuso da entrambi i lati.');
+    }
+    if(partial) text = tpl('Usata solo in parte ({pct}%).', {pct}) + ' ' + text;
+    issues.push({level: partial ? 'warn' : 'error', text, shapes:[s], points: ends.map(e=>e.pt)});
+  });
+  cutOpen.forEach((L, s)=>{
+    if(L < 0.5) return;
+    const ends = freeEnds(s);
+    const gaps = ends.filter(e=>e.gap!=null).map(e=>fmt(e.gap)+' mm');
+    const pts = s.points || [];
+    const selfGap = (!s.closed && pts.length>2) ? Math.hypot(pts[0][0]-pts[pts.length-1][0], pts[0][1]-pts[pts.length-1][1]) : 0;
+    issues.push({level:'error', shapes:[s], points: ends.map(e=>e.pt),
+      text: (selfGap > model.TOL ? tpl('Contorno di taglio non chiuso: il primo e l\'ultimo punto distano {d} mm (selezionalo e usa "Chiudi percorso" nel pannello proprietà).', {d: fmt(selfGap)}) : gaps.length ? tpl('Linea di taglio aperta: all\'estremità mancano {gaps} per chiudere il contorno.', {gaps:gaps.join(' e ')})
+                         : translate('Linea di taglio che non chiude nessun contorno: i suoi tratti finiscono nel vuoto.'))
+            + ' ' + translate('Puoi usare Strumenti → Salda punti vicini o Chiudi tutti i percorsi aperti.')});
+  });
+  if(model.faces.length && model.unreached.length && model.hinges.length){
+    const pts = model.unreached.map(fi=>{ const f=model.faces[fi]; let x=0,y=0; f.nodes.forEach(v=>{ x+=model.nodes[v][0]; y+=model.nodes[v][1]; }); return [x/f.nodes.length, y/f.nodes.length]; });
+    issues.push({level:'warn', shapes:[], points:pts, text: tpl('{n} pannelli non sono collegati al resto da nessuna piega: restano piatti.', {n:model.unreached.length})});
+  }
+  if(!model.faces.length){
+    const hasCut = state.shapes.some(s=>s.style && (s.style.role==='cut' || s.style.role==='diecut'));
+    issues.unshift({level:'error', shapes:[], points:[], text: hasCut
+      ? translate('Nessun pannello chiuso: le linee di taglio non formano nessun contorno chiuso.')
+      : translate('Il disegno non ha linee con ruolo Taglio: se il contorno è disegnato con il ruolo Disegno, assegnagli il ruolo Taglio.')});
+  }
+  if(model.unsupported.length) issues.push({level:'warn', shapes:model.unsupported, points:[],
+    text: tpl('{n} elementi con ruolo Taglio o Piega non sono linee o forme geometriche (es. tracciati vettorizzati, testo, immagini) e vengono ignorati.', {n:model.unsupported.length})});
+  if(model.hidden.length) issues.push({level:'info', shapes:[], points:[],
+    text: tpl('{n} linee di taglio o piega su livelli nascosti sono state ignorate.', {n:model.hidden.length})});
+  if(model.curved.length) issues.push({level:'info', shapes:model.curved, points:[],
+    text: tpl('{n} linee curve sono approssimate con segmenti dritti nella vista 3D.', {n:model.curved.length})});
+  const noDir = state.shapes.filter(s=>s.style && s.style.role==='fold' && !s.foldDir && isShapeEffVisible(s)).length;
+  if(noDir && model.hinges.length) issues.push({level:'info', shapes:[], points:[],
+    text: tpl('{n} pieghe senza verso impostato: considerate a monte, 90°.', {n:noDir})});
+  return {issues, fixes};
+}
+function renderFold3DCheck(result){
+  const host = document.getElementById('fold3dCheck');
+  host.innerHTML = '';
+  const serious = result.issues.filter(i=>i.level!=='info').length;
+  const head = document.createElement('div');
+  head.style.cssText = 'font-weight:600;font-size:12.5px;margin:10px 0 6px;color:' + (serious ? '#ff9f0a' : '#2f9e5a');
+  head.textContent = serious
+    ? tpl('Controllo del disegno: {n} problemi trovati — la simulazione potrebbe non tenere conto di tutto.', {n:serious})
+    : translate('Controllo del disegno: tutte le linee di taglio e piega sono state considerate.');
+  host.appendChild(head);
+  const icons = {error:'⛔', warn:'⚠️', info:'ℹ️'};
+  result.issues.forEach(is=>{
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:8px;align-items:flex-start;font-size:12px;padding:5px 0;border-top:1px solid rgba(128,128,128,0.18);';
+    const ic = document.createElement('span'); ic.textContent = icons[is.level]; row.appendChild(ic);
+    const tx = document.createElement('span'); tx.style.flex='1'; tx.textContent = is.text; row.appendChild(tx);
+    if(is.shapes.length || is.points.length){
+      const b = document.createElement('button'); b.className='btn'; b.style.cssText='width:auto;margin:0;padding:3px 9px;font-size:11.5px;';
+      b.textContent = translate('Mostra sul disegno');
+      b.onclick = ()=> showFoldIssuesOnDrawing(is.shapes, is.points);
+      row.appendChild(b);
+    }
+    host.appendChild(row);
+  });
+  if(result.fixes.length){
+    const b = document.createElement('button'); b.className='btn primary'; b.style.cssText='width:auto;margin:8px 0 0;';
+    const nShapes = new Set(result.fixes.map(f=>f.shape)).size;
+    b.textContent = tpl('🔧 Allunga automaticamente {n} pieghe fino al contorno', {n:nShapes});
+    b.title = tpl('Prolunga le estremità delle pieghe che si fermano a meno di {mm} mm da un\'altra linea, nella loro stessa direzione.', {mm:FOLD_FIX_MAX});
+    b.onclick = ()=> applyFoldFixes(result.fixes);
+    host.appendChild(b);
+  }
+}
+function showFoldIssuesOnDrawing(shapes, points){
+  closeFold3D();
+  state.selection = new Set(shapes.map(s=>s.id));
+  state.foldCheckMarkers = points.slice();
+  document.querySelector('.tabtrig[data-tab="prop"]').click();
+  renderAll();
+  showToast('Elementi evidenziati sul disegno (cerchi rossi): correggili e riapri l\'anteprima 3D.', false);
+}
+function applyFoldFixes(fixes){
+  fixes.forEach(f=>{ f.shape.points[f.idx] = [f.target[0], f.target[1]]; });
+  pushHistory();
+  renderAll();
+  const n = new Set(fixes.map(f=>f.shape)).size;
+  openFold3D();
+  showToast(tpl('{n} pieghe allungate fino al contorno.', {n}), false);
+}
 /* ---------- visualizzatore 3D (canvas 2D, algoritmo del pittore) ---------- */
 const fold3d = { model:null, frac:1, yaw:-0.6, pitch:0.45, zoom:1, anim:null, drag:null };
 function openFold3D(){
   const model = buildFoldModel(state.shapes);
-  if(!model.faces.length){ showToast('Nessun pannello chiuso trovato: servono contorni di taglio chiusi e linee di piega.', true); return; }
   fold3d.model = model; fold3d.yaw=-0.6; fold3d.pitch=0.45; fold3d.zoom=1;
-  const noDir = state.shapes.filter(s=>s.style && s.style.role==='fold' && !s.foldDir && isShapeEffVisible(s)).length;
-  let info = tpl('{p} pannelli, {h} pieghe collegate.', {p:model.faces.length, h:model.hinges.length});
-  if(!model.hinges.length) info += ' ' + translate('Nessuna piega collega i pannelli: il modello resta piatto.');
-  else if(noDir) info += ' ' + tpl('{n} pieghe senza verso impostato: considerate a monte, 90°.', {n:noDir});
-  document.getElementById('fold3dInfo').textContent = info;
+  document.getElementById('fold3dInfo').textContent = tpl('{p} pannelli, {h} pieghe collegate.', {p:model.faces.length, h:model.hinges.length});
+  renderFold3DCheck(checkFoldModel(model));
   openModal('fold3dModal');
-  playFold3D();
+  if(model.faces.length) playFold3D(); else setFold3DFrac(0);
 }
 function setFold3DFrac(f){
   fold3d.frac = Math.max(0, Math.min(1, f));
@@ -5292,6 +5573,11 @@ function renderFold3D(){
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.fillStyle = '#23262b'; ctx.fillRect(0,0,w,h);
   const faces = foldModelAt(fold3d.model, fold3d.frac);
+  if(!faces.length){
+    ctx.fillStyle = '#9aa0a6'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(translate('Nessun pannello da piegare: vedi il controllo del disegno qui sotto.'), w/2, h/2);
+    return;
+  }
   const all = faces.flatMap(f=>f.pts);
   const C = [0,1,2].map(i=> (Math.min(...all.map(p=>p[i]))+Math.max(...all.map(p=>p[i])))/2);
   const radius = Math.max(1, ...all.map(p=>Math.hypot(p[0]-C[0], p[1]-C[1], p[2]-C[2])));

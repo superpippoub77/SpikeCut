@@ -54,6 +54,15 @@ senza verso impostato sono considerate a monte, 90°). "▶ Simula piegatura"
 anima il passaggio da foglio piatto a scatola chiusa; il cursore permette di
 fermarsi a qualunque punto intermedio. Trascina per ruotare, rotella per lo
 zoom. Lato chiaro = lato stampato (esterno), color cartone = interno.
+**Controllo del disegno**: aprendo l'anteprima 3D, sotto il modello compare
+l'elenco di tutto ciò che non è stato possibile usare, con il motivo —
+pieghe che non arrivano al contorno (con la distanza mancante in mm), pieghe
+sul bordo esterno, contorni di taglio non chiusi, pannelli non collegati da
+nessuna piega, elementi su livelli nascosti o di tipo non gestito, linee
+curve approssimate. "Mostra sul disegno" chiude la finestra, seleziona gli
+elementi e li cerchia in rosso (i cerchi spariscono alla prima modifica).
+Le pieghe che si fermano a meno di 5 mm da un'altra linea si possono
+allungare automaticamente fino al contorno con un clic.
 Limiti attuali: i tratti curvi sono approssimati con segmenti dritti, i fori
 non vengono ritagliati dal pannello nella vista 3D, e le pareti che si
 compenetrano (se gli angoli non sono coerenti) vengono mostrate così come
