@@ -360,6 +360,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   padding:12px 14px; border-bottom:1px solid var(--line);
 }
 .modal-head h3{margin:0;font-size:14px;font-weight:600;}
+.modal-head .modal-min{margin-left:auto;margin-right:4px;} /* ▁ a destra, accanto alla ✕, non al centro */
 .modal-body{flex:1;overflow-y:auto;padding:10px 12px;}
 .modal-body .layerrow{cursor:default;}
 .modal-body .layerrow button{width:auto;padding:4px 8px;font-size:11px;border:1px solid var(--line);border-radius:5px;margin-left:6px;}
@@ -607,7 +608,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.10.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.10.1</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -6018,7 +6019,7 @@ function setupModalMinimize(){
     const head = ov.querySelector('.modal-head'); if(!head) return;
     const closeBtn = head.querySelector('.iconbtn');
     ov._closeBtn = closeBtn;
-    const b = document.createElement('button'); b.className='iconbtn'; b.textContent='▁';
+    const b = document.createElement('button'); b.className='iconbtn modal-min'; b.textContent='▁';
     b.title = 'Riduci a icona: la ritrovi nella barra in basso, modifichi il disegno e poi la riprendi';
     b.onclick = ()=> minimizeModal(id);
     head.insertBefore(b, closeBtn);
