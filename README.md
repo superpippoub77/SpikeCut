@@ -85,7 +85,11 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
 - **Libreria componenti** (scheda "Componenti" nel pannello laterale):
   pezzi pronti da inserire con un clic al centro del foglio — aletta
   standard, foro europeo, maniglia, linguetta, gancio — che si aggiungono
-  come forme normali, modificabili come qualunque altra.
+  come forme normali, modificabili come qualunque altra. Sotto ai
+  predefiniti, qualunque progetto salvato come **condiviso** (libreria
+  comune) compare automaticamente anche qui, pronto da inserire allo
+  stesso modo — un modo pratico per costruire una libreria di pezzi
+  ricorrenti senza doverli ridisegnare ogni volta.
 - **Selezione avanzata**: oltre al rettangolo di selezione, tenendo premuto
   **Alt** durante il trascinamento sull'area vuota si ottiene una selezione
   a **lazo** (percorso libero). Dal menu tasto destro su un oggetto:
