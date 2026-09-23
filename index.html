@@ -598,7 +598,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.6.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.6.1</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -4303,6 +4303,17 @@ function renderShapes(){
   for(const s of shapesInZOrder()){
     layerArt.appendChild(shapeToNode(s));
   }
+  // I nodi <text> sono ora davvero nel DOM: ne misuro la larghezza resa dal
+  // font e dalla dimensione ATTUALI (la stima per numero di caratteri usata
+  // come base non tiene conto di font più stretti o più larghi del previsto).
+  layerArt.querySelectorAll('text[data-id]').forEach(node=>{
+    const s = state.shapes.find(x=>x.id===node.dataset.id);
+    if(!s || s.type!=='text') return;
+    try{
+      const len = node.getComputedTextLength();
+      if(len>0) s._measuredW = len/state.scale;
+    }catch(err){ /* ambienti senza supporto alla misura reale: resta la stima */ }
+  });
 }
 
 function renderSelectionHandles(){
@@ -8806,7 +8817,7 @@ function createOffsetCopy(s, distanceMM){
 }
 function shapeBBox(s){
   if(s.points){ const xs=s.points.map(p=>p[0]), ys=s.points.map(p=>p[1]); return {x:Math.min(...xs),y:Math.min(...ys),w:(Math.max(...xs)-Math.min(...xs))||0.01,h:(Math.max(...ys)-Math.min(...ys))||0.01}; }
-  if(s.type==='text'){ const w=(s.text||'').length*(s.fontSize||6)*0.55; return {x:s.x, y:s.y-(s.fontSize||6), w:w||0.01, h:(s.fontSize||6)*1.3}; }
+  if(s.type==='text'){ const w = s._measuredW!=null ? s._measuredW : (s.text||'').length*(s.fontSize||6)*0.55; return {x:s.x, y:s.y-(s.fontSize||6), w:w||0.01, h:(s.fontSize||6)*1.3}; }
   return {x:s.x, y:s.y, w:s.w||0.01, h:s.h||0.01};
 }
 async function autoFitImportedShapes(newShapes, opts){
