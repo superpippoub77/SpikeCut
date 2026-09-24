@@ -47,6 +47,24 @@ l'**angolo di piegatura** (90° = angolo retto di una parete, 180° = piega
 completa su se stessa). Sul disegno compare a metà di ogni tratto una
 freccia a V che indica il verso, con l'angolo accanto.
 
+### Simmetria (menu Strumenti → "⇅ Simmetria…")
+Rende il disegno, o la selezione, simmetrico rispetto a un asse orizzontale
+(sopra/sotto) o verticale (sinistra/destra). Si sceglie il lato da tenere come
+riferimento; l'altro viene corretto. Due modalità:
+- **Correggi il lato opposto**: ogni punto del lato da correggere viene portato
+  nella posizione speculare esatta del punto corrispondente del lato tenuto,
+  se ce n'è uno entro la tolleranza (predefinita 3 mm); i punti vicini
+  all'asse vengono messi esattamente sull'asse. I punti senza corrispondente
+  restano come sono (possono essere un'asimmetria voluta) e vengono cerchiati
+  in arancione.
+- **Rifai il lato opposto**: le forme interamente dal lato da rifare vengono
+  sostituite dalla copia speculare di quelle del lato tenuto; quelle a cavallo
+  dell'asse vengono corrette punto per punto.
+L'asse (proposto al centro del disegno: in un disegno "quasi" simmetrico
+conviene verificarlo) è mostrato sul disegno con la zona che verrà corretta;
+un riepilogo dice in anticipo cosa cambierà. Dopo l'applicazione si
+controlla il risultato (cerchi verdi) e si conferma o annulla.
+
 ### Ordine di piegatura
 Ogni piega ha un numero di **passo** (pannello proprietà → "Ordine di
 piegatura", anche su più pieghe selezionate insieme, con − e +). Nella

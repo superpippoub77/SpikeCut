@@ -548,6 +548,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
       <button data-action="check-overlaps">Verifica sovrapposizioni e duplicati</button>
       <button data-action="cut-preview">Anteprima taglio (fustella)</button>
       <button data-action="fold-3d">🧊 Anteprima 3D piegata</button>
+      <button data-action="symmetry">⇅ Simmetria…</button>
       <div class="menu-sep"></div>
       <button data-action="weld-points">Salda punti vicini…</button>
       <button data-action="close-all-paths">Chiudi tutti i percorsi aperti</button>
@@ -625,7 +626,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.14.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.15.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -748,6 +749,32 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 
 <div id="modalDock"></div>
 <div id="foldCheckBanner" style="display:none;"></div>
+
+<div id="symModal" class="modal-overlay">
+  <div class="modal-box" style="width:480px;">
+    <div class="modal-head">
+      <h3>Simmetria</h3>
+      <button class="iconbtn" id="symModalClose" title="Chiudi">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="hint" style="margin-bottom:10px;">Rende il disegno simmetrico rispetto a un asse: il lato che scegli di tenere resta com'è, l'altro viene corretto per esserne lo specchio esatto. Vale per le forme selezionate, o per tutto il disegno se non c'è selezione. L'asse è mostrato sul disegno (riduci la finestra per guardarlo).</div>
+      <div class="field"><label>Asse</label>
+        <select id="symDir"><option value="h">Orizzontale (sopra / sotto)</option><option value="v">Verticale (sinistra / destra)</option></select></div>
+      <div class="field"><label id="symPosLabel">Posizione dell'asse</label>
+        <div style="display:flex;gap:6px;"><input type="number" id="symPos" step="0.1" style="flex:1;"><button class="btn" id="symCenter" style="width:auto;margin:0;">Centra sulla selezione</button></div></div>
+      <div class="field"><label>Lato da tenere come riferimento</label><select id="symKeep"></select></div>
+      <div class="field"><label>Modalità</label>
+        <select id="symMode">
+          <option value="align">Correggi il lato opposto (avvicina i punti al loro speculare)</option>
+          <option value="replace">Rifai il lato opposto (copia speculare del lato tenuto)</option>
+        </select></div>
+      <div class="field"><label id="symTolLabel">Tolleranza</label><input type="number" id="symTol" step="0.5" min="0.1"></div>
+      <div class="hint">Vengono corretti solo i punti che distano meno della tolleranza dal loro speculare; gli altri restano come sono (potrebbero essere un'asimmetria voluta).</div>
+      <div id="symSummary" class="hint" style="margin-top:10px;padding:8px;border-radius:6px;background:rgba(201,151,63,0.12);font-weight:600;"></div>
+      <button class="btn primary" id="symApply" style="width:100%;margin-top:12px;">Applica</button>
+    </div>
+  </div>
+</div>
 
 <div id="joinModal" class="modal-overlay">
   <div class="modal-box" style="width:460px;">
@@ -1874,6 +1901,35 @@ const I18N = {
     "misto": "mixed",
     "Nella simulazione 3D le pieghe con il numero più basso si chiudono prima; quelle con lo stesso numero si chiudono insieme. Esempio: 1 per il tubo, 2 per le alette antipolvere, 3 per la linguetta di chiusura.": "In the 3D simulation, folds with the lowest number close first; those with the same number close together. Example: 1 for the tube, 2 for the dust flaps, 3 for the closing tuck flap.",
     "Vale per le {n} pieghe selezionate.": "Applies to the {n} selected folds.",
+    "⇅ Simmetria…": "⇅ Symmetry…",
+    "Simmetria": "Symmetry",
+    "Rende il disegno simmetrico rispetto a un asse: il lato che scegli di tenere resta com'è, l'altro viene corretto per esserne lo specchio esatto. Vale per le forme selezionate, o per tutto il disegno se non c'è selezione. L'asse è mostrato sul disegno (riduci la finestra per guardarlo).": "Makes the drawing symmetric about an axis: the side you choose to keep stays as it is, the other is corrected to be its exact mirror. It applies to the selected shapes, or to the whole drawing if nothing is selected. The axis is shown on the drawing (minimize the window to look at it).",
+    "Asse": "Axis",
+    "Orizzontale (sopra / sotto)": "Horizontal (top / bottom)",
+    "Verticale (sinistra / destra)": "Vertical (left / right)",
+    "Posizione dell'asse": "Axis position",
+    "Posizione dell'asse ({unit})": "Axis position ({unit})",
+    "Centra sulla selezione": "Center on selection",
+    "Lato da tenere come riferimento": "Side to keep as reference",
+    "Correggi il lato opposto (avvicina i punti al loro speculare)": "Correct the opposite side (moves points to their mirror)",
+    "Rifai il lato opposto (copia speculare del lato tenuto)": "Redo the opposite side (mirror copy of the kept side)",
+    "Tolleranza": "Tolerance",
+    "Tolleranza ({unit})": "Tolerance ({unit})",
+    "Vengono corretti solo i punti che distano meno della tolleranza dal loro speculare; gli altri restano come sono (potrebbero essere un'asimmetria voluta).": "Only points closer than the tolerance to their mirror are corrected; the others stay as they are (they might be an intentional asymmetry).",
+    "Sopra (si corregge la parte sotto)": "Top (the bottom part is corrected)",
+    "Sotto (si corregge la parte sopra)": "Bottom (the top part is corrected)",
+    "Sinistra (si corregge la parte destra)": "Left (the right part is corrected)",
+    "Destra (si corregge la parte sinistra)": "Right (the left part is corrected)",
+    "{del} forme del lato da rifare verranno eliminate e sostituite da {add} copie speculari del lato tenuto.": "{del} shapes on the side to redo will be deleted and replaced by {add} mirror copies of the kept side.",
+    "Nelle forme a cavallo dell'asse verranno corretti {m} punti (spostamento massimo {d}).": "In the shapes straddling the axis, {m} points will be corrected (maximum shift {d}).",
+    "{m} punti verranno corretti (spostamento massimo {d}).": "{m} points will be corrected (maximum shift {d}).",
+    "Nessun punto da correggere: entro la tolleranza il disegno è già simmetrico.": "No points to correct: within the tolerance the drawing is already symmetric.",
+    "{u} punti del lato da correggere non hanno un corrispondente entro la tolleranza: restano come sono (cerchiati in arancione dopo l'applicazione).": "{u} points on the side to correct have no counterpart within the tolerance: they stay as they are (circled in orange after applying).",
+    "Nessuna modifica: entro la tolleranza il disegno è già simmetrico.": "No changes: within the tolerance the drawing is already symmetric.",
+    "{m} punti portati nella posizione speculare esatta.": "{m} points moved to the exact mirror position.",
+    "{del} forme sostituite da {add} copie speculari.": "{del} shapes replaced by {add} mirror copies.",
+    "{u} punti senza corrispondente lasciati come sono (cerchi arancioni).": "{u} points without counterpart left as they are (orange circles).",
+    "asse di simmetria — la zona colorata viene corretta": "axis of symmetry — the shaded area gets corrected",
   },
   de: {
     "1 cm": "1 cm",
@@ -2551,6 +2607,35 @@ const I18N = {
     "misto": "gemischt",
     "Nella simulazione 3D le pieghe con il numero più basso si chiudono prima; quelle con lo stesso numero si chiudono insieme. Esempio: 1 per il tubo, 2 per le alette antipolvere, 3 per la linguetta di chiusura.": "In der 3D-Simulation schließen sich Falze mit der niedrigsten Nummer zuerst; solche mit derselben Nummer schließen sich gemeinsam. Beispiel: 1 für den Schlauch, 2 für die Staublaschen, 3 für die Einstecklasche.",
     "Vale per le {n} pieghe selezionate.": "Gilt für die {n} ausgewählten Falze.",
+    "⇅ Simmetria…": "⇅ Symmetrie…",
+    "Simmetria": "Symmetrie",
+    "Rende il disegno simmetrico rispetto a un asse: il lato che scegli di tenere resta com'è, l'altro viene corretto per esserne lo specchio esatto. Vale per le forme selezionate, o per tutto il disegno se non c'è selezione. L'asse è mostrato sul disegno (riduci la finestra per guardarlo).": "Macht die Zeichnung symmetrisch zu einer Achse: Die Seite, die du behältst, bleibt unverändert, die andere wird zu ihrem exakten Spiegelbild korrigiert. Gilt für die ausgewählten Formen oder die ganze Zeichnung, wenn nichts ausgewählt ist. Die Achse wird in der Zeichnung angezeigt (minimiere das Fenster, um sie zu sehen).",
+    "Asse": "Achse",
+    "Orizzontale (sopra / sotto)": "Horizontal (oben / unten)",
+    "Verticale (sinistra / destra)": "Vertikal (links / rechts)",
+    "Posizione dell'asse": "Position der Achse",
+    "Posizione dell'asse ({unit})": "Position der Achse ({unit})",
+    "Centra sulla selezione": "Auf Auswahl zentrieren",
+    "Lato da tenere come riferimento": "Als Referenz beizubehaltende Seite",
+    "Correggi il lato opposto (avvicina i punti al loro speculare)": "Gegenseite korrigieren (Punkte an ihr Spiegelbild angleichen)",
+    "Rifai il lato opposto (copia speculare del lato tenuto)": "Gegenseite neu erstellen (Spiegelkopie der behaltenen Seite)",
+    "Tolleranza": "Toleranz",
+    "Tolleranza ({unit})": "Toleranz ({unit})",
+    "Vengono corretti solo i punti che distano meno della tolleranza dal loro speculare; gli altri restano come sono (potrebbero essere un'asimmetria voluta).": "Es werden nur Punkte korrigiert, die näher als die Toleranz an ihrem Spiegelbild liegen; die anderen bleiben unverändert (es könnte eine gewollte Asymmetrie sein).",
+    "Sopra (si corregge la parte sotto)": "Oben (der untere Teil wird korrigiert)",
+    "Sotto (si corregge la parte sopra)": "Unten (der obere Teil wird korrigiert)",
+    "Sinistra (si corregge la parte destra)": "Links (der rechte Teil wird korrigiert)",
+    "Destra (si corregge la parte sinistra)": "Rechts (der linke Teil wird korrigiert)",
+    "{del} forme del lato da rifare verranno eliminate e sostituite da {add} copie speculari del lato tenuto.": "{del} Formen der neu zu erstellenden Seite werden gelöscht und durch {add} Spiegelkopien der behaltenen Seite ersetzt.",
+    "Nelle forme a cavallo dell'asse verranno corretti {m} punti (spostamento massimo {d}).": "In den Formen über der Achse werden {m} Punkte korrigiert (maximale Verschiebung {d}).",
+    "{m} punti verranno corretti (spostamento massimo {d}).": "{m} Punkte werden korrigiert (maximale Verschiebung {d}).",
+    "Nessun punto da correggere: entro la tolleranza il disegno è già simmetrico.": "Keine Punkte zu korrigieren: Innerhalb der Toleranz ist die Zeichnung bereits symmetrisch.",
+    "{u} punti del lato da correggere non hanno un corrispondente entro la tolleranza: restano come sono (cerchiati in arancione dopo l'applicazione).": "{u} Punkte der zu korrigierenden Seite haben innerhalb der Toleranz keine Entsprechung: Sie bleiben unverändert (nach dem Anwenden orange eingekreist).",
+    "Nessuna modifica: entro la tolleranza il disegno è già simmetrico.": "Keine Änderungen: Innerhalb der Toleranz ist die Zeichnung bereits symmetrisch.",
+    "{m} punti portati nella posizione speculare esatta.": "{m} Punkte an die exakte Spiegelposition verschoben.",
+    "{del} forme sostituite da {add} copie speculari.": "{del} Formen durch {add} Spiegelkopien ersetzt.",
+    "{u} punti senza corrispondente lasciati come sono (cerchi arancioni).": "{u} Punkte ohne Entsprechung unverändert gelassen (orange Kreise).",
+    "asse di simmetria — la zona colorata viene corretta": "Symmetrieachse — der farbige Bereich wird korrigiert",
   },
   es: {
     "1 cm": "1 cm",
@@ -3228,6 +3313,35 @@ const I18N = {
     "misto": "mixto",
     "Nella simulazione 3D le pieghe con il numero più basso si chiudono prima; quelle con lo stesso numero si chiudono insieme. Esempio: 1 per il tubo, 2 per le alette antipolvere, 3 per la linguetta di chiusura.": "En la simulación 3D, los pliegues con el número más bajo se cierran primero; los que tienen el mismo número se cierran juntos. Ejemplo: 1 para el tubo, 2 para las solapas antipolvo, 3 para la lengüeta de cierre.",
     "Vale per le {n} pieghe selezionate.": "Se aplica a los {n} pliegues seleccionados.",
+    "⇅ Simmetria…": "⇅ Simetría…",
+    "Simmetria": "Simetría",
+    "Rende il disegno simmetrico rispetto a un asse: il lato che scegli di tenere resta com'è, l'altro viene corretto per esserne lo specchio esatto. Vale per le forme selezionate, o per tutto il disegno se non c'è selezione. L'asse è mostrato sul disegno (riduci la finestra per guardarlo).": "Hace el dibujo simétrico respecto a un eje: el lado que eliges conservar queda igual, el otro se corrige para ser su espejo exacto. Se aplica a las formas seleccionadas, o a todo el dibujo si no hay selección. El eje se muestra en el dibujo (minimiza la ventana para verlo).",
+    "Asse": "Eje",
+    "Orizzontale (sopra / sotto)": "Horizontal (arriba / abajo)",
+    "Verticale (sinistra / destra)": "Vertical (izquierda / derecha)",
+    "Posizione dell'asse": "Posición del eje",
+    "Posizione dell'asse ({unit})": "Posición del eje ({unit})",
+    "Centra sulla selezione": "Centrar en la selección",
+    "Lato da tenere come riferimento": "Lado que se conserva como referencia",
+    "Correggi il lato opposto (avvicina i punti al loro speculare)": "Corregir el lado opuesto (acerca los puntos a su espejo)",
+    "Rifai il lato opposto (copia speculare del lato tenuto)": "Rehacer el lado opuesto (copia en espejo del lado conservado)",
+    "Tolleranza": "Tolerancia",
+    "Tolleranza ({unit})": "Tolerancia ({unit})",
+    "Vengono corretti solo i punti che distano meno della tolleranza dal loro speculare; gli altri restano come sono (potrebbero essere un'asimmetria voluta).": "Solo se corrigen los puntos que distan menos de la tolerancia de su espejo; los demás quedan como están (podrían ser una asimetría intencionada).",
+    "Sopra (si corregge la parte sotto)": "Arriba (se corrige la parte de abajo)",
+    "Sotto (si corregge la parte sopra)": "Abajo (se corrige la parte de arriba)",
+    "Sinistra (si corregge la parte destra)": "Izquierda (se corrige la parte derecha)",
+    "Destra (si corregge la parte sinistra)": "Derecha (se corrige la parte izquierda)",
+    "{del} forme del lato da rifare verranno eliminate e sostituite da {add} copie speculari del lato tenuto.": "{del} formas del lado a rehacer se eliminarán y se sustituirán por {add} copias en espejo del lado conservado.",
+    "Nelle forme a cavallo dell'asse verranno corretti {m} punti (spostamento massimo {d}).": "En las formas a caballo del eje se corregirán {m} puntos (desplazamiento máximo {d}).",
+    "{m} punti verranno corretti (spostamento massimo {d}).": "Se corregirán {m} puntos (desplazamiento máximo {d}).",
+    "Nessun punto da correggere: entro la tolleranza il disegno è già simmetrico.": "Ningún punto que corregir: dentro de la tolerancia el dibujo ya es simétrico.",
+    "{u} punti del lato da correggere non hanno un corrispondente entro la tolleranza: restano come sono (cerchiati in arancione dopo l'applicazione).": "{u} puntos del lado a corregir no tienen correspondiente dentro de la tolerancia: quedan como están (marcados en naranja tras aplicar).",
+    "Nessuna modifica: entro la tolleranza il disegno è già simmetrico.": "Sin cambios: dentro de la tolerancia el dibujo ya es simétrico.",
+    "{m} punti portati nella posizione speculare esatta.": "{m} puntos llevados a la posición en espejo exacta.",
+    "{del} forme sostituite da {add} copie speculari.": "{del} formas sustituidas por {add} copias en espejo.",
+    "{u} punti senza corrispondente lasciati come sono (cerchi arancioni).": "{u} puntos sin correspondiente dejados como están (círculos naranjas).",
+    "asse di simmetria — la zona colorata viene corretta": "eje de simetría — la zona coloreada se corrige",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -3905,6 +4019,35 @@ const I18N = {
     "misto": "混合",
     "Nella simulazione 3D le pieghe con il numero più basso si chiudono prima; quelle con lo stesso numero si chiudono insieme. Esempio: 1 per il tubo, 2 per le alette antipolvere, 3 per la linguetta di chiusura.": "在3D模拟中，编号最小的折线最先闭合；编号相同的折线同时闭合。例如：1 为盒身，2 为防尘翼，3 为插舌。",
     "Vale per le {n} pieghe selezionate.": "应用于所选的 {n} 条折线。",
+    "⇅ Simmetria…": "⇅ 对称…",
+    "Simmetria": "对称",
+    "Rende il disegno simmetrico rispetto a un asse: il lato che scegli di tenere resta com'è, l'altro viene corretto per esserne lo specchio esatto. Vale per le forme selezionate, o per tutto il disegno se non c'è selezione. L'asse è mostrato sul disegno (riduci la finestra per guardarlo).": "使图纸相对于一条轴对称：你选择保留的一侧保持不变，另一侧被修正为其精确镜像。作用于所选形状，若无选择则作用于整个图纸。对称轴会显示在图纸上（最小化窗口即可查看）。",
+    "Asse": "轴",
+    "Orizzontale (sopra / sotto)": "水平（上 / 下）",
+    "Verticale (sinistra / destra)": "垂直（左 / 右）",
+    "Posizione dell'asse": "轴的位置",
+    "Posizione dell'asse ({unit})": "轴的位置（{unit}）",
+    "Centra sulla selezione": "以所选内容居中",
+    "Lato da tenere come riferimento": "作为参考保留的一侧",
+    "Correggi il lato opposto (avvicina i punti al loro speculare)": "修正另一侧（将点移到其镜像位置）",
+    "Rifai il lato opposto (copia speculare del lato tenuto)": "重做另一侧（保留侧的镜像副本）",
+    "Tolleranza": "容差",
+    "Tolleranza ({unit})": "容差（{unit}）",
+    "Vengono corretti solo i punti che distano meno della tolleranza dal loro speculare; gli altri restano come sono (potrebbero essere un'asimmetria voluta).": "只修正与其镜像距离小于容差的点；其余点保持不变（可能是有意的不对称）。",
+    "Sopra (si corregge la parte sotto)": "上方（修正下半部分）",
+    "Sotto (si corregge la parte sopra)": "下方（修正上半部分）",
+    "Sinistra (si corregge la parte destra)": "左侧（修正右半部分）",
+    "Destra (si corregge la parte sinistra)": "右侧（修正左半部分）",
+    "{del} forme del lato da rifare verranno eliminate e sostituite da {add} copie speculari del lato tenuto.": "需重做一侧的 {del} 个形状将被删除，并由保留侧的 {add} 个镜像副本替代。",
+    "Nelle forme a cavallo dell'asse verranno corretti {m} punti (spostamento massimo {d}).": "跨越轴线的形状中将修正 {m} 个点（最大移动 {d}）。",
+    "{m} punti verranno corretti (spostamento massimo {d}).": "将修正 {m} 个点（最大移动 {d}）。",
+    "Nessun punto da correggere: entro la tolleranza il disegno è già simmetrico.": "没有需要修正的点：在容差范围内图纸已对称。",
+    "{u} punti del lato da correggere non hanno un corrispondente entro la tolleranza: restano come sono (cerchiati in arancione dopo l'applicazione).": "待修正一侧有 {u} 个点在容差范围内没有对应点：保持不变（应用后以橙色圆圈标出）。",
+    "Nessuna modifica: entro la tolleranza il disegno è già simmetrico.": "无更改：在容差范围内图纸已对称。",
+    "{m} punti portati nella posizione speculare esatta.": "{m} 个点已移至精确的镜像位置。",
+    "{del} forme sostituite da {add} copie speculari.": "{del} 个形状已被 {add} 个镜像副本替代。",
+    "{u} punti senza corrispondente lasciati come sono (cerchi arancioni).": "{u} 个无对应点的点保持原样（橙色圆圈）。",
+    "asse di simmetria — la zona colorata viene corretta": "对称轴 — 着色区域将被修正",
   },
   fr: {
     "1 cm": "1 cm",
@@ -4582,6 +4725,35 @@ const I18N = {
     "misto": "mixte",
     "Nella simulazione 3D le pieghe con il numero più basso si chiudono prima; quelle con lo stesso numero si chiudono insieme. Esempio: 1 per il tubo, 2 per le alette antipolvere, 3 per la linguetta di chiusura.": "Dans la simulation 3D, les plis ayant le plus petit numéro se ferment en premier ; ceux qui ont le même numéro se ferment ensemble. Exemple : 1 pour le tube, 2 pour les rabats anti-poussière, 3 pour la languette de fermeture.",
     "Vale per le {n} pieghe selezionate.": "S’applique aux {n} plis sélectionnés.",
+    "⇅ Simmetria…": "⇅ Symétrie…",
+    "Simmetria": "Symétrie",
+    "Rende il disegno simmetrico rispetto a un asse: il lato che scegli di tenere resta com'è, l'altro viene corretto per esserne lo specchio esatto. Vale per le forme selezionate, o per tutto il disegno se non c'è selezione. L'asse è mostrato sul disegno (riduci la finestra per guardarlo).": "Rend le dessin symétrique par rapport à un axe : le côté que tu choisis de garder reste tel quel, l’autre est corrigé pour en être le miroir exact. S’applique aux formes sélectionnées, ou à tout le dessin s’il n’y a pas de sélection. L’axe est affiché sur le dessin (réduis la fenêtre pour le voir).",
+    "Asse": "Axe",
+    "Orizzontale (sopra / sotto)": "Horizontal (haut / bas)",
+    "Verticale (sinistra / destra)": "Vertical (gauche / droite)",
+    "Posizione dell'asse": "Position de l’axe",
+    "Posizione dell'asse ({unit})": "Position de l’axe ({unit})",
+    "Centra sulla selezione": "Centrer sur la sélection",
+    "Lato da tenere come riferimento": "Côté à garder comme référence",
+    "Correggi il lato opposto (avvicina i punti al loro speculare)": "Corriger le côté opposé (rapproche les points de leur miroir)",
+    "Rifai il lato opposto (copia speculare del lato tenuto)": "Refaire le côté opposé (copie miroir du côté gardé)",
+    "Tolleranza": "Tolérance",
+    "Tolleranza ({unit})": "Tolérance ({unit})",
+    "Vengono corretti solo i punti che distano meno della tolleranza dal loro speculare; gli altri restano come sono (potrebbero essere un'asimmetria voluta).": "Seuls les points plus proches que la tolérance de leur miroir sont corrigés ; les autres restent tels quels (il peut s’agir d’une asymétrie voulue).",
+    "Sopra (si corregge la parte sotto)": "Haut (la partie basse est corrigée)",
+    "Sotto (si corregge la parte sopra)": "Bas (la partie haute est corrigée)",
+    "Sinistra (si corregge la parte destra)": "Gauche (la partie droite est corrigée)",
+    "Destra (si corregge la parte sinistra)": "Droite (la partie gauche est corrigée)",
+    "{del} forme del lato da rifare verranno eliminate e sostituite da {add} copie speculari del lato tenuto.": "{del} formes du côté à refaire seront supprimées et remplacées par {add} copies miroir du côté gardé.",
+    "Nelle forme a cavallo dell'asse verranno corretti {m} punti (spostamento massimo {d}).": "Dans les formes à cheval sur l’axe, {m} points seront corrigés (déplacement maximal {d}).",
+    "{m} punti verranno corretti (spostamento massimo {d}).": "{m} points seront corrigés (déplacement maximal {d}).",
+    "Nessun punto da correggere: entro la tolleranza il disegno è già simmetrico.": "Aucun point à corriger : dans la tolérance, le dessin est déjà symétrique.",
+    "{u} punti del lato da correggere non hanno un corrispondente entro la tolleranza: restano come sono (cerchiati in arancione dopo l'applicazione).": "{u} points du côté à corriger n’ont pas de correspondant dans la tolérance : ils restent tels quels (entourés en orange après application).",
+    "Nessuna modifica: entro la tolleranza il disegno è già simmetrico.": "Aucune modification : dans la tolérance, le dessin est déjà symétrique.",
+    "{m} punti portati nella posizione speculare esatta.": "{m} points placés à la position miroir exacte.",
+    "{del} forme sostituite da {add} copie speculari.": "{del} formes remplacées par {add} copies miroir.",
+    "{u} punti senza corrispondente lasciati come sono (cerchi arancioni).": "{u} points sans correspondant laissés tels quels (cercles orange).",
+    "asse di simmetria — la zona colorata viene corretta": "axe de symétrie — la zone colorée est corrigée",
   },
 };
 let currentLang = 'it';
@@ -5816,6 +5988,7 @@ function renderEndpointMarkers(){
 // Sono solo un'annotazione visiva: non fanno parte della geometria di taglio.
 function renderFoldIndicators(){
   renderFoldCheckOverlay();
+  renderSymAxis();
   const showOrders = state.shapes.some(s=>s.style && s.style.role==='fold' && foldOrderOf(s)>1);
   for(const s of state.shapes){
     if(!s.points || s.style.role!=='fold' || !s.foldDir || !isShapeEffVisible(s)) continue;
@@ -6656,6 +6829,9 @@ function issueAnchor(is){
   return null;
 }
 function renderFoldCheckOverlay(){
+  if(state.fixReview) (state.fixReview.warnMarks||[]).forEach(p=>{
+    layerOverlay.appendChild(el('circle', {cx:p[0]*state.scale, cy:p[1]*state.scale, r:13, fill:'rgba(255,159,10,0.15)', stroke:'#ff9f0a', 'stroke-width':2.5, 'stroke-dasharray':'4,3', 'pointer-events':'none'}));
+  });
   if(state.fixReview) state.fixReview.marks.forEach(p=>{
     layerOverlay.appendChild(el('circle', {cx:p[0]*state.scale, cy:p[1]*state.scale, r:15, fill:'rgba(47,158,90,0.18)', stroke:'#2f9e5a', 'stroke-width':3, class:'fc-pulse', 'pointer-events':'none'}));
     const t = el('text', {x:p[0]*state.scale, y:p[1]*state.scale-22, 'font-size':15, 'font-weight':'700', fill:'#2f9e5a', 'text-anchor':'middle', 'paint-order':'stroke', stroke:'#fff', 'stroke-width':4, 'pointer-events':'none'});
@@ -7095,7 +7271,7 @@ function closeJoinDialog(){
    ridurre nella barra in basso, modificare il disegno e poi riprenderle
    esattamente come le si era lasciate.
 ============================================================ */
-const MINIMIZABLE_MODALS = ['joinModal','fold3dModal','boxGenModal','historyModal','versionsModal','libraryModal','saveLibraryModal',
+const MINIMIZABLE_MODALS = ['symModal','joinModal','fold3dModal','boxGenModal','historyModal','versionsModal','libraryModal','saveLibraryModal',
   'pageSizeModal','fontModal','scaleModal','tilePrintModal','printProofModal','cutPreviewModal','weldModal','helpModal'];
 const MODAL_HOOKS = {
   fold3dModal: { onMinimize: ()=>{ stopFold3D(); if(!state.foldCheck) runFoldCheckOverlay(true); }, onRestore: ()=>{ if(state.foldCheck) endFoldCheckOverlay(); refreshFold3D(); } },
@@ -7362,6 +7538,199 @@ function renderBooleanSection(host, ids){
   h.textContent = translate('Valgono per percorsi chiusi, rettangoli ed ellissi; il risultato prende lo stile della forma più in basso.');
   f.appendChild(h);
   host.appendChild(f);
+}
+
+
+/* ============================================================
+   SIMMETRIA — rende il disegno (o la selezione) speculare rispetto a un
+   asse orizzontale o verticale: il lato tenuto resta com'è, l'altro viene
+   corretto (punti avvicinati al loro speculare) o rifatto (copia speculare).
+============================================================ */
+const symState = { active:false };
+function symScope(){
+  const sel = state.shapes.filter(s=> state.selection.has(s.id) && !s.locked && isShapeEffVisible(s));
+  return sel.length ? sel : state.shapes.filter(s=> !s.locked && isShapeEffVisible(s));
+}
+function symOpts(){
+  return { dir: document.getElementById('symDir').value,
+           pos: unitToMm(parseFloat(document.getElementById('symPos').value)||0),
+           keep: document.getElementById('symKeep').value,
+           mode: document.getElementById('symMode').value,
+           tol: Math.max(0.1, unitToMm(parseFloat(document.getElementById('symTol').value)||3)) };
+}
+function symFillKeep(){
+  const dir = document.getElementById('symDir').value, sel = document.getElementById('symKeep');
+  const prev = sel.value;
+  sel.innerHTML = dir==='h'
+    ? `<option value="top">${translate('Sopra (si corregge la parte sotto)')}</option><option value="bottom">${translate('Sotto (si corregge la parte sopra)')}</option>`
+    : `<option value="left">${translate('Sinistra (si corregge la parte destra)')}</option><option value="right">${translate('Destra (si corregge la parte sinistra)')}</option>`;
+  if([...sel.options].some(o=>o.value===prev)) sel.value = prev;
+}
+function symCenterOnScope(){
+  const shapes = symScope(); if(!shapes.length) return;
+  const bb = shapes.map(shapeBBox);
+  const dir = document.getElementById('symDir').value;
+  const mid = dir==='h' ? (Math.min(...bb.map(b=>b.y)) + Math.max(...bb.map(b=>b.y+b.h)))/2
+                        : (Math.min(...bb.map(b=>b.x)) + Math.max(...bb.map(b=>b.x+b.w)))/2;
+  document.getElementById('symPos').value = Math.round(mmToUnit(mid)*100)/100;
+}
+function openSymmetry(){
+  document.getElementById('symPosLabel').textContent = tpl('Posizione dell\'asse ({unit})', {unit:unitLabel()});
+  document.getElementById('symTolLabel').textContent = tpl('Tolleranza ({unit})', {unit:unitLabel()});
+  if(!document.getElementById('symTol').value) document.getElementById('symTol').value = Math.round(mmToUnit(3)*100)/100;
+  symFillKeep();
+  symCenterOnScope();
+  symState.active = true;
+  openModal('symModal');
+  symRefresh();
+}
+function closeSymmetry(){
+  symState.active = false;
+  const ov = document.getElementById('symModal'); ov.classList.remove('open'); delete ov.dataset.minimized;
+  renderModalDock(); renderCanvasOnly();
+}
+// Piano delle modifiche, senza applicarle (serve anche per il riepilogo in anteprima)
+function symPlan(o){
+  const shapes = symScope();
+  const val = p=> o.dir==='h' ? p[1] : p[0];
+  const refl = p=> o.dir==='h' ? [p[0], 2*o.pos - p[1]] : [2*o.pos - p[0], p[1]];
+  const onAxisTol = Math.min(1, o.tol/2);
+  const keepSign = (o.keep==='top' || o.keep==='left') ? -1 : 1; // lato tenuto: coordinata minore (sopra/sinistra) o maggiore
+  const sideOf = p=>{ const d = (val(p) - o.pos)*keepSign; return Math.abs(val(p)-o.pos) <= onAxisTol ? 'axis' : (d>0 ? 'keep' : 'fix'); };
+  const keyIdx = s=>{ // i punti che contano di una forma: per un arco solo inizio, metà, fine
+    if(!s.points) return [];
+    const n = s.points.length;
+    return s.arc ? [...new Set([0, Math.floor(n/2), n-1])] : s.points.map((_,i)=>i);
+  };
+  const cornerPts = s=>{ const b = shapeBBox(s); return [[b.x,b.y],[b.x+b.w,b.y+b.h]]; };
+  const allSides = s=>{ const pts = s.points ? keyIdx(s).map(i=>s.points[i]) : cornerPts(s); return new Set(pts.map(sideOf)); };
+  const plan = { moves:[], rects:[], deletes:[], copies:[], unmatched:[], maxD:0 };
+  let work = shapes;
+  if(o.mode==='replace'){
+    work = [];
+    shapes.forEach(s=>{
+      const sd = allSides(s);
+      if(!sd.has('keep') && sd.has('fix') && !sd.has('axis')) plan.deletes.push(s);          // tutta dal lato da rifare
+      else if(sd.has('keep') && !sd.has('fix')) plan.copies.push(s);                          // tutta dal lato tenuto (o sull'asse)
+      else if(sd.has('keep') || sd.has('fix')) work.push(s);                                  // a cavallo: si corregge punto per punto
+    });
+  }
+  // punti di riferimento: quelli dal lato tenuto
+  const refPts = [];
+  work.forEach(s=>{ if(s.points) keyIdx(s).forEach(i=>{ if(sideOf(s.points[i])==='keep') refPts.push(s.points[i]); }); });
+  work.forEach(s=>{
+    if(s.points){
+      keyIdx(s).forEach(i=>{
+        const P = s.points[i], sd = sideOf(P);
+        if(sd==='axis'){
+          const to = o.dir==='h' ? [P[0], o.pos] : [o.pos, P[1]];
+          const d = dist(P,to); if(d>1e-6){ plan.moves.push({shape:s, idx:i, isLast:i===s.points.length-1, to, d}); plan.maxD = Math.max(plan.maxD, d); }
+        } else if(sd==='fix'){
+          const M = refl(P); let best=null, bd=o.tol;
+          refPts.forEach(q=>{ const d = dist(M,q); if(d<=bd){ bd=d; best=q; } });
+          if(best){ const to = refl(best), d = dist(P,to); if(d>1e-6){ plan.moves.push({shape:s, idx:i, isLast:i===s.points.length-1, to, d}); plan.maxD = Math.max(plan.maxD, d); } }
+          else plan.unmatched.push(P);
+        }
+      });
+    } else if(s.type==='rect' || s.type==='ellipse'){
+      const b = shapeBBox(s), c = [b.x+b.w/2, b.y+b.h/2];
+      if(sideOf(c)!=='fix') return;
+      const mc = refl(c);
+      let best=null, bd=o.tol;
+      work.forEach(t=>{ if(t===s || t.type!==s.type) return; const tb = shapeBBox(t), tc=[tb.x+tb.w/2, tb.y+tb.h/2]; if(sideOf(tc)!=='keep') return;
+        const d = dist(mc, tc); if(d<=bd){ bd=d; best=t; } });
+      if(best){ const nb = mirrorBBox(best, o); const d = dist(c, [nb.x+nb.w/2, nb.y+nb.h/2]) + Math.abs(nb.w-s.w) + Math.abs(nb.h-s.h);
+        if(d>1e-6){ plan.rects.push({shape:s, src:best, bbox:nb}); plan.maxD = Math.max(plan.maxD, dist(c,[nb.x+nb.w/2, nb.y+nb.h/2])); } }
+      else plan.unmatched.push(c);
+    }
+  });
+  return plan;
+}
+function mirrorBBox(s, o){
+  return o.dir==='h' ? {x:s.x, y:2*o.pos - s.y - s.h, w:s.w, h:s.h} : {x:2*o.pos - s.x - s.w, y:s.y, w:s.w, h:s.h};
+}
+function mirrorCopy(s, o){
+  const c = JSON.parse(JSON.stringify(s));
+  c.id = uid();
+  const refl = p=> o.dir==='h' ? [p[0], 2*o.pos - p[1]] : [2*o.pos - p[0], p[1]];
+  if(c.points){ c.points = c.points.map(refl); delete c.detached; }
+  else if(c.type==='text'){ const q = refl([c.x, c.y]); c.x = q[0]; c.y = o.dir==='h' ? q[1] + (c.fontSize||6)*0.7 : q[1]; }
+  else if(c.x!=null){
+    const b = mirrorBBox(c, o); c.x = b.x; c.y = b.y;
+    if(c.rotation) c.rotation = (360 - c.rotation) % 360;
+    if(c.type==='image' || c.type==='tracedpath'){ if(o.dir==='h') c.flipV = !c.flipV; else c.flipH = !c.flipH; }
+  }
+  return c;
+}
+function symRefresh(){
+  if(!symState.active) return;
+  const o = symOpts(), pl = symPlan(o);
+  const fmt = v=> (Math.round(mmToUnit(v)*10)/10).toString().replace('.', ',') + ' ' + unitLabel();
+  let t;
+  if(o.mode==='replace'){
+    t = tpl('{del} forme del lato da rifare verranno eliminate e sostituite da {add} copie speculari del lato tenuto.', {del:pl.deletes.length, add:pl.copies.length});
+    if(pl.moves.length || pl.rects.length) t += ' ' + tpl('Nelle forme a cavallo dell\'asse verranno corretti {m} punti (spostamento massimo {d}).', {m:pl.moves.length+pl.rects.length, d:fmt(pl.maxD)});
+  } else {
+    t = (pl.moves.length || pl.rects.length)
+      ? tpl('{m} punti verranno corretti (spostamento massimo {d}).', {m:pl.moves.length+pl.rects.length, d:fmt(pl.maxD)})
+      : translate('Nessun punto da correggere: entro la tolleranza il disegno è già simmetrico.');
+  }
+  if(pl.unmatched.length) t += ' ' + tpl('{u} punti del lato da correggere non hanno un corrispondente entro la tolleranza: restano come sono (cerchiati in arancione dopo l\'applicazione).', {u:pl.unmatched.length});
+  document.getElementById('symSummary').textContent = t;
+  renderCanvasOnly();
+}
+function applySymmetry(){
+  const o = symOpts(), pl = symPlan(o);
+  const marks = [];
+  pl.moves.forEach(m=>{
+    const i = m.isLast ? m.shape.points.length-1 : m.idx;
+    m.shape.points[i] = [m.to[0], m.to[1]];
+    marks.push(m.to);
+  });
+  new Set(pl.moves.map(m=>m.shape)).forEach(s=>{ if(s.arc) rebuildArc(s); });
+  pl.rects.forEach(r=>{ Object.assign(r.shape, r.bbox); if(r.src.rotation) r.shape.rotation = (360 - r.src.rotation) % 360; marks.push([r.bbox.x+r.bbox.w/2, r.bbox.y+r.bbox.h/2]); });
+  const newIds = [];
+  if(o.mode==='replace'){
+    const del = new Set(pl.deletes);
+    state.shapes = state.shapes.filter(s=>!del.has(s));
+    pl.copies.forEach(s=>{
+      const cp = mirrorCopy(s, o);
+      const at = state.shapes.indexOf(s);
+      state.shapes.splice(at+1, 0, cp);
+      newIds.push(cp.id);
+      const b = shapeBBox(cp); marks.push([b.x+b.w/2, b.y+b.h/2]);
+    });
+  }
+  closeSymmetry();
+  if(!pl.moves.length && !pl.rects.length && !pl.deletes.length && !pl.copies.length){
+    showToast('Nessuna modifica: entro la tolleranza il disegno è già simmetrico.', false); return;
+  }
+  pushHistory();
+  const parts = [];
+  if(pl.moves.length || pl.rects.length) parts.push(tpl('{m} punti portati nella posizione speculare esatta.', {m:pl.moves.length+pl.rects.length}));
+  if(o.mode==='replace') parts.push(tpl('{del} forme sostituite da {add} copie speculari.', {del:pl.deletes.length, add:pl.copies.length}));
+  if(pl.unmatched.length) parts.push(tpl('{u} punti senza corrispondente lasciati come sono (cerchi arancioni).', {u:pl.unmatched.length}));
+  state.fixReview = { histIndex: state.histIndex, marks, warnMarks: pl.unmatched, desc: parts.join(' ') };
+  renderFoldCheckBanner();
+  renderAll();
+}
+function renderSymAxis(){
+  const ov = document.getElementById('symModal');
+  if(!symState.active || !ov || !(ov.classList.contains('open') || ov.dataset.minimized==='1')) return;
+  const o = symOpts(), sc = state.scale, W = state.page.w*sc, H = state.page.h*sc, a = o.pos*sc;
+  const g = el('g', {'pointer-events':'none'});
+  const keepFirst = (o.keep==='top' || o.keep==='left');
+  if(o.dir==='h'){
+    g.appendChild(el('rect', {x:0, y: keepFirst ? a : 0, width:W, height: keepFirst ? Math.max(0,H-a) : Math.max(0,a), fill:'rgba(214,58,249,0.06)'}));
+    g.appendChild(el('line', {x1:-20, y1:a, x2:W+20, y2:a, stroke:'#d63af9', 'stroke-width':1.8, 'stroke-dasharray':'12,4,2,4'}));
+  } else {
+    g.appendChild(el('rect', {x: keepFirst ? a : 0, y:0, width: keepFirst ? Math.max(0,W-a) : Math.max(0,a), height:H, fill:'rgba(214,58,249,0.06)'}));
+    g.appendChild(el('line', {x1:a, y1:-20, x2:a, y2:H+20, stroke:'#d63af9', 'stroke-width':1.8, 'stroke-dasharray':'12,4,2,4'}));
+  }
+  const t = el('text', {x: o.dir==='h' ? 6 : a+6, y: o.dir==='h' ? a-6 : 14, 'font-size':11, 'font-weight':'700', fill:'#d63af9', 'paint-order':'stroke', stroke:'#fff', 'stroke-width':3});
+  t.textContent = translate('asse di simmetria — la zona colorata viene corretta');
+  g.appendChild(t);
+  layerOverlay.appendChild(g);
 }
 
 /* ============================================================
@@ -8715,6 +9084,7 @@ function handleMenuAction(e){
   else if(action==='check-overlaps') checkOverlapsAndDuplicates();
   else if(action==='generate-box') openModal('boxGenModal');
   else if(action==='fold-3d') openFold3D();
+  else if(action==='symmetry') openSymmetry();
   else if(action==='cut-preview') openCutPreview();
   else if(action==='weld-points') openWeldModal();
   else if(action==='close-all-paths') closeAllOpenPaths();
@@ -9347,6 +9717,12 @@ document.getElementById('joinAddPair').onclick = ()=>{
   const a = free[0] || 1, b = free[1] || (joinState.cands.find(c=>c.n!==a)||{n:a}).n;
   joinState.pairs.push([a,b]); renderJoinPairs();
 };
+document.getElementById('symModalClose').onclick = closeSymmetry;
+setupOverlayClickClose(document.getElementById('symModal'), closeSymmetry);
+document.getElementById('symDir').onchange = ()=>{ symFillKeep(); symCenterOnScope(); symRefresh(); };
+['symPos','symKeep','symMode','symTol'].forEach(id=>{ const e=document.getElementById(id); e.oninput = symRefresh; e.onchange = symRefresh; });
+document.getElementById('symCenter').onclick = ()=>{ symCenterOnScope(); symRefresh(); };
+document.getElementById('symApply').onclick = applySymmetry;
 function closeFold3D(){ stopFold3D(); if(state.foldCheck) endFoldCheckOverlay(); document.getElementById('fold3dModal').classList.remove('open'); }
 document.getElementById('fold3dClose').onclick = closeFold3D;
 setupOverlayClickClose(document.getElementById('fold3dModal'), closeFold3D);
