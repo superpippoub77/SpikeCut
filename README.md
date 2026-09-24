@@ -71,6 +71,13 @@ conviene verificarlo) è mostrato sul disegno con la zona che verrà corretta;
 un riepilogo dice in anticipo cosa cambierà. Dopo l'applicazione si
 controlla il risultato (cerchi verdi) e si conferma o annulla.
 
+### Grafica nell'anteprima 3D
+La grafica dei livelli di disegno viene riportata sui pannelli dell'anteprima
+3D, sul lato stampato (esterno), e li segue mentre si piegano, con luce e
+ombre. È grafica tutto ciò che non ha ruolo Taglio, Piega, Fustella speciale
+o Incollaggio, sui livelli visibili (anche testo e immagini). La casella
+"Grafica" accanto al cursore la mostra o la nasconde.
+
 ### Ordine di piegatura
 Ogni piega ha un numero di **passo** (pannello proprietà → "Ordine di
 piegatura", anche su più pieghe selezionate insieme, con − e +). Nella
@@ -218,6 +225,14 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   stesso ruolo e livello vengono fuse in un unico percorso, e una linea che
   si richiude su se stessa diventa un percorso chiuso. Le catene (un punto
   sia di partenza sia di arrivo) vengono segnalate e bloccate.
+- **Guide di allineamento**: spostando un oggetto (o una selezione), i suoi
+  bordi e il suo centro vengono confrontati con quelli degli altri oggetti e
+  del foglio; quando si allineano compare una linea guida (continua per i
+  bordi, tratteggiata per i centri; azzurra se l'allineamento è con il foglio).
+  Con il magnete acceso l'oggetto si aggancia all'allineamento quando è a meno
+  di 6 pixel; tenendo premuto **Alt** lo si sposta liberamente.
+- **Livelli**: si rinominano con il pulsante ✎ accanto al nome, con un doppio
+  clic sul nome o dal tasto destro sul livello; Invio conferma, Esc annulla.
 - **Magnete sulle linee**: oltre ai vertici, un punto si aggancia al punto
   più vicino di qualsiasi linea (tratti, archi, lati di rettangoli ed
   ellissi). Serve ad esempio per far partire una piega esattamente sul

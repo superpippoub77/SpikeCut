@@ -643,7 +643,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.17.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.19.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -847,6 +847,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
         <span id="fold3dPct" style="font-size:12px;min-width:38px;text-align:right;">100%</span>
         <span id="fold3dStep" style="font-size:12px;font-weight:700;color:var(--brass);min-width:80px;"></span>
         <button class="btn" id="fold3dReset" style="width:auto;margin:0;">Vista iniziale</button>
+        <label style="display:flex;align-items:center;gap:5px;font-size:12px;white-space:nowrap;cursor:pointer;"><input type="checkbox" id="fold3dShowArt" checked style="width:auto;"><span>Grafica</span></label>
       </div>
       <div style="display:flex;gap:8px;align-items:center;margin-top:8px;">
         <span style="font-size:12px;color:var(--ink-dim);white-space:nowrap;">Ordine automatico delle pieghe:</span>
@@ -856,7 +857,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
       </div>
       <div class="hint" id="fold3dInfo" style="margin-top:8px;"></div>
       <div id="fold3dCheck" style="max-height:190px;overflow:auto;"></div>
-      <div class="hint">Trascina per ruotare, rotella per lo zoom. Lato chiaro = lato stampato (esterno), lato color cartone = interno. I pannelli sono ricavati dai contorni di TAGLIO chiusi, divisi dalle linee di PIEGA; verso e angolo di ogni piega si impostano nel pannello proprietà della linea.</div>
+      <div class="hint">Trascina per ruotare, rotella per lo zoom. Lato chiaro = lato stampato (esterno), dove compare anche la grafica dei livelli di disegno; lato color cartone = interno. I pannelli sono ricavati dai contorni di TAGLIO chiusi, divisi dalle linee di PIEGA; verso e angolo di ogni piega si impostano nel pannello proprietà della linea.</div>
     </div>
   </div>
 </div>
@@ -2004,6 +2005,14 @@ const I18N = {
     "Sposta il passo dopo": "Move the step later",
     "Chiudi questa piega un passo prima": "Close this fold one step earlier",
     "Chiudi questa piega un passo dopo": "Close this fold one step later",
+    "Grafica": "Artwork",
+    "Grafica sui pannelli: {n} elementi dei livelli visibili.": "Artwork on the panels: {n} items from the visible layers.",
+    "Nessuna grafica da mostrare: è grafica tutto ciò che non ha ruolo Taglio, Piega, Fustella speciale o Incollaggio, sui livelli visibili.": "No artwork to show: artwork is everything without the Cut, Fold, Special die or Glue role, on the visible layers.",
+    "(la grafica non è stata caricata: alcuni elementi non si possono disegnare nel 3D)": "(the artwork was not loaded: some items cannot be drawn in 3D)",
+    "Trascina per ruotare, rotella per lo zoom. Lato chiaro = lato stampato (esterno), dove compare anche la grafica dei livelli di disegno; lato color cartone = interno. I pannelli sono ricavati dai contorni di TAGLIO chiusi, divisi dalle linee di PIEGA; verso e angolo di ogni piega si impostano nel pannello proprietà della linea.": "Drag to rotate, scroll to zoom. Light side = printed side (outside), where the artwork of the drawing layers also appears; cardboard-colored side = inside. Panels come from the closed CUT outlines, split by the FOLD lines; each fold’s direction and angle are set in the line’s properties panel.",
+    "Doppio clic (o ✎) per rinominare": "Double-click (or ✎) to rename",
+    "Rinomina il livello": "Rename the layer",
+    "✎ Rinomina livello": "✎ Rename layer",
   },
   de: {
     "1 cm": "1 cm",
@@ -2745,6 +2754,14 @@ const I18N = {
     "Sposta il passo dopo": "Schritt nach hinten verschieben",
     "Chiudi questa piega un passo prima": "Diesen Falz einen Schritt früher schließen",
     "Chiudi questa piega un passo dopo": "Diesen Falz einen Schritt später schließen",
+    "Grafica": "Grafik",
+    "Grafica sui pannelli: {n} elementi dei livelli visibili.": "Grafik auf den Feldern: {n} Elemente der sichtbaren Ebenen.",
+    "Nessuna grafica da mostrare: è grafica tutto ciò che non ha ruolo Taglio, Piega, Fustella speciale o Incollaggio, sui livelli visibili.": "Keine Grafik anzuzeigen: Grafik ist alles ohne die Rolle Schnitt, Falz, Sonderstanzung oder Klebung, auf den sichtbaren Ebenen.",
+    "(la grafica non è stata caricata: alcuni elementi non si possono disegnare nel 3D)": "(die Grafik wurde nicht geladen: Einige Elemente können nicht in 3D gezeichnet werden)",
+    "Trascina per ruotare, rotella per lo zoom. Lato chiaro = lato stampato (esterno), dove compare anche la grafica dei livelli di disegno; lato color cartone = interno. I pannelli sono ricavati dai contorni di TAGLIO chiusi, divisi dalle linee di PIEGA; verso e angolo di ogni piega si impostano nel pannello proprietà della linea.": "Ziehen zum Drehen, Mausrad zum Zoomen. Helle Seite = bedruckte Seite (außen), auf der auch die Grafik der Zeichenebenen erscheint; kartonfarbene Seite = innen. Die Felder ergeben sich aus den geschlossenen SCHNITT-Konturen, geteilt durch die FALZ-Linien; Richtung und Winkel jedes Falzes werden im Eigenschaftenfeld der Linie eingestellt.",
+    "Doppio clic (o ✎) per rinominare": "Doppelklick (oder ✎) zum Umbenennen",
+    "Rinomina il livello": "Ebene umbenennen",
+    "✎ Rinomina livello": "✎ Ebene umbenennen",
   },
   es: {
     "1 cm": "1 cm",
@@ -3486,6 +3503,14 @@ const I18N = {
     "Sposta il passo dopo": "Mover el paso después",
     "Chiudi questa piega un passo prima": "Cerrar este pliegue un paso antes",
     "Chiudi questa piega un passo dopo": "Cerrar este pliegue un paso después",
+    "Grafica": "Gráfica",
+    "Grafica sui pannelli: {n} elementi dei livelli visibili.": "Gráfica en los paneles: {n} elementos de las capas visibles.",
+    "Nessuna grafica da mostrare: è grafica tutto ciò che non ha ruolo Taglio, Piega, Fustella speciale o Incollaggio, sui livelli visibili.": "No hay gráfica que mostrar: es gráfica todo lo que no tiene rol Corte, Pliegue, Troquel especial o Encolado, en las capas visibles.",
+    "(la grafica non è stata caricata: alcuni elementi non si possono disegnare nel 3D)": "(la gráfica no se ha cargado: algunos elementos no se pueden dibujar en 3D)",
+    "Trascina per ruotare, rotella per lo zoom. Lato chiaro = lato stampato (esterno), dove compare anche la grafica dei livelli di disegno; lato color cartone = interno. I pannelli sono ricavati dai contorni di TAGLIO chiusi, divisi dalle linee di PIEGA; verso e angolo di ogni piega si impostano nel pannello proprietà della linea.": "Arrastra para girar, rueda para el zoom. Lado claro = lado impreso (exterior), donde también aparece la gráfica de las capas de dibujo; lado color cartón = interior. Los paneles se obtienen de los contornos de CORTE cerrados, divididos por las líneas de PLIEGUE; dirección y ángulo de cada pliegue se ajustan en el panel de propiedades de la línea.",
+    "Doppio clic (o ✎) per rinominare": "Doble clic (o ✎) para renombrar",
+    "Rinomina il livello": "Renombrar la capa",
+    "✎ Rinomina livello": "✎ Renombrar capa",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -4227,6 +4252,14 @@ const I18N = {
     "Sposta il passo dopo": "将此步骤延后",
     "Chiudi questa piega un passo prima": "提前一步闭合此折线",
     "Chiudi questa piega un passo dopo": "延后一步闭合此折线",
+    "Grafica": "图案",
+    "Grafica sui pannelli: {n} elementi dei livelli visibili.": "面板上的图案：来自可见图层的 {n} 个元素。",
+    "Nessuna grafica da mostrare: è grafica tutto ciò che non ha ruolo Taglio, Piega, Fustella speciale o Incollaggio, sui livelli visibili.": "没有可显示的图案：可见图层上所有非切割、折线、特殊模切或粘合角色的元素都视为图案。",
+    "(la grafica non è stata caricata: alcuni elementi non si possono disegnare nel 3D)": "（图案未能加载：部分元素无法在3D中绘制）",
+    "Trascina per ruotare, rotella per lo zoom. Lato chiaro = lato stampato (esterno), dove compare anche la grafica dei livelli di disegno; lato color cartone = interno. I pannelli sono ricavati dai contorni di TAGLIO chiusi, divisi dalle linee di PIEGA; verso e angolo di ogni piega si impostano nel pannello proprietà della linea.": "拖动以旋转，滚轮缩放。浅色面 = 印刷面（外侧），绘图图层的图案也显示在此面；纸板色面 = 内侧。面板由闭合的切割轮廓得出，并由折线分割；每条折线的方向和角度在该线的属性面板中设置。",
+    "Doppio clic (o ✎) per rinominare": "双击（或 ✎）重命名",
+    "Rinomina il livello": "重命名图层",
+    "✎ Rinomina livello": "✎ 重命名图层",
   },
   fr: {
     "1 cm": "1 cm",
@@ -4968,6 +5001,14 @@ const I18N = {
     "Sposta il passo dopo": "Déplacer l’étape plus tard",
     "Chiudi questa piega un passo prima": "Fermer ce pli une étape plus tôt",
     "Chiudi questa piega un passo dopo": "Fermer ce pli une étape plus tard",
+    "Grafica": "Graphisme",
+    "Grafica sui pannelli: {n} elementi dei livelli visibili.": "Graphisme sur les panneaux : {n} éléments des calques visibles.",
+    "Nessuna grafica da mostrare: è grafica tutto ciò che non ha ruolo Taglio, Piega, Fustella speciale o Incollaggio, sui livelli visibili.": "Aucun graphisme à afficher : est graphisme tout ce qui n’a pas le rôle Découpe, Pli, Forme spéciale ou Collage, sur les calques visibles.",
+    "(la grafica non è stata caricata: alcuni elementi non si possono disegnare nel 3D)": "(le graphisme n’a pas été chargé : certains éléments ne peuvent pas être dessinés en 3D)",
+    "Trascina per ruotare, rotella per lo zoom. Lato chiaro = lato stampato (esterno), dove compare anche la grafica dei livelli di disegno; lato color cartone = interno. I pannelli sono ricavati dai contorni di TAGLIO chiusi, divisi dalle linee di PIEGA; verso e angolo di ogni piega si impostano nel pannello proprietà della linea.": "Glisse pour faire pivoter, molette pour zoomer. Face claire = face imprimée (extérieur), où apparaît aussi le graphisme des calques de dessin ; face couleur carton = intérieur. Les panneaux proviennent des contours de DÉCOUPE fermés, divisés par les lignes de PLI ; le sens et l’angle de chaque pli se règlent dans le panneau de propriétés de la ligne.",
+    "Doppio clic (o ✎) per rinominare": "Double-clic (ou ✎) pour renommer",
+    "Rinomina il livello": "Renommer le calque",
+    "✎ Rinomina livello": "✎ Renommer le calque",
   },
 };
 let currentLang = 'it';
@@ -6416,6 +6457,7 @@ function renderCanvasOnly(){
   renderEndpointMarkers();
   renderGapMarkers();
   renderFoldIndicators();
+  renderSmartGuides();
   renderJoinLabels();
   renderTileGuidesOverlay();
   drawRulers();
@@ -6596,6 +6638,7 @@ function buildFoldModel(shapes){
     kept.forEach((f,fi)=>{ if(!seen.has(fi)){ order.push(fi); unreached.push(fi); } }); // pezzi staccati: restano piatti
   }
   const flat3 = v=>[nodes[v][0], -nodes[v][1], 0]; // y verso l'alto nello spazio 3D
+  kept.forEach(f=>{ f.tris = triangulatePolygon(f.nodes.map(v=>nodes[v])); });
   return { nodes, faces:kept, hinges:hingesK, root, parent, parentHinge, order, flat3,
            segs, edges:[...edges.values()], unreached, unsupported, curved, hidden, TOL };
 }
@@ -6645,6 +6688,7 @@ function foldModelAt(model, frac){
   });
   const unreached = new Set(model.unreached || []);
   return model.faces.map((f,fi)=>({
+    flat: f.nodes.map(v=>model.nodes[v]), tris: f.tris || [],
     unreached: unreached.has(fi),
     pts: f.nodes.map(v=>tfApply(T[fi], model.flat3(v))),
     normal: (()=>{ const m=T[fi].m; return [m[2], m[5], m[8]]; })(),
@@ -7174,8 +7218,79 @@ function renderFoldCheckBanner(){
     bar.appendChild(f);
   }
 }
+// Suddivide un poligono semplice (anche non convesso) in triangoli ("ear clipping").
+// Restituisce terne di indici nei punti originali. I punti allineati vengono saltati.
+function triangulatePolygon(pts){
+  const n = pts.length; if(n<3) return [];
+  let area = 0; for(let i=0;i<n;i++){ const a=pts[i], b=pts[(i+1)%n]; area += a[0]*b[1]-b[0]*a[1]; }
+  const sgn = area>0 ? 1 : -1;
+  const cross = (A,B,C)=> (B[0]-A[0])*(C[1]-A[1]) - (B[1]-A[1])*(C[0]-A[0]);
+  let idx = [...Array(n).keys()];
+  // tolgo i punti allineati (i lati dei pannelli sono spezzati in tanti punti)
+  let changed = true;
+  while(changed && idx.length>3){
+    changed = false;
+    for(let i=0;i<idx.length;i++){
+      const A=pts[idx[(i-1+idx.length)%idx.length]], B=pts[idx[i]], C=pts[idx[(i+1)%idx.length]];
+      const L = Math.hypot(C[0]-A[0], C[1]-A[1]) || 1;
+      if(Math.abs(cross(A,B,C))/L < 1e-6){ idx.splice(i,1); changed = true; break; }
+    }
+  }
+  const inTri = (P,A,B,C)=>{ const d1=cross(A,B,P)*sgn, d2=cross(B,C,P)*sgn, d3=cross(C,A,P)*sgn; return d1>1e-9 && d2>1e-9 && d3>1e-9; };
+  const tris = []; let guard = 0;
+  while(idx.length>3 && guard++<20000){
+    let found = false;
+    for(let i=0;i<idx.length;i++){
+      const a=idx[(i-1+idx.length)%idx.length], b=idx[i], c=idx[(i+1)%idx.length];
+      if(cross(pts[a],pts[b],pts[c])*sgn <= 1e-12) continue; // angolo rientrante: non è un "orecchio"
+      if(idx.some(j=> j!==a && j!==b && j!==c && inTri(pts[j], pts[a], pts[b], pts[c]))) continue;
+      tris.push([a,b,c]); idx.splice(i,1); found = true; break;
+    }
+    if(!found) break;
+  }
+  if(idx.length===3) tris.push([idx[0], idx[1], idx[2]]);
+  return tris;
+}
+
+// trasformazione affine (per canvas.setTransform) che porta i 3 punti T nei 3 punti P
+function affineFrom(T, P){
+  const dx1=T[1][0]-T[0][0], dy1=T[1][1]-T[0][1], dx2=T[2][0]-T[0][0], dy2=T[2][1]-T[0][1];
+  const det = dx1*dy2 - dx2*dy1; if(Math.abs(det)<1e-9) return null;
+  const du1=P[1][0]-P[0][0], du2=P[2][0]-P[0][0], dv1=P[1][1]-P[0][1], dv2=P[2][1]-P[0][1];
+  const a=(du1*dy2-du2*dy1)/det, c=(du2*dx1-du1*dx2)/det, b=(dv1*dy2-dv2*dy1)/det, d=(dv2*dx1-dv1*dx2)/det;
+  return [a, b, c, d, P[0][0]-a*T[0][0]-c*T[0][1], P[0][1]-b*T[0][0]-d*T[0][1]];
+}
+// Grafica da riportare sui pannelli: tutte le forme visibili che non sono linee tecniche
+// (taglio, piega, fustella speciale, incollaggio), su qualunque livello visibile.
+function artShapesForFold3D(){
+  return state.shapes.filter(s=> isShapeEffVisible(s) && !(s.style && ['cut','diecut','fold','glue'].includes(s.style.role)));
+}
+// "Stampa" la grafica su un'immagine del foglio piatto (stesso aspetto dell'esportazione SVG)
+function buildArtTexture(){
+  fold3d.art = null;
+  const token = ++fold3d.artToken;
+  const art = artShapesForFold3D();
+  fold3d.artCount = art.length;
+  const box = document.getElementById('fold3dShowArt');
+  if(!art.length || (box && !box.checked)) return;
+  const W = state.page.w, H = state.page.h, k = Math.max(1, Math.min(6, 4096/Math.max(W,H)));
+  const set = new Set(art);
+  const body = shapesInZOrder().filter(s=>set.has(s)).map(exportNode).join('\n');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${Math.round(W*k)}" height="${Math.round(H*k)}" viewBox="0 0 ${W} ${H}">${body}</svg>`;
+  const img = new Image();
+  img.onload = ()=>{
+    if(token!==fold3d.artToken) return; // nel frattempo è stata richiesta un'immagine più recente
+    const cv = document.createElement('canvas'); cv.width = Math.round(W*k); cv.height = Math.round(H*k);
+    const g = cv.getContext('2d'); if(!g) return;
+    g.drawImage(img, 0, 0, cv.width, cv.height);
+    fold3d.art = {canvas:cv, k};
+    renderFold3D();
+  };
+  img.onerror = ()=>{ if(token===fold3d.artToken) document.getElementById('fold3dInfo').textContent += ' ' + translate('(la grafica non è stata caricata: alcuni elementi non si possono disegnare nel 3D)'); };
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
 /* ---------- visualizzatore 3D (canvas 2D, algoritmo del pittore) ---------- */
-const fold3d = { model:null, frac:1, yaw:-0.6, pitch:0.45, zoom:1, anim:null, drag:null };
+const fold3d = { model:null, frac:1, yaw:-0.6, pitch:0.45, zoom:1, anim:null, drag:null, art:null, artToken:0, artCount:0 };
 function openFold3D(){
   fold3d.yaw=-0.6; fold3d.pitch=0.45; fold3d.zoom=1;
   openModal('fold3dModal');
@@ -7187,8 +7302,11 @@ function refreshFold3D(){
   const model = buildFoldModel(state.shapes);
   fold3d.model = model;
   const K = foldSteps(model).length;
+  buildArtTexture();
   document.getElementById('fold3dInfo').textContent = tpl('{p} pannelli, {h} pieghe collegate.', {p:model.faces.length, h:model.hinges.length})
-    + (K>1 ? ' ' + tpl('Piegatura in {k} passi (ordine impostato sulle pieghe).', {k:K}) : '');
+    + (K>1 ? ' ' + tpl('Piegatura in {k} passi (ordine impostato sulle pieghe).', {k:K}) : '')
+    + ' ' + (fold3d.artCount ? tpl('Grafica sui pannelli: {n} elementi dei livelli visibili.', {n:fold3d.artCount})
+                             : translate('Nessuna grafica da mostrare: è grafica tutto ciò che non ha ruolo Taglio, Piega, Fustella speciale o Incollaggio, sui livelli visibili.'));
   renderFold3DCheck(checkFoldModel(model));
   if(model.faces.length) playFold3D(); else setFold3DFrac(0);
 }
@@ -7238,7 +7356,7 @@ function renderFold3D(){
   const L = [0.35,0.6,0.72], Ll = Math.hypot(...L); const light = L.map(v=>v/Ll);
   const items = faces.map(f=>{
     const vs = f.pts.map(p=> rot([p[0]-C[0], p[1]-C[1], p[2]-C[2]]));
-    return { vs, depth: vs.reduce((a,v)=>a+v[2],0)/vs.length, n: rot(f.normal), bad: f.unreached };
+    return { vs, depth: vs.reduce((a,v)=>a+v[2],0)/vs.length, n: rot(f.normal), bad: f.unreached, flat: f.flat, tris: f.tris };
   });
   items.sort((a,b)=> a.depth-b.depth); // prima i pannelli lontani, poi quelli vicini
   items.forEach(it=>{
@@ -7250,6 +7368,22 @@ function renderFold3D(){
     ctx.beginPath();
     it.vs.forEach((v,k)=>{ const p = proj(v); if(k) ctx.lineTo(p[0],p[1]); else ctx.moveTo(p[0],p[1]); });
     ctx.closePath(); ctx.fill();
+    if(front && fold3d.art && !it.bad && it.tris.length){ // grafica stampata sul lato esterno del pannello
+      const A = fold3d.art, sp = it.vs.map(proj);
+      it.tris.forEach(([a,b,c2])=>{
+        const P = [sp[a], sp[b], sp[c2]], T = [it.flat[a], it.flat[b], it.flat[c2]].map(q=>[q[0]*A.k, q[1]*A.k]);
+        const m = affineFrom(T, P); if(!m) return;
+        const cx=(P[0][0]+P[1][0]+P[2][0])/3, cy=(P[0][1]+P[1][1]+P[2][1])/3; // triangolo appena allargato: niente fessure tra i triangoli
+        const E = P.map(q=>{ const dx=q[0]-cx, dy=q[1]-cy, l=Math.hypot(dx,dy)||1; return [q[0]+dx/l*0.7, q[1]+dy/l*0.7]; });
+        ctx.save();
+        ctx.beginPath(); ctx.moveTo(E[0][0],E[0][1]); ctx.lineTo(E[1][0],E[1][1]); ctx.lineTo(E[2][0],E[2][1]); ctx.closePath(); ctx.clip();
+        ctx.setTransform(dpr*m[0], dpr*m[1], dpr*m[2], dpr*m[3], dpr*m[4], dpr*m[5]);
+        ctx.drawImage(A.canvas, 0, 0);
+        ctx.restore();
+      });
+      ctx.fillStyle = `rgba(0,0,0,${((1-shade)*0.85).toFixed(3)})`; // luce e ombra anche sopra la grafica
+      ctx.beginPath(); it.vs.forEach((v,k2)=>{ const q = proj(v); if(k2) ctx.lineTo(q[0],q[1]); else ctx.moveTo(q[0],q[1]); }); ctx.closePath(); ctx.fill();
+    }
     ctx.strokeStyle = 'rgba(30,30,30,0.85)'; ctx.lineWidth = 1; ctx.stroke();
   });
 }
@@ -8150,6 +8284,66 @@ function renderSeq(){
   applyI18n(host);
 }
 
+
+/* ============================================================
+   GUIDE DI ALLINEAMENTO — mentre si sposta un oggetto, bordi e centro
+   vengono confrontati con quelli degli altri oggetti e del foglio.
+   Con il magnete acceso l'oggetto si aggancia; Alt lo lascia libero.
+============================================================ */
+const GUIDE_SNAP_PX = 6;
+function buildGuideData(ids){
+  const moving = new Set(ids);
+  const mb = ids.map(id=>state.shapes.find(s=>s.id===id)).filter(Boolean).map(shapeBBox);
+  if(!mb.length) return null;
+  const x0=Math.min(...mb.map(b=>b.x)), y0=Math.min(...mb.map(b=>b.y)), x1=Math.max(...mb.map(b=>b.x+b.w)), y1=Math.max(...mb.map(b=>b.y+b.h));
+  const box = {x:x0, y:y0, w:x1-x0, h:y1-y0};
+  const xs = [], ys = [];
+  state.shapes.forEach(s=>{
+    if(moving.has(s.id) || !isShapeEffVisible(s)) return;
+    const b = shapeBBox(s); if(!b || !isFinite(b.x)) return;
+    [[b.x,'edge'],[b.x+b.w/2,'center'],[b.x+b.w,'edge']].forEach(([v,k])=> xs.push({v, k, lo:b.y, hi:b.y+b.h}));
+    [[b.y,'edge'],[b.y+b.h/2,'center'],[b.y+b.h,'edge']].forEach(([v,k])=> ys.push({v, k, lo:b.x, hi:b.x+b.w}));
+  });
+  const W = state.page.w, H = state.page.h; // il foglio: bordi e centro
+  [[0,'edge'],[W/2,'center'],[W,'edge']].forEach(([v,k])=> xs.push({v, k, lo:0, hi:H, page:true}));
+  [[0,'edge'],[H/2,'center'],[H,'edge']].forEach(([v,k])=> ys.push({v, k, lo:0, hi:W, page:true}));
+  return {box, xs, ys};
+}
+function smartGuideSnap(gd, raw, snap){
+  if(!gd) return {delta:raw, guides:[]};
+  const thr = GUIDE_SNAP_PX/state.scale;
+  const B = gd.box;
+  const axis = (cands, start, size, d)=>{
+    const mine = [start, start+size/2, start+size].map((v,i)=>({v:v+d, k: i===1 ? 'center' : 'edge'}));
+    let best = null;
+    mine.forEach(m=> cands.forEach(cd=>{ const diff = cd.v - m.v; if(Math.abs(diff)<=thr && (!best || Math.abs(diff)<Math.abs(best))) best = diff; }));
+    return best;
+  };
+  const delta = raw.slice();
+  const sx = axis(gd.xs, B.x, B.w, raw[0]), sy = axis(gd.ys, B.y, B.h, raw[1]);
+  if(snap){ if(sx!=null) delta[0] += sx; if(sy!=null) delta[1] += sy; }
+  // guide da mostrare: allineamenti esatti (se agganciato) o quasi (se libero)
+  const tol = snap ? 1e-6 + 1e-9 : thr;
+  const guides = [];
+  const mx = [B.x, B.x+B.w/2, B.x+B.w].map(v=>v+delta[0]), my = [B.y, B.y+B.h/2, B.y+B.h].map(v=>v+delta[1]);
+  const myLo = B.y+delta[1], myHi = B.y+B.h+delta[1], mxLo = B.x+delta[0], mxHi = B.x+B.w+delta[0];
+  mx.forEach((v,i)=> gd.xs.forEach(cd=>{ if(Math.abs(cd.v-v)<=Math.max(tol,1e-6)) guides.push({dir:'v', pos:cd.v, lo:Math.min(myLo,cd.lo), hi:Math.max(myHi,cd.hi), center: i===1 || cd.k==='center', page:!!cd.page}); }));
+  my.forEach((v,i)=> gd.ys.forEach(cd=>{ if(Math.abs(cd.v-v)<=Math.max(tol,1e-6)) guides.push({dir:'h', pos:cd.v, lo:Math.min(mxLo,cd.lo), hi:Math.max(mxHi,cd.hi), center: i===1 || cd.k==='center', page:!!cd.page}); }));
+  return {delta, guides};
+}
+function renderSmartGuides(){
+  if(!state.guides || !state.guides.length || dragMode!=='move-shape') return;
+  const sc = state.scale, seen = new Set();
+  state.guides.forEach(g=>{
+    const key = g.dir + Math.round(g.pos*100); if(seen.has(key)) return; seen.add(key);
+    const col = g.page ? '#00b3ff' : '#ff2d78';
+    const a = (g.lo)*sc - 10, b = (g.hi)*sc + 10, p = g.pos*sc;
+    const attrs = g.dir==='v' ? {x1:p, y1:a, x2:p, y2:b} : {x1:a, y1:p, x2:b, y2:p};
+    layerOverlay.appendChild(el('line', Object.assign(attrs, {stroke:col, 'stroke-width':1.2, 'stroke-dasharray': g.center ? '5,3' : '', 'pointer-events':'none'})));
+    [[attrs.x1,attrs.y1],[attrs.x2,attrs.y2]].forEach(([x,y])=> layerOverlay.appendChild(el('path', {d:`M ${x-3} ${y-3} L ${x+3} ${y+3} M ${x+3} ${y-3} L ${x-3} ${y+3}`, stroke:col, 'stroke-width':1.2, 'pointer-events':'none'})));
+  });
+}
+
 /* ============================================================
    LIBRERIA COMPONENTI — pezzi pronti (aletta, foro europeo, maniglia,
    linguetta, gancio) da inserire con un clic, poi rifinibili come
@@ -8754,7 +8948,7 @@ function handleMouseDown(mm, e){
       if(!e.shiftKey){ state.selection.clear(); state.joinRegion = null; }
       state.selection.add(hit.id);
       dragMode='move-shape';
-      state.drag = {ids:[...state.selection], lastPt:mm};
+      state.drag = {ids:[...state.selection], lastPt:mm, startPt:mm, applied:[0,0]};
     } else if(state.refImage && !e.shiftKey && hitTestRefImage(mm)){
       state.selection.clear();
       state.refImageSelected = true;
@@ -8860,9 +9054,16 @@ function handleMouseMove(mm, e){
     return;
   }
   if(dragMode==='move-shape' && state.drag){
-    const dx = mm[0]-state.drag.lastPt[0], dy = mm[1]-state.drag.lastPt[1];
-    moveShapesBy(state.drag.ids, dx, dy);
-    state.drag.lastPt = mm;
+    const d = state.drag;
+    if(!d.startPt){ // trascinamento avviato altrove (es. incolla): movimento semplice
+      moveShapesBy(d.ids, mm[0]-d.lastPt[0], mm[1]-d.lastPt[1]); d.lastPt = mm; renderAll(); return;
+    }
+    if(!d.guideData) d.guideData = buildGuideData(d.ids);
+    const raw = [mm[0]-d.startPt[0], mm[1]-d.startPt[1]];
+    const res = smartGuideSnap(d.guideData, raw, !(e && e.altKey) && state.snapMagnet);
+    moveShapesBy(d.ids, res.delta[0]-d.applied[0], res.delta[1]-d.applied[1]);
+    d.applied = res.delta; d.lastPt = mm;
+    state.guides = res.guides;
     renderAll();
     return;
   }
@@ -8959,6 +9160,7 @@ function handleMouseUp(mm, e){
     }
     state.draft=null;
   } else if(dragMode==='move-shape' || dragMode==='move-vertex' || dragMode==='resize' || dragMode==='resize-text' || dragMode==='rotate-shape'){
+    state.guides = null;
     pushHistory();
   } else if(dragMode==='rubberband'){
     if(state.drag && state.drag.current){
@@ -10153,6 +10355,7 @@ function closeFold3D(){ stopFold3D(); if(state.foldCheck) endFoldCheckOverlay();
 document.getElementById('fold3dClose').onclick = closeFold3D;
 setupOverlayClickClose(document.getElementById('fold3dModal'), closeFold3D);
 document.getElementById('fold3dPlay').onclick = playFold3D;
+document.getElementById('fold3dShowArt').onchange = ()=>{ buildArtTexture(); renderFold3D(); };
 document.getElementById('fold3dSeq').onclick = openFoldSequence;
 document.getElementById('seqModalClose').onclick = closeFoldSequence;
 setupOverlayClickClose(document.getElementById('seqModal'), closeFoldSequence);
@@ -11504,22 +11707,35 @@ function renderLayersPanelInner(){
     lockBtn.onclick = (e)=>{ e.stopPropagation(); layer.locked = !layer.locked; pushHistory(); renderAll(); };
 
     const nameEl = document.createElement('span'); nameEl.className='name'; nameEl.textContent = layer.name;
-    nameEl.title = 'Doppio clic per rinominare';
-    nameEl.ondblclick = (e)=>{
-      e.stopPropagation();
+    nameEl.title = 'Doppio clic (o ✎) per rinominare';
+    let editing = false;
+    const startRename = ()=>{
+      editing = true;
       nameEl.contentEditable = 'true'; nameEl.focus();
       const range = document.createRange(); range.selectNodeContents(nameEl);
       const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
     };
-    nameEl.addEventListener('blur', ()=>{
+    // salvataggio diretto: non dipende dall'evento di uscita dal campo, che non sempre arriva
+    const finishRename = (save)=>{
+      if(!editing) return;
+      editing = false;
       nameEl.contentEditable = 'false';
-      layer.name = nameEl.textContent.trim() || layer.name;
-      pushHistory(); renderLayersPanel();
-    });
+      const nv = nameEl.textContent.trim();
+      if(save && nv && nv!==layer.name){ layer.name = nv; pushHistory(); } // cronologia solo se il nome cambia davvero
+      renderLayersPanel();
+    };
+    nameEl.ondblclick = (e)=>{ e.stopPropagation(); startRename(); };
+    nameEl.addEventListener('blur', ()=> finishRename(true));
     nameEl.addEventListener('keydown', (e)=>{
       e.stopPropagation();
-      if(e.key==='Enter'){ e.preventDefault(); nameEl.blur(); }
-      if(e.key==='Escape'){ nameEl.textContent = layer.name; nameEl.blur(); }
+      if(e.key==='Enter'){ e.preventDefault(); finishRename(true); }
+      if(e.key==='Escape'){ e.preventDefault(); finishRename(false); }
+    });
+    const renBtn = document.createElement('button'); renBtn.textContent='✎'; renBtn.title='Rinomina il livello'; renBtn.className='layer-rename';
+    renBtn.onclick = (e)=>{ e.stopPropagation(); startRename(); };
+    head.addEventListener('contextmenu', (e)=>{
+      e.preventDefault(); e.stopPropagation();
+      showContextMenu(e.clientX, e.clientY, [{label:'✎ Rinomina livello', action:()=> startRename()}]);
     });
 
     const realIdx = state.layers.findIndex(l=>l.id===layer.id);
@@ -11533,7 +11749,7 @@ function renderLayersPanelInner(){
     delBtn.onclick = (e)=>{ e.stopPropagation(); deleteLayer(layer.id); };
 
     head.appendChild(drag); head.appendChild(eyeBtn); head.appendChild(lockBtn);
-    head.appendChild(nameEl);
+    head.appendChild(nameEl); head.appendChild(renBtn);
     head.appendChild(upBtn); head.appendChild(downBtn); head.appendChild(delBtn);
     head.onclick = ()=>{ state.activeLayerId = layer.id; renderLayersPanel(); };
 
