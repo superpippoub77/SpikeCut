@@ -625,7 +625,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.13.3</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.13.5</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1855,6 +1855,10 @@ const I18N = {
     "{f} correggibili in automatico": "{f} fixable automatically",
     "I punti {a} e {b} sono i due capi della stessa linea dritta: unirli la ridurrebbe a un punto.": "Points {a} and {b} are the two ends of the same straight line: joining them would reduce it to a point.",
     "Selezione a lazo (trascina intorno alle forme)": "Lasso selection (drag around the shapes)",
+    "{n} linee di taglio aperte non formano un contorno e non hanno niente da unire lì vicino: sono considerate tagli voluti (es. tagli di scarico o asole) e non influiscono sui pannelli.": "{n} open cut lines don’t form an outline and have nothing nearby to join: they are treated as intentional cuts (e.g. relief cuts or slots) and don’t affect the panels.",
+    "Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso. Le interruzioni più vicine sono nei punti che lampeggiano, a {d} dalla piega: se lì il contorno deve continuare, unisci quei punti (seleziona le linee e usa \"Unisci punti\").": "This fold is fine (its ends touch the other lines), but it isn’t used because the cut outline it sits in isn’t closed. The nearest breaks are at the flashing points, {d} from the fold: if the outline should continue there, join those points (select the lines and use \"Join points\").",
+    "{n} linee dritte risultano \"chiuse su se stesse\" (un segmento percorso avanti e indietro): sembrano normali ma non hanno più estremità, quindi non si collegano come dovrebbero. Succede ad esempio usando \"Chiudi tutti i percorsi aperti\".": "{n} straight lines are \"closed onto themselves\" (a segment traced back and forth): they look normal but no longer have ends, so they don’t connect as they should. This happens, for example, when using \"Close all open paths\".",
+    "Riapre {n} linee chiuse su se stesse, riportandole a linee normali.": "Reopens {n} lines closed onto themselves, turning them back into normal lines.",
   },
   de: {
     "1 cm": "1 cm",
@@ -2514,6 +2518,10 @@ const I18N = {
     "{f} correggibili in automatico": "{f} automatisch korrigierbar",
     "I punti {a} e {b} sono i due capi della stessa linea dritta: unirli la ridurrebbe a un punto.": "Die Punkte {a} und {b} sind die beiden Enden derselben geraden Linie: Sie zu verbinden würde sie auf einen Punkt reduzieren.",
     "Selezione a lazo (trascina intorno alle forme)": "Lasso-Auswahl (um die Formen ziehen)",
+    "{n} linee di taglio aperte non formano un contorno e non hanno niente da unire lì vicino: sono considerate tagli voluti (es. tagli di scarico o asole) e non influiscono sui pannelli.": "{n} offene Schnittlinien bilden keine Kontur und haben in der Nähe nichts zum Verbinden: Sie gelten als gewollte Schnitte (z.B. Entlastungsschnitte oder Schlitze) und beeinflussen die Felder nicht.",
+    "Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso. Le interruzioni più vicine sono nei punti che lampeggiano, a {d} dalla piega: se lì il contorno deve continuare, unisci quei punti (seleziona le linee e usa \"Unisci punti\").": "Dieser Falz ist in Ordnung (seine Enden berühren die anderen Linien), wird aber nicht verwendet, weil die Schnittkontur, in der er liegt, nicht geschlossen ist. Die nächsten Unterbrechungen sind an den blinkenden Punkten, {d} vom Falz entfernt: Wenn die Kontur dort weitergehen soll, verbinde diese Punkte (Linien auswählen und \"Punkte verbinden\" verwenden).",
+    "{n} linee dritte risultano \"chiuse su se stesse\" (un segmento percorso avanti e indietro): sembrano normali ma non hanno più estremità, quindi non si collegano come dovrebbero. Succede ad esempio usando \"Chiudi tutti i percorsi aperti\".": "{n} gerade Linien sind \"in sich geschlossen\" (ein hin und zurück verlaufender Abschnitt): Sie sehen normal aus, haben aber keine Enden mehr und verbinden sich daher nicht wie gewünscht. Das passiert z.B. mit \"Alle offenen Pfade schließen\".",
+    "Riapre {n} linee chiuse su se stesse, riportandole a linee normali.": "Öffnet {n} in sich geschlossene Linien wieder und macht sie zu normalen Linien.",
   },
   es: {
     "1 cm": "1 cm",
@@ -3173,6 +3181,10 @@ const I18N = {
     "{f} correggibili in automatico": "{f} corregibles automáticamente",
     "I punti {a} e {b} sono i due capi della stessa linea dritta: unirli la ridurrebbe a un punto.": "Los puntos {a} y {b} son los dos extremos de la misma línea recta: unirlos la reduciría a un punto.",
     "Selezione a lazo (trascina intorno alle forme)": "Selección con lazo (arrastra alrededor de las formas)",
+    "{n} linee di taglio aperte non formano un contorno e non hanno niente da unire lì vicino: sono considerate tagli voluti (es. tagli di scarico o asole) e non influiscono sui pannelli.": "{n} líneas de corte abiertas no forman un contorno y no tienen nada cerca que unir: se consideran cortes intencionados (p. ej. cortes de alivio o ranuras) y no afectan a los paneles.",
+    "Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso. Le interruzioni più vicine sono nei punti che lampeggiano, a {d} dalla piega: se lì il contorno deve continuare, unisci quei punti (seleziona le linee e usa \"Unisci punti\").": "Este pliegue está bien (sus extremos tocan las otras líneas), pero no se usa porque el contorno de corte en el que está no está cerrado. Las interrupciones más cercanas están en los puntos que parpadean, a {d} del pliegue: si ahí el contorno debe continuar, une esos puntos (selecciona las líneas y usa \"Unir puntos\").",
+    "{n} linee dritte risultano \"chiuse su se stesse\" (un segmento percorso avanti e indietro): sembrano normali ma non hanno più estremità, quindi non si collegano come dovrebbero. Succede ad esempio usando \"Chiudi tutti i percorsi aperti\".": "{n} líneas rectas están \"cerradas sobre sí mismas\" (un tramo recorrido de ida y vuelta): parecen normales pero ya no tienen extremos, así que no se conectan como deberían. Ocurre, por ejemplo, al usar \"Cerrar todos los trazados abiertos\".",
+    "Riapre {n} linee chiuse su se stesse, riportandole a linee normali.": "Vuelve a abrir {n} líneas cerradas sobre sí mismas, convirtiéndolas de nuevo en líneas normales.",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -3832,6 +3844,10 @@ const I18N = {
     "{f} correggibili in automatico": "{f} 个可自动修正",
     "I punti {a} e {b} sono i due capi della stessa linea dritta: unirli la ridurrebbe a un punto.": "点 {a} 和 {b} 是同一条直线的两端：连接它们会使该线缩成一个点。",
     "Selezione a lazo (trascina intorno alle forme)": "套索选择（围绕形状拖动）",
+    "{n} linee di taglio aperte non formano un contorno e non hanno niente da unire lì vicino: sono considerate tagli voluti (es. tagli di scarico o asole) e non influiscono sui pannelli.": "{n} 条开放的切割线没有形成轮廓，附近也没有可连接的线：视为有意的切口（如释放切口或插槽），不影响面板。",
+    "Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso. Le interruzioni più vicine sono nei punti che lampeggiano, a {d} dalla piega: se lì il contorno deve continuare, unisci quei punti (seleziona le linee e usa \"Unisci punti\").": "这条折线本身没问题（两端都接触到其他线），但因为它所在的切割轮廓未闭合而未被使用。最近的断开处位于闪烁的点，距折线 {d}：如果轮廓应在那里继续，请连接这些点（选中线条并使用\"连接点\"）。",
+    "{n} linee dritte risultano \"chiuse su se stesse\" (un segmento percorso avanti e indietro): sembrano normali ma non hanno più estremità, quindi non si collegano come dovrebbero. Succede ad esempio usando \"Chiudi tutti i percorsi aperti\".": "{n} 条直线处于\"自闭合\"状态（线段被来回描绘）：看起来正常，但已没有端点，因此无法正常连接。例如使用\"闭合所有开放路径\"时会出现这种情况。",
+    "Riapre {n} linee chiuse su se stesse, riportandole a linee normali.": "重新打开 {n} 条自闭合的线，将其恢复为普通线条。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -4491,6 +4507,10 @@ const I18N = {
     "{f} correggibili in automatico": "{f} corrigeables automatiquement",
     "I punti {a} e {b} sono i due capi della stessa linea dritta: unirli la ridurrebbe a un punto.": "Les points {a} et {b} sont les deux extrémités de la même ligne droite : les joindre la réduirait à un point.",
     "Selezione a lazo (trascina intorno alle forme)": "Sélection au lasso (fais glisser autour des formes)",
+    "{n} linee di taglio aperte non formano un contorno e non hanno niente da unire lì vicino: sono considerate tagli voluti (es. tagli di scarico o asole) e non influiscono sui pannelli.": "{n} lignes de découpe ouvertes ne forment pas de contour et n’ont rien à joindre à proximité : elles sont considérées comme des coupes voulues (ex. coupes de dégagement ou fentes) et n’affectent pas les panneaux.",
+    "Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso. Le interruzioni più vicine sono nei punti che lampeggiano, a {d} dalla piega: se lì il contorno deve continuare, unisci quei punti (seleziona le linee e usa \"Unisci punti\").": "Ce pli est correct (ses extrémités touchent les autres lignes), mais il n’est pas utilisé car le contour de découpe où il se trouve n’est pas fermé. Les interruptions les plus proches sont aux points qui clignotent, à {d} du pli : si le contour doit continuer là, joins ces points (sélectionne les lignes et utilise « Joindre les points »).",
+    "{n} linee dritte risultano \"chiuse su se stesse\" (un segmento percorso avanti e indietro): sembrano normali ma non hanno più estremità, quindi non si collegano come dovrebbero. Succede ad esempio usando \"Chiudi tutti i percorsi aperti\".": "{n} lignes droites sont « fermées sur elles-mêmes » (un segment parcouru aller-retour) : elles semblent normales mais n’ont plus d’extrémités, donc elles ne se relient pas comme elles le devraient. Cela arrive par exemple en utilisant « Fermer tous les tracés ouverts ».",
+    "Riapre {n} linee chiuse su se stesse, riportandole a linee normali.": "Rouvre {n} lignes fermées sur elles-mêmes pour en refaire des lignes normales.",
   },
 };
 let currentLang = 'it';
@@ -6237,7 +6257,7 @@ function checkFoldModel(model){
     const fs = parts.filter(Boolean);
     if(!fs.length) return null;
     return { moves: fs.filter(f=>f.move).map(f=>f.move), roles: fs.filter(f=>f.role).map(f=>f.role), close: fs.filter(f=>f.close).map(f=>f.close),
-             desc: [...new Set(fs.map(f=>f.desc))].map(d=> fs.filter(f=>f.desc===d).length>1 ? d.replace(/\.$/,'') + ' ' + translate('(entrambe le estremità).') : d).join(' ') };
+             reopen: [], desc: [...new Set(fs.map(f=>f.desc))].map(d=> fs.filter(f=>f.desc===d).length>1 ? d.replace(/\.$/,'') + ' ' + translate('(entrambe le estremità).') : d).join(' ') };
   };
   foldStats.forEach((st, s)=>{
     if(st.hinge >= st.tot*0.98 - 0.2) return; // usata (quasi) per intero
@@ -6267,11 +6287,28 @@ function checkFoldModel(model){
     issues.push({level: partial ? 'warn' : 'error', text, shapes:[s], points: ends.map(e=>e.pt),
       gaps: ends.filter(e=>e.visual).map(e=>e.visual), fix: makeFix(ends.map(e=>e.fix))});
   });
+  // Linee "chiuse su se stesse": un segmento dritto (o punti tutti allineati) marcato come chiuso
+  // è percorso avanti e indietro. Sembra una linea normale ma non ha più estremità, quindi non si
+  // collega come dovrebbe. Succedeva con "Chiudi tutti i percorsi aperti" nelle versioni precedenti.
+  const degenerate = state.shapes.filter(s=>{
+    if(!s.points || !s.closed || !isShapeEffVisible(s) || !s.style || !['cut','diecut','fold'].includes(s.style.role)) return false;
+    const n = s.points.length; if(n<3) return true;
+    let area = 0, per = 0;
+    for(let k=0;k<n;k++){ const a=s.points[k], b=s.points[(k+1)%n]; area += a[0]*b[1]-b[0]*a[1]; per += dist(a,b); }
+    return Math.abs(area/2) < 1e-4*per*per;
+  });
+  if(degenerate.length){
+    issues.push({level:'error', shapes:degenerate, points:[], gaps:[], text:
+      tpl('{n} linee dritte risultano "chiuse su se stesse" (un segmento percorso avanti e indietro): sembrano normali ma non hanno più estremità, quindi non si collegano come dovrebbero. Succede ad esempio usando "Chiudi tutti i percorsi aperti".', {n:degenerate.length}),
+      fix:{ moves:[], roles:[], close:[], reopen:degenerate, desc: tpl('Riapre {n} linee chiuse su se stesse, riportandole a linee normali.', {n:degenerate.length}) }});
+  }
+  const slits = [], freeCutEnds = [];
   cutOpen.forEach((L, s)=>{
     if(L < 0.5) return;
     const pts = s.points || [];
     const selfGap = (!s.closed && pts.length>2) ? dist(pts[0], pts[pts.length-1]) : 0;
     const ends = freeEnds(s);
+    ends.forEach(e=> freeCutEnds.push({pt:e.pt, shape:s}));
     // entrambe le estremità unite: fa parte di una catena aperta altrove, e lo segnala già
     // la linea con l'estremità davvero libera (evita un elenco pieno di doppioni)
     if(!ends.length && s.points && !s.closed && cutOpen.size>1) return;
@@ -6286,9 +6323,14 @@ function checkFoldModel(model){
         : translate('Linea di taglio che non chiude nessun contorno: i suoi tratti finiscono nel vuoto.');
       fix = makeFix(ends.map(e=>e.fix));
       gaps = ends.filter(e=>e.visual).map(e=>e.visual);
+      // Nessuna linea da unire lì vicino: non è un contorno interrotto ma un taglio voluto
+      // (taglio di scarico, asola, taglio dritto). Non è un errore: lo elenco solo come informazione.
+      if(!fix){ slits.push(s); return; }
     }
     issues.push({level:'error', shapes:[s], points: ends.map(e=>e.pt), gaps, fix, text});
   });
+  if(slits.length) issues.push({level:'info', shapes:slits, points:[], gaps:[], fix:null,
+    text: tpl('{n} linee di taglio aperte non formano un contorno e non hanno niente da unire lì vicino: sono considerate tagli voluti (es. tagli di scarico o asole) e non influiscono sui pannelli.', {n:slits.length})});
   if(model.faces.length && model.unreached.length && model.hinges.length){
     const pts = model.unreached.map(fi=>{ const f=model.faces[fi]; let x=0,y=0; f.nodes.forEach(v=>{ x+=model.nodes[v][0]; y+=model.nodes[v][1]; }); return [x/f.nodes.length, y/f.nodes.length]; });
     issues.push({level:'warn', shapes:[], points:pts, gaps:[], fix:null, text: tpl('{n} pannelli non sono collegati al resto da nessuna piega: restano piatti.', {n:model.unreached.length})});
@@ -6327,10 +6369,22 @@ function checkFoldModel(model){
       const nums = is.causeNums.join(', ');
       is.text = tpl('Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso. Si risolve correggendo i problemi n. {nums}.', {nums});
       const fx = causes.filter(o=>o.fix);
-      if(fx.length) is.fix = { moves: fx.flatMap(o=>o.fix.moves||[]), roles: fx.flatMap(o=>o.fix.roles||[]), close: fx.flatMap(o=>o.fix.close||[]),
+      if(fx.length) is.fix = { moves: fx.flatMap(o=>o.fix.moves||[]), roles: fx.flatMap(o=>o.fix.roles||[]), close: fx.flatMap(o=>o.fix.close||[]), reopen: fx.flatMap(o=>o.fix.reopen||[]),
         desc: tpl('Corregge il contorno che la blocca (problemi n. {nums}).', {nums: fx.map(o=>o.num).join(', ')}) };
     } else {
-      is.text = translate('Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso.');
+      // nessuna causa correggibile: indico dove il contorno probabilmente si interrompe,
+      // cioè le estremità libere di taglio più vicine alla piega
+      const fp = is.shapes[0].points || [];
+      const dFold = q=>{ let best=Infinity; for(let k=0;k<fp.length-1;k++){ const a=fp[k], b=fp[k+1], dx=b[0]-a[0], dy=b[1]-a[1], l2=dx*dx+dy*dy;
+        const t = l2 ? Math.max(0,Math.min(1,((q[0]-a[0])*dx+(q[1]-a[1])*dy)/l2)) : 0; best = Math.min(best, Math.hypot(a[0]+dx*t-q[0], a[1]+dy*t-q[1])); } return best; };
+      const nearEnds = freeCutEnds.filter(fe=> compOf(fe.shape)===comp).map(fe=>({pt:fe.pt, d:dFold(fe.pt)})).sort((a,b)=>a.d-b.d).slice(0,2);
+      if(nearEnds.length){
+        is.points = nearEnds.map(n=>n.pt);
+        is.text = tpl('Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso. Le interruzioni più vicine sono nei punti che lampeggiano, a {d} dalla piega: se lì il contorno deve continuare, unisci quei punti (seleziona le linee e usa "Unisci punti").',
+          {d: nearEnds.map(n=>fmt(n.d)+' mm').join(' e ')});
+      } else {
+        is.text = translate('Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso.');
+      }
     }
   });
   const ordered = real.concat(cons, infos);
@@ -6395,6 +6449,14 @@ function applyIssueFixes(list){
   const fixes = list.map(i=>i.fix).filter(Boolean);
   if(!fixes.length) return;
   const marks = [], applied = [], done = new Set();
+  fixes.forEach(f=> (f.reopen||[]).forEach(s=>{
+    if(!s.closed) return;
+    s.closed = false;
+    // se l'ultimo punto ripete il primo (anello chiuso "a mano"), lo tolgo
+    const n = s.points.length;
+    if(n>2 && dist(s.points[0], s.points[n-1]) < 1e-6){ s.points.pop(); if(s.smooth) s.smooth.pop(); }
+    marks.push(s.points[0], s.points[s.points.length-1]);
+  }));
   const eq = (a,b)=> Math.hypot(a[0]-b[0], a[1]-b[1]) < 1e-6;
   fixes.forEach(f=> (f.roles||[]).forEach(s=>{
     const pr = ROLE_STYLE.cut; s.style.role='cut'; s.style.stroke=pr.stroke; s.style.dash=pr.dash;
@@ -11632,11 +11694,17 @@ document.getElementById('weldApply').onclick = ()=>{
 };
 
 function closeAllOpenPaths(){
+  // Chiude solo i contorni veri lasciati aperti: almeno 3 punti, non pieghe né archi, e con
+  // entrambe le estremità libere. Una linea dritta "chiusa" diventerebbe un segmento percorso
+  // avanti e indietro, e una linea già collegata ad altre ai due capi fa parte di un contorno a pezzi.
   let count=0;
+  const all = collectConnectionPoints();
   state.shapes.forEach(s=>{
-    if(s.points && !s.closed && s.points.length>=2 && s.visible!==false && !s.locked && !s.excludeAutoFix){
-      s.closed = true; count++;
-    }
+    if(!s.points || s.closed || s.points.length<3 || s.visible===false || s.locked || s.excludeAutoFix) return;
+    if(s.arc || (s.style && s.style.role==='fold')) return;
+    const n = s.points.length;
+    if(isVertexLinked(s, 0, all) || isVertexLinked(s, n-1, all)) return;
+    s.closed = true; count++;
   });
   if(count>0){ pushHistory(); renderAll(); }
   showToast(count>0 ? tpl('{count} percorsi sono stati chiusi.', {count}) : 'Non ci sono percorsi aperti da chiudere (o sono tutti esclusi).', count===0);

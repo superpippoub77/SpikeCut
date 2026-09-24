@@ -87,7 +87,17 @@ un'altra parte, non viene più segnalata come errore della piega: compare in
 arancione, in fondo all'elenco, con l'indicazione dei problemi del contorno
 che la bloccano ("➜ Vai al problema n") e, se questi sono correggibili, con
 "🔧 Correggi" che sistema direttamente il contorno. La barra in alto separa
-errori veri, pieghe bloccate e numero di problemi correggibili in automatico. Nel 3D i pannelli non
+errori veri, pieghe bloccate e numero di problemi correggibili in automatico.
+**Tagli voluti**: una linea di taglio aperta che non ha niente da unire lì
+vicino (taglio di scarico, asola, taglio dritto) non è un errore: compare solo
+come informazione. Se una piega resta bloccata e nessuna causa è correggibile
+in automatico, il controllo fa lampeggiare le estremità libere di taglio più
+vicine alla piega, cioè dove il contorno probabilmente si interrompe.
+**Linee chiuse su se stesse**: un segmento dritto marcato come "chiuso" (come
+faceva "Chiudi tutti i percorsi aperti" nelle versioni precedenti) sembra
+normale ma non ha più estremità; il controllo lo segnala e lo riapre con un
+clic. "Chiudi tutti i percorsi aperti" ora chiude solo contorni veri (almeno 3
+punti, non pieghe né archi, con entrambe le estremità libere). Nel 3D i pannelli non
 collegati da nessuna piega sono colorati di rosso.
 Limiti attuali: i tratti curvi sono approssimati con segmenti dritti, i fori
 non vengono ritagliati dal pannello nella vista 3D, e le pareti che si
