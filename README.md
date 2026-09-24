@@ -83,6 +83,27 @@ scatole generate hanno già un ordine sensato: scatola americana 1 tubo,
 2 alette corte, 3 alette lunghe (ora una piega per ogni aletta); astuccio
 1 tubo, 2 alette antipolvere, 3 aletta posteriore, 4 linguetta di chiusura.
 
+**Ordine automatico**: nella finestra dell'anteprima 3D ("Ordine automatico
+delle pieghe" → "Applica e simula", per tutte le pieghe) o nel pannello
+proprietà di una piega ("Ordina": per le pieghe selezionate, o per tutte se
+ne è selezionata una sola) si può assegnare l'ordine con un criterio:
+dal pannello principale verso l'esterno (profondità nell'albero di
+piegatura, come si piega davvero una scatola), da sinistra a destra, da
+destra a sinistra, dall'alto in basso, dal basso in alto, dal centro verso
+l'esterno, oppure tutte insieme (azzera). Le pieghe alla stessa posizione o
+distanza (entro 2 mm) finiscono nello stesso passo. Ctrl+Z annulla.
+
+**Sequenza di piegatura** (menu Strumenti, pulsante "📋 Sequenza…" nella
+finestra 3D, o "📋 Modifica la sequenza…" nel pannello di una piega): elenco
+dei passi nell'ordine in cui avvengono, ciascuno con le sue pieghe descritte
+(orientamento, lunghezza, posizione, verso e angolo). Si riordina
+trascinando: una piega su un altro passo la sposta lì, nello spazio tra due
+passi crea un passo nuovo; l'intestazione di un passo lo sposta tutto, o lo
+unisce a un altro passo se rilasciata sopra. In alternativa le frecce ↑ ↓
+sulle pieghe e sui passi. Passando col mouse su una piega la si vede
+evidenziata sul disegno; "Simula nel 3D" mostra subito il risultato. Ogni
+modifica si annulla con Ctrl+Z.
+
 ### Anteprima 3D piegata (menu Strumenti)
 Ricava i pannelli dai contorni di **taglio** chiusi, divisi dalle linee di
 **piega**, e li piega in 3D usando verso e angolo di ogni piega (quelle

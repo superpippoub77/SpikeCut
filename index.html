@@ -356,6 +356,17 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 #foldCheckBanner .fcb-detail.error{ background:rgba(255,59,48,.14); color:#ff6a60; }
 #foldCheckBanner .fcb-detail.warn{ background:rgba(255,159,10,.14); color:#ffb340; }
 .fc-pulse{ animation: fcPulse 1.1s ease-in-out infinite; }
+.seq-gap{ height:10px; margin:2px 0; border-radius:5px; transition:height .1s, background .1s; }
+.seq-gap.over{ height:28px; background:rgba(53,114,214,.22); outline:2px dashed #3572d6; }
+.seq-step{ border:1px solid var(--line); border-radius:8px; padding:6px 8px; background:var(--bg-1); }
+.seq-step.over{ outline:2px dashed #3572d6; background:rgba(53,114,214,.10); }
+.seq-head{ display:flex; align-items:center; gap:6px; font-weight:700; font-size:12.5px; margin-bottom:4px; }
+.seq-head .seq-handle, .seq-item .seq-handle{ cursor:grab; color:var(--ink-dim); user-select:none; }
+.seq-item{ display:flex; align-items:center; gap:6px; font-size:12px; padding:4px 6px; border-radius:6px; margin:2px 0; background:rgba(128,128,128,.08); }
+.seq-item:hover{ background:rgba(53,114,214,.16); }
+.seq-item.dragging, .seq-step.dragging{ opacity:.45; }
+.seq-grow{ flex:1; }
+.seq-head .iconbtn, .seq-item .iconbtn{ padding:1px 6px; font-size:11px; }
 @keyframes fcPulse{ 0%,100%{ opacity:1; } 50%{ opacity:.25; } }
 .fc-march{ animation: fcMarch .9s linear infinite; }
 @keyframes fcMarch{ to{ stroke-dashoffset:-28; } }
@@ -549,6 +560,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
       <button data-action="cut-preview">Anteprima taglio (fustella)</button>
       <button data-action="fold-3d">🧊 Anteprima 3D piegata</button>
       <button data-action="symmetry">⇅ Simmetria…</button>
+      <button data-action="fold-sequence">📋 Sequenza di piegatura…</button>
       <div class="menu-sep"></div>
       <button data-action="weld-points">Salda punti vicini…</button>
       <button data-action="close-all-paths">Chiudi tutti i percorsi aperti</button>
@@ -631,7 +643,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.15.1</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.17.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -755,6 +767,22 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 <div id="modalDock"></div>
 <div id="foldCheckBanner" style="display:none;"></div>
 
+<div id="seqModal" class="modal-overlay">
+  <div class="modal-box" style="width:540px;max-width:96vw;">
+    <div class="modal-head">
+      <h3>Sequenza di piegatura</h3>
+      <button class="iconbtn" id="seqModalClose" title="Chiudi">✕</button>
+    </div>
+    <div class="modal-body" style="max-height:72vh;overflow:auto;">
+      <div class="hint" style="margin-bottom:10px;">Le pieghe si chiudono passo dopo passo, dall'alto dell'elenco verso il basso. Trascina una piega su un altro passo per spostarla, o nello spazio tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo tutto (o su un altro passo per unirli). In alternativa usa le frecce. Passando sopra una piega la vedi evidenziata sul disegno.</div>
+      <div id="seqList"></div>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="btn primary" id="seqSimulate" style="width:auto;margin:0;">🧊 Simula nel 3D</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="symModal" class="modal-overlay">
   <div class="modal-box" style="width:480px;">
     <div class="modal-head">
@@ -819,6 +847,12 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
         <span id="fold3dPct" style="font-size:12px;min-width:38px;text-align:right;">100%</span>
         <span id="fold3dStep" style="font-size:12px;font-weight:700;color:var(--brass);min-width:80px;"></span>
         <button class="btn" id="fold3dReset" style="width:auto;margin:0;">Vista iniziale</button>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:8px;">
+        <span style="font-size:12px;color:var(--ink-dim);white-space:nowrap;">Ordine automatico delle pieghe:</span>
+        <select id="fold3dAutoOrder" style="flex:1;"></select>
+        <button class="btn" id="fold3dAutoOrderApply" style="width:auto;margin:0;">Applica e simula</button>
+        <button class="btn" id="fold3dSeq" style="width:auto;margin:0;">📋 Sequenza…</button>
       </div>
       <div class="hint" id="fold3dInfo" style="margin-top:8px;"></div>
       <div id="fold3dCheck" style="max-height:190px;overflow:auto;"></div>
@@ -1935,6 +1969,41 @@ const I18N = {
     "{del} forme sostituite da {add} copie speculari.": "{del} shapes replaced by {add} mirror copies.",
     "{u} punti senza corrispondente lasciati come sono (cerchi arancioni).": "{u} points without counterpart left as they are (orange circles).",
     "asse di simmetria — la zona colorata viene corretta": "axis of symmetry — the shaded area gets corrected",
+    "Dal pannello principale verso l'esterno": "From the main panel outwards",
+    "Dall'alto in basso": "Top to bottom",
+    "Dal basso in alto": "Bottom to top",
+    "Dal centro verso l'esterno": "From the center outwards",
+    "Tutte insieme (azzera l'ordine)": "All together (reset the order)",
+    "Nessuna piega a cui assegnare l'ordine.": "No fold to assign an order to.",
+    "Ordine azzerato: le {n} pieghe si chiudono tutte insieme.": "Order reset: the {n} folds all close together.",
+    "Ordine assegnato a {n} pieghe in {k} passi (Ctrl+Z per annullare).": "Order assigned to {n} folds in {k} steps (Ctrl+Z to undo).",
+    "Ordina": "Sort",
+    "Assegna automaticamente l'ordine alle {n} pieghe selezionate": "Automatically assigns the order to the {n} selected folds",
+    "Assegna automaticamente l'ordine a tutte le {n} pieghe del disegno": "Automatically assigns the order to all {n} folds in the drawing",
+    "Ordine automatico delle {n} pieghe selezionate:": "Automatic order of the {n} selected folds:",
+    "Ordine automatico di tutte le pieghe del disegno ({n}):": "Automatic order of all folds in the drawing ({n}):",
+    "Ordine automatico delle pieghe:": "Automatic fold order:",
+    "Applica e simula": "Apply and simulate",
+    "Sequenza di piegatura": "Folding sequence",
+    "Le pieghe si chiudono passo dopo passo, dall'alto dell'elenco verso il basso. Trascina una piega su un altro passo per spostarla, o nello spazio tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo tutto (o su un altro passo per unirli). In alternativa usa le frecce. Passando sopra una piega la vedi evidenziata sul disegno.": "The folds close step by step, from the top of the list downwards. Drag a fold onto another step to move it, or into the space between two steps to create a new one; drag a step’s header to move it as a whole (or onto another step to merge them). Alternatively use the arrows. Hovering over a fold highlights it on the drawing.",
+    "🧊 Simula nel 3D": "🧊 Simulate in 3D",
+    "📋 Sequenza…": "📋 Sequence…",
+    "📋 Sequenza di piegatura…": "📋 Folding sequence…",
+    "📋 Modifica la sequenza…": "📋 Edit the sequence…",
+    "↔ orizzontale · {len} · a y {y}": "↔ horizontal · {len} · at y {y}",
+    "↕ verticale · {len} · a x {x}": "↕ vertical · {len} · at x {x}",
+    "⤢ obliqua · {len} · centro {x}, {y}": "⤢ diagonal · {len} · center {x}, {y}",
+    "valle": "valley",
+    "monte": "mountain",
+    "Nel disegno non ci sono pieghe.": "There are no folds in the drawing.",
+    "Rilascia qui per creare un nuovo passo": "Drop here to create a new step",
+    "Passo {n}": "Step {n}",
+    "1 piega": "1 fold",
+    "{n} pieghe insieme": "{n} folds together",
+    "Sposta il passo prima": "Move the step earlier",
+    "Sposta il passo dopo": "Move the step later",
+    "Chiudi questa piega un passo prima": "Close this fold one step earlier",
+    "Chiudi questa piega un passo dopo": "Close this fold one step later",
   },
   de: {
     "1 cm": "1 cm",
@@ -2641,6 +2710,41 @@ const I18N = {
     "{del} forme sostituite da {add} copie speculari.": "{del} Formen durch {add} Spiegelkopien ersetzt.",
     "{u} punti senza corrispondente lasciati come sono (cerchi arancioni).": "{u} Punkte ohne Entsprechung unverändert gelassen (orange Kreise).",
     "asse di simmetria — la zona colorata viene corretta": "Symmetrieachse — der farbige Bereich wird korrigiert",
+    "Dal pannello principale verso l'esterno": "Vom Hauptfeld nach außen",
+    "Dall'alto in basso": "Von oben nach unten",
+    "Dal basso in alto": "Von unten nach oben",
+    "Dal centro verso l'esterno": "Von der Mitte nach außen",
+    "Tutte insieme (azzera l'ordine)": "Alle zusammen (Reihenfolge zurücksetzen)",
+    "Nessuna piega a cui assegnare l'ordine.": "Kein Falz, dem eine Reihenfolge zugewiesen werden kann.",
+    "Ordine azzerato: le {n} pieghe si chiudono tutte insieme.": "Reihenfolge zurückgesetzt: Die {n} Falze schließen sich alle gemeinsam.",
+    "Ordine assegnato a {n} pieghe in {k} passi (Ctrl+Z per annullare).": "Reihenfolge für {n} Falze in {k} Schritten festgelegt (Strg+Z zum Rückgängigmachen).",
+    "Ordina": "Sortieren",
+    "Assegna automaticamente l'ordine alle {n} pieghe selezionate": "Weist den {n} ausgewählten Falzen automatisch die Reihenfolge zu",
+    "Assegna automaticamente l'ordine a tutte le {n} pieghe del disegno": "Weist allen {n} Falzen der Zeichnung automatisch die Reihenfolge zu",
+    "Ordine automatico delle {n} pieghe selezionate:": "Automatische Reihenfolge der {n} ausgewählten Falze:",
+    "Ordine automatico di tutte le pieghe del disegno ({n}):": "Automatische Reihenfolge aller Falze der Zeichnung ({n}):",
+    "Ordine automatico delle pieghe:": "Automatische Faltreihenfolge:",
+    "Applica e simula": "Anwenden und simulieren",
+    "Sequenza di piegatura": "Faltreihenfolge",
+    "Le pieghe si chiudono passo dopo passo, dall'alto dell'elenco verso il basso. Trascina una piega su un altro passo per spostarla, o nello spazio tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo tutto (o su un altro passo per unirli). In alternativa usa le frecce. Passando sopra una piega la vedi evidenziata sul disegno.": "Die Falze schließen sich Schritt für Schritt, von oben in der Liste nach unten. Ziehe einen Falz auf einen anderen Schritt, um ihn zu verschieben, oder in den Raum zwischen zwei Schritten, um einen neuen zu erstellen; ziehe die Kopfzeile eines Schritts, um ihn ganz zu verschieben (oder auf einen anderen Schritt, um sie zu vereinen). Alternativ die Pfeile verwenden. Beim Überfahren eines Falzes wird er in der Zeichnung hervorgehoben.",
+    "🧊 Simula nel 3D": "🧊 In 3D simulieren",
+    "📋 Sequenza…": "📋 Reihenfolge…",
+    "📋 Sequenza di piegatura…": "📋 Faltreihenfolge…",
+    "📋 Modifica la sequenza…": "📋 Reihenfolge bearbeiten…",
+    "↔ orizzontale · {len} · a y {y}": "↔ horizontal · {len} · bei y {y}",
+    "↕ verticale · {len} · a x {x}": "↕ vertikal · {len} · bei x {x}",
+    "⤢ obliqua · {len} · centro {x}, {y}": "⤢ schräg · {len} · Mitte {x}, {y}",
+    "valle": "Tal",
+    "monte": "Berg",
+    "Nel disegno non ci sono pieghe.": "In der Zeichnung gibt es keine Falze.",
+    "Rilascia qui per creare un nuovo passo": "Hier ablegen, um einen neuen Schritt zu erstellen",
+    "Passo {n}": "Schritt {n}",
+    "1 piega": "1 Falz",
+    "{n} pieghe insieme": "{n} Falze gemeinsam",
+    "Sposta il passo prima": "Schritt nach vorne verschieben",
+    "Sposta il passo dopo": "Schritt nach hinten verschieben",
+    "Chiudi questa piega un passo prima": "Diesen Falz einen Schritt früher schließen",
+    "Chiudi questa piega un passo dopo": "Diesen Falz einen Schritt später schließen",
   },
   es: {
     "1 cm": "1 cm",
@@ -3347,6 +3451,41 @@ const I18N = {
     "{del} forme sostituite da {add} copie speculari.": "{del} formas sustituidas por {add} copias en espejo.",
     "{u} punti senza corrispondente lasciati come sono (cerchi arancioni).": "{u} puntos sin correspondiente dejados como están (círculos naranjas).",
     "asse di simmetria — la zona colorata viene corretta": "eje de simetría — la zona coloreada se corrige",
+    "Dal pannello principale verso l'esterno": "Desde el panel principal hacia fuera",
+    "Dall'alto in basso": "De arriba abajo",
+    "Dal basso in alto": "De abajo arriba",
+    "Dal centro verso l'esterno": "Desde el centro hacia fuera",
+    "Tutte insieme (azzera l'ordine)": "Todas a la vez (restablecer el orden)",
+    "Nessuna piega a cui assegnare l'ordine.": "Ningún pliegue al que asignar el orden.",
+    "Ordine azzerato: le {n} pieghe si chiudono tutte insieme.": "Orden restablecido: los {n} pliegues se cierran todos a la vez.",
+    "Ordine assegnato a {n} pieghe in {k} passi (Ctrl+Z per annullare).": "Orden asignado a {n} pliegues en {k} pasos (Ctrl+Z para deshacer).",
+    "Ordina": "Ordenar",
+    "Assegna automaticamente l'ordine alle {n} pieghe selezionate": "Asigna automáticamente el orden a los {n} pliegues seleccionados",
+    "Assegna automaticamente l'ordine a tutte le {n} pieghe del disegno": "Asigna automáticamente el orden a los {n} pliegues del dibujo",
+    "Ordine automatico delle {n} pieghe selezionate:": "Orden automático de los {n} pliegues seleccionados:",
+    "Ordine automatico di tutte le pieghe del disegno ({n}):": "Orden automático de todos los pliegues del dibujo ({n}):",
+    "Ordine automatico delle pieghe:": "Orden automático de los pliegues:",
+    "Applica e simula": "Aplicar y simular",
+    "Sequenza di piegatura": "Secuencia de plegado",
+    "Le pieghe si chiudono passo dopo passo, dall'alto dell'elenco verso il basso. Trascina una piega su un altro passo per spostarla, o nello spazio tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo tutto (o su un altro passo per unirli). In alternativa usa le frecce. Passando sopra una piega la vedi evidenziata sul disegno.": "Los pliegues se cierran paso a paso, desde arriba de la lista hacia abajo. Arrastra un pliegue a otro paso para moverlo, o al espacio entre dos pasos para crear uno nuevo; arrastra el encabezado de un paso para moverlo entero (o sobre otro paso para unirlos). También puedes usar las flechas. Al pasar sobre un pliegue se resalta en el dibujo.",
+    "🧊 Simula nel 3D": "🧊 Simular en 3D",
+    "📋 Sequenza…": "📋 Secuencia…",
+    "📋 Sequenza di piegatura…": "📋 Secuencia de plegado…",
+    "📋 Modifica la sequenza…": "📋 Editar la secuencia…",
+    "↔ orizzontale · {len} · a y {y}": "↔ horizontal · {len} · en y {y}",
+    "↕ verticale · {len} · a x {x}": "↕ vertical · {len} · en x {x}",
+    "⤢ obliqua · {len} · centro {x}, {y}": "⤢ oblicua · {len} · centro {x}, {y}",
+    "valle": "valle",
+    "monte": "monte",
+    "Nel disegno non ci sono pieghe.": "No hay pliegues en el dibujo.",
+    "Rilascia qui per creare un nuovo passo": "Suelta aquí para crear un paso nuevo",
+    "Passo {n}": "Paso {n}",
+    "1 piega": "1 pliegue",
+    "{n} pieghe insieme": "{n} pliegues a la vez",
+    "Sposta il passo prima": "Mover el paso antes",
+    "Sposta il passo dopo": "Mover el paso después",
+    "Chiudi questa piega un passo prima": "Cerrar este pliegue un paso antes",
+    "Chiudi questa piega un passo dopo": "Cerrar este pliegue un paso después",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -4053,6 +4192,41 @@ const I18N = {
     "{del} forme sostituite da {add} copie speculari.": "{del} 个形状已被 {add} 个镜像副本替代。",
     "{u} punti senza corrispondente lasciati come sono (cerchi arancioni).": "{u} 个无对应点的点保持原样（橙色圆圈）。",
     "asse di simmetria — la zona colorata viene corretta": "对称轴 — 着色区域将被修正",
+    "Dal pannello principale verso l'esterno": "从主面板向外",
+    "Dall'alto in basso": "从上到下",
+    "Dal basso in alto": "从下到上",
+    "Dal centro verso l'esterno": "从中心向外",
+    "Tutte insieme (azzera l'ordine)": "全部同时（重置顺序）",
+    "Nessuna piega a cui assegnare l'ordine.": "没有可分配顺序的折线。",
+    "Ordine azzerato: le {n} pieghe si chiudono tutte insieme.": "顺序已重置：{n} 条折线全部同时闭合。",
+    "Ordine assegnato a {n} pieghe in {k} passi (Ctrl+Z per annullare).": "已为 {n} 条折线分配顺序，共 {k} 步（Ctrl+Z 撤销）。",
+    "Ordina": "排序",
+    "Assegna automaticamente l'ordine alle {n} pieghe selezionate": "自动为所选的 {n} 条折线分配顺序",
+    "Assegna automaticamente l'ordine a tutte le {n} pieghe del disegno": "自动为图纸中全部 {n} 条折线分配顺序",
+    "Ordine automatico delle {n} pieghe selezionate:": "所选 {n} 条折线的自动顺序：",
+    "Ordine automatico di tutte le pieghe del disegno ({n}):": "图纸中所有折线的自动顺序（{n}）：",
+    "Ordine automatico delle pieghe:": "折线自动顺序：",
+    "Applica e simula": "应用并模拟",
+    "Sequenza di piegatura": "折叠顺序",
+    "Le pieghe si chiudono passo dopo passo, dall'alto dell'elenco verso il basso. Trascina una piega su un altro passo per spostarla, o nello spazio tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo tutto (o su un altro passo per unirli). In alternativa usa le frecce. Passando sopra una piega la vedi evidenziata sul disegno.": "折线按步骤依次闭合，从列表顶部到底部。将折线拖到另一个步骤上即可移动，拖到两个步骤之间的空白处则新建一个步骤；拖动步骤标题可整体移动（或拖到另一个步骤上合并）。也可以使用箭头。鼠标悬停在折线上时，会在图纸上高亮显示。",
+    "🧊 Simula nel 3D": "🧊 在3D中模拟",
+    "📋 Sequenza…": "📋 顺序…",
+    "📋 Sequenza di piegatura…": "📋 折叠顺序…",
+    "📋 Modifica la sequenza…": "📋 编辑顺序…",
+    "↔ orizzontale · {len} · a y {y}": "↔ 水平 · {len} · 位于 y {y}",
+    "↕ verticale · {len} · a x {x}": "↕ 垂直 · {len} · 位于 x {x}",
+    "⤢ obliqua · {len} · centro {x}, {y}": "⤢ 斜线 · {len} · 中心 {x}, {y}",
+    "valle": "谷折",
+    "monte": "山折",
+    "Nel disegno non ci sono pieghe.": "图纸中没有折线。",
+    "Rilascia qui per creare un nuovo passo": "拖放到此处以新建步骤",
+    "Passo {n}": "第 {n} 步",
+    "1 piega": "1 条折线",
+    "{n} pieghe insieme": "{n} 条折线同时",
+    "Sposta il passo prima": "将此步骤提前",
+    "Sposta il passo dopo": "将此步骤延后",
+    "Chiudi questa piega un passo prima": "提前一步闭合此折线",
+    "Chiudi questa piega un passo dopo": "延后一步闭合此折线",
   },
   fr: {
     "1 cm": "1 cm",
@@ -4759,6 +4933,41 @@ const I18N = {
     "{del} forme sostituite da {add} copie speculari.": "{del} formes remplacées par {add} copies miroir.",
     "{u} punti senza corrispondente lasciati come sono (cerchi arancioni).": "{u} points sans correspondant laissés tels quels (cercles orange).",
     "asse di simmetria — la zona colorata viene corretta": "axe de symétrie — la zone colorée est corrigée",
+    "Dal pannello principale verso l'esterno": "Du panneau principal vers l’extérieur",
+    "Dall'alto in basso": "De haut en bas",
+    "Dal basso in alto": "De bas en haut",
+    "Dal centro verso l'esterno": "Du centre vers l’extérieur",
+    "Tutte insieme (azzera l'ordine)": "Toutes ensemble (réinitialiser l’ordre)",
+    "Nessuna piega a cui assegnare l'ordine.": "Aucun pli auquel attribuer un ordre.",
+    "Ordine azzerato: le {n} pieghe si chiudono tutte insieme.": "Ordre réinitialisé : les {n} plis se ferment tous ensemble.",
+    "Ordine assegnato a {n} pieghe in {k} passi (Ctrl+Z per annullare).": "Ordre attribué à {n} plis en {k} étapes (Ctrl+Z pour annuler).",
+    "Ordina": "Ordonner",
+    "Assegna automaticamente l'ordine alle {n} pieghe selezionate": "Attribue automatiquement l’ordre aux {n} plis sélectionnés",
+    "Assegna automaticamente l'ordine a tutte le {n} pieghe del disegno": "Attribue automatiquement l’ordre aux {n} plis du dessin",
+    "Ordine automatico delle {n} pieghe selezionate:": "Ordre automatique des {n} plis sélectionnés :",
+    "Ordine automatico di tutte le pieghe del disegno ({n}):": "Ordre automatique de tous les plis du dessin ({n}) :",
+    "Ordine automatico delle pieghe:": "Ordre automatique des plis :",
+    "Applica e simula": "Appliquer et simuler",
+    "Sequenza di piegatura": "Séquence de pliage",
+    "Le pieghe si chiudono passo dopo passo, dall'alto dell'elenco verso il basso. Trascina una piega su un altro passo per spostarla, o nello spazio tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo tutto (o su un altro passo per unirli). In alternativa usa le frecce. Passando sopra una piega la vedi evidenziata sul disegno.": "Les plis se ferment étape par étape, du haut de la liste vers le bas. Fais glisser un pli sur une autre étape pour le déplacer, ou dans l’espace entre deux étapes pour en créer une nouvelle ; fais glisser l’en-tête d’une étape pour la déplacer entière (ou sur une autre étape pour les fusionner). Tu peux aussi utiliser les flèches. En survolant un pli, tu le vois mis en évidence sur le dessin.",
+    "🧊 Simula nel 3D": "🧊 Simuler en 3D",
+    "📋 Sequenza…": "📋 Séquence…",
+    "📋 Sequenza di piegatura…": "📋 Séquence de pliage…",
+    "📋 Modifica la sequenza…": "📋 Modifier la séquence…",
+    "↔ orizzontale · {len} · a y {y}": "↔ horizontal · {len} · à y {y}",
+    "↕ verticale · {len} · a x {x}": "↕ vertical · {len} · à x {x}",
+    "⤢ obliqua · {len} · centro {x}, {y}": "⤢ oblique · {len} · centre {x}, {y}",
+    "valle": "vallée",
+    "monte": "montagne",
+    "Nel disegno non ci sono pieghe.": "Il n’y a aucun pli dans le dessin.",
+    "Rilascia qui per creare un nuovo passo": "Dépose ici pour créer une nouvelle étape",
+    "Passo {n}": "Étape {n}",
+    "1 piega": "1 pli",
+    "{n} pieghe insieme": "{n} plis ensemble",
+    "Sposta il passo prima": "Déplacer l’étape plus tôt",
+    "Sposta il passo dopo": "Déplacer l’étape plus tard",
+    "Chiudi questa piega un passo prima": "Fermer ce pli une étape plus tôt",
+    "Chiudi questa piega un passo dopo": "Fermer ce pli une étape plus tard",
   },
 };
 let currentLang = 'it';
@@ -5374,6 +5583,7 @@ function undo(){
   ensureActiveLayer();
   state.selection.clear();
   if(state.foldCheck) runFoldCheckOverlay();
+  if(document.getElementById('seqModal') && document.getElementById('seqModal').classList.contains('open')) setTimeout(renderSeq, 0);
   renderAll();
 }
 function redo(){
@@ -5384,6 +5594,7 @@ function redo(){
   ensureActiveLayer();
   state.selection.clear();
   if(state.foldCheck) runFoldCheckOverlay();
+  if(document.getElementById('seqModal') && document.getElementById('seqModal').classList.contains('open')) setTimeout(renderSeq, 0);
   renderAll();
 }
 // Salta direttamente a un punto qualsiasi della cronologia (usato dal pannello
@@ -5995,6 +6206,12 @@ function renderEndpointMarkers(){
 // di ogni tratto delle forme con ruolo Piega che hanno un verso impostato.
 // Sono solo un'annotazione visiva: non fanno parte della geometria di taglio.
 function renderFoldIndicators(){
+  if(state.seqHover){
+    const s = state.shapes.find(x=>x.id===state.seqHover);
+    if(s && s.points){ const d = shapeOutlineD(s);
+      layerOverlay.appendChild(el('path', {d, fill:'none', stroke:'#3572d6', 'stroke-width':14, 'stroke-opacity':0.35, 'stroke-linecap':'round', 'pointer-events':'none'}));
+      layerOverlay.appendChild(el('path', {d, fill:'none', stroke:'#3572d6', 'stroke-width':3, 'stroke-dasharray':'8,6', class:'fc-march', 'pointer-events':'none'})); }
+  }
   renderFoldCheckOverlay();
   renderSymAxis();
   const showOrders = state.shapes.some(s=>s.style && s.style.role==='fold' && foldOrderOf(s)>1);
@@ -7279,7 +7496,7 @@ function closeJoinDialog(){
    ridurre nella barra in basso, modificare il disegno e poi riprenderle
    esattamente come le si era lasciate.
 ============================================================ */
-const MINIMIZABLE_MODALS = ['symModal','joinModal','fold3dModal','boxGenModal','historyModal','versionsModal','libraryModal','saveLibraryModal',
+const MINIMIZABLE_MODALS = ['seqModal','symModal','joinModal','fold3dModal','boxGenModal','historyModal','versionsModal','libraryModal','saveLibraryModal',
   'pageSizeModal','fontModal','scaleModal','tilePrintModal','printProofModal','cutPreviewModal','weldModal','helpModal'];
 const MODAL_HOOKS = {
   fold3dModal: { onMinimize: ()=>{ stopFold3D(); if(!state.foldCheck) runFoldCheckOverlay(true); }, onRestore: ()=>{ if(state.foldCheck) endFoldCheckOverlay(); refreshFold3D(); } },
@@ -7521,6 +7738,19 @@ function renderFoldOrderSection(host, ids){
   h.textContent = translate('Nella simulazione 3D le pieghe con il numero più basso si chiudono prima; quelle con lo stesso numero si chiudono insieme. Esempio: 1 per il tubo, 2 per le alette antipolvere, 3 per la linguetta di chiusura.')
     + (folds.length>1 ? ' ' + tpl('Vale per le {n} pieghe selezionate.', {n:folds.length}) : '');
   f.appendChild(h);
+  const target = folds.length>1 ? folds : allFoldShapes();
+  const ar = document.createElement('div'); ar.style.cssText='display:flex;gap:6px;margin-top:8px;';
+  const sel = document.createElement('select'); sel.style.flex='1'; sel.innerHTML = autoOrderSelectHTML();
+  const go = document.createElement('button'); go.className='btn'; go.style.cssText='width:auto;margin:0;'; go.textContent = translate('Ordina');
+  go.title = folds.length>1 ? tpl('Assegna automaticamente l\'ordine alle {n} pieghe selezionate', {n:folds.length}) : tpl('Assegna automaticamente l\'ordine a tutte le {n} pieghe del disegno', {n:target.length});
+  go.onclick = ()=> applyAutoOrder(sel.value, target, false);
+  ar.append(sel, go);
+  const sq = document.createElement('button'); sq.className='btn'; sq.style.cssText='width:100%;margin:8px 0 0;';
+  sq.textContent = translate('📋 Modifica la sequenza…'); sq.onclick = openFoldSequence;
+  f.appendChild(sq);
+  const al = document.createElement('div'); al.className='hint'; al.style.marginTop='8px';
+  al.textContent = folds.length>1 ? tpl('Ordine automatico delle {n} pieghe selezionate:', {n:folds.length}) : tpl('Ordine automatico di tutte le pieghe del disegno ({n}):', {n:target.length});
+  f.append(al, ar);
   host.appendChild(f);
 }
 function renderBooleanSection(host, ids){
@@ -7739,6 +7969,185 @@ function renderSymAxis(){
   t.textContent = translate('asse di simmetria — la zona colorata viene corretta');
   g.appendChild(t);
   layerOverlay.appendChild(g);
+}
+
+
+/* ---------- ordine di piegatura automatico ---------- */
+const AUTO_ORDER_MODES = [
+  ['struct', 'Dal pannello principale verso l\'esterno'],
+  ['ltr', 'Da sinistra a destra'], ['rtl', 'Da destra a sinistra'],
+  ['ttb', 'Dall\'alto in basso'], ['btt', 'Dal basso in alto'],
+  ['center', 'Dal centro verso l\'esterno'],
+  ['reset', 'Tutte insieme (azzera l\'ordine)']
+];
+const AUTO_ORDER_TOL = 2; // mm: pieghe a questa distanza (o meno) finiscono nello stesso passo
+function autoOrderSelectHTML(){
+  return AUTO_ORDER_MODES.map(([v,l])=>`<option value="${v}">${escapeHTML(l)}</option>`).join(''); // tradotte da applyI18n, come il resto dell'interfaccia
+}
+function foldMidpoint(s){ // punto a metà lunghezza della piega
+  const P = s.points; let tot = 0; for(let i=0;i<P.length-1;i++) tot += dist(P[i],P[i+1]);
+  let acc = 0;
+  for(let i=0;i<P.length-1;i++){ const L = dist(P[i],P[i+1]); if(acc+L >= tot/2){ const t = L ? (tot/2-acc)/L : 0; return [P[i][0]+(P[i+1][0]-P[i][0])*t, P[i][1]+(P[i+1][1]-P[i][1])*t]; } acc += L; }
+  return P[0];
+}
+// Assegna i passi alle pieghe indicate; restituisce il numero di passi
+function autoOrderFolds(mode, folds){
+  if(!folds.length) return 0;
+  if(mode==='reset'){ folds.forEach(s=>{ delete s.foldOrder; }); return 1; }
+  let key, tol = AUTO_ORDER_TOL;
+  if(mode==='struct'){
+    // profondità nell'albero di piegatura: pieghe attaccate al pannello principale = 1, poi 2, ...
+    const model = buildFoldModel(state.shapes);
+    const depth = model.faces.map(()=>0);
+    model.order.forEach(fi=>{ const pf = model.parent[fi]; if(pf!=null) depth[fi] = depth[pf] + 1; });
+    const best = new Map();
+    model.order.forEach(fi=>{ const h = model.parentHinge[fi]; if(!h) return; const d = depth[fi]; if(!best.has(h.fold) || d<best.get(h.fold)) best.set(h.fold, d); });
+    key = s=> best.has(s) ? best.get(s) : Infinity; // pieghe non collegate: per ultime
+    tol = 0.5;
+  } else {
+    const mids = new Map(folds.map(s=>[s, foldMidpoint(s)]));
+    const xs = [...mids.values()].map(m=>m[0]), ys = [...mids.values()].map(m=>m[1]);
+    const C = [(Math.min(...xs)+Math.max(...xs))/2, (Math.min(...ys)+Math.max(...ys))/2];
+    key = { ltr: s=>mids.get(s)[0], rtl: s=>-mids.get(s)[0], ttb: s=>mids.get(s)[1], btt: s=>-mids.get(s)[1],
+            center: s=>dist(mids.get(s), C) }[mode];
+  }
+  const items = folds.map(s=>({s, k:key(s)})).sort((a,b)=> a.k===b.k ? 0 : (a.k===Infinity ? 1 : (b.k===Infinity ? -1 : a.k-b.k)));
+  let step = 0, groupStart = null;
+  items.forEach(it=>{
+    if(groupStart===null || it.k===Infinity && groupStart!==Infinity || it.k - groupStart > tol){ step++; groupStart = it.k; }
+    it.s.foldOrder = step;
+  });
+  return step;
+}
+function applyAutoOrder(mode, folds, fromDialog){
+  const K = autoOrderFolds(mode, folds);
+  if(!K){ showToast('Nessuna piega a cui assegnare l\'ordine.', true); return; }
+  pushHistory();
+  renderAll();
+  showToast(mode==='reset' ? tpl('Ordine azzerato: le {n} pieghe si chiudono tutte insieme.', {n:folds.length})
+                           : tpl('Ordine assegnato a {n} pieghe in {k} passi (Ctrl+Z per annullare).', {n:folds.length, k:K}), false);
+  if(fromDialog) refreshFold3D();
+}
+function allFoldShapes(){ return state.shapes.filter(s=>s.points && s.style && s.style.role==='fold' && !s.locked && isShapeEffVisible(s)); }
+
+
+/* ============================================================
+   SEQUENZA DI PIEGATURA — elenco dei passi, riordinabile con
+   trascinamento o con le frecce. Scrive s.foldOrder sulle pieghe.
+============================================================ */
+let seqDrag = null; // {type:'fold', id} oppure {type:'step', index}
+function buildSeq(){
+  const folds = allFoldShapes();
+  const byStep = new Map();
+  folds.forEach(s=>{ const o = foldOrderOf(s); if(!byStep.has(o)) byStep.set(o, []); byStep.get(o).push(s); });
+  return [...byStep.keys()].sort((a,b)=>a-b).map(k=> byStep.get(k).sort((a,b)=>{ const ma=foldMidpoint(a), mb=foldMidpoint(b); return (ma[1]-mb[1]) || (ma[0]-mb[0]); }));
+}
+function writeSeq(steps){
+  steps.filter(a=>a.length).forEach((arr,i)=> arr.forEach(s=>{ s.foldOrder = i+1; }));
+  pushHistory();
+  renderAll();
+  renderSeq();
+}
+function foldSeqLabel(s){
+  const P = s.points, a = P[0], b = P[P.length-1];
+  let len = 0; for(let i=0;i<P.length-1;i++) len += dist(P[i],P[i+1]);
+  const dx = Math.abs(b[0]-a[0]), dy = Math.abs(b[1]-a[1]);
+  const m = foldMidpoint(s);
+  let txt;
+  if(P.length===2 && dy < 0.5) txt = tpl('↔ orizzontale · {len} · a y {y}', {len: fmtUnit(len), y: fmtUnit(m[1])});
+  else if(P.length===2 && dx < 0.5) txt = tpl('↕ verticale · {len} · a x {x}', {len: fmtUnit(len), x: fmtUnit(m[0])});
+  else txt = tpl('⤢ obliqua · {len} · centro {x}, {y}', {len: fmtUnit(len), x: fmtUnit(m[0]), y: fmtUnit(m[1])});
+  const dir = s.foldDir==='valley' ? translate('valle') : translate('monte');
+  return txt + ' · ' + dir + ' ' + Math.round(s.foldAngle!=null ? s.foldAngle : 90) + '°';
+}
+function openFoldSequence(){
+  if(!allFoldShapes().length){ showToast('Nel disegno non ci sono pieghe.', true); return; }
+  openModal('seqModal');
+  renderSeq();
+}
+function closeFoldSequence(){
+  state.seqHover = null;
+  const ov = document.getElementById('seqModal'); ov.classList.remove('open'); delete ov.dataset.minimized;
+  renderModalDock(); renderCanvasOnly();
+  const f3 = document.getElementById('fold3dModal');
+  if(f3.classList.contains('open')) refreshFold3D(); // il 3D sotto si aggiorna con la nuova sequenza
+}
+// operazioni sulla sequenza
+function seqMoveFold(id, toIndex, asNewStep){
+  const steps = buildSeq();
+  const s = state.shapes.find(x=>x.id===id); if(!s) return;
+  if(asNewStep){ steps.splice(toIndex, 0, [s]); steps.forEach(a=>{ if(!(a.length===1 && a[0]===s)){ const i=a.indexOf(s); if(i>=0) a.splice(i,1); } }); }
+  else { const target = steps[toIndex]; if(!target || target.includes(s)) return; steps.forEach(a=>{ const i=a.indexOf(s); if(i>=0) a.splice(i,1); }); target.push(s); }
+  writeSeq(steps.filter(a=>a.length));
+}
+function seqFoldStep(id, delta){
+  const steps = buildSeq();
+  const k = steps.findIndex(a=>a.some(s=>s.id===id)); if(k<0) return;
+  const alone = steps[k].length===1;
+  if(delta<0){ if(k>0) seqMoveFold(id, k-1, false); else if(!alone) seqMoveFold(id, 0, true); }
+  else { if(k<steps.length-1) seqMoveFold(id, k+1, false); else if(!alone) seqMoveFold(id, steps.length, true); }
+}
+function seqMoveStep(from, toGap){
+  const steps = buildSeq(); if(!steps[from]) return;
+  const [arr] = steps.splice(from, 1);
+  steps.splice(toGap > from ? toGap-1 : toGap, 0, arr);
+  writeSeq(steps);
+}
+function seqMergeStep(from, into){
+  if(from===into) return;
+  const steps = buildSeq(); if(!steps[from] || !steps[into]) return;
+  steps[into].push(...steps[from]); steps[from] = [];
+  writeSeq(steps.filter(a=>a.length));
+}
+function renderSeq(){
+  const host = document.getElementById('seqList'); if(!host) return;
+  host.innerHTML = '';
+  const steps = buildSeq();
+  const mkBtn = (lbl, tip, fn, disabled)=>{ const b=document.createElement('button'); b.className='iconbtn'; b.textContent=lbl; b.title=translate(tip); b.disabled=!!disabled; b.onclick=(e)=>{ e.stopPropagation(); fn(); }; return b; };
+  const dropTarget = (el, onDrop)=>{
+    el.addEventListener('dragover', e=>{ if(!seqDrag) return; e.preventDefault(); el.classList.add('over'); });
+    el.addEventListener('dragleave', ()=> el.classList.remove('over'));
+    el.addEventListener('drop', e=>{ e.preventDefault(); el.classList.remove('over'); if(seqDrag){ const d = seqDrag; seqDrag = null; onDrop(d); } });
+  };
+  const startDrag = (el, data)=>{
+    el.draggable = true;
+    el.addEventListener('dragstart', e=>{ seqDrag = data; el.classList.add('dragging'); try{ e.dataTransfer.setData('text/plain', 'seq'); e.dataTransfer.effectAllowed='move'; }catch(err){} e.stopPropagation(); });
+    el.addEventListener('dragend', ()=>{ el.classList.remove('dragging'); seqDrag = null; host.querySelectorAll('.over').forEach(x=>x.classList.remove('over')); });
+  };
+  const gap = i=>{
+    const g = document.createElement('div'); g.className='seq-gap'; g.title = translate('Rilascia qui per creare un nuovo passo');
+    dropTarget(g, d=>{ if(d.type==='fold') seqMoveFold(d.id, i, true); else seqMoveStep(d.index, i); });
+    return g;
+  };
+  host.appendChild(gap(0));
+  steps.forEach((arr, k)=>{
+    const box = document.createElement('div'); box.className='seq-step'; box.dataset.step = k;
+    dropTarget(box, d=>{ if(d.type==='fold') seqMoveFold(d.id, k, false); else seqMergeStep(d.index, k); });
+    const head = document.createElement('div'); head.className='seq-head';
+    const hh = document.createElement('span'); hh.className='seq-handle'; hh.textContent='⠿'; head.appendChild(hh);
+    startDrag(head, {type:'step', index:k});
+    const t = document.createElement('span'); t.className='seq-grow';
+    t.textContent = tpl('Passo {n}', {n:k+1}) + '  ·  ' + (arr.length===1 ? translate('1 piega') : tpl('{n} pieghe insieme', {n:arr.length}));
+    head.appendChild(t);
+    head.appendChild(mkBtn('↑', 'Sposta il passo prima', ()=>seqMoveStep(k, k-1), k===0));
+    head.appendChild(mkBtn('↓', 'Sposta il passo dopo', ()=>seqMoveStep(k, k+2), k===steps.length-1));
+    box.appendChild(head);
+    arr.forEach(s=>{
+      const it = document.createElement('div'); it.className='seq-item'; it.dataset.fold = s.id;
+      const hd = document.createElement('span'); hd.className='seq-handle'; hd.textContent='⠿'; it.appendChild(hd);
+      const lb = document.createElement('span'); lb.className='seq-grow'; lb.textContent = foldSeqLabel(s); it.appendChild(lb);
+      it.appendChild(mkBtn('↑', 'Chiudi questa piega un passo prima', ()=>seqFoldStep(s.id, -1), k===0 && arr.length===1));
+      it.appendChild(mkBtn('↓', 'Chiudi questa piega un passo dopo', ()=>seqFoldStep(s.id, +1), k===steps.length-1 && arr.length===1));
+      startDrag(it, {type:'fold', id:s.id});
+      it.addEventListener('mouseenter', ()=>{ state.seqHover = s.id; renderCanvasOnly(); });
+      it.addEventListener('mouseleave', ()=>{ if(state.seqHover===s.id){ state.seqHover = null; renderCanvasOnly(); } });
+      it.addEventListener('click', ()=>{ state.selection = new Set([s.id]); renderAll(); });
+      box.appendChild(it);
+    });
+    host.appendChild(box);
+    host.appendChild(gap(k+1));
+  });
+  applyI18n(host);
 }
 
 /* ============================================================
@@ -9101,6 +9510,7 @@ function handleMenuAction(e){
   else if(action==='generate-box') openModal('boxGenModal');
   else if(action==='fold-3d') openFold3D();
   else if(action==='symmetry') openSymmetry();
+  else if(action==='fold-sequence') openFoldSequence();
   else if(action==='cut-preview') openCutPreview();
   else if(action==='weld-points') openWeldModal();
   else if(action==='close-all-paths') closeAllOpenPaths();
@@ -9743,6 +10153,12 @@ function closeFold3D(){ stopFold3D(); if(state.foldCheck) endFoldCheckOverlay();
 document.getElementById('fold3dClose').onclick = closeFold3D;
 setupOverlayClickClose(document.getElementById('fold3dModal'), closeFold3D);
 document.getElementById('fold3dPlay').onclick = playFold3D;
+document.getElementById('fold3dSeq').onclick = openFoldSequence;
+document.getElementById('seqModalClose').onclick = closeFoldSequence;
+setupOverlayClickClose(document.getElementById('seqModal'), closeFoldSequence);
+document.getElementById('seqSimulate').onclick = ()=>{ closeFoldSequence(); const f3=document.getElementById('fold3dModal'); if(!f3.classList.contains('open')) openFold3D(); };
+document.getElementById('fold3dAutoOrder').innerHTML = autoOrderSelectHTML();
+document.getElementById('fold3dAutoOrderApply').onclick = ()=> applyAutoOrder(document.getElementById('fold3dAutoOrder').value, allFoldShapes(), true);
 document.getElementById('fold3dSlider').oninput = e=>{ stopFold3D(); setFold3DFrac(e.target.value/100); };
 document.getElementById('fold3dReset').onclick = ()=>{ fold3d.yaw=-0.6; fold3d.pitch=0.45; fold3d.zoom=1; renderFold3D(); };
 (()=>{
@@ -9783,6 +10199,9 @@ document.getElementById('boxGenApply').onclick = ()=>{
   result.shapes.forEach(s=> s.layerId = doc.activeLayerId); // le forme erano state generate col livello del documento precedente
   doc.shapes = result.shapes;
   doc.page = { w: Math.ceil(result.totalW+10), h: Math.ceil(result.totalH+10), bg:'#ffffff' };
+  // il punto di partenza della cronologia è la scatola appena generata (non il foglio vuoto):
+  // altrimenti il primo Ctrl+Z dopo una modifica cancellerebbe tutta la scatola
+  doc.history = [JSON.stringify({shapes:doc.shapes, layers:doc.layers})]; doc.historyTimes = [Date.now()]; doc.histIndex = 0;
   documents.push(doc);
   activeDocId = doc.id;
   loadDocumentIntoState(doc);
