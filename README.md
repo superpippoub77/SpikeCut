@@ -63,6 +63,15 @@ curve approssimate. "Mostra sul disegno" chiude la finestra, seleziona gli
 elementi e li cerchia in rosso (i cerchi spariscono alla prima modifica).
 Le pieghe che si fermano a meno di 5 mm da un'altra linea si possono
 allungare automaticamente fino al contorno con un clic.
+Con "Mostra sul disegno" (o riducendo a icona l'anteprima 3D) gli errori
+restano evidenziati sul disegno e il controllo viene rifatto dopo ogni
+modifica: le linee coinvolte hanno un alone rosso (errore) o arancione
+(avviso) con il numero del problema, le estremità libere lampeggiano e la
+distanza mancante è disegnata con la scritta "manca X mm". Una barra in alto
+dice quanti problemi restano, permette di passare dall'uno all'altro (◀ ▶,
+la vista si sposta sul problema) e diventa verde quando è tutto a posto;
+"Riprendi anteprima 3D" torna al modello aggiornato. Nel 3D i pannelli non
+collegati da nessuna piega sono colorati di rosso.
 Limiti attuali: i tratti curvi sono approssimati con segmenti dritti, i fori
 non vengono ritagliati dal pannello nella vista 3D, e le pareti che si
 compenetrano (se gli angoli non sono coerenti) vengono mostrate così come
@@ -119,6 +128,19 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   stesso ruolo e livello vengono fuse in un unico percorso, e una linea che
   si richiude su se stessa diventa un percorso chiuso. Le catene (un punto
   sia di partenza sia di arrivo) vengono segnalate e bloccate.
+- **Magnete sulle linee**: oltre ai vertici, un punto si aggancia al punto
+  più vicino di qualsiasi linea (tratti, archi, lati di rettangoli ed
+  ellissi). Serve ad esempio per far partire una piega esattamente sul
+  contorno di taglio. I vertici hanno la precedenza sulle linee.
+- **Archi**: lo strumento Arco (clic su inizio, fine e un punto di passaggio)
+  crea una linea vera, con i punti sulla circonferenza abbastanza fitti da
+  scostarsi al massimo 0,05 mm dalla curva: prende colore e tratteggio del
+  ruolo, le estremità si agganciano col magnete e si collegano agli altri
+  punti, e vale per anteprima 3D, operazioni booleane, Unisci/Scollega.
+  Mostra solo le maniglie delle estremità: trascinandole (o spostando una
+  linea collegata) l'arco viene ricalcolato e resta un arco. Le quote
+  indicano lunghezza e raggio. Gli archi creati con le versioni precedenti
+  vengono convertiti automaticamente all'apertura del progetto.
 - **Scollega / Ricollega**: i punti che coincidono sono uniti (spostandone
   uno si trascina l'altro). Un punto si può scollegare restando dov'è: dal
   tasto destro direttamente sulla sua maniglia, oppure con "⛓ Scollega" accanto

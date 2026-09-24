@@ -342,6 +342,20 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   align-items:center; justify-content:center; z-index:200;
 }
 .modal-overlay.open{display:flex;}
+#foldCheckBanner{ position:fixed; top:92px; left:50%; transform:translateX(-50%); z-index:160; max-width:min(880px,94vw);
+  background:var(--bg-1); border:2px solid #ff3b30; border-radius:10px; box-shadow:0 6px 24px rgba(0,0,0,.4); padding:8px 10px; font-size:12.5px; }
+#foldCheckBanner.ok{ border-color:#2f9e5a; }
+#foldCheckBanner .fcb-row{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+#foldCheckBanner .fcb-row .btn{ width:auto; margin:0; padding:4px 10px; }
+#foldCheckBanner .fcb-title{ font-weight:700; margin-right:auto; }
+#foldCheckBanner .fcb-count{ font-weight:700; min-width:44px; text-align:center; }
+#foldCheckBanner .fcb-detail{ margin-top:7px; padding:6px 8px; border-radius:6px; font-weight:600; }
+#foldCheckBanner .fcb-detail.error{ background:rgba(255,59,48,.14); color:#ff6a60; }
+#foldCheckBanner .fcb-detail.warn{ background:rgba(255,159,10,.14); color:#ffb340; }
+.fc-pulse{ animation: fcPulse 1.1s ease-in-out infinite; }
+@keyframes fcPulse{ 0%,100%{ opacity:1; } 50%{ opacity:.25; } }
+.fc-march{ animation: fcMarch .9s linear infinite; }
+@keyframes fcMarch{ to{ stroke-dashoffset:-28; } }
 #modalDock{
   position:fixed; left:50%; transform:translateX(-50%); bottom:34px; z-index:150;
   display:none; gap:6px; padding:5px 8px; max-width:92vw; overflow-x:auto;
@@ -608,7 +622,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.12.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.12.2</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -730,6 +744,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 </div>
 
 <div id="modalDock"></div>
+<div id="foldCheckBanner" style="display:none;"></div>
 
 <div id="joinModal" class="modal-overlay">
   <div class="modal-box" style="width:460px;">
@@ -1784,6 +1799,17 @@ const I18N = {
     "{n} forme": "{n} shapes",
     "{n} fori interni creati come linee separate.": "{n} inner holes created as separate lines.",
     "{n} forme ignorate perché aperte o non geometriche.": "{n} shapes ignored because they are open or not geometric.",
+    "Arco — raggio {r}, lunghezza {len}. Trascina le estremità per modificarlo: resta un arco e si aggancia col magnete agli altri punti.": "Arc — radius {r}, length {len}. Drag its ends to change it: it stays an arc and snaps to other points with the magnet.",
+    "Inizio": "Start",
+    "Fine": "End",
+    "manca {mm} mm": "{mm} mm missing",
+    "✅ Controllo 3D: nessun problema — {p} pannelli, {h} pieghe collegate.": "✅ 3D check: no problems — {p} panels, {h} connected folds.",
+    "Controllo 3D: {n} problemi da correggere ({e} errori, {w} avvisi)": "3D check: {n} problems to fix ({e} errors, {w} warnings)",
+    "Problema precedente": "Previous problem",
+    "Problema successivo": "Next problem",
+    "🔧 Allunga {n} pieghe": "🔧 Extend {n} folds",
+    "🧊 Riprendi anteprima 3D": "🧊 Resume 3D preview",
+    "Nascondi l'evidenziazione": "Hide the highlighting",
   },
   de: {
     "1 cm": "1 cm",
@@ -2390,6 +2416,17 @@ const I18N = {
     "{n} forme": "{n} Formen",
     "{n} fori interni creati come linee separate.": "{n} innere Löcher als eigene Linien erstellt.",
     "{n} forme ignorate perché aperte o non geometriche.": "{n} Formen ignoriert, weil sie offen oder nicht geometrisch sind.",
+    "Arco — raggio {r}, lunghezza {len}. Trascina le estremità per modificarlo: resta un arco e si aggancia col magnete agli altri punti.": "Bogen — Radius {r}, Länge {len}. Ziehe die Enden, um ihn zu ändern: Er bleibt ein Bogen und rastet mit dem Magneten an anderen Punkten ein.",
+    "Inizio": "Anfang",
+    "Fine": "Ende",
+    "manca {mm} mm": "es fehlen {mm} mm",
+    "✅ Controllo 3D: nessun problema — {p} pannelli, {h} pieghe collegate.": "✅ 3D-Prüfung: keine Probleme — {p} Felder, {h} verbundene Falze.",
+    "Controllo 3D: {n} problemi da correggere ({e} errori, {w} avvisi)": "3D-Prüfung: {n} Probleme zu beheben ({e} Fehler, {w} Warnungen)",
+    "Problema precedente": "Vorheriges Problem",
+    "Problema successivo": "Nächstes Problem",
+    "🔧 Allunga {n} pieghe": "🔧 {n} Falze verlängern",
+    "🧊 Riprendi anteprima 3D": "🧊 3D-Vorschau fortsetzen",
+    "Nascondi l'evidenziazione": "Hervorhebung ausblenden",
   },
   es: {
     "1 cm": "1 cm",
@@ -2996,6 +3033,17 @@ const I18N = {
     "{n} forme": "{n} formas",
     "{n} fori interni creati come linee separate.": "{n} agujeros interiores creados como líneas separadas.",
     "{n} forme ignorate perché aperte o non geometriche.": "{n} formas ignoradas por estar abiertas o no ser geométricas.",
+    "Arco — raggio {r}, lunghezza {len}. Trascina le estremità per modificarlo: resta un arco e si aggancia col magnete agli altri punti.": "Arco — radio {r}, longitud {len}. Arrastra los extremos para modificarlo: sigue siendo un arco y se engancha con el imán a otros puntos.",
+    "Inizio": "Inicio",
+    "Fine": "Fin",
+    "manca {mm} mm": "faltan {mm} mm",
+    "✅ Controllo 3D: nessun problema — {p} pannelli, {h} pieghe collegate.": "✅ Control 3D: ningún problema — {p} paneles, {h} pliegues conectados.",
+    "Controllo 3D: {n} problemi da correggere ({e} errori, {w} avvisi)": "Control 3D: {n} problemas por corregir ({e} errores, {w} avisos)",
+    "Problema precedente": "Problema anterior",
+    "Problema successivo": "Problema siguiente",
+    "🔧 Allunga {n} pieghe": "🔧 Alargar {n} pliegues",
+    "🧊 Riprendi anteprima 3D": "🧊 Retomar vista previa 3D",
+    "Nascondi l'evidenziazione": "Ocultar el resaltado",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -3602,6 +3650,17 @@ const I18N = {
     "{n} forme": "{n} 个形状",
     "{n} fori interni creati come linee separate.": "已将 {n} 个内部孔创建为独立线条。",
     "{n} forme ignorate perché aperte o non geometriche.": "已忽略 {n} 个开放或非几何形状。",
+    "Arco — raggio {r}, lunghezza {len}. Trascina le estremità per modificarlo: resta un arco e si aggancia col magnete agli altri punti.": "圆弧 — 半径 {r}，长度 {len}。拖动端点即可修改：它仍保持为圆弧，并可通过磁性吸附到其他点。",
+    "Inizio": "起点",
+    "Fine": "终点",
+    "manca {mm} mm": "缺 {mm} 毫米",
+    "✅ Controllo 3D: nessun problema — {p} pannelli, {h} pieghe collegate.": "✅ 3D检查：没有问题 — {p} 个面板，{h} 条相连折线。",
+    "Controllo 3D: {n} problemi da correggere ({e} errori, {w} avvisi)": "3D检查：{n} 个待修正问题（{e} 个错误，{w} 个警告）",
+    "Problema precedente": "上一个问题",
+    "Problema successivo": "下一个问题",
+    "🔧 Allunga {n} pieghe": "🔧 延长 {n} 条折线",
+    "🧊 Riprendi anteprima 3D": "🧊 恢复3D预览",
+    "Nascondi l'evidenziazione": "隐藏高亮",
   },
   fr: {
     "1 cm": "1 cm",
@@ -4208,6 +4267,17 @@ const I18N = {
     "{n} forme": "{n} formes",
     "{n} fori interni creati come linee separate.": "{n} trous intérieurs créés comme lignes séparées.",
     "{n} forme ignorate perché aperte o non geometriche.": "{n} formes ignorées car ouvertes ou non géométriques.",
+    "Arco — raggio {r}, lunghezza {len}. Trascina le estremità per modificarlo: resta un arco e si aggancia col magnete agli altri punti.": "Arc — rayon {r}, longueur {len}. Fais glisser les extrémités pour le modifier : il reste un arc et s’accroche aux autres points avec l’aimant.",
+    "Inizio": "Début",
+    "Fine": "Fin",
+    "manca {mm} mm": "il manque {mm} mm",
+    "✅ Controllo 3D: nessun problema — {p} pannelli, {h} pieghe collegate.": "✅ Contrôle 3D : aucun problème — {p} panneaux, {h} plis reliés.",
+    "Controllo 3D: {n} problemi da correggere ({e} errori, {w} avvisi)": "Contrôle 3D : {n} problèmes à corriger ({e} erreurs, {w} avertissements)",
+    "Problema precedente": "Problème précédent",
+    "Problema successivo": "Problème suivant",
+    "🔧 Allunga {n} pieghe": "🔧 Prolonger {n} plis",
+    "🧊 Riprendi anteprima 3D": "🧊 Reprendre l’aperçu 3D",
+    "Nascondi l'evidenziazione": "Masquer la mise en évidence",
   },
 };
 let currentLang = 'it';
@@ -4595,7 +4665,10 @@ function allPointsExcept(excludeId){
   for(const s of state.shapes){
     if(s.id === excludeId) continue;
     if(s.visible === false) continue;
-    if(s.points) for(const p of s.points) pts.push(p);
+    if(s.points){
+      if(s.arc){ pts.push(s.points[0], s.points[s.points.length-1]); } // dell'arco contano solo le estremità
+      else for(const p of s.points) pts.push(p);
+    }
     if(s.type==='rect' || s.type==='ellipse' || s.type==='image'){
       pts.push([s.x,s.y],[s.x+s.w,s.y],[s.x,s.y+s.h],[s.x+s.w,s.y+s.h]);
     }
@@ -4604,7 +4677,30 @@ function allPointsExcept(excludeId){
 }
 
 let lastSnapped = false;
-function snapPoint(mmPt, excludeId){
+// Punto più vicino su una linea qualsiasi (tratti di percorsi, archi, lati di
+// rettangoli ed ellissi). I tratti che partono dal punto che si sta trascinando
+// (ignorePt) sono esclusi, altrimenti il punto resterebbe incollato alle linee collegate.
+function nearestPointOnLines(mmPt, excludeId, maxD, ignorePt){
+  let best = null, bd = maxD;
+  for(const s of state.shapes){
+    if(s.id===excludeId || s.visible===false) continue;
+    let pts = null, closed = false;
+    if(s.points){ pts = s.points; closed = !!s.closed; }
+    else if(s.type==='rect' || s.type==='ellipse'){ const r = shapeToRing(s); if(r){ pts = r.slice(0,-1); closed = true; } }
+    if(!pts || pts.length<2) continue;
+    const n = pts.length, segN = closed ? n : n-1;
+    for(let i=0;i<segN;i++){
+      const a = pts[i], b = pts[(i+1)%n];
+      if(ignorePt && (pointsEqual(a, ignorePt) || pointsEqual(b, ignorePt))) continue;
+      const dx=b[0]-a[0], dy=b[1]-a[1], l2=dx*dx+dy*dy; if(!l2) continue;
+      const t = Math.max(0, Math.min(1, ((mmPt[0]-a[0])*dx + (mmPt[1]-a[1])*dy)/l2));
+      const q = [a[0]+dx*t, a[1]+dy*t], d = dist(mmPt, q);
+      if(d < bd){ bd = d; best = q; }
+    }
+  }
+  return best;
+}
+function snapPoint(mmPt, excludeId, ignorePt){
   lastSnapped = false;
   if(state.snapMagnet){
     const thresholdMM = state.magnetPx / state.scale;
@@ -4614,6 +4710,8 @@ function snapPoint(mmPt, excludeId){
       if(d < thresholdMM && d < bd){ bd = d; best = p; }
     }
     if(best){ lastSnapped = true; return [best[0], best[1]]; }
+    const onLine = nearestPointOnLines(mmPt, excludeId, thresholdMM, ignorePt); // nessun vertice vicino: aggancio a un punto della linea
+    if(onLine){ lastSnapped = true; return onLine; }
   }
   if(state.snapGrid){
     const g = state.grid;
@@ -4706,6 +4804,7 @@ async function deletePointFromShape(s, idx){
   s.points.splice(idx, 1);
   if(s.smooth) s.smooth.splice(idx, 1);
   shiftDetachedIndices(s, idx, -1);
+  delete s.arc;
   state.hoverSegment = null;
   pushHistory();
   renderAll();
@@ -4713,17 +4812,20 @@ async function deletePointFromShape(s, idx){
 }
 function moveConnectedVertex(shape, idx, newPt){
   const oldPt = shape.points[idx];
+  const arcsToRebuild = new Set();
   if(!isPtDetached(shape, idx)){
     for(const other of state.shapes){
       if(other.locked || !other.points) continue;
       other.points.forEach((p,i)=>{
         if(other===shape && i===idx) return;
         if(isPtDetached(other, i)) return; // punto scollegato: resta dov'è
-        if(pointsEqual(p, oldPt)) other.points[i] = [newPt[0], newPt[1]];
+        if(pointsEqual(p, oldPt)){ other.points[i] = [newPt[0], newPt[1]]; if(other.arc && other!==shape) arcsToRebuild.add(other); }
       });
     }
   }
   shape.points[idx] = newPt;
+  if(shape.arc) arcsToRebuild.add(shape);
+  arcsToRebuild.forEach(rebuildArc);
 }
 
 // Sposta un intero blocco di forme (per id) di un delta (dx,dy); qualunque punto di
@@ -4738,6 +4840,7 @@ function moveShapesBy(ids, dx, dy){
     if(!s || s.locked || !s.points) continue;
     s.points.forEach((p,i)=>{ if(!isPtDetached(s, i)) movingPts.push([p[0], p[1]]); });
   }
+  const stretchedArcs = new Set();
   if(movingPts.length){
     const moved = new Set();
     for(const other of state.shapes){
@@ -4749,6 +4852,7 @@ function moveShapesBy(ids, dx, dy){
           if(pointsEqual(p, mp)){
             other.points[idx] = [p[0]+dx, p[1]+dy];
             moved.add(key);
+            if(other.arc) stretchedArcs.add(other);
             break;
           }
         }
@@ -4761,13 +4865,14 @@ function moveShapesBy(ids, dx, dy){
     if(s.points) s.points = s.points.map(p=>[p[0]+dx, p[1]+dy]);
     else { s.x += dx; s.y += dy; }
   }
+  stretchedArcs.forEach(rebuildArc);
 }
 
 /* ============================================================
    HISTORY (undo/redo)
 ============================================================ */
 function pushHistory(){
-  state.foldCheckMarkers = null; // i cerchi del controllo 3D spariscono alla prima modifica
+  if(state.foldCheck) runFoldCheckOverlay(true); // controllo 3D attivo: si rifà dopo ogni modifica
   const snap = JSON.stringify({shapes:state.shapes, layers:state.layers});
   state.history = state.history.slice(0, state.histIndex+1);
   state.historyTimes = (state.historyTimes||[]).slice(0, state.histIndex+1);
@@ -4785,6 +4890,7 @@ function undo(){
   state.shapes = data.shapes; state.layers = data.layers || state.layers;
   ensureActiveLayer();
   state.selection.clear();
+  if(state.foldCheck) runFoldCheckOverlay();
   renderAll();
 }
 function redo(){
@@ -4794,6 +4900,7 @@ function redo(){
   state.shapes = data.shapes; state.layers = data.layers || state.layers;
   ensureActiveLayer();
   state.selection.clear();
+  if(state.foldCheck) runFoldCheckOverlay();
   renderAll();
 }
 // Salta direttamente a un punto qualsiasi della cronologia (usato dal pannello
@@ -4806,6 +4913,7 @@ function jumpToHistory(index){
   ensureActiveLayer();
   state.selection.clear();
   updateUndoRedoButtons();
+  if(state.foldCheck) runFoldCheckOverlay();
   renderAll();
 }
 function updateUndoRedoButtons(){
@@ -5011,6 +5119,7 @@ function renderSelectionHandles(){
       // vertex handles (only editable in select tool & single selection)
       if(state.selection.size===1){
         s.points.forEach((p, idx)=>{
+          if(s.arc && idx>0 && idx<s.points.length-1) return; // arco: maniglie solo alle estremità
           const det = isPtDetached(s, idx);
           const h = el('circle', {cx:p[0]*state.scale, cy:p[1]*state.scale, r:4.5, fill:'#fff', stroke: det ? '#a970ff' : 'var(--brass)', 'stroke-width':1.6, 'stroke-dasharray': det ? '2.5,1.5' : '', 'data-vertex':idx, 'data-shape':s.id, style:'cursor:move'});
           layerOverlay.appendChild(h);
@@ -5199,6 +5308,15 @@ function renderPageResizeHandle(){
   }));
 }
 
+function arcDimLabel(s){
+  const n = s.points.length, M = s.points[Math.floor(n/2)], info = arcInfo(s);
+  const a = s.points[Math.max(0,Math.floor(n/2)-1)], b = s.points[Math.min(n-1,Math.floor(n/2)+1)];
+  const ang = Math.atan2(b[1]-a[1], b[0]-a[0]), off = 12/state.scale;
+  const t = el('text', {x:(M[0]+Math.sin(ang)*off)*state.scale, y:(M[1]-Math.cos(ang)*off)*state.scale, 'font-size':10, fill:'var(--brass)',
+    'text-anchor':'middle', 'dominant-baseline':'middle', 'paint-order':'stroke', stroke:'var(--bg-0, #1a1c20)', 'stroke-width':3, 'pointer-events':'none'});
+  t.textContent = '⌒ ' + fmtUnit(info.len) + (info.r ? '  R ' + fmtUnit(info.r) : '');
+  layerOverlay.appendChild(t);
+}
 function dimLabel(p1, p2){
   const len = dist(p1,p2);
   if(len < 0.05) return;
@@ -5391,14 +5509,13 @@ function renderEndpointMarkers(){
 // di ogni tratto delle forme con ruolo Piega che hanno un verso impostato.
 // Sono solo un'annotazione visiva: non fanno parte della geometria di taglio.
 function renderFoldIndicators(){
-  (state.foldCheckMarkers||[]).forEach(p=>{
-    layerOverlay.appendChild(el('circle', {cx:p[0]*state.scale, cy:p[1]*state.scale, r:10, fill:'rgba(255,59,48,0.15)', stroke:'#ff3b30', 'stroke-width':2, 'pointer-events':'none'}));
-  });
+  renderFoldCheckOverlay();
   for(const s of state.shapes){
     if(!s.points || s.style.role!=='fold' || !s.foldDir || !isShapeEffVisible(s)) continue;
     const n = s.points.length;
     const segCount = s.closed ? n : n-1;
     for(let i=0;i<segCount;i++){
+      if(s.arc && i!==Math.floor(segCount/2)) continue; // arco: una sola freccia, a metà
       const a = s.points[i], b = s.points[(i+1)%n];
       const mid = [(a[0]+b[0])/2, (a[1]+b[1])/2];
       const normal = segNormal(a,b);
@@ -5438,6 +5555,7 @@ function renderCornerAngles(){
     const n = s.points.length;
     if(n<2) return;
     for(let i=0;i<n;i++){
+      if(s.arc && i>0 && i<n-1) continue; // punti interni dell'arco: nessun angolo da mostrare
       const p = s.points[i];
       const hasPrev = s.closed || i>0;
       const hasNext = s.closed || i<n-1;
@@ -5533,6 +5651,7 @@ function renderPageDimensions(){
 function renderAllShapeDimensions(){
   for(const s of state.shapes){
     if(!s.points || !isShapeEffVisible(s) || s.points.length<2) continue;
+    if(s.arc){ arcDimLabel(s); continue; }
     for(let i=0;i<s.points.length-1;i++) dimLabel(s.points[i], s.points[i+1]);
     if(s.closed && s.points.length>2) dimLabel(s.points[s.points.length-1], s.points[0]);
   }
@@ -5810,7 +5929,9 @@ function foldModelAt(model, frac){
     const R = tfRotAxis(P, u, side*dirSign*angDeg*Math.PI/180*frac);
     T[fi] = tfCompose(T[pf], R);
   });
+  const unreached = new Set(model.unreached || []);
   return model.faces.map((f,fi)=>({
+    unreached: unreached.has(fi),
     pts: f.nodes.map(v=>tfApply(T[fi], model.flat3(v))),
     normal: (()=>{ const m=T[fi].m; return [m[2], m[5], m[8]]; })(),
     isRoot: fi===model.root
@@ -5886,7 +6007,8 @@ function checkFoldModel(model){
       text = translate('Piega che non separa due pannelli distinti: il contorno di taglio intorno non è chiuso da entrambi i lati.');
     }
     if(partial) text = tpl('Usata solo in parte ({pct}%).', {pct}) + ' ' + text;
-    issues.push({level: partial ? 'warn' : 'error', text, shapes:[s], points: ends.map(e=>e.pt)});
+    issues.push({level: partial ? 'warn' : 'error', text, shapes:[s], points: ends.map(e=>e.pt),
+      gaps: ends.filter(e=>e.gap!=null && e.gap<=30).map(e=>({from:e.pt, to:e.target, mm:e.gap}))});
   });
   cutOpen.forEach((L, s)=>{
     if(L < 0.5) return;
@@ -5895,6 +6017,7 @@ function checkFoldModel(model){
     const pts = s.points || [];
     const selfGap = (!s.closed && pts.length>2) ? Math.hypot(pts[0][0]-pts[pts.length-1][0], pts[0][1]-pts[pts.length-1][1]) : 0;
     issues.push({level:'error', shapes:[s], points: ends.map(e=>e.pt),
+      gaps: selfGap > model.TOL ? [{from:pts[0], to:pts[pts.length-1], mm:selfGap}] : ends.filter(e=>e.gap!=null && e.gap<=30).map(e=>({from:e.pt, to:e.target, mm:e.gap})),
       text: (selfGap > model.TOL ? tpl('Contorno di taglio non chiuso: il primo e l\'ultimo punto distano {d} mm (selezionalo e usa "Chiudi percorso" nel pannello proprietà).', {d: fmt(selfGap)}) : gaps.length ? tpl('Linea di taglio aperta: all\'estremità mancano {gaps} per chiudere il contorno.', {gaps:gaps.join(' e ')})
                          : translate('Linea di taglio che non chiude nessun contorno: i suoi tratti finiscono nel vuoto.'))
             + ' ' + translate('Puoi usare Strumenti → Salda punti vicini o Chiudi tutti i percorsi aperti.')});
@@ -5931,15 +6054,24 @@ function renderFold3DCheck(result){
     : translate('Controllo del disegno: tutte le linee di taglio e piega sono state considerate.');
   host.appendChild(head);
   const icons = {error:'⛔', warn:'⚠️', info:'ℹ️'};
+  let num = 0;
   result.issues.forEach(is=>{
+    if(is.level!=='info') num++;
     const row = document.createElement('div');
     row.style.cssText = 'display:flex;gap:8px;align-items:flex-start;font-size:12px;padding:5px 0;border-top:1px solid rgba(128,128,128,0.18);';
-    const ic = document.createElement('span'); ic.textContent = icons[is.level]; row.appendChild(ic);
+    const ic = document.createElement('span'); ic.style.whiteSpace='nowrap';
+    ic.textContent = icons[is.level];
+    if(is.level!=='info'){ // numero uguale a quello sul disegno, in un cerchietto separato dal testo
+      const badge = document.createElement('span'); badge.textContent = num;
+      badge.style.cssText = 'display:inline-block;min-width:18px;height:18px;line-height:18px;border-radius:9px;text-align:center;font-weight:700;font-size:11px;color:#fff;margin-left:4px;background:' + (is.level==='error' ? '#ff3b30' : '#ff9f0a');
+      ic.appendChild(badge);
+    }
+    row.appendChild(ic);
     const tx = document.createElement('span'); tx.style.flex='1'; tx.textContent = is.text; row.appendChild(tx);
     if(is.shapes.length || is.points.length){
       const b = document.createElement('button'); b.className='btn'; b.style.cssText='width:auto;margin:0;padding:3px 9px;font-size:11.5px;';
       b.textContent = translate('Mostra sul disegno');
-      b.onclick = ()=> showFoldIssuesOnDrawing(is.shapes, is.points);
+      b.onclick = ()=> showFoldIssuesOnDrawing(is.text);
       row.appendChild(b);
     }
     host.appendChild(row);
@@ -5953,21 +6085,142 @@ function renderFold3DCheck(result){
     host.appendChild(b);
   }
 }
-function showFoldIssuesOnDrawing(shapes, points){
+function showFoldIssuesOnDrawing(issueText){
   minimizeModal('fold3dModal');
-  state.selection = new Set(shapes.map(s=>s.id));
-  state.foldCheckMarkers = points.slice();
   document.querySelector('.tabtrig[data-tab="prop"]').click();
-  renderAll();
-  showToast('Elementi evidenziati sul disegno (cerchi rossi): correggili e riprendi l\'anteprima 3D dalla barra in basso.', false);
+  state.foldCheck = null;
+  runFoldCheckOverlay();
+  const k = state.foldCheck.issues.findIndex(i=>i.text===issueText);
+  focusFoldIssue(k>=0 ? k : 0);
 }
-function applyFoldFixes(fixes){
+function applyFoldFixes(fixes, stayOnDrawing){
   fixes.forEach(f=>{ f.shape.points[f.idx] = [f.target[0], f.target[1]]; });
   pushHistory();
   renderAll();
   const n = new Set(fixes.map(f=>f.shape)).size;
-  openFold3D();
+  if(!stayOnDrawing) openFold3D();
   showToast(tpl('{n} pieghe allungate fino al contorno.', {n}), false);
+}
+
+/* ---------- evidenziazione degli errori del controllo 3D sul disegno ----------
+   Attiva mentre l'anteprima 3D è ridotta a icona: il controllo viene rifatto
+   dopo ogni modifica, quindi un errore corretto sparisce subito. */
+function runFoldCheckOverlay(redraw){
+  const model = buildFoldModel(state.shapes);
+  const res = checkFoldModel(model);
+  const serious = res.issues.filter(i=>i.level!=='info');
+  const prev = state.foldCheck ? state.foldCheck.focus : 0;
+  state.foldCheck = { issues: serious, fixes: res.fixes, faces: model.faces.length, hinges: model.hinges.length,
+                      focus: Math.max(0, Math.min(prev, serious.length-1)) };
+  renderFoldCheckBanner();
+  if(redraw) renderCanvasOnly();
+}
+function endFoldCheckOverlay(){
+  state.foldCheck = null;
+  renderFoldCheckBanner();
+  renderCanvasOnly();
+}
+function shapeOutlineD(s){
+  if(s.points) return pathD(s.points, !!s.closed, s.smooth);
+  const r = shapeToRing(s);
+  return r ? pathD(r.slice(0,-1), true) : '';
+}
+function issueAnchor(is){
+  if(is.points && is.points.length) return is.points[0];
+  if(is.gaps && is.gaps.length) return is.gaps[0].from;
+  if(is.shapes && is.shapes.length){ const b = shapeBBox(is.shapes[0]); return [b.x, b.y]; }
+  return null;
+}
+function renderFoldCheckOverlay(){
+  const fc = state.foldCheck;
+  if(!fc || !fc.issues.length) return;
+  const sc = state.scale, fmt = v=> (Math.round(v*10)/10).toString().replace('.', ',');
+  const order = fc.issues.map((is,k)=>k).filter(k=>k!==fc.focus).concat([fc.focus]); // quello selezionato sopra agli altri
+  order.forEach(k=>{
+    const is = fc.issues[k], focus = k===fc.focus;
+    const col = is.level==='error' ? '#ff3b30' : '#ff9f0a';
+    const g = el('g', {'pointer-events':'none', opacity: focus ? 1 : 0.5});
+    is.shapes.forEach(s=>{
+      const d = shapeOutlineD(s); if(!d) return;
+      g.appendChild(el('path', {d, fill:'none', stroke:col, 'stroke-width': focus ? 14 : 9, 'stroke-opacity':0.3, 'stroke-linecap':'round', 'stroke-linejoin':'round'}));
+      g.appendChild(el('path', {d, fill:'none', stroke:col, 'stroke-width':2.5, 'stroke-dasharray':'8,6', 'stroke-linecap':'round', class: focus ? 'fc-march' : ''}));
+    });
+    (is.gaps||[]).forEach(gp=>{
+      const a = gp.from, b = gp.to;
+      g.appendChild(el('line', {x1:a[0]*sc, y1:a[1]*sc, x2:b[0]*sc, y2:b[1]*sc, stroke:col, 'stroke-width':3, 'stroke-dasharray':'3,3'}));
+      g.appendChild(el('path', {d:`M ${b[0]*sc-5} ${b[1]*sc-5} L ${b[0]*sc+5} ${b[1]*sc+5} M ${b[0]*sc+5} ${b[1]*sc-5} L ${b[0]*sc-5} ${b[1]*sc+5}`, stroke:col, 'stroke-width':2.5}));
+      const t = el('text', {x:(a[0]+b[0])/2*sc + 10, y:(a[1]+b[1])/2*sc - 8, 'font-size':12, 'font-weight':'700', fill:col,
+        'paint-order':'stroke', stroke:'#fff', 'stroke-width':4, 'stroke-linejoin':'round'});
+      t.textContent = tpl('manca {mm} mm', {mm: fmt(gp.mm)});
+      g.appendChild(t);
+    });
+    is.points.forEach(p=>{
+      g.appendChild(el('circle', {cx:p[0]*sc, cy:p[1]*sc, r:16, fill:'none', stroke:col, 'stroke-width':3, class:'fc-pulse'}));
+      g.appendChild(el('circle', {cx:p[0]*sc, cy:p[1]*sc, r:4, fill:col}));
+    });
+    const an = issueAnchor(is);
+    if(an){
+      g.appendChild(el('circle', {cx:an[0]*sc-20, cy:an[1]*sc-20, r:12, fill:col, stroke:'#fff', 'stroke-width':2}));
+      const t = el('text', {x:an[0]*sc-20, y:an[1]*sc-19.5, 'font-size':13, 'font-weight':'700', fill:'#fff', 'text-anchor':'middle', 'dominant-baseline':'middle'});
+      t.textContent = k+1;
+      g.appendChild(t);
+    }
+    layerOverlay.appendChild(g);
+  });
+}
+function scrollDrawingTo(p){
+  const wrap = document.getElementById('canvasHolder').parentElement;
+  if(!wrap || !p) return;
+  const r = stage.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
+  wrap.scrollLeft += (r.left + p[0]*state.scale) - (wr.left + wr.width/2);
+  wrap.scrollTop  += (r.top  + p[1]*state.scale) - (wr.top  + wr.height/2);
+}
+function focusFoldIssue(k){
+  const fc = state.foldCheck; if(!fc || !fc.issues.length) return;
+  if(state.tool!=='select') setTool('select'); // per poter trascinare subito le maniglie del problema
+  fc.focus = (k + fc.issues.length) % fc.issues.length;
+  const is = fc.issues[fc.focus];
+  state.selection = new Set(is.shapes.map(s=>s.id));
+  renderFoldCheckBanner();
+  renderAll();
+  scrollDrawingTo(issueAnchor(is));
+}
+function renderFoldCheckBanner(){
+  const bar = document.getElementById('foldCheckBanner'); if(!bar) return;
+  const fc = state.foldCheck;
+  if(!fc){ bar.style.display='none'; bar.innerHTML=''; return; }
+  bar.style.display='block'; bar.innerHTML='';
+  const top = document.createElement('div'); top.className='fcb-row';
+  const n = fc.issues.length;
+  const title = document.createElement('span'); title.className='fcb-title';
+  if(!n){
+    title.textContent = tpl('✅ Controllo 3D: nessun problema — {p} pannelli, {h} pieghe collegate.', {p:fc.faces, h:fc.hinges});
+    bar.classList.add('ok');
+  } else {
+    bar.classList.remove('ok');
+    const e = fc.issues.filter(i=>i.level==='error').length, w = n-e;
+    title.textContent = tpl('Controllo 3D: {n} problemi da correggere ({e} errori, {w} avvisi)', {n, e, w});
+  }
+  top.appendChild(title);
+  const mkB = (label, fn, primary, tip)=>{ const b=document.createElement('button'); b.className='btn'+(primary?' primary':''); b.textContent=label; if(tip) b.title=tip; b.onclick=fn; top.appendChild(b); return b; };
+  if(n){
+    mkB('◀', ()=>focusFoldIssue(fc.focus-1), false, translate('Problema precedente'));
+    const cnt = document.createElement('span'); cnt.className='fcb-count'; cnt.textContent = (fc.focus+1)+' / '+n; top.appendChild(cnt);
+    mkB('▶', ()=>focusFoldIssue(fc.focus+1), false, translate('Problema successivo'));
+    if(fc.fixes.length){
+      const nf = new Set(fc.fixes.map(f=>f.shape)).size;
+      mkB(tpl('🔧 Allunga {n} pieghe', {n:nf}), ()=>{ applyFoldFixes(fc.fixes, true); }, false, tpl('Prolunga le estremità delle pieghe che si fermano a meno di {mm} mm da un\'altra linea, nella loro stessa direzione.', {mm:FOLD_FIX_MAX}));
+    }
+  }
+  mkB(translate('🧊 Riprendi anteprima 3D'), ()=>{ endFoldCheckOverlay(); restoreModal('fold3dModal'); }, true);
+  mkB('✕', endFoldCheckOverlay, false, translate('Nascondi l\'evidenziazione'));
+  bar.appendChild(top);
+  if(n){
+    const is = fc.issues[fc.focus];
+    const d = document.createElement('div'); d.className='fcb-detail ' + is.level;
+    d.textContent = (fc.focus+1) + '. ' + is.text;
+    bar.appendChild(d);
+  }
 }
 /* ---------- visualizzatore 3D (canvas 2D, algoritmo del pittore) ---------- */
 const fold3d = { model:null, frac:1, yaw:-0.6, pitch:0.45, zoom:1, anim:null, drag:null };
@@ -6026,14 +6279,14 @@ function renderFold3D(){
   const L = [0.35,0.6,0.72], Ll = Math.hypot(...L); const light = L.map(v=>v/Ll);
   const items = faces.map(f=>{
     const vs = f.pts.map(p=> rot([p[0]-C[0], p[1]-C[1], p[2]-C[2]]));
-    return { vs, depth: vs.reduce((a,v)=>a+v[2],0)/vs.length, n: rot(f.normal) };
+    return { vs, depth: vs.reduce((a,v)=>a+v[2],0)/vs.length, n: rot(f.normal), bad: f.unreached };
   });
   items.sort((a,b)=> a.depth-b.depth); // prima i pannelli lontani, poi quelli vicini
   items.forEach(it=>{
     const front = it.n[2] >= 0;                       // lato stampato rivolto verso chi guarda
     const nn = front ? it.n : it.n.map(v=>-v);
     const shade = 0.55 + 0.45*Math.max(0, nn[0]*light[0]+nn[1]*light[1]+nn[2]*light[2]);
-    const base = front ? [244,237,224] : [196,154,100]; // esterno chiaro, interno color cartone
+    const base = it.bad ? (front ? [255,120,105] : [200,80,70]) : (front ? [244,237,224] : [196,154,100]); // esterno chiaro, interno color cartone, rosso = pannello non collegato
     ctx.fillStyle = `rgb(${base.map(v=>Math.round(v*shade)).join(',')})`;
     ctx.beginPath();
     it.vs.forEach((v,k)=>{ const p = proj(v); if(k) ctx.lineTo(p[0],p[1]); else ctx.moveTo(p[0],p[1]); });
@@ -6198,7 +6451,7 @@ function mergeAtPoints(positions){
           const last = A.s.points.length-1;
           A.s.points.pop(); if(A.s.smooth) A.s.smooth.pop();
           setPtDetached(A.s, last, false); setPtDetached(A.s, 0, false);
-          A.s.closed = true; closedN++; changed = true; break;
+          A.s.closed = true; delete A.s.arc; closedN++; changed = true; break;
         }
         continue;
       }
@@ -6208,6 +6461,7 @@ function mergeAtPoints(positions){
       const pb = B.s.points.slice(), sb = (B.s.smooth||B.s.points.map(()=>0)).slice(), db = B.s.points.map((_,i)=>isPtDetached(B.s,i));
       if(!B.first){ pb.reverse(); sb.reverse(); db.reverse(); } // ...e il primo di B
       A.s.points = pa.concat(pb.slice(1)); A.s.smooth = sa.concat(sb.slice(1));
+      delete A.s.arc; // unito ad altro non è più un arco semplice (resta una linea con la stessa forma)
       const dm = da.concat(db.slice(1)); dm[pa.length-1] = false;
       const det = dm.map((v,i)=> v ? i : -1).filter(i=>i>=0);
       if(det.length) A.s.detached = det; else delete A.s.detached;
@@ -6233,6 +6487,7 @@ function applyJoin(){
     setPtDetached(sA, A.idx, false); if(sB) setPtDetached(sB, B.idx, false);
     if(mode==='move'){
       sA.points[A.idx] = [B.pt[0], B.pt[1]];
+      if(sA.arc) rebuildArc(sA);
       positions.push(B.pt); touched.add(sA.id); touched.add(B.shapeId);
     } else {
       const seg = { id:uid(), type:'path', points:[[A.pt[0],A.pt[1]],[B.pt[0],B.pt[1]]], closed:false, smooth:[0,0],
@@ -6270,7 +6525,7 @@ function closeJoinDialog(){
 const MINIMIZABLE_MODALS = ['joinModal','fold3dModal','boxGenModal','historyModal','versionsModal','libraryModal','saveLibraryModal',
   'pageSizeModal','fontModal','scaleModal','tilePrintModal','printProofModal','cutPreviewModal','weldModal','helpModal'];
 const MODAL_HOOKS = {
-  fold3dModal: { onMinimize: ()=> stopFold3D(), onRestore: ()=> refreshFold3D() },
+  fold3dModal: { onMinimize: ()=>{ stopFold3D(); if(!state.foldCheck) runFoldCheckOverlay(true); }, onRestore: ()=>{ if(state.foldCheck) endFoldCheckOverlay(); refreshFold3D(); } },
   joinModal:   { onMinimize: ()=> renderCanvasOnly(), onRestore: ()=>{
       if(validateJoinPairs() && joinState.cands.some(cd=>{ const s=state.shapes.find(x=>x.id===cd.shapeId); return !s || !s.points || !s.points[cd.idx] || dist(s.points[cd.idx], cd.pt)>1e-6; })){
         const err = document.getElementById('joinError');
@@ -6726,6 +6981,7 @@ async function insertSharedComponent(id, name){
     const data = await apiFetch('load.php?id=' + encodeURIComponent(id), {method:'GET'});
     const proj = data.project || {};
     const shapes = proj.shapes || [];
+    migrateLegacyArcs(shapes);
     if(!shapes.length){ showToast('Questo progetto condiviso non contiene forme da inserire.', true); return; }
     // ricentro l'intero gruppo sul centro del foglio attuale, mantenendo le proporzioni originali tra le forme
     const boxes = shapes.map(shapeBBox);
@@ -7200,7 +7456,7 @@ function handleMouseMove(mm, e){
   if(dragMode==='move-vertex' && state.drag){
     const s = state.shapes.find(x=>x.id===state.drag.shapeId);
     if(s){
-      const snapped = snapPoint(mm, s.id);
+      const snapped = snapPoint(mm, s.id, s.points[state.drag.vertex]);
       moveConnectedVertex(s, state.drag.vertex, snapped);
       updateSnapBadge();
       renderAll();
@@ -7437,6 +7693,7 @@ function openSegmentInlineEditor(s, idx, clickMM, clientX, clientY){
     const insertAt = isClosingSeg ? n : idx+1;
     s.points.splice(insertAt, 0, clickMM);
     shiftDetachedIndices(s, insertAt, +1);
+    delete s.arc;
     if(!s.smooth) s.smooth = s.points.map(()=>0);
     else s.smooth.splice(insertAt, 0, 0);
     pushHistory(); renderAll();
@@ -7480,28 +7737,113 @@ function commitShapeDraft(d){
   pushHistory();
 }
 
+/* ============================================================
+   ARCHI — un arco è una linea vera (percorso aperto) con i punti presi
+   sulla circonferenza, abbastanza fitti da scostarsi al massimo ARC_TOL mm
+   dalla curva vera. Così prende il colore del ruolo, si aggancia col
+   magnete, si collega agli altri punti e vale per 3D, booleane, ecc.
+   Il flag s.arc nasconde le maniglie intermedie e ricostruisce la curva
+   quando si sposta un'estremità.
+============================================================ */
+const ARC_TOL = 0.05;
+function arcPolyline(S, E, T){
+  const circ = circleFrom3Points(S, T, E);
+  if(!circ) return null;
+  const {center, r} = circ;
+  const a = p=> Math.atan2(p[1]-center[1], p[0]-center[0]);
+  const norm = x=> ((x % (2*Math.PI)) + 2*Math.PI) % (2*Math.PI);
+  const aS = a(S);
+  let span = norm(a(E)-aS);
+  if(norm(a(T)-aS) > span) span -= 2*Math.PI; // il punto di passaggio sta dall'altra parte: si percorre l'arco nell'altro senso
+  if(Math.abs(span) < 1e-9) return null;
+  const step = 2*Math.acos(Math.max(-1, Math.min(1, 1 - ARC_TOL/r)));
+  const n = Math.max(8, Math.min(360, Math.ceil(Math.abs(span)/step)));
+  const pts = [];
+  for(let i=0;i<=n;i++){ const t = aS + span*i/n; pts.push([center[0]+r*Math.cos(t), center[1]+r*Math.sin(t)]); }
+  pts[0] = [S[0],S[1]]; pts[n] = [E[0],E[1]]; // estremi esatti, per magnete e collegamenti
+  return {pts, r, center};
+}
+// ricostruisce la curva dopo lo spostamento di un'estremità (passa ancora per il punto di mezzo)
+function rebuildArc(s){
+  if(!s.arc || !s.points || s.points.length<3) return;
+  const n = s.points.length, S = s.points[0], E = s.points[n-1], M = s.points[Math.floor(n/2)];
+  const det0 = isPtDetached(s, 0), detL = isPtDetached(s, n-1);
+  const res = arcPolyline(S, E, M);
+  if(!res){ s.points = [[S[0],S[1]],[E[0],E[1]]]; delete s.arc; }
+  else s.points = res.pts;
+  s.smooth = s.points.map(()=>0);
+  delete s.detached;
+  if(det0) setPtDetached(s, 0, true);
+  if(detL) setPtDetached(s, s.points.length-1, true);
+}
+function arcInfo(s){
+  const n = s.points.length;
+  const c = circleFrom3Points(s.points[0], s.points[Math.floor(n/2)], s.points[n-1]);
+  let len = 0; for(let i=0;i<n-1;i++) len += dist(s.points[i], s.points[i+1]);
+  return {r: c ? c.r : null, len};
+}
 function commitArcDraft(pts){
   const [S, E, T] = pts;
-  const built = buildArcPathD(S, E, T);
-  let shape;
-  if(built.isLine){
-    shape = makeShape('path', {points:[S,E], closed:false});
-  } else {
-    const bbox = measureBBoxOfPaths([built.d]);
-    const subpaths = pathToAbsSubpaths(built.d);
-    const shifted = transformSubpaths(subpaths, matTranslate(-bbox.x, -bbox.y));
-    const style = newStyle(state.activeRole);
-    shape = {
-      id: uid(), type:'tracedpath',
-      x:bbox.x, y:bbox.y, w:bbox.w, h:bbox.h, srcW:bbox.w, srcH:bbox.h,
-      paths:[{ d:shifted[0].d, fill:'none', stroke: style.stroke }],
-      style, visible:true, locked:false, layerId: state.activeLayerId
-    };
-  }
+  const arc = arcPolyline(S, E, T);
+  const shape = arc ? makeShape('path', {points:arc.pts, closed:false, arc:true})
+                    : makeShape('path', {points:[S,E], closed:false});
   state.shapes.push(shape);
   state.selection = new Set([shape.id]);
   pushHistory();
   renderAll();
+}
+// Archi creati con le versioni precedenti (tracciato con un comando "A" nel "d"):
+// li converto in linee vere, applicando posizione, scala, rotazione e ribaltamenti.
+function svgArcSample(x1, y1, r, large, sweep, x2, y2){
+  const dx = (x1-x2)/2, dy = (y1-y2)/2, d2 = dx*dx+dy*dy;
+  if(d2 < 1e-12) return null;
+  r = Math.max(Math.abs(r), Math.sqrt(d2));
+  const sign = (large!==sweep) ? 1 : -1;
+  const k = sign * Math.sqrt(Math.max(0, (r*r - d2)/d2));
+  const cx = k*dy + (x1+x2)/2, cy = -k*dx + (y1+y2)/2;
+  const a1 = Math.atan2(y1-cy, x1-cx), a2 = Math.atan2(y2-cy, x2-cx);
+  let span = a2 - a1;
+  if(sweep && span < 0) span += 2*Math.PI;
+  if(!sweep && span > 0) span -= 2*Math.PI;
+  const step = 2*Math.acos(Math.max(-1, Math.min(1, 1 - ARC_TOL/r)));
+  const n = Math.max(8, Math.min(360, Math.ceil(Math.abs(span)/step)));
+  const pts = [];
+  for(let i=0;i<=n;i++){ const t = a1 + span*i/n; pts.push([cx+r*Math.cos(t), cy+r*Math.sin(t)]); }
+  pts[0] = [x1,y1]; pts[n] = [x2,y2];
+  return pts;
+}
+function legacyArcToPath(s){
+  if(s.type!=='tracedpath' || !Array.isArray(s.paths) || s.paths.length!==1) return null;
+  const m = String(s.paths[0].d||'').trim().match(/^M\s*(-?[\d.eE+-]+)[\s,]+(-?[\d.eE+-]+)\s*A\s*(-?[\d.eE+-]+)[\s,]+(-?[\d.eE+-]+)[\s,]+(-?[\d.eE+-]+)[\s,]+([01])[\s,]*([01])[\s,]+(-?[\d.eE+-]+)[\s,]+(-?[\d.eE+-]+)\s*$/i);
+  if(!m) return null;
+  const v = m.slice(1).map(Number);
+  const local = svgArcSample(v[0], v[1], v[2], v[5], v[6], v[7], v[8]);
+  if(!local) return null;
+  const sx = s.srcW ? s.w/s.srcW : 1, sy = s.srcH ? s.h/s.srcH : 1;
+  const cx = s.x + s.w/2, cy = s.y + s.h/2;
+  const pts = local.map(p=>{
+    let q = [s.x + p[0]*sx, s.y + p[1]*sy];
+    if(s.flipH) q = [2*cx - q[0], q[1]];
+    if(s.flipV) q = [q[0], 2*cy - q[1]];
+    if(s.rotation) q = rotatePointAround(q, [cx,cy], s.rotation);
+    return q;
+  });
+  const style = JSON.parse(JSON.stringify(s.style || newStyle('design')));
+  style.fill = 'none';
+  if(style.role && ROLE_STYLE[style.role]){ style.stroke = ROLE_STYLE[style.role].stroke; style.dash = ROLE_STYLE[style.role].dash; }
+  const out = { id:s.id, type:'path', points:pts, closed:false, smooth:pts.map(()=>0), arc:true, style,
+                visible: s.visible!==false, locked: !!s.locked, layerId: s.layerId };
+  if(s.excludeAutoFix) out.excludeAutoFix = s.excludeAutoFix;
+  return out;
+}
+function migrateLegacyArcs(shapes){
+  if(!Array.isArray(shapes)) return 0;
+  let n = 0;
+  for(let i=0;i<shapes.length;i++){
+    const conv = legacyArcToPath(shapes[i]);
+    if(conv){ shapes[i] = conv; n++; }
+  }
+  return n;
 }
 
 function placeTextInput(mm){
@@ -8348,7 +8690,7 @@ async function loadFromLibrary(id){
   try{
     const data = await apiFetch('load.php?id=' + encodeURIComponent(id), {method:'GET'});
     const proj = data.project || {};
-    state.shapes = proj.shapes || [];
+    state.shapes = proj.shapes || []; migrateLegacyArcs(state.shapes);
     state.page = proj.page || state.page;
     state.refImage = proj.refImage || null;
     state.projectInfo = proj.projectInfo || { boxType:'', material:'', printNotes:'', assemblySteps:[] };
@@ -8403,7 +8745,7 @@ document.getElementById('joinAddPair').onclick = ()=>{
   const a = free[0] || 1, b = free[1] || (joinState.cands.find(c=>c.n!==a)||{n:a}).n;
   joinState.pairs.push([a,b]); renderJoinPairs();
 };
-function closeFold3D(){ stopFold3D(); document.getElementById('fold3dModal').classList.remove('open'); }
+function closeFold3D(){ stopFold3D(); if(state.foldCheck) endFoldCheckOverlay(); document.getElementById('fold3dModal').classList.remove('open'); }
 document.getElementById('fold3dClose').onclick = closeFold3D;
 setupOverlayClickClose(document.getElementById('fold3dModal'), closeFold3D);
 document.getElementById('fold3dPlay').onclick = playFold3D;
@@ -8491,7 +8833,7 @@ async function loadSpecificVersion(id, file){
   try{
     const data = await apiFetch('load_version.php?id=' + encodeURIComponent(id) + '&file=' + encodeURIComponent(file), {method:'GET'});
     const proj = data.project || {};
-    state.shapes = proj.shapes || [];
+    state.shapes = proj.shapes || []; migrateLegacyArcs(state.shapes);
     state.page = proj.page || state.page;
     state.refImage = proj.refImage || null;
     restoreLayersFromProject(proj);
@@ -8737,7 +9079,7 @@ async function onGoogleDriveFilePicked(data){
     const name = (file.name || '').toLowerCase();
     if(name.endsWith('.json')){
       const proj = JSON.parse(text);
-      state.shapes = proj.shapes || [];
+      state.shapes = proj.shapes || []; migrateLegacyArcs(state.shapes); migrateLegacyArcs(state.shapes);
       state.page = proj.page || state.page;
       state.refImage = proj.refImage || null;
       restoreLayersFromProject(proj);
@@ -8774,7 +9116,7 @@ function openProjectFilePicker(){
     r.onload = ()=>{
       try{
         const data = JSON.parse(r.result);
-        state.shapes = data.shapes || [];
+        state.shapes = data.shapes || []; migrateLegacyArcs(state.shapes);
         state.page = data.page || state.page;
         state.refImage = data.refImage || null;
         state.projectInfo = data.projectInfo || { boxType:'', material:'', printNotes:'', assemblySteps:[] };
@@ -9608,7 +9950,18 @@ function renderGeometrySection(host, s){
     }
     const linkAllPts = collectConnectionPoints();
     const n = s.points.length;
-    if(n <= 20){
+    if(s.arc){
+      const info = arcInfo(s);
+      const box = document.createElement('div'); box.className='hint';
+      box.textContent = tpl('Arco — raggio {r}, lunghezza {len}. Trascina le estremità per modificarlo: resta un arco e si aggancia col magnete agli altri punti.', {r: info.r ? fmtUnit(info.r) : '—', len: fmtUnit(info.len)});
+      host.appendChild(box);
+      const ends = [[0, translate('Inizio')], [n-1, translate('Fine')]];
+      ends.forEach(([ix, lbl])=>{
+        const b = document.createElement('div'); b.className='ptblock';
+        host.appendChild(b);
+        coordRow(lbl+' X', s.points[ix][0], v=>{ moveConnectedVertex(s, ix, [v, s.points[ix][1]]); }, lbl+' Y', s.points[ix][1], v=>{ moveConnectedVertex(s, ix, [s.points[ix][0], v]); }, b);
+      });
+    } else if(n <= 20){
       s.points.forEach((p, i)=>{
         if(i>0) host.appendChild(document.createElement('hr')).className='sep';
         const block = document.createElement('div'); block.className='ptblock';
@@ -11763,7 +12116,7 @@ function snapshotActiveDocument(){
   doc.projectInfo = state.projectInfo;
 }
 function loadDocumentIntoState(doc){
-  state.shapes = doc.shapes;
+  state.shapes = doc.shapes; migrateLegacyArcs(state.shapes);
   state.page = doc.page;
   state.refImage = doc.refImage;
   state.layers = doc.layers && doc.layers.length ? doc.layers : [{id:uid(), name:translate('Livello ')+'1', visible:true, locked:false}];
