@@ -233,6 +233,10 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   di 6 pixel; tenendo premuto **Alt** lo si sposta liberamente.
 - **Livelli**: si rinominano con il pulsante ✎ accanto al nome, con un doppio
   clic sul nome o dal tasto destro sul livello; Invio conferma, Esc annulla.
+  L'elenco funziona come un accordion: il clic sul titolo di un livello apre
+  l'elenco dei suoi oggetti (e lo rende attivo) chiudendo gli altri; un nuovo
+  clic lo richiude. La freccia ▸/▾ indica lo stato, il numero accanto al nome
+  quanti oggetti contiene. Il livello appena creato è quello aperto.
 - **Magnete sulle linee**: oltre ai vertici, un punto si aggancia al punto
   più vicino di qualsiasi linea (tratti, archi, lati di rettangoli ed
   ellissi). Serve ad esempio per far partire una piega esattamente sul

@@ -272,6 +272,8 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 .layerhead button:hover{color:var(--ink);}
 .layerhead button:disabled{opacity:.25;cursor:default;}
 .layer-shapes{margin:0 0 10px 16px;}
+.layerhead .layer-arrow{ width:12px; color:var(--ink-dim); font-size:11px; flex:none; }
+.layerhead .layer-count{ font-size:10.5px; color:var(--ink-dim); background:rgba(128,128,128,.15); border-radius:8px; padding:0 6px; margin-right:2px; flex:none; }
 .grouphead:first-child{margin-top:0;}
 
 /* status bar */
@@ -643,7 +645,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.19.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.19.1</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2013,6 +2015,9 @@ const I18N = {
     "Doppio clic (o ✎) per rinominare": "Double-click (or ✎) to rename",
     "Rinomina il livello": "Rename the layer",
     "✎ Rinomina livello": "✎ Rename layer",
+    "Chiudi l'elenco degli oggetti": "Close the list of objects",
+    "Apri l'elenco degli oggetti": "Open the list of objects",
+    "{n} oggetti in questo livello": "{n} objects in this layer",
   },
   de: {
     "1 cm": "1 cm",
@@ -2762,6 +2767,9 @@ const I18N = {
     "Doppio clic (o ✎) per rinominare": "Doppelklick (oder ✎) zum Umbenennen",
     "Rinomina il livello": "Ebene umbenennen",
     "✎ Rinomina livello": "✎ Ebene umbenennen",
+    "Chiudi l'elenco degli oggetti": "Objektliste schließen",
+    "Apri l'elenco degli oggetti": "Objektliste öffnen",
+    "{n} oggetti in questo livello": "{n} Objekte in dieser Ebene",
   },
   es: {
     "1 cm": "1 cm",
@@ -3511,6 +3519,9 @@ const I18N = {
     "Doppio clic (o ✎) per rinominare": "Doble clic (o ✎) para renombrar",
     "Rinomina il livello": "Renombrar la capa",
     "✎ Rinomina livello": "✎ Renombrar capa",
+    "Chiudi l'elenco degli oggetti": "Cerrar la lista de objetos",
+    "Apri l'elenco degli oggetti": "Abrir la lista de objetos",
+    "{n} oggetti in questo livello": "{n} objetos en esta capa",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -4260,6 +4271,9 @@ const I18N = {
     "Doppio clic (o ✎) per rinominare": "双击（或 ✎）重命名",
     "Rinomina il livello": "重命名图层",
     "✎ Rinomina livello": "✎ 重命名图层",
+    "Chiudi l'elenco degli oggetti": "收起对象列表",
+    "Apri l'elenco degli oggetti": "展开对象列表",
+    "{n} oggetti in questo livello": "此图层中有 {n} 个对象",
   },
   fr: {
     "1 cm": "1 cm",
@@ -5009,6 +5023,9 @@ const I18N = {
     "Doppio clic (o ✎) per rinominare": "Double-clic (ou ✎) pour renommer",
     "Rinomina il livello": "Renommer le calque",
     "✎ Rinomina livello": "✎ Renommer le calque",
+    "Chiudi l'elenco degli oggetti": "Fermer la liste des objets",
+    "Apri l'elenco degli oggetti": "Ouvrir la liste des objets",
+    "{n} oggetti in questo livello": "{n} objets dans ce calque",
   },
 };
 let currentLang = 'it';
@@ -11686,6 +11703,7 @@ function renderLayersPanelInner(){
     const layer = {id:uid(), name:translate('Livello ')+(state.layers.length+1), visible:true, locked:false};
     state.layers.push(layer);
     state.activeLayerId = layer.id;
+    state.openLayerId = layer.id; // il livello appena creato è quello aperto nell'elenco
     pushHistory(); renderAll();
   };
   host.appendChild(addBtn);
@@ -11748,10 +11766,22 @@ function renderLayersPanelInner(){
     const delBtn = document.createElement('button'); delBtn.textContent='🗑'; delBtn.title='Elimina livello';
     delBtn.onclick = (e)=>{ e.stopPropagation(); deleteLayer(layer.id); };
 
+    if(state.openLayerId===undefined) state.openLayerId = state.activeLayerId; // all'inizio è aperto il livello attivo
+    const isOpen = state.openLayerId===layer.id;
+    const nObj = state.shapes.filter(s=>s.layerId===layer.id).length + (state.refImage && state.refImage.layerId===layer.id ? 1 : 0);
+    const arrow = document.createElement('span'); arrow.className='layer-arrow'; arrow.textContent = isOpen ? '▾' : '▸';
+    arrow.title = isOpen ? 'Chiudi l\'elenco degli oggetti' : 'Apri l\'elenco degli oggetti';
+    const count = document.createElement('span'); count.className='layer-count'; count.textContent = nObj; count.title = tpl('{n} oggetti in questo livello', {n:nObj});
+    head.appendChild(arrow);
     head.appendChild(drag); head.appendChild(eyeBtn); head.appendChild(lockBtn);
-    head.appendChild(nameEl); head.appendChild(renBtn);
+    head.appendChild(nameEl); head.appendChild(count); head.appendChild(renBtn);
     head.appendChild(upBtn); head.appendChild(downBtn); head.appendChild(delBtn);
-    head.onclick = ()=>{ state.activeLayerId = layer.id; renderLayersPanel(); };
+    // accordion: il clic sul titolo apre questo livello e chiude gli altri; sul livello già aperto lo richiude
+    head.onclick = ()=>{
+      state.activeLayerId = layer.id;
+      state.openLayerId = (state.openLayerId===layer.id) ? null : layer.id;
+      renderLayersPanel();
+    };
 
     head.addEventListener('dragstart', (e)=>{ e.dataTransfer.setData('text/plain', layer.id); e.dataTransfer.effectAllowed='move'; head.style.opacity='0.4'; });
     head.addEventListener('dragend', ()=> head.style.opacity='');
@@ -11772,6 +11802,7 @@ function renderLayersPanelInner(){
     host.appendChild(head);
 
     const shapesWrap = document.createElement('div'); shapesWrap.className='layer-shapes';
+    if(!isOpen) shapesWrap.style.display = 'none';
     let hasAny = false;
     if(state.refImage && state.refImage.layerId===layer.id){
       hasAny = true;
