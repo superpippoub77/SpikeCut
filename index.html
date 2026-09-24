@@ -549,6 +549,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
     <button class="btn primary" style="width:auto;margin:0;padding:7px 14px;" id="btnPrintMenu">Stampa ▾</button>
     <div class="dropdown-menu" id="printMenu">
       <button data-action="export-svg">Esporta SVG (taglio/stampa)</button>
+      <button data-action="export-silhouette">✂ Esporta per Silhouette Cameo (DXF)…</button>
       <button data-action="export-pdf">Esporta PDF</button>
       <button data-action="export-pdf-tiled">Esporta PDF multi-pagina (disegno grande)…</button>
       <button data-action="print-proof">Stampa di prova (A3/A4/A5)…</button>
@@ -645,7 +646,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.19.1</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.20.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -768,6 +769,35 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 
 <div id="modalDock"></div>
 <div id="foldCheckBanner" style="display:none;"></div>
+
+<div id="silModal" class="modal-overlay">
+  <div class="modal-box" style="width:500px;">
+    <div class="modal-head">
+      <h3>Esporta per Silhouette Cameo</h3>
+      <button class="iconbtn" id="silModalClose" title="Chiudi">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="hint" style="margin-bottom:10px;">Crea file DXF in millimetri reali: Silhouette Studio li apre anche nell'edizione gratuita (Basic) con le linee già pronte per il taglio, mentre gli SVG richiedono la Designer Edition. Si esportano solo le linee tecniche dei livelli visibili; la grafica non è inclusa.</div>
+      <div class="field"><label>Linee di taglio</label>
+        <div class="hint">Taglio e Fustella speciale, in un file "_taglio.dxf".</div></div>
+      <div class="field"><label>Pieghe</label>
+        <select id="silFolds">
+          <option value="perforate">Tratteggiate nel file del taglio (taglio a tratti: pronte da tagliare, si piegano a mano)</option>
+          <option value="same">Nel file del taglio, come linee continue (in Studio le selezioni e le assegni alla cordonatura)</option>
+          <option value="separate">In un file separato "_pieghe.dxf" (da passare in un secondo momento)</option>
+          <option value="none">Non esportarle</option>
+        </select></div>
+      <div id="silPerfRow" class="field" style="display:none;"><label>Tratteggio delle pieghe</label>
+        <div style="display:flex;gap:8px;align-items:center;font-size:12px;">
+          <span>taglio</span><input type="number" id="silCut" value="1.5" step="0.5" min="0.2" style="width:70px;"><span>mm</span>
+          <span style="margin-left:8px;">ponte</span><input type="number" id="silGap" value="1.5" step="0.5" min="0.2" style="width:70px;"><span>mm</span>
+        </div></div>
+      <div id="silSummary" class="hint" style="margin-top:10px;padding:8px;border-radius:6px;background:rgba(201,151,63,0.12);font-weight:600;"></div>
+      <div class="hint" style="margin-top:8px;">In Silhouette Studio: File → Apri, scegli il DXF, seleziona tutto e verifica che nel pannello Invia le linee siano impostate su "Taglio". Controlla le misure con il righello prima di tagliare.</div>
+      <button class="btn primary" id="silExport" style="width:100%;margin-top:12px;">Esporta</button>
+    </div>
+  </div>
+</div>
 
 <div id="seqModal" class="modal-overlay">
   <div class="modal-box" style="width:540px;max-width:96vw;">
@@ -2018,6 +2048,30 @@ const I18N = {
     "Chiudi l'elenco degli oggetti": "Close the list of objects",
     "Apri l'elenco degli oggetti": "Open the list of objects",
     "{n} oggetti in questo livello": "{n} objects in this layer",
+    "✂ Esporta per Silhouette Cameo (DXF)…": "✂ Export for Silhouette Cameo (DXF)…",
+    "Esporta per Silhouette Cameo": "Export for Silhouette Cameo",
+    "Crea file DXF in millimetri reali: Silhouette Studio li apre anche nell'edizione gratuita (Basic) con le linee già pronte per il taglio, mentre gli SVG richiedono la Designer Edition. Si esportano solo le linee tecniche dei livelli visibili; la grafica non è inclusa.": "Creates DXF files in real millimeters: Silhouette Studio opens them even in the free edition (Basic) with lines ready to cut, whereas SVG files require the Designer Edition. Only the technical lines of the visible layers are exported; the artwork is not included.",
+    "Linee di taglio": "Cut lines",
+    "Taglio e Fustella speciale, in un file \"_taglio.dxf\".": "Cut and Special die, in a \"_taglio.dxf\" file.",
+    "Pieghe": "Folds",
+    "Tratteggiate nel file del taglio (taglio a tratti: pronte da tagliare, si piegano a mano)": "Dashed in the cut file (cut in segments: ready to cut, folded by hand)",
+    "Nel file del taglio, come linee continue (in Studio le selezioni e le assegni alla cordonatura)": "In the cut file, as continuous lines (in Studio you select them and assign them to scoring)",
+    "In un file separato \"_pieghe.dxf\" (da passare in un secondo momento)": "In a separate \"_pieghe.dxf\" file (to run in a second pass)",
+    "Non esportarle": "Don’t export them",
+    "Tratteggio delle pieghe": "Fold dashes",
+    "taglio": "cut",
+    "ponte": "bridge",
+    "In Silhouette Studio: File → Apri, scegli il DXF, seleziona tutto e verifica che nel pannello Invia le linee siano impostate su \"Taglio\". Controlla le misure con il righello prima di tagliare.": "In Silhouette Studio: File → Open, choose the DXF, select all and check that the lines are set to \"Cut\" in the Send panel. Check the measurements with the ruler before cutting.",
+    "Esporta": "Export",
+    "File \"_taglio.dxf\": {n} linee di taglio": "\"_taglio.dxf\" file: {n} cut lines",
+    "+ {n} pieghe tratteggiate ({d} tratti)": "+ {n} dashed folds ({d} dashes)",
+    "+ {n} pieghe come linee continue (livello PIEGA, colore blu): in Silhouette Studio selezionale e assegnale alla cordonatura o a una pressione ridotta, altrimenti verrebbero tagliate.": "+ {n} folds as continuous lines (PIEGA layer, blue): in Silhouette Studio select them and assign them to scoring or reduced pressure, otherwise they would be cut.",
+    "File \"_pieghe.dxf\": {n} pieghe. Studio apre ogni file per conto suo: per allinearle al taglio copia le pieghe nel documento del taglio e posizionale con le coordinate (il file delle pieghe è più piccolo, quindi non allinearlo per i bordi).": "\"_pieghe.dxf\" file: {n} folds. Studio opens each file on its own: to align them with the cut, copy the folds into the cut document and position them by coordinates (the folds file is smaller, so don’t align it by its edges).",
+    "{n} elementi con ruolo Taglio o Piega non sono linee o forme geometriche e non vengono esportati.": "{n} items with the Cut or Fold role are not lines or geometric shapes and are not exported.",
+    "Attenzione: non ci sono linee di taglio visibili.": "Warning: there are no visible cut lines.",
+    "Niente da esportare: non ci sono linee di taglio o piega visibili.": "Nothing to export: there are no visible cut or fold lines.",
+    "Esportati due file DXF: taglio e pieghe.": "Two DXF files exported: cut and folds.",
+    "File DXF esportato.": "DXF file exported.",
   },
   de: {
     "1 cm": "1 cm",
@@ -2770,6 +2824,30 @@ const I18N = {
     "Chiudi l'elenco degli oggetti": "Objektliste schließen",
     "Apri l'elenco degli oggetti": "Objektliste öffnen",
     "{n} oggetti in questo livello": "{n} Objekte in dieser Ebene",
+    "✂ Esporta per Silhouette Cameo (DXF)…": "✂ Für Silhouette Cameo exportieren (DXF)…",
+    "Esporta per Silhouette Cameo": "Für Silhouette Cameo exportieren",
+    "Crea file DXF in millimetri reali: Silhouette Studio li apre anche nell'edizione gratuita (Basic) con le linee già pronte per il taglio, mentre gli SVG richiedono la Designer Edition. Si esportano solo le linee tecniche dei livelli visibili; la grafica non è inclusa.": "Erstellt DXF-Dateien in echten Millimetern: Silhouette Studio öffnet sie auch in der kostenlosen Edition (Basic) mit schnittfertigen Linien, während SVG-Dateien die Designer Edition erfordern. Es werden nur die technischen Linien der sichtbaren Ebenen exportiert; die Grafik ist nicht enthalten.",
+    "Linee di taglio": "Schnittlinien",
+    "Taglio e Fustella speciale, in un file \"_taglio.dxf\".": "Schnitt und Sonderstanzung, in einer Datei \"_taglio.dxf\".",
+    "Pieghe": "Falze",
+    "Tratteggiate nel file del taglio (taglio a tratti: pronte da tagliare, si piegano a mano)": "Gestrichelt in der Schnittdatei (abschnittweise geschnitten: schnittfertig, von Hand gefaltet)",
+    "Nel file del taglio, come linee continue (in Studio le selezioni e le assegni alla cordonatura)": "In der Schnittdatei als durchgehende Linien (in Studio auswählen und dem Rillen zuweisen)",
+    "In un file separato \"_pieghe.dxf\" (da passare in un secondo momento)": "In einer separaten Datei \"_pieghe.dxf\" (für einen zweiten Durchgang)",
+    "Non esportarle": "Nicht exportieren",
+    "Tratteggio delle pieghe": "Strichelung der Falze",
+    "taglio": "Schnitt",
+    "ponte": "Steg",
+    "In Silhouette Studio: File → Apri, scegli il DXF, seleziona tutto e verifica che nel pannello Invia le linee siano impostate su \"Taglio\". Controlla le misure con il righello prima di tagliare.": "In Silhouette Studio: Datei → Öffnen, DXF wählen, alles auswählen und prüfen, dass die Linien im Senden-Bereich auf „Schneiden“ stehen. Vor dem Schneiden die Maße mit dem Lineal prüfen.",
+    "Esporta": "Exportieren",
+    "File \"_taglio.dxf\": {n} linee di taglio": "Datei \"_taglio.dxf\": {n} Schnittlinien",
+    "+ {n} pieghe tratteggiate ({d} tratti)": "+ {n} gestrichelte Falze ({d} Striche)",
+    "+ {n} pieghe come linee continue (livello PIEGA, colore blu): in Silhouette Studio selezionale e assegnale alla cordonatura o a una pressione ridotta, altrimenti verrebbero tagliate.": "+ {n} Falze als durchgehende Linien (Ebene PIEGA, blau): In Silhouette Studio auswählen und dem Rillen oder reduziertem Druck zuweisen, sonst würden sie geschnitten.",
+    "File \"_pieghe.dxf\": {n} pieghe. Studio apre ogni file per conto suo: per allinearle al taglio copia le pieghe nel documento del taglio e posizionale con le coordinate (il file delle pieghe è più piccolo, quindi non allinearlo per i bordi).": "Datei \"_pieghe.dxf\": {n} Falze. Studio öffnet jede Datei einzeln: Um sie am Schnitt auszurichten, kopiere die Falze ins Schnittdokument und positioniere sie über die Koordinaten (die Falzdatei ist kleiner, also nicht an den Rändern ausrichten).",
+    "{n} elementi con ruolo Taglio o Piega non sono linee o forme geometriche e non vengono esportati.": "{n} Elemente mit der Rolle Schnitt oder Falz sind keine Linien oder geometrischen Formen und werden nicht exportiert.",
+    "Attenzione: non ci sono linee di taglio visibili.": "Achtung: Es gibt keine sichtbaren Schnittlinien.",
+    "Niente da esportare: non ci sono linee di taglio o piega visibili.": "Nichts zu exportieren: Es gibt keine sichtbaren Schnitt- oder Falzlinien.",
+    "Esportati due file DXF: taglio e pieghe.": "Zwei DXF-Dateien exportiert: Schnitt und Falze.",
+    "File DXF esportato.": "DXF-Datei exportiert.",
   },
   es: {
     "1 cm": "1 cm",
@@ -3522,6 +3600,30 @@ const I18N = {
     "Chiudi l'elenco degli oggetti": "Cerrar la lista de objetos",
     "Apri l'elenco degli oggetti": "Abrir la lista de objetos",
     "{n} oggetti in questo livello": "{n} objetos en esta capa",
+    "✂ Esporta per Silhouette Cameo (DXF)…": "✂ Exportar para Silhouette Cameo (DXF)…",
+    "Esporta per Silhouette Cameo": "Exportar para Silhouette Cameo",
+    "Crea file DXF in millimetri reali: Silhouette Studio li apre anche nell'edizione gratuita (Basic) con le linee già pronte per il taglio, mentre gli SVG richiedono la Designer Edition. Si esportano solo le linee tecniche dei livelli visibili; la grafica non è inclusa.": "Crea archivos DXF en milímetros reales: Silhouette Studio los abre incluso en la edición gratuita (Basic) con las líneas listas para cortar, mientras que los SVG requieren la Designer Edition. Solo se exportan las líneas técnicas de las capas visibles; la gráfica no se incluye.",
+    "Linee di taglio": "Líneas de corte",
+    "Taglio e Fustella speciale, in un file \"_taglio.dxf\".": "Corte y Troquel especial, en un archivo \"_taglio.dxf\".",
+    "Pieghe": "Pliegues",
+    "Tratteggiate nel file del taglio (taglio a tratti: pronte da tagliare, si piegano a mano)": "Discontinuas en el archivo de corte (corte a tramos: listas para cortar, se pliegan a mano)",
+    "Nel file del taglio, come linee continue (in Studio le selezioni e le assegni alla cordonatura)": "En el archivo de corte, como líneas continuas (en Studio las seleccionas y las asignas al hendido)",
+    "In un file separato \"_pieghe.dxf\" (da passare in un secondo momento)": "En un archivo separado \"_pieghe.dxf\" (para pasar en un segundo momento)",
+    "Non esportarle": "No exportarlas",
+    "Tratteggio delle pieghe": "Discontinuo de los pliegues",
+    "taglio": "corte",
+    "ponte": "puente",
+    "In Silhouette Studio: File → Apri, scegli il DXF, seleziona tutto e verifica che nel pannello Invia le linee siano impostate su \"Taglio\". Controlla le misure con il righello prima di tagliare.": "En Silhouette Studio: Archivo → Abrir, elige el DXF, selecciona todo y comprueba que en el panel Enviar las líneas estén en \"Cortar\". Comprueba las medidas con la regla antes de cortar.",
+    "Esporta": "Exportar",
+    "File \"_taglio.dxf\": {n} linee di taglio": "Archivo \"_taglio.dxf\": {n} líneas de corte",
+    "+ {n} pieghe tratteggiate ({d} tratti)": "+ {n} pliegues discontinuos ({d} tramos)",
+    "+ {n} pieghe come linee continue (livello PIEGA, colore blu): in Silhouette Studio selezionale e assegnale alla cordonatura o a una pressione ridotta, altrimenti verrebbero tagliate.": "+ {n} pliegues como líneas continuas (capa PIEGA, azul): en Silhouette Studio selecciónalos y asígnalos al hendido o a una presión reducida, si no se cortarían.",
+    "File \"_pieghe.dxf\": {n} pieghe. Studio apre ogni file per conto suo: per allinearle al taglio copia le pieghe nel documento del taglio e posizionale con le coordinate (il file delle pieghe è più piccolo, quindi non allinearlo per i bordi).": "Archivo \"_pieghe.dxf\": {n} pliegues. Studio abre cada archivo por separado: para alinearlos con el corte, copia los pliegues en el documento de corte y colócalos con las coordenadas (el archivo de pliegues es más pequeño, así que no lo alinees por los bordes).",
+    "{n} elementi con ruolo Taglio o Piega non sono linee o forme geometriche e non vengono esportati.": "{n} elementos con rol Corte o Pliegue no son líneas ni formas geométricas y no se exportan.",
+    "Attenzione: non ci sono linee di taglio visibili.": "Atención: no hay líneas de corte visibles.",
+    "Niente da esportare: non ci sono linee di taglio o piega visibili.": "Nada que exportar: no hay líneas de corte ni pliegue visibles.",
+    "Esportati due file DXF: taglio e pieghe.": "Exportados dos archivos DXF: corte y pliegues.",
+    "File DXF esportato.": "Archivo DXF exportado.",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -4274,6 +4376,30 @@ const I18N = {
     "Chiudi l'elenco degli oggetti": "收起对象列表",
     "Apri l'elenco degli oggetti": "展开对象列表",
     "{n} oggetti in questo livello": "此图层中有 {n} 个对象",
+    "✂ Esporta per Silhouette Cameo (DXF)…": "✂ 导出到 Silhouette Cameo（DXF）…",
+    "Esporta per Silhouette Cameo": "导出到 Silhouette Cameo",
+    "Crea file DXF in millimetri reali: Silhouette Studio li apre anche nell'edizione gratuita (Basic) con le linee già pronte per il taglio, mentre gli SVG richiedono la Designer Edition. Si esportano solo le linee tecniche dei livelli visibili; la grafica non è inclusa.": "创建以真实毫米为单位的 DXF 文件：Silhouette Studio 即使在免费版（Basic）中也能打开，线条可直接切割；而 SVG 需要 Designer Edition。只导出可见图层的技术线条，不包含图案。",
+    "Linee di taglio": "切割线",
+    "Taglio e Fustella speciale, in un file \"_taglio.dxf\".": "切割与特殊模切，保存在\"_taglio.dxf\"文件中。",
+    "Pieghe": "折线",
+    "Tratteggiate nel file del taglio (taglio a tratti: pronte da tagliare, si piegano a mano)": "在切割文件中以虚线切割（分段切割：可直接切割，手工折叠）",
+    "Nel file del taglio, come linee continue (in Studio le selezioni e le assegni alla cordonatura)": "在切割文件中作为连续线（在 Studio 中选中并设为压痕）",
+    "In un file separato \"_pieghe.dxf\" (da passare in un secondo momento)": "在单独的\"_pieghe.dxf\"文件中（第二遍处理）",
+    "Non esportarle": "不导出",
+    "Tratteggio delle pieghe": "折线虚线设置",
+    "taglio": "切割",
+    "ponte": "连接",
+    "In Silhouette Studio: File → Apri, scegli il DXF, seleziona tutto e verifica che nel pannello Invia le linee siano impostate su \"Taglio\". Controlla le misure con il righello prima di tagliare.": "在 Silhouette Studio 中：文件 → 打开，选择 DXF，全选并确认\"发送\"面板中的线条设为\"切割\"。切割前用标尺检查尺寸。",
+    "Esporta": "导出",
+    "File \"_taglio.dxf\": {n} linee di taglio": "\"_taglio.dxf\"文件：{n} 条切割线",
+    "+ {n} pieghe tratteggiate ({d} tratti)": "+ {n} 条虚线折线（{d} 段）",
+    "+ {n} pieghe come linee continue (livello PIEGA, colore blu): in Silhouette Studio selezionale e assegnale alla cordonatura o a una pressione ridotta, altrimenti verrebbero tagliate.": "+ {n} 条连续折线（PIEGA 图层，蓝色）：在 Silhouette Studio 中选中并设为压痕或降低压力，否则会被切断。",
+    "File \"_pieghe.dxf\": {n} pieghe. Studio apre ogni file per conto suo: per allinearle al taglio copia le pieghe nel documento del taglio e posizionale con le coordinate (il file delle pieghe è più piccolo, quindi non allinearlo per i bordi).": "\"_pieghe.dxf\"文件：{n} 条折线。Studio 会分别打开每个文件：要与切割线对齐，请将折线复制到切割文档中并按坐标定位（折线文件更小，不要按边缘对齐）。",
+    "{n} elementi con ruolo Taglio o Piega non sono linee o forme geometriche e non vengono esportati.": "{n} 个切割或折线角色的元素不是线条或几何形状，不会被导出。",
+    "Attenzione: non ci sono linee di taglio visibili.": "注意：没有可见的切割线。",
+    "Niente da esportare: non ci sono linee di taglio o piega visibili.": "没有可导出的内容：没有可见的切割线或折线。",
+    "Esportati due file DXF: taglio e pieghe.": "已导出两个 DXF 文件：切割线和折线。",
+    "File DXF esportato.": "DXF 文件已导出。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -5026,6 +5152,30 @@ const I18N = {
     "Chiudi l'elenco degli oggetti": "Fermer la liste des objets",
     "Apri l'elenco degli oggetti": "Ouvrir la liste des objets",
     "{n} oggetti in questo livello": "{n} objets dans ce calque",
+    "✂ Esporta per Silhouette Cameo (DXF)…": "✂ Exporter pour Silhouette Cameo (DXF)…",
+    "Esporta per Silhouette Cameo": "Exporter pour Silhouette Cameo",
+    "Crea file DXF in millimetri reali: Silhouette Studio li apre anche nell'edizione gratuita (Basic) con le linee già pronte per il taglio, mentre gli SVG richiedono la Designer Edition. Si esportano solo le linee tecniche dei livelli visibili; la grafica non è inclusa.": "Crée des fichiers DXF en millimètres réels : Silhouette Studio les ouvre même dans l’édition gratuite (Basic) avec des lignes prêtes à découper, alors que les SVG nécessitent la Designer Edition. Seules les lignes techniques des calques visibles sont exportées ; le graphisme n’est pas inclus.",
+    "Linee di taglio": "Lignes de découpe",
+    "Taglio e Fustella speciale, in un file \"_taglio.dxf\".": "Découpe et Forme spéciale, dans un fichier « _taglio.dxf ».",
+    "Pieghe": "Plis",
+    "Tratteggiate nel file del taglio (taglio a tratti: pronte da tagliare, si piegano a mano)": "En pointillé dans le fichier de découpe (coupe par segments : prêts à découper, pliés à la main)",
+    "Nel file del taglio, come linee continue (in Studio le selezioni e le assegni alla cordonatura)": "Dans le fichier de découpe, en lignes continues (dans Studio, sélectionne-les et assigne-les au rainage)",
+    "In un file separato \"_pieghe.dxf\" (da passare in un secondo momento)": "Dans un fichier séparé « _pieghe.dxf » (à passer dans un second temps)",
+    "Non esportarle": "Ne pas les exporter",
+    "Tratteggio delle pieghe": "Pointillé des plis",
+    "taglio": "coupe",
+    "ponte": "pont",
+    "In Silhouette Studio: File → Apri, scegli il DXF, seleziona tutto e verifica che nel pannello Invia le linee siano impostate su \"Taglio\". Controlla le misure con il righello prima di tagliare.": "Dans Silhouette Studio : Fichier → Ouvrir, choisis le DXF, sélectionne tout et vérifie que dans le panneau Envoyer les lignes sont réglées sur « Découper ». Vérifie les mesures avec la règle avant de découper.",
+    "Esporta": "Exporter",
+    "File \"_taglio.dxf\": {n} linee di taglio": "Fichier « _taglio.dxf » : {n} lignes de découpe",
+    "+ {n} pieghe tratteggiate ({d} tratti)": "+ {n} plis en pointillé ({d} tirets)",
+    "+ {n} pieghe come linee continue (livello PIEGA, colore blu): in Silhouette Studio selezionale e assegnale alla cordonatura o a una pressione ridotta, altrimenti verrebbero tagliate.": "+ {n} plis en lignes continues (calque PIEGA, bleu) : dans Silhouette Studio, sélectionne-les et assigne-les au rainage ou à une pression réduite, sinon ils seraient découpés.",
+    "File \"_pieghe.dxf\": {n} pieghe. Studio apre ogni file per conto suo: per allinearle al taglio copia le pieghe nel documento del taglio e posizionale con le coordinate (il file delle pieghe è più piccolo, quindi non allinearlo per i bordi).": "Fichier « _pieghe.dxf » : {n} plis. Studio ouvre chaque fichier séparément : pour les aligner sur la découpe, copie les plis dans le document de découpe et positionne-les par coordonnées (le fichier des plis est plus petit, ne l’aligne donc pas par les bords).",
+    "{n} elementi con ruolo Taglio o Piega non sono linee o forme geometriche e non vengono esportati.": "{n} éléments au rôle Découpe ou Pli ne sont pas des lignes ou des formes géométriques et ne sont pas exportés.",
+    "Attenzione: non ci sono linee di taglio visibili.": "Attention : il n’y a aucune ligne de découpe visible.",
+    "Niente da esportare: non ci sono linee di taglio o piega visibili.": "Rien à exporter : il n’y a aucune ligne de découpe ou de pli visible.",
+    "Esportati due file DXF: taglio e pieghe.": "Deux fichiers DXF exportés : découpe et plis.",
+    "File DXF esportato.": "Fichier DXF exporté.",
   },
 };
 let currentLang = 'it';
@@ -7647,7 +7797,7 @@ function closeJoinDialog(){
    ridurre nella barra in basso, modificare il disegno e poi riprenderle
    esattamente come le si era lasciate.
 ============================================================ */
-const MINIMIZABLE_MODALS = ['seqModal','symModal','joinModal','fold3dModal','boxGenModal','historyModal','versionsModal','libraryModal','saveLibraryModal',
+const MINIMIZABLE_MODALS = ['silModal','seqModal','symModal','joinModal','fold3dModal','boxGenModal','historyModal','versionsModal','libraryModal','saveLibraryModal',
   'pageSizeModal','fontModal','scaleModal','tilePrintModal','printProofModal','cutPreviewModal','weldModal','helpModal'];
 const MODAL_HOOKS = {
   fold3dModal: { onMinimize: ()=>{ stopFold3D(); if(!state.foldCheck) runFoldCheckOverlay(true); }, onRestore: ()=>{ if(state.foldCheck) endFoldCheckOverlay(); refreshFold3D(); } },
@@ -8359,6 +8509,110 @@ function renderSmartGuides(){
     layerOverlay.appendChild(el('line', Object.assign(attrs, {stroke:col, 'stroke-width':1.2, 'stroke-dasharray': g.center ? '5,3' : '', 'pointer-events':'none'})));
     [[attrs.x1,attrs.y1],[attrs.x2,attrs.y2]].forEach(([x,y])=> layerOverlay.appendChild(el('path', {d:`M ${x-3} ${y-3} L ${x+3} ${y+3} M ${x+3} ${y-3} L ${x-3} ${y+3}`, stroke:col, 'stroke-width':1.2, 'pointer-events':'none'})));
   });
+}
+
+
+/* ============================================================
+   ESPORTAZIONE PER SILHOUETTE CAMEO — DXF (R12) in millimetri,
+   che Silhouette Studio apre anche nell'edizione gratuita.
+============================================================ */
+// forma → spezzate in mm ({pts, closed}); curve e cerchi approssimati con segmenti
+function shapeToPolylines(s){
+  if(s.points && s.points.length>=2){
+    const pts = (s.smooth && s.smooth.some(v=>v>0)) ? flattenPathD(buildSmoothPathD(s.points, !!s.closed, s.smooth, 1)) : s.points.map(p=>[p[0],p[1]]);
+    return [{pts, closed: !!s.closed}];
+  }
+  if(s.type==='rect' || s.type==='ellipse'){ const r = shapeToRing(s); if(r) return [{pts: r.slice(0,-1), closed:true}]; }
+  return [];
+}
+// piega tratteggiata: tratti di taglio lunghi "cut" separati da ponti lunghi "gap", lungo tutta la linea
+function perforatePolyline(pl, cut, gap){
+  const pts = pl.closed ? pl.pts.concat([pl.pts[0]]) : pl.pts;
+  const out = []; let cur = null, phase = 0, onCut = true;
+  for(let i=0;i<pts.length-1;i++){
+    const a = pts[i], b = pts[i+1], L = dist(a,b); let t = 0;
+    while(t < L - 1e-9){
+      const need = (onCut ? cut : gap) - phase, step = Math.min(need, L - t);
+      const P = [a[0]+(b[0]-a[0])*t/L, a[1]+(b[1]-a[1])*t/L], Q = [a[0]+(b[0]-a[0])*(t+step)/L, a[1]+(b[1]-a[1])*(t+step)/L];
+      if(onCut){ if(!cur){ cur = [P]; } cur.push(Q); }
+      t += step; phase += step;
+      if(phase >= (onCut ? cut : gap) - 1e-9){ if(onCut && cur){ out.push({pts:cur, closed:false}); cur = null; } onCut = !onCut; phase = 0; }
+    }
+  }
+  if(cur && cur.length>1) out.push({pts:cur, closed:false});
+  return out;
+}
+function buildDXF(polys){
+  const H = state.page.h, L = [];
+  const g = (code, val)=>{ L.push(String(code)); L.push(String(val)); };
+  const f = v=> (Math.round(v*10000)/10000).toString();
+  const layers = [...new Map(polys.map(p=>[p.layer, p.color])).entries()];
+  g(0,'SECTION'); g(2,'HEADER');
+  g(9,'$ACADVER'); g(1,'AC1009');
+  g(9,'$INSUNITS'); g(70,4);       // millimetri
+  g(9,'$MEASUREMENT'); g(70,1);    // sistema metrico
+  g(0,'ENDSEC');
+  g(0,'SECTION'); g(2,'TABLES');
+  g(0,'TABLE'); g(2,'LTYPE'); g(70,1); g(0,'LTYPE'); g(2,'CONTINUOUS'); g(70,0); g(3,'Solid line'); g(72,65); g(73,0); g(40,0.0); g(0,'ENDTAB');
+  g(0,'TABLE'); g(2,'LAYER'); g(70, layers.length);
+  layers.forEach(([name,color])=>{ g(0,'LAYER'); g(2,name); g(70,0); g(62,color); g(6,'CONTINUOUS'); });
+  g(0,'ENDTAB'); g(0,'ENDSEC');
+  g(0,'SECTION'); g(2,'ENTITIES');
+  polys.forEach(pl=>{
+    g(0,'POLYLINE'); g(8,pl.layer); g(62,pl.color); g(66,1); g(10,'0.0'); g(20,'0.0'); g(30,'0.0'); g(70, pl.closed ? 1 : 0);
+    pl.pts.forEach(q=>{ g(0,'VERTEX'); g(8,pl.layer); g(10,f(q[0])); g(20,f(H - q[1])); g(30,'0.0'); }); // DXF ha l'asse Y verso l'alto
+    g(0,'SEQEND'); g(8,pl.layer);
+  });
+  g(0,'ENDSEC'); g(0,'EOF');
+  return L.join('\r\n') + '\r\n';
+}
+function silhouettePlan(){
+  const mode = document.getElementById('silFolds').value;
+  const cut = Math.max(0.2, parseFloat(document.getElementById('silCut').value)||1.5);
+  const gap = Math.max(0.2, parseFloat(document.getElementById('silGap').value)||1.5);
+  const vis = state.shapes.filter(s=> isShapeEffVisible(s) && s.style);
+  const cutPolys = [], foldPolys = [];
+  let skipped = 0;
+  vis.forEach(s=>{
+    const role = s.style.role;
+    if(role!=='cut' && role!=='diecut' && role!=='fold') return;
+    const pls = shapeToPolylines(s);
+    if(!pls.length){ skipped++; return; }
+    if(role==='fold'){
+      if(mode==='separate') pls.forEach(pl=> foldPolys.push(Object.assign(pl, {layer:'PIEGA', color:5})));
+      else if(mode==='same') pls.forEach(pl=> cutPolys.push(Object.assign(pl, {layer:'PIEGA', color:5})));
+      else if(mode==='perforate') pls.forEach(pl=> perforatePolyline(pl, cut, gap).forEach(d=> cutPolys.push(Object.assign(d, {layer:'PIEGA_TRATTEGGIATA', color:5}))));
+    } else pls.forEach(pl=> cutPolys.push(Object.assign(pl, {layer: role==='diecut' ? 'FUSTELLA_SPECIALE' : 'TAGLIO', color: role==='diecut' ? 3 : 1})));
+  });
+  return {mode, cutPolys, foldPolys, skipped, nCut: vis.filter(s=>s.style.role==='cut'||s.style.role==='diecut').length, nFold: vis.filter(s=>s.style.role==='fold').length};
+}
+function silRefresh(){
+  document.getElementById('silPerfRow').style.display = document.getElementById('silFolds').value==='perforate' ? '' : 'none';
+  const pl = silhouettePlan();
+  let t = tpl('File "_taglio.dxf": {n} linee di taglio', {n:pl.nCut});
+  if(pl.mode==='perforate') t += ' ' + tpl('+ {n} pieghe tratteggiate ({d} tratti)', {n:pl.nFold, d:pl.cutPolys.filter(x=>x.layer==='PIEGA_TRATTEGGIATA').length});
+  t += '.';
+  if(pl.mode==='same') t += ' ' + tpl('+ {n} pieghe come linee continue (livello PIEGA, colore blu): in Silhouette Studio selezionale e assegnale alla cordonatura o a una pressione ridotta, altrimenti verrebbero tagliate.', {n:pl.nFold});
+  if(pl.mode==='separate') t += ' ' + tpl('File "_pieghe.dxf": {n} pieghe. Studio apre ogni file per conto suo: per allinearle al taglio copia le pieghe nel documento del taglio e posizionale con le coordinate (il file delle pieghe è più piccolo, quindi non allinearlo per i bordi).', {n:pl.nFold});
+  if(pl.skipped) t += ' ' + tpl('{n} elementi con ruolo Taglio o Piega non sono linee o forme geometriche e non vengono esportati.', {n:pl.skipped});
+  if(!pl.nCut) t += ' ' + translate('Attenzione: non ci sono linee di taglio visibili.');
+  document.getElementById('silSummary').textContent = t;
+}
+function openSilhouetteExport(){ openModal('silModal'); silRefresh(); }
+function downloadText(text, name, mime){
+  const blob = new Blob([text], {type: mime});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 2000);
+}
+function doSilhouetteExport(){
+  const pl = silhouettePlan();
+  if(!pl.cutPolys.length && !pl.foldPolys.length){ showToast('Niente da esportare: non ci sono linee di taglio o piega visibili.', true); return; }
+  const base = (document.getElementById('filename').value || 'disegno').replace(/[\\/:*?"<>|]+/g,'_');
+  if(pl.cutPolys.length) downloadText(buildDXF(pl.cutPolys), base + '_taglio.dxf', 'application/dxf');
+  if(pl.mode==='separate' && pl.foldPolys.length) setTimeout(()=> downloadText(buildDXF(pl.foldPolys), base + '_pieghe.dxf', 'application/dxf'), 400);
+  document.getElementById('silModal').classList.remove('open');
+  showToast(pl.mode==='separate' && pl.foldPolys.length ? translate('Esportati due file DXF: taglio e pieghe.') : translate('File DXF esportato.'), false);
 }
 
 /* ============================================================
@@ -9716,6 +9970,7 @@ document.addEventListener('click', closeAllMenus);
 function handleMenuAction(e){
   const action = e.target.dataset.action; if(!action) return;
   if(action==='export-svg') exportSVG();
+  else if(action==='export-silhouette') openSilhouetteExport();
   else if(action==='export-pdf') exportPDF();
   else if(action==='export-pdf-tiled') openTilePrintModal();
   else if(action==='print-proof') openPrintProofModal();
@@ -10368,6 +10623,10 @@ document.getElementById('symDir').onchange = ()=>{ symFillKeep(); symCenterOnSco
 ['symPos','symKeep','symMode','symTol'].forEach(id=>{ const e=document.getElementById(id); e.oninput = symRefresh; e.onchange = symRefresh; });
 document.getElementById('symCenter').onclick = ()=>{ symCenterOnScope(); symRefresh(); };
 document.getElementById('symApply').onclick = applySymmetry;
+document.getElementById('silModalClose').onclick = ()=> document.getElementById('silModal').classList.remove('open');
+setupOverlayClickClose(document.getElementById('silModal'), ()=> document.getElementById('silModal').classList.remove('open'));
+['silFolds','silCut','silGap'].forEach(id=>{ const e=document.getElementById(id); e.onchange = silRefresh; e.oninput = silRefresh; });
+document.getElementById('silExport').onclick = doSilhouetteExport;
 function closeFold3D(){ stopFold3D(); if(state.foldCheck) endFoldCheckOverlay(); document.getElementById('fold3dModal').classList.remove('open'); }
 document.getElementById('fold3dClose').onclick = closeFold3D;
 setupOverlayClickClose(document.getElementById('fold3dModal'), closeFold3D);

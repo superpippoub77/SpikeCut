@@ -71,6 +71,25 @@ conviene verificarlo) è mostrato sul disegno con la zona che verrà corretta;
 un riepilogo dice in anticipo cosa cambierà. Dopo l'applicazione si
 controlla il risultato (cerchi verdi) e si conferma o annulla.
 
+### Esportazione per Silhouette Cameo (menu Stampa → "✂ Esporta per Silhouette Cameo (DXF)…")
+Crea file DXF (formato R12, il più compatibile) in millimetri reali, che
+Silhouette Studio apre anche nell'edizione gratuita Basic con le linee già
+pronte per il taglio (gli SVG richiedono la Designer Edition). Contiene solo
+le linee tecniche dei livelli visibili: Taglio e Fustella speciale (livello
+TAGLIO, rosso). Per le pieghe si sceglie:
+- **tratteggiate** nel file del taglio (predefinito): taglio a tratti, con
+  lunghezza del tratto e del ponte regolabili (1,5 mm + 1,5 mm), pronte da
+  tagliare e da piegare a mano;
+- **nel file del taglio come linee continue** (livello PIEGA, blu): in Studio
+  vanno selezionate e assegnate alla cordonatura o a una pressione ridotta;
+- **in un file separato** "_pieghe.dxf", da passare in un secondo momento
+  (Studio apre ogni file per conto suo: vanno posizionate con le coordinate);
+- **non esportate**.
+Curve, archi, ellissi e angoli arrotondati vengono approssimati con segmenti.
+In Studio: File → Apri, selezionare tutto, verificare nel pannello Invia che le
+linee siano su "Taglio" e controllare le misure prima di tagliare. Non
+supporta il Print & Cut (stampa della grafica con i segni di registrazione).
+
 ### Grafica nell'anteprima 3D
 La grafica dei livelli di disegno viene riportata sui pannelli dell'anteprima
 3D, sul lato stampato (esterno), e li segue mentre si piegano, con luce e
