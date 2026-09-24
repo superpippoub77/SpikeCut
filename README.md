@@ -70,7 +70,17 @@ modifica: le linee coinvolte hanno un alone rosso (errore) o arancione
 distanza mancante è disegnata con la scritta "manca X mm". Una barra in alto
 dice quanti problemi restano, permette di passare dall'uno all'altro (◀ ▶,
 la vista si sposta sul problema) e diventa verde quando è tutto a posto;
-"Riprendi anteprima 3D" torna al modello aggiornato. Nel 3D i pannelli non
+"Riprendi anteprima 3D" torna al modello aggiornato.
+**Correzione automatica con revisione**: per ogni problema che si può
+sistemare da solo compare "🔧 Correggi" (nell'elenco della finestra 3D e
+nella barra in alto; "Correggi tutti" li applica in un colpo). Le correzioni
+possibili sono: unire un'estremità all'estremità vicina di un'altra linea
+(entro 5 mm), prolungare una linea che si ferma poco prima della successiva,
+chiudere un contorno i cui capi distano meno di 10 mm, e assegnare il ruolo
+Taglio a una linea che prosegue il contorno ma ha un altro ruolo. Dopo la
+correzione i punti modificati sono cerchiati di verde e la barra chiede
+**✓ Conferma** o **↶ Annulla** (che riporta il disegno esattamente
+com'era); qualunque altra modifica la conferma implicitamente. Nel 3D i pannelli non
 collegati da nessuna piega sono colorati di rosso.
 Limiti attuali: i tratti curvi sono approssimati con segmenti dritti, i fori
 non vengono ritagliati dal pannello nella vista 3D, e le pareti che si

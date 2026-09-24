@@ -345,6 +345,9 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 #foldCheckBanner{ position:fixed; top:92px; left:50%; transform:translateX(-50%); z-index:160; max-width:min(880px,94vw);
   background:var(--bg-1); border:2px solid #ff3b30; border-radius:10px; box-shadow:0 6px 24px rgba(0,0,0,.4); padding:8px 10px; font-size:12.5px; }
 #foldCheckBanner.ok{ border-color:#2f9e5a; }
+#foldCheckBanner.review{ border-color:#2f9e5a; }
+#foldCheckBanner .fcb-detail.review{ background:rgba(47,158,90,.15); color:#3fbf72; }
+#foldCheckBanner .fcb-note{ margin-top:5px; font-size:12px; color:var(--ink-dim); }
 #foldCheckBanner .fcb-row{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
 #foldCheckBanner .fcb-row .btn{ width:auto; margin:0; padding:4px 10px; }
 #foldCheckBanner .fcb-title{ font-weight:700; margin-right:auto; }
@@ -622,7 +625,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.12.2</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.13.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1810,6 +1813,37 @@ const I18N = {
     "🔧 Allunga {n} pieghe": "🔧 Extend {n} folds",
     "🧊 Riprendi anteprima 3D": "🧊 Resume 3D preview",
     "Nascondi l'evidenziazione": "Hide the highlighting",
+    "un'estremità non è unita a un'altra linea che dista {d} mm": "one end isn’t joined to another line {d} mm away",
+    "Unisce l'estremità alla linea vicina (spostamento di {d} mm).": "Joins the end to the nearby line (moved by {d} mm).",
+    "un'estremità prosegue in una linea con ruolo «{r}»: se fa parte del contorno deve essere Taglio": "one end continues into a line with the “{r}” role: if it is part of the outline it must be Cut",
+    "Assegna il ruolo Taglio alla linea che prosegue da qui (ora è «{r}»).": "Gives the Cut role to the line continuing from here (it is now “{r}”).",
+    "un'estremità si ferma a {d} mm dalla linea successiva": "one end stops {d} mm from the next line",
+    "Prolunga la linea di {d} mm fino alla linea successiva.": "Extends the line by {d} mm up to the next line.",
+    "un'estremità finisce nel vuoto (la linea più vicina nella sua direzione è a {d} mm)": "one end ends in empty space (the nearest line in its direction is {d} mm away)",
+    "un'estremità finisce nel vuoto": "one end ends in empty space",
+    "Piega che non divide nessun pannello:": "Fold that doesn’t split any panel:",
+    "Linea di taglio aperta:": "Open cut line:",
+    "Contorno di taglio non chiuso: il primo e l'ultimo punto distano {d} mm.": "Cut outline not closed: the first and last points are {d} mm apart.",
+    "Chiude il contorno unendo il primo e l'ultimo punto ({d} mm).": "Closes the outline by joining the first and last points ({d} mm).",
+    "Il primo e l'ultimo punto distano {d} mm.": "The first and last points are {d} mm apart.",
+    "{n} correzioni applicate automaticamente.": "{n} corrections applied automatically.",
+    "Correzione confermata.": "Correction confirmed.",
+    "Correzione annullata: il disegno è tornato com'era.": "Correction undone: the drawing is back as it was.",
+    "🔧 Correggi": "🔧 Fix",
+    "🔧 Correggi automaticamente tutti ({n})": "🔧 Fix all automatically ({n})",
+    "Applica tutte le correzioni proposte: poi sul disegno potrai confermarle o annullarle con un clic.": "Applies all the proposed corrections: then on the drawing you can confirm or undo them with one click.",
+    "🔧 Correzione applicata: controlla il risultato sul disegno (cerchi verdi).": "🔧 Correction applied: check the result on the drawing (green circles).",
+    "✓ Conferma": "✓ Confirm",
+    "↶ Annulla": "↶ Undo",
+    "Tieni la correzione": "Keep the correction",
+    "Riporta il disegno a com'era prima della correzione": "Returns the drawing to how it was before the correction",
+    "Dopo la correzione restano {n} problemi.": "After the correction {n} problems remain.",
+    "Dopo la correzione non restano problemi.": "After the correction no problems remain.",
+    "🔧 Correggi questo": "🔧 Fix this one",
+    "🔧 Correggi tutti ({n})": "🔧 Fix all ({n})",
+    "Correzione proposta:": "Proposed correction:",
+    "Nessuna correzione automatica per questo problema: va sistemato a mano.": "No automatic correction for this problem: it has to be fixed by hand.",
+    "(entrambe le estremità).": "(both ends).",
   },
   de: {
     "1 cm": "1 cm",
@@ -2427,6 +2461,37 @@ const I18N = {
     "🔧 Allunga {n} pieghe": "🔧 {n} Falze verlängern",
     "🧊 Riprendi anteprima 3D": "🧊 3D-Vorschau fortsetzen",
     "Nascondi l'evidenziazione": "Hervorhebung ausblenden",
+    "un'estremità non è unita a un'altra linea che dista {d} mm": "ein Ende ist nicht mit einer anderen Linie verbunden, die {d} mm entfernt ist",
+    "Unisce l'estremità alla linea vicina (spostamento di {d} mm).": "Verbindet das Ende mit der nahen Linie (Verschiebung um {d} mm).",
+    "un'estremità prosegue in una linea con ruolo «{r}»: se fa parte del contorno deve essere Taglio": "ein Ende geht in eine Linie mit der Rolle „{r}“ über: Wenn sie zur Kontur gehört, muss sie Schnitt sein",
+    "Assegna il ruolo Taglio alla linea che prosegue da qui (ora è «{r}»).": "Weist der hier weiterführenden Linie die Rolle Schnitt zu (derzeit „{r}“).",
+    "un'estremità si ferma a {d} mm dalla linea successiva": "ein Ende endet {d} mm vor der nächsten Linie",
+    "Prolunga la linea di {d} mm fino alla linea successiva.": "Verlängert die Linie um {d} mm bis zur nächsten Linie.",
+    "un'estremità finisce nel vuoto (la linea più vicina nella sua direzione è a {d} mm)": "ein Ende endet im Leeren (die nächste Linie in seiner Richtung ist {d} mm entfernt)",
+    "un'estremità finisce nel vuoto": "ein Ende endet im Leeren",
+    "Piega che non divide nessun pannello:": "Falz, der kein Feld teilt:",
+    "Linea di taglio aperta:": "Offene Schnittlinie:",
+    "Contorno di taglio non chiuso: il primo e l'ultimo punto distano {d} mm.": "Schnittkontur nicht geschlossen: Der erste und der letzte Punkt liegen {d} mm auseinander.",
+    "Chiude il contorno unendo il primo e l'ultimo punto ({d} mm).": "Schließt die Kontur, indem der erste und der letzte Punkt verbunden werden ({d} mm).",
+    "Il primo e l'ultimo punto distano {d} mm.": "Der erste und der letzte Punkt liegen {d} mm auseinander.",
+    "{n} correzioni applicate automaticamente.": "{n} Korrekturen automatisch angewendet.",
+    "Correzione confermata.": "Korrektur bestätigt.",
+    "Correzione annullata: il disegno è tornato com'era.": "Korrektur rückgängig gemacht: Die Zeichnung ist wieder wie vorher.",
+    "🔧 Correggi": "🔧 Korrigieren",
+    "🔧 Correggi automaticamente tutti ({n})": "🔧 Alle automatisch korrigieren ({n})",
+    "Applica tutte le correzioni proposte: poi sul disegno potrai confermarle o annullarle con un clic.": "Wendet alle vorgeschlagenen Korrekturen an: Danach kannst du sie in der Zeichnung mit einem Klick bestätigen oder rückgängig machen.",
+    "🔧 Correzione applicata: controlla il risultato sul disegno (cerchi verdi).": "🔧 Korrektur angewendet: Prüfe das Ergebnis in der Zeichnung (grüne Kreise).",
+    "✓ Conferma": "✓ Bestätigen",
+    "↶ Annulla": "↶ Rückgängig",
+    "Tieni la correzione": "Korrektur behalten",
+    "Riporta il disegno a com'era prima della correzione": "Stellt die Zeichnung wie vor der Korrektur wieder her",
+    "Dopo la correzione restano {n} problemi.": "Nach der Korrektur bleiben {n} Probleme.",
+    "Dopo la correzione non restano problemi.": "Nach der Korrektur bleiben keine Probleme.",
+    "🔧 Correggi questo": "🔧 Dieses korrigieren",
+    "🔧 Correggi tutti ({n})": "🔧 Alle korrigieren ({n})",
+    "Correzione proposta:": "Vorgeschlagene Korrektur:",
+    "Nessuna correzione automatica per questo problema: va sistemato a mano.": "Keine automatische Korrektur für dieses Problem: Es muss von Hand behoben werden.",
+    "(entrambe le estremità).": "(beide Enden).",
   },
   es: {
     "1 cm": "1 cm",
@@ -3044,6 +3109,37 @@ const I18N = {
     "🔧 Allunga {n} pieghe": "🔧 Alargar {n} pliegues",
     "🧊 Riprendi anteprima 3D": "🧊 Retomar vista previa 3D",
     "Nascondi l'evidenziazione": "Ocultar el resaltado",
+    "un'estremità non è unita a un'altra linea che dista {d} mm": "un extremo no está unido a otra línea que está a {d} mm",
+    "Unisce l'estremità alla linea vicina (spostamento di {d} mm).": "Une el extremo a la línea cercana (desplazamiento de {d} mm).",
+    "un'estremità prosegue in una linea con ruolo «{r}»: se fa parte del contorno deve essere Taglio": "un extremo continúa en una línea con rol «{r}»: si forma parte del contorno debe ser Corte",
+    "Assegna il ruolo Taglio alla linea che prosegue da qui (ora è «{r}»).": "Asigna el rol Corte a la línea que continúa desde aquí (ahora es «{r}»).",
+    "un'estremità si ferma a {d} mm dalla linea successiva": "un extremo se detiene a {d} mm de la línea siguiente",
+    "Prolunga la linea di {d} mm fino alla linea successiva.": "Alarga la línea {d} mm hasta la línea siguiente.",
+    "un'estremità finisce nel vuoto (la linea più vicina nella sua direzione è a {d} mm)": "un extremo termina en el vacío (la línea más cercana en su dirección está a {d} mm)",
+    "un'estremità finisce nel vuoto": "un extremo termina en el vacío",
+    "Piega che non divide nessun pannello:": "Pliegue que no divide ningún panel:",
+    "Linea di taglio aperta:": "Línea de corte abierta:",
+    "Contorno di taglio non chiuso: il primo e l'ultimo punto distano {d} mm.": "Contorno de corte no cerrado: el primer y el último punto distan {d} mm.",
+    "Chiude il contorno unendo il primo e l'ultimo punto ({d} mm).": "Cierra el contorno uniendo el primer y el último punto ({d} mm).",
+    "Il primo e l'ultimo punto distano {d} mm.": "El primer y el último punto distan {d} mm.",
+    "{n} correzioni applicate automaticamente.": "{n} correcciones aplicadas automáticamente.",
+    "Correzione confermata.": "Corrección confirmada.",
+    "Correzione annullata: il disegno è tornato com'era.": "Corrección deshecha: el dibujo ha vuelto a como estaba.",
+    "🔧 Correggi": "🔧 Corregir",
+    "🔧 Correggi automaticamente tutti ({n})": "🔧 Corregir todos automáticamente ({n})",
+    "Applica tutte le correzioni proposte: poi sul disegno potrai confermarle o annullarle con un clic.": "Aplica todas las correcciones propuestas: luego en el dibujo podrás confirmarlas o deshacerlas con un clic.",
+    "🔧 Correzione applicata: controlla il risultato sul disegno (cerchi verdi).": "🔧 Corrección aplicada: comprueba el resultado en el dibujo (círculos verdes).",
+    "✓ Conferma": "✓ Confirmar",
+    "↶ Annulla": "↶ Deshacer",
+    "Tieni la correzione": "Mantener la corrección",
+    "Riporta il disegno a com'era prima della correzione": "Devuelve el dibujo a como estaba antes de la corrección",
+    "Dopo la correzione restano {n} problemi.": "Tras la corrección quedan {n} problemas.",
+    "Dopo la correzione non restano problemi.": "Tras la corrección no quedan problemas.",
+    "🔧 Correggi questo": "🔧 Corregir este",
+    "🔧 Correggi tutti ({n})": "🔧 Corregir todos ({n})",
+    "Correzione proposta:": "Corrección propuesta:",
+    "Nessuna correzione automatica per questo problema: va sistemato a mano.": "No hay corrección automática para este problema: hay que arreglarlo a mano.",
+    "(entrambe le estremità).": "(ambos extremos).",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -3661,6 +3757,37 @@ const I18N = {
     "🔧 Allunga {n} pieghe": "🔧 延长 {n} 条折线",
     "🧊 Riprendi anteprima 3D": "🧊 恢复3D预览",
     "Nascondi l'evidenziazione": "隐藏高亮",
+    "un'estremità non è unita a un'altra linea che dista {d} mm": "有一端未与相距 {d} 毫米的另一条线相连",
+    "Unisce l'estremità alla linea vicina (spostamento di {d} mm).": "将端点连接到附近的线（移动 {d} 毫米）。",
+    "un'estremità prosegue in una linea con ruolo «{r}»: se fa parte del contorno deve essere Taglio": "有一端连接到角色为“{r}”的线：若它属于轮廓，应设为切割",
+    "Assegna il ruolo Taglio alla linea che prosegue da qui (ora è «{r}»).": "将从此处延续的线设为切割角色（当前为“{r}”）。",
+    "un'estremità si ferma a {d} mm dalla linea successiva": "有一端距下一条线 {d} 毫米处停止",
+    "Prolunga la linea di {d} mm fino alla linea successiva.": "将线延长 {d} 毫米至下一条线。",
+    "un'estremità finisce nel vuoto (la linea più vicina nella sua direzione è a {d} mm)": "有一端悬空（其方向上最近的线在 {d} 毫米外）",
+    "un'estremità finisce nel vuoto": "有一端悬空",
+    "Piega che non divide nessun pannello:": "折线没有分割任何面板：",
+    "Linea di taglio aperta:": "切割线未闭合：",
+    "Contorno di taglio non chiuso: il primo e l'ultimo punto distano {d} mm.": "切割轮廓未闭合：首末两点相距 {d} 毫米。",
+    "Chiude il contorno unendo il primo e l'ultimo punto ({d} mm).": "连接首末两点以闭合轮廓（{d} 毫米）。",
+    "Il primo e l'ultimo punto distano {d} mm.": "首末两点相距 {d} 毫米。",
+    "{n} correzioni applicate automaticamente.": "已自动应用 {n} 项修正。",
+    "Correzione confermata.": "修正已确认。",
+    "Correzione annullata: il disegno è tornato com'era.": "修正已撤销：图纸已恢复原样。",
+    "🔧 Correggi": "🔧 修正",
+    "🔧 Correggi automaticamente tutti ({n})": "🔧 全部自动修正（{n}）",
+    "Applica tutte le correzioni proposte: poi sul disegno potrai confermarle o annullarle con un clic.": "应用所有建议的修正：之后可在图纸上一键确认或撤销。",
+    "🔧 Correzione applicata: controlla il risultato sul disegno (cerchi verdi).": "🔧 已应用修正：请在图纸上检查结果（绿色圆圈）。",
+    "✓ Conferma": "✓ 确认",
+    "↶ Annulla": "↶ 撤销",
+    "Tieni la correzione": "保留修正",
+    "Riporta il disegno a com'era prima della correzione": "将图纸恢复到修正前的状态",
+    "Dopo la correzione restano {n} problemi.": "修正后还剩 {n} 个问题。",
+    "Dopo la correzione non restano problemi.": "修正后没有剩余问题。",
+    "🔧 Correggi questo": "🔧 修正此项",
+    "🔧 Correggi tutti ({n})": "🔧 全部修正（{n}）",
+    "Correzione proposta:": "建议的修正：",
+    "Nessuna correzione automatica per questo problema: va sistemato a mano.": "此问题无法自动修正：需要手动处理。",
+    "(entrambe le estremità).": "（两端）。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -4278,6 +4405,37 @@ const I18N = {
     "🔧 Allunga {n} pieghe": "🔧 Prolonger {n} plis",
     "🧊 Riprendi anteprima 3D": "🧊 Reprendre l’aperçu 3D",
     "Nascondi l'evidenziazione": "Masquer la mise en évidence",
+    "un'estremità non è unita a un'altra linea che dista {d} mm": "une extrémité n’est pas jointe à une autre ligne située à {d} mm",
+    "Unisce l'estremità alla linea vicina (spostamento di {d} mm).": "Joint l’extrémité à la ligne voisine (déplacement de {d} mm).",
+    "un'estremità prosegue in una linea con ruolo «{r}»: se fa parte del contorno deve essere Taglio": "une extrémité se prolonge dans une ligne au rôle « {r} » : si elle fait partie du contour, elle doit être Découpe",
+    "Assegna il ruolo Taglio alla linea che prosegue da qui (ora è «{r}»).": "Donne le rôle Découpe à la ligne qui continue d’ici (actuellement « {r} »).",
+    "un'estremità si ferma a {d} mm dalla linea successiva": "une extrémité s’arrête à {d} mm de la ligne suivante",
+    "Prolunga la linea di {d} mm fino alla linea successiva.": "Prolonge la ligne de {d} mm jusqu’à la ligne suivante.",
+    "un'estremità finisce nel vuoto (la linea più vicina nella sua direzione è a {d} mm)": "une extrémité se termine dans le vide (la ligne la plus proche dans sa direction est à {d} mm)",
+    "un'estremità finisce nel vuoto": "une extrémité se termine dans le vide",
+    "Piega che non divide nessun pannello:": "Pli qui ne divise aucun panneau :",
+    "Linea di taglio aperta:": "Ligne de découpe ouverte :",
+    "Contorno di taglio non chiuso: il primo e l'ultimo punto distano {d} mm.": "Contour de découpe non fermé : le premier et le dernier point sont à {d} mm l’un de l’autre.",
+    "Chiude il contorno unendo il primo e l'ultimo punto ({d} mm).": "Ferme le contour en joignant le premier et le dernier point ({d} mm).",
+    "Il primo e l'ultimo punto distano {d} mm.": "Le premier et le dernier point sont à {d} mm l’un de l’autre.",
+    "{n} correzioni applicate automaticamente.": "{n} corrections appliquées automatiquement.",
+    "Correzione confermata.": "Correction confirmée.",
+    "Correzione annullata: il disegno è tornato com'era.": "Correction annulée : le dessin est revenu comme avant.",
+    "🔧 Correggi": "🔧 Corriger",
+    "🔧 Correggi automaticamente tutti ({n})": "🔧 Tout corriger automatiquement ({n})",
+    "Applica tutte le correzioni proposte: poi sul disegno potrai confermarle o annullarle con un clic.": "Applique toutes les corrections proposées : ensuite, sur le dessin, tu pourras les confirmer ou les annuler en un clic.",
+    "🔧 Correzione applicata: controlla il risultato sul disegno (cerchi verdi).": "🔧 Correction appliquée : vérifie le résultat sur le dessin (cercles verts).",
+    "✓ Conferma": "✓ Confirmer",
+    "↶ Annulla": "↶ Annuler",
+    "Tieni la correzione": "Garder la correction",
+    "Riporta il disegno a com'era prima della correzione": "Remet le dessin comme il était avant la correction",
+    "Dopo la correzione restano {n} problemi.": "Après la correction, il reste {n} problèmes.",
+    "Dopo la correzione non restano problemi.": "Après la correction, il ne reste aucun problème.",
+    "🔧 Correggi questo": "🔧 Corriger celui-ci",
+    "🔧 Correggi tutti ({n})": "🔧 Tout corriger ({n})",
+    "Correzione proposta:": "Correction proposée :",
+    "Nessuna correzione automatica per questo problema: va sistemato a mano.": "Pas de correction automatique pour ce problème : il faut le corriger à la main.",
+    "(entrambe le estremità).": "(les deux extrémités).",
   },
 };
 let currentLang = 'it';
@@ -4872,6 +5030,7 @@ function moveShapesBy(ids, dx, dy){
    HISTORY (undo/redo)
 ============================================================ */
 function pushHistory(){
+  if(state.fixReview) state.fixReview = null; // un'altra modifica conferma implicitamente la correzione in revisione
   if(state.foldCheck) runFoldCheckOverlay(true); // controllo 3D attivo: si rifà dopo ogni modifica
   const snap = JSON.stringify({shapes:state.shapes, layers:state.layers});
   state.history = state.history.slice(0, state.histIndex+1);
@@ -4884,6 +5043,7 @@ function pushHistory(){
   scheduleAutosave();
 }
 function undo(){
+  state.fixReview = null;
   if(state.histIndex<=0) return;
   state.histIndex--;
   const data = JSON.parse(state.history[state.histIndex]);
@@ -5943,8 +6103,11 @@ function foldModelAt(model, frac){
    Dice cosa il motore NON ha potuto usare e perché, con gli elementi da
    evidenziare sul disegno e, dove possibile, una correzione automatica. */
 const FOLD_FIX_MAX = 5; // mm: una piega che si ferma entro questa distanza dal contorno viene allungata dalla correzione automatica
+const JOIN_FIX_MAX = 5;   // mm: estremità di un'altra linea entro cui proporre l'unione
+const CLOSE_FIX_MAX = 10; // mm: contorno aperto che si propone di chiudere
 function checkFoldModel(model){
   const issues = [];
+  const fmt = v=> (Math.round(v*10)/10).toString().replace('.', ',');
   const elen = e=> Math.hypot(model.nodes[e.i][0]-model.nodes[e.j][0], model.nodes[e.i][1]-model.nodes[e.j][1]);
   const foldStats = new Map(), cutOpen = new Map();
   model.edges.forEach(e=>{
@@ -5961,8 +6124,11 @@ function checkFoldModel(model){
       } else if(e.pruned) cutOpen.set(src, (cutOpen.get(src)||0) + L);
     });
   });
-  // estremità libere di una forma aperta: nessun'altra linea passa di lì
   const segDist = (p,a,b)=>{ const dx=b[0]-a[0], dy=b[1]-a[1], l2=dx*dx+dy*dy; let t = l2 ? ((p[0]-a[0])*dx+(p[1]-a[1])*dy)/l2 : 0; t=Math.max(0,Math.min(1,t)); return Math.hypot(a[0]+dx*t-p[0], a[1]+dy*t-p[1]); };
+  const cutFoldShapes = [...new Set(model.segs.map(g=>g.src))];
+  const vertsOf = s=> s.points ? s.points : ((shapeToRing(s)||[]).slice(0,-1));
+  const otherRoleShapes = state.shapes.filter(s=> s.points && s.points.length>1 && isShapeEffVisible(s) && s.style && !['cut','diecut','fold'].includes(s.style.role));
+  // estremità libere di una forma aperta, con la correzione più adatta per ciascuna
   const freeEnds = s=>{
     if(!s.points || s.closed || s.points.length<2) return [];
     const others = model.segs.filter(g=>g.src!==s);
@@ -5970,37 +6136,60 @@ function checkFoldModel(model){
     [[0,1],[n-1,n-2]].forEach(([idx, prevIdx])=>{
       const P = s.points[idx];
       if(others.some(g=>segDist(P,g.a,g.b) < model.TOL)) return;
+      let near = null; // estremità/vertice di un'altra linea di taglio o piega, non unito
+      cutFoldShapes.forEach(o=>{ if(o===s) return; vertsOf(o).forEach(q=>{ const d = dist(P,q); if(d<=JOIN_FIX_MAX && (!near || d<near.d)) near = {pt:q, d}; }); });
+      let roleNear = null; // una linea con un altro ruolo (es. Disegno) che parte proprio da qui
+      if(!near) otherRoleShapes.forEach(o=>{ if(o===s) return; const m=o.points.length; [o.points[0], o.points[m-1]].forEach(q=>{ const d = dist(P,q); if(d<=JOIN_FIX_MAX && (!roleNear || d<roleNear.d)) roleNear = {shape:o, d}; }); });
       const Q = s.points[prevIdx], dl = Math.hypot(P[0]-Q[0], P[1]-Q[1]) || 1;
-      const d = [(P[0]-Q[0])/dl, (P[1]-Q[1])/dl];
-      let best = null;
+      const dir = [(P[0]-Q[0])/dl, (P[1]-Q[1])/dl];
+      let gap = null;
       others.forEach(g=>{ // proseguo la linea nella sua direzione finché incontra un'altra linea
-        const ex=g.b[0]-g.a[0], ey=g.b[1]-g.a[1], den = d[0]*ey - d[1]*ex;
+        const ex=g.b[0]-g.a[0], ey=g.b[1]-g.a[1], den = dir[0]*ey - dir[1]*ex;
         if(Math.abs(den)<1e-9) return;
         const t = ((g.a[0]-P[0])*ey - (g.a[1]-P[1])*ex)/den;
-        const u = ((g.a[0]-P[0])*d[1] - (g.a[1]-P[1])*d[0])/den;
-        if(t>0 && u>=-1e-6 && u<=1+1e-6 && (best==null || t<best)) best = t;
+        const u = ((g.a[0]-P[0])*dir[1] - (g.a[1]-P[1])*dir[0])/den;
+        if(t>0 && u>=-1e-6 && u<=1+1e-6 && (gap==null || t<gap)) gap = t;
       });
-      out.push({shape:s, idx, pt:P, gap:best, target: best!=null ? [P[0]+d[0]*best, P[1]+d[1]*best] : null});
+      const target = gap!=null ? [P[0]+dir[0]*gap, P[1]+dir[1]*gap] : null;
+      let fix = null, why, visual = null;
+      if(near){
+        why = tpl('un\'estremità non è unita a un\'altra linea che dista {d} mm', {d:fmt(near.d)});
+        fix = {kind:'join', move:{shape:s, idx, isLast: idx===n-1, from:P, to:near.pt}, desc: tpl('Unisce l\'estremità alla linea vicina (spostamento di {d} mm).', {d:fmt(near.d)})};
+        visual = {from:P, to:near.pt, mm:near.d};
+      } else if(roleNear){
+        const rl = translate((ROLE_STYLE[roleNear.shape.style.role]||{label:roleNear.shape.style.role}).label).split(/\s?[\(（]/)[0];
+        why = tpl('un\'estremità prosegue in una linea con ruolo «{r}»: se fa parte del contorno deve essere Taglio', {r:rl});
+        fix = {kind:'role', role:roleNear.shape, desc: tpl('Assegna il ruolo Taglio alla linea che prosegue da qui (ora è «{r}»).', {r:rl})};
+      } else if(gap!=null && gap<=FOLD_FIX_MAX){
+        why = tpl('un\'estremità si ferma a {d} mm dalla linea successiva', {d:fmt(gap)});
+        fix = {kind:'extend', move:{shape:s, idx, isLast: idx===n-1, from:P, to:target}, desc: tpl('Prolunga la linea di {d} mm fino alla linea successiva.', {d:fmt(gap)})};
+        visual = {from:P, to:target, mm:gap};
+      } else {
+        why = gap!=null ? tpl('un\'estremità finisce nel vuoto (la linea più vicina nella sua direzione è a {d} mm)', {d:fmt(gap)})
+                        : translate('un\'estremità finisce nel vuoto');
+        if(gap!=null && gap<=30) visual = {from:P, to:target, mm:gap};
+      }
+      out.push({shape:s, idx, pt:P, why, fix, visual});
     });
     return out;
   };
-  const fixes = [];
-  const fmt = v=> (Math.round(v*10)/10).toString().replace('.', ',');
+  const makeFix = (parts)=>{
+    const fs = parts.filter(Boolean);
+    if(!fs.length) return null;
+    return { moves: fs.filter(f=>f.move).map(f=>f.move), roles: fs.filter(f=>f.role).map(f=>f.role), close: fs.filter(f=>f.close).map(f=>f.close),
+             desc: [...new Set(fs.map(f=>f.desc))].map(d=> fs.filter(f=>f.desc===d).length>1 ? d.replace(/\.$/,'') + ' ' + translate('(entrambe le estremità).') : d).join(' ') };
+  };
   foldStats.forEach((st, s)=>{
     if(st.hinge >= st.tot*0.98 - 0.2) return; // usata (quasi) per intero
     const partial = st.hinge > 0.5;
     const pct = Math.round(st.hinge/st.tot*100);
     const main = Math.max(st.pruned, st.border, st.same);
-    let text;
-    const ends = freeEnds(s);
+    let text, ends = [];
     if(main===st.pruned){
-      if(ends.length){
-        const gaps = ends.filter(e=>e.gap!=null).map(e=>fmt(e.gap)+' mm');
-        text = gaps.length
-          ? tpl('Piega che non arriva al contorno: si ferma a {gaps} da un\'altra linea, quindi non divide nessun pannello.', {gaps: gaps.join(' e ')})
-          : translate('Piega con un\'estremità nel vuoto: proseguendo nella sua direzione non incontra nessuna linea di taglio o piega.');
-      } else text = translate('Piega che non divide nessun pannello: termina all\'interno di un pannello senza separarlo in due parti.');
-      ends.forEach(e=>{ if(e.gap!=null && e.gap<=FOLD_FIX_MAX) fixes.push(e); });
+      ends = freeEnds(s);
+      text = ends.length
+        ? translate('Piega che non divide nessun pannello:') + ' ' + ends.map(e=>e.why).join('; ') + '.'
+        : translate('Piega che non divide nessun pannello: termina all\'interno di un pannello senza separarlo in due parti.');
     } else if(main===st.border){
       text = translate('Piega sovrapposta al bordo esterno della fustella: da un lato non c\'è nessun pannello da piegare.');
     } else {
@@ -6008,40 +6197,50 @@ function checkFoldModel(model){
     }
     if(partial) text = tpl('Usata solo in parte ({pct}%).', {pct}) + ' ' + text;
     issues.push({level: partial ? 'warn' : 'error', text, shapes:[s], points: ends.map(e=>e.pt),
-      gaps: ends.filter(e=>e.gap!=null && e.gap<=30).map(e=>({from:e.pt, to:e.target, mm:e.gap}))});
+      gaps: ends.filter(e=>e.visual).map(e=>e.visual), fix: makeFix(ends.map(e=>e.fix))});
   });
   cutOpen.forEach((L, s)=>{
     if(L < 0.5) return;
-    const ends = freeEnds(s);
-    const gaps = ends.filter(e=>e.gap!=null).map(e=>fmt(e.gap)+' mm');
     const pts = s.points || [];
-    const selfGap = (!s.closed && pts.length>2) ? Math.hypot(pts[0][0]-pts[pts.length-1][0], pts[0][1]-pts[pts.length-1][1]) : 0;
-    issues.push({level:'error', shapes:[s], points: ends.map(e=>e.pt),
-      gaps: selfGap > model.TOL ? [{from:pts[0], to:pts[pts.length-1], mm:selfGap}] : ends.filter(e=>e.gap!=null && e.gap<=30).map(e=>({from:e.pt, to:e.target, mm:e.gap})),
-      text: (selfGap > model.TOL ? tpl('Contorno di taglio non chiuso: il primo e l\'ultimo punto distano {d} mm (selezionalo e usa "Chiudi percorso" nel pannello proprietà).', {d: fmt(selfGap)}) : gaps.length ? tpl('Linea di taglio aperta: all\'estremità mancano {gaps} per chiudere il contorno.', {gaps:gaps.join(' e ')})
-                         : translate('Linea di taglio che non chiude nessun contorno: i suoi tratti finiscono nel vuoto.'))
-            + ' ' + translate('Puoi usare Strumenti → Salda punti vicini o Chiudi tutti i percorsi aperti.')});
+    const selfGap = (!s.closed && pts.length>2) ? dist(pts[0], pts[pts.length-1]) : 0;
+    const ends = freeEnds(s);
+    // entrambe le estremità unite: fa parte di una catena aperta altrove, e lo segnala già
+    // la linea con l'estremità davvero libera (evita un elenco pieno di doppioni)
+    if(!ends.length && s.points && !s.closed && cutOpen.size>1) return;
+    let text, fix, gaps;
+    if(selfGap > model.TOL && selfGap <= CLOSE_FIX_MAX){
+      text = tpl('Contorno di taglio non chiuso: il primo e l\'ultimo punto distano {d} mm.', {d:fmt(selfGap)});
+      fix = makeFix([{close:s, desc: tpl('Chiude il contorno unendo il primo e l\'ultimo punto ({d} mm).', {d:fmt(selfGap)})}]);
+      gaps = [{from:pts[0], to:pts[pts.length-1], mm:selfGap}];
+    } else {
+      text = ends.length
+        ? translate('Linea di taglio aperta:') + ' ' + ends.map(e=>e.why).join('; ') + '.'
+        : translate('Linea di taglio che non chiude nessun contorno: i suoi tratti finiscono nel vuoto.');
+      fix = makeFix(ends.map(e=>e.fix));
+      gaps = ends.filter(e=>e.visual).map(e=>e.visual);
+    }
+    issues.push({level:'error', shapes:[s], points: ends.map(e=>e.pt), gaps, fix, text});
   });
   if(model.faces.length && model.unreached.length && model.hinges.length){
     const pts = model.unreached.map(fi=>{ const f=model.faces[fi]; let x=0,y=0; f.nodes.forEach(v=>{ x+=model.nodes[v][0]; y+=model.nodes[v][1]; }); return [x/f.nodes.length, y/f.nodes.length]; });
-    issues.push({level:'warn', shapes:[], points:pts, text: tpl('{n} pannelli non sono collegati al resto da nessuna piega: restano piatti.', {n:model.unreached.length})});
+    issues.push({level:'warn', shapes:[], points:pts, gaps:[], fix:null, text: tpl('{n} pannelli non sono collegati al resto da nessuna piega: restano piatti.', {n:model.unreached.length})});
   }
   if(!model.faces.length){
     const hasCut = state.shapes.some(s=>s.style && (s.style.role==='cut' || s.style.role==='diecut'));
-    issues.unshift({level:'error', shapes:[], points:[], text: hasCut
+    issues.unshift({level:'error', shapes:[], points:[], gaps:[], fix:null, text: hasCut
       ? translate('Nessun pannello chiuso: le linee di taglio non formano nessun contorno chiuso.')
       : translate('Il disegno non ha linee con ruolo Taglio: se il contorno è disegnato con il ruolo Disegno, assegnagli il ruolo Taglio.')});
   }
-  if(model.unsupported.length) issues.push({level:'warn', shapes:model.unsupported, points:[],
+  if(model.unsupported.length) issues.push({level:'warn', shapes:model.unsupported, points:[], gaps:[], fix:null,
     text: tpl('{n} elementi con ruolo Taglio o Piega non sono linee o forme geometriche (es. tracciati vettorizzati, testo, immagini) e vengono ignorati.', {n:model.unsupported.length})});
-  if(model.hidden.length) issues.push({level:'info', shapes:[], points:[],
+  if(model.hidden.length) issues.push({level:'info', shapes:[], points:[], gaps:[], fix:null,
     text: tpl('{n} linee di taglio o piega su livelli nascosti sono state ignorate.', {n:model.hidden.length})});
-  if(model.curved.length) issues.push({level:'info', shapes:model.curved, points:[],
+  if(model.curved.length) issues.push({level:'info', shapes:model.curved, points:[], gaps:[], fix:null,
     text: tpl('{n} linee curve sono approssimate con segmenti dritti nella vista 3D.', {n:model.curved.length})});
   const noDir = state.shapes.filter(s=>s.style && s.style.role==='fold' && !s.foldDir && isShapeEffVisible(s)).length;
-  if(noDir && model.hinges.length) issues.push({level:'info', shapes:[], points:[],
+  if(noDir && model.hinges.length) issues.push({level:'info', shapes:[], points:[], gaps:[], fix:null,
     text: tpl('{n} pieghe senza verso impostato: considerate a monte, 90°.', {n:noDir})});
-  return {issues, fixes};
+  return {issues, fixes: issues.filter(i=>i.fix)};
 }
 function renderFold3DCheck(result){
   const host = document.getElementById('fold3dCheck');
@@ -6068,6 +6267,12 @@ function renderFold3DCheck(result){
     }
     row.appendChild(ic);
     const tx = document.createElement('span'); tx.style.flex='1'; tx.textContent = is.text; row.appendChild(tx);
+    if(is.fix){
+      const fb = document.createElement('button'); fb.className='btn primary'; fb.style.cssText='width:auto;margin:0;padding:3px 9px;font-size:11.5px;';
+      fb.textContent = translate('🔧 Correggi'); fb.title = is.fix.desc;
+      fb.onclick = ()=> fixFromDialog(is.text);
+      row.appendChild(fb);
+    }
     if(is.shapes.length || is.points.length){
       const b = document.createElement('button'); b.className='btn'; b.style.cssText='width:auto;margin:0;padding:3px 9px;font-size:11.5px;';
       b.textContent = translate('Mostra sul disegno');
@@ -6078,10 +6283,9 @@ function renderFold3DCheck(result){
   });
   if(result.fixes.length){
     const b = document.createElement('button'); b.className='btn primary'; b.style.cssText='width:auto;margin:8px 0 0;';
-    const nShapes = new Set(result.fixes.map(f=>f.shape)).size;
-    b.textContent = tpl('🔧 Allunga automaticamente {n} pieghe fino al contorno', {n:nShapes});
-    b.title = tpl('Prolunga le estremità delle pieghe che si fermano a meno di {mm} mm da un\'altra linea, nella loro stessa direzione.', {mm:FOLD_FIX_MAX});
-    b.onclick = ()=> applyFoldFixes(result.fixes);
+    b.textContent = tpl('🔧 Correggi automaticamente tutti ({n})', {n:result.fixes.length});
+    b.title = translate('Applica tutte le correzioni proposte: poi sul disegno potrai confermarle o annullarle con un clic.');
+    b.onclick = ()=> fixFromDialog(null);
     host.appendChild(b);
   }
 }
@@ -6093,13 +6297,62 @@ function showFoldIssuesOnDrawing(issueText){
   const k = state.foldCheck.issues.findIndex(i=>i.text===issueText);
   focusFoldIssue(k>=0 ? k : 0);
 }
-function applyFoldFixes(fixes, stayOnDrawing){
-  fixes.forEach(f=>{ f.shape.points[f.idx] = [f.target[0], f.target[1]]; });
+function applyIssueFixes(list){
+  const fixes = list.map(i=>i.fix).filter(Boolean);
+  if(!fixes.length) return;
+  const marks = [], applied = [], done = new Set();
+  const eq = (a,b)=> Math.hypot(a[0]-b[0], a[1]-b[1]) < 1e-6;
+  fixes.forEach(f=> (f.roles||[]).forEach(s=>{
+    const pr = ROLE_STYLE.cut; s.style.role='cut'; s.style.stroke=pr.stroke; s.style.dash=pr.dash;
+    marks.push(s.points[0], s.points[s.points.length-1]);
+  }));
+  fixes.forEach(f=> (f.moves||[]).forEach(m=>{
+    const key = m.shape.id + (m.isLast ? '#end' : '#'+m.idx);
+    if(done.has(key)) return;
+    // due problemi speculari (A verso B e B verso A): basta il primo, altrimenti si scambierebbero di posto
+    if(applied.some(a=> eq(a.from, m.to) && eq(a.to, m.from))) return;
+    done.add(key); applied.push(m);
+    const i = m.isLast ? m.shape.points.length-1 : m.idx; // un arco ricostruito cambia il numero dei suoi punti
+    m.shape.points[i] = [m.to[0], m.to[1]];
+    setPtDetached(m.shape, i, false);
+    if(m.shape.arc) rebuildArc(m.shape);
+    marks.push(m.to);
+  }));
+  fixes.forEach(f=> (f.close||[]).forEach(s=>{
+    if(s.closed) return;
+    const n = s.points.length;
+    if(dist(s.points[0], s.points[n-1]) <= 2 && n>=4){ s.points.pop(); if(s.smooth) s.smooth.pop(); }
+    s.closed = true; delete s.arc;
+    marks.push(s.points[0]);
+  }));
   pushHistory();
+  state.fixReview = { histIndex: state.histIndex, marks,
+    desc: fixes.length===1 ? fixes[0].desc : tpl('{n} correzioni applicate automaticamente.', {n:fixes.length}) };
+  renderFoldCheckBanner();
   renderAll();
-  const n = new Set(fixes.map(f=>f.shape)).size;
-  if(!stayOnDrawing) openFold3D();
-  showToast(tpl('{n} pieghe allungate fino al contorno.', {n}), false);
+}
+function confirmFixReview(){
+  if(!state.fixReview) return;
+  state.fixReview = null;
+  renderFoldCheckBanner(); renderCanvasOnly();
+  showToast('Correzione confermata.', false);
+}
+function undoFixReview(){
+  const r = state.fixReview; if(!r) return;
+  state.fixReview = null;
+  if(state.histIndex===r.histIndex) undo();
+  if(state.foldCheck) runFoldCheckOverlay(true);
+  renderFoldCheckBanner();
+  showToast('Correzione annullata: il disegno è tornato com\'era.', false);
+}
+// applica la correzione di uno (o tutti) i problemi partendo dalla finestra 3D: si passa al disegno per rivederla
+function fixFromDialog(issueText){
+  minimizeModal('fold3dModal');
+  document.querySelector('.tabtrig[data-tab="prop"]').click();
+  state.foldCheck = null; runFoldCheckOverlay();
+  if(state.tool!=='select') setTool('select');
+  const list = issueText==null ? state.foldCheck.issues.filter(i=>i.fix) : state.foldCheck.issues.filter(i=>i.text===issueText && i.fix);
+  applyIssueFixes(list);
 }
 
 /* ---------- evidenziazione degli errori del controllo 3D sul disegno ----------
@@ -6116,7 +6369,7 @@ function runFoldCheckOverlay(redraw){
   if(redraw) renderCanvasOnly();
 }
 function endFoldCheckOverlay(){
-  state.foldCheck = null;
+  state.foldCheck = null; state.fixReview = null;
   renderFoldCheckBanner();
   renderCanvasOnly();
 }
@@ -6132,6 +6385,11 @@ function issueAnchor(is){
   return null;
 }
 function renderFoldCheckOverlay(){
+  if(state.fixReview) state.fixReview.marks.forEach(p=>{
+    layerOverlay.appendChild(el('circle', {cx:p[0]*state.scale, cy:p[1]*state.scale, r:15, fill:'rgba(47,158,90,0.18)', stroke:'#2f9e5a', 'stroke-width':3, class:'fc-pulse', 'pointer-events':'none'}));
+    const t = el('text', {x:p[0]*state.scale, y:p[1]*state.scale-22, 'font-size':15, 'font-weight':'700', fill:'#2f9e5a', 'text-anchor':'middle', 'paint-order':'stroke', stroke:'#fff', 'stroke-width':4, 'pointer-events':'none'});
+    t.textContent = '✓'; layerOverlay.appendChild(t);
+  });
   const fc = state.foldCheck;
   if(!fc || !fc.issues.length) return;
   const sc = state.scale, fmt = v=> (Math.round(v*10)/10).toString().replace('.', ',');
@@ -6187,39 +6445,55 @@ function focusFoldIssue(k){
 }
 function renderFoldCheckBanner(){
   const bar = document.getElementById('foldCheckBanner'); if(!bar) return;
-  const fc = state.foldCheck;
-  if(!fc){ bar.style.display='none'; bar.innerHTML=''; return; }
+  const fc = state.foldCheck, rv = state.fixReview;
+  if(!fc && !rv){ bar.style.display='none'; bar.innerHTML=''; return; }
   bar.style.display='block'; bar.innerHTML='';
   const top = document.createElement('div'); top.className='fcb-row';
-  const n = fc.issues.length;
   const title = document.createElement('span'); title.className='fcb-title';
+  top.appendChild(title);
+  const mkB = (label, fn, primary, tip)=>{ const b=document.createElement('button'); b.className='btn'+(primary?' primary':''); b.textContent=label; if(tip) b.title=tip; b.onclick=fn; top.appendChild(b); return b; };
+  bar.appendChild(top);
+  if(rv){ // una correzione appena applicata aspetta conferma
+    bar.classList.remove('ok'); bar.classList.add('review');
+    title.textContent = translate('🔧 Correzione applicata: controlla il risultato sul disegno (cerchi verdi).');
+    mkB(translate('✓ Conferma'), confirmFixReview, true, translate('Tieni la correzione'));
+    mkB(translate('↶ Annulla'), undoFixReview, false, translate('Riporta il disegno a com\'era prima della correzione'));
+    const d = document.createElement('div'); d.className='fcb-detail review'; d.textContent = rv.desc;
+    bar.appendChild(d);
+    if(fc){
+      const left = document.createElement('div'); left.className='fcb-note';
+      left.textContent = fc.issues.length ? tpl('Dopo la correzione restano {n} problemi.', {n:fc.issues.length}) : translate('Dopo la correzione non restano problemi.');
+      bar.appendChild(left);
+    }
+    return;
+  }
+  bar.classList.remove('review');
+  const n = fc.issues.length;
   if(!n){
     title.textContent = tpl('✅ Controllo 3D: nessun problema — {p} pannelli, {h} pieghe collegate.', {p:fc.faces, h:fc.hinges});
     bar.classList.add('ok');
   } else {
     bar.classList.remove('ok');
-    const e = fc.issues.filter(i=>i.level==='error').length, w = n-e;
-    title.textContent = tpl('Controllo 3D: {n} problemi da correggere ({e} errori, {w} avvisi)', {n, e, w});
-  }
-  top.appendChild(title);
-  const mkB = (label, fn, primary, tip)=>{ const b=document.createElement('button'); b.className='btn'+(primary?' primary':''); b.textContent=label; if(tip) b.title=tip; b.onclick=fn; top.appendChild(b); return b; };
-  if(n){
+    const er = fc.issues.filter(i=>i.level==='error').length, w = n-er;
+    title.textContent = tpl('Controllo 3D: {n} problemi da correggere ({e} errori, {w} avvisi)', {n, e:er, w});
     mkB('◀', ()=>focusFoldIssue(fc.focus-1), false, translate('Problema precedente'));
     const cnt = document.createElement('span'); cnt.className='fcb-count'; cnt.textContent = (fc.focus+1)+' / '+n; top.appendChild(cnt);
     mkB('▶', ()=>focusFoldIssue(fc.focus+1), false, translate('Problema successivo'));
-    if(fc.fixes.length){
-      const nf = new Set(fc.fixes.map(f=>f.shape)).size;
-      mkB(tpl('🔧 Allunga {n} pieghe', {n:nf}), ()=>{ applyFoldFixes(fc.fixes, true); }, false, tpl('Prolunga le estremità delle pieghe che si fermano a meno di {mm} mm da un\'altra linea, nella loro stessa direzione.', {mm:FOLD_FIX_MAX}));
-    }
+    const is = fc.issues[fc.focus];
+    if(is.fix) mkB(translate('🔧 Correggi questo'), ()=> applyIssueFixes([is]), true, is.fix.desc);
+    const fixable = fc.issues.filter(i=>i.fix);
+    if(fixable.length>1) mkB(tpl('🔧 Correggi tutti ({n})', {n:fixable.length}), ()=> applyIssueFixes(fixable), false, translate('Applica tutte le correzioni proposte: poi sul disegno potrai confermarle o annullarle con un clic.'));
   }
-  mkB(translate('🧊 Riprendi anteprima 3D'), ()=>{ endFoldCheckOverlay(); restoreModal('fold3dModal'); }, true);
+  mkB(translate('🧊 Riprendi anteprima 3D'), ()=>{ endFoldCheckOverlay(); restoreModal('fold3dModal'); }, !n);
   mkB('✕', endFoldCheckOverlay, false, translate('Nascondi l\'evidenziazione'));
-  bar.appendChild(top);
   if(n){
     const is = fc.issues[fc.focus];
     const d = document.createElement('div'); d.className='fcb-detail ' + is.level;
     d.textContent = (fc.focus+1) + '. ' + is.text;
     bar.appendChild(d);
+    const f = document.createElement('div'); f.className='fcb-note';
+    f.textContent = is.fix ? translate('Correzione proposta:') + ' ' + is.fix.desc : translate('Nessuna correzione automatica per questo problema: va sistemato a mano.');
+    bar.appendChild(f);
   }
 }
 /* ---------- visualizzatore 3D (canvas 2D, algoritmo del pittore) ---------- */
