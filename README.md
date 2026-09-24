@@ -80,7 +80,14 @@ chiudere un contorno i cui capi distano meno di 10 mm, e assegnare il ruolo
 Taglio a una linea che prosegue il contorno ma ha un altro ruolo. Dopo la
 correzione i punti modificati sono cerchiati di verde e la barra chiede
 **✓ Conferma** o **↶ Annulla** (che riporta il disegno esattamente
-com'era); qualunque altra modifica la conferma implicitamente. Nel 3D i pannelli non
+com'era); qualunque altra modifica la conferma implicitamente.
+**Pieghe bloccate dal contorno**: se una piega tocca correttamente le altre
+linee ma non viene usata perché il contorno di taglio intorno è aperto da
+un'altra parte, non viene più segnalata come errore della piega: compare in
+arancione, in fondo all'elenco, con l'indicazione dei problemi del contorno
+che la bloccano ("➜ Vai al problema n") e, se questi sono correggibili, con
+"🔧 Correggi" che sistema direttamente il contorno. La barra in alto separa
+errori veri, pieghe bloccate e numero di problemi correggibili in automatico. Nel 3D i pannelli non
 collegati da nessuna piega sono colorati di rosso.
 Limiti attuali: i tratti curvi sono approssimati con segmenti dritti, i fori
 non vengono ritagliati dal pannello nella vista 3D, e le pareti che si
@@ -131,8 +138,10 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   punti liberi al suo interno — estremità di linee aperte che non toccano
   nient'altro — vengono numerati 1, 2, …, n sul disegno. Con il pulsante
   "🔗 Unisci punti…" nel pannello proprietà o dal menu tasto destro si
-  apre una finestra con le coppie "Da → a" (già proposte unendo i punti più
-  vicini, modificabili, invertibili con ⇄, aggiungibili). Due modalità:
+  apre una finestra con le coppie "Da → a" (già proposte: sempre la coppia più
+  vicina, e le altre solo se a distanza simile — le estremità lontane non
+  vengono proposte; si possono modificare, invertire con ⇄, aggiungere a mano).
+  Funziona a qualunque distanza: basta selezionare le linee (clic e Shift+clic). Due modalità:
   **Sposta** (il punto di partenza raggiunge quello di arrivo, che resta
   fermo) o **Collega con un nuovo tratto**. Facoltativamente le linee con lo
   stesso ruolo e livello vengono fuse in un unico percorso, e una linea che
@@ -188,9 +197,10 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   comune) compare automaticamente anche qui, pronto da inserire allo
   stesso modo — un modo pratico per costruire una libreria di pezzi
   ricorrenti senza doverli ridisegnare ogni volta.
-- **Selezione avanzata**: oltre al rettangolo di selezione, tenendo premuto
-  **Alt** durante il trascinamento sull'area vuota si ottiene una selezione
-  a **lazo** (percorso libero). Dal menu tasto destro su un oggetto:
+- **Selezione avanzata**: oltre al rettangolo di selezione c'è la selezione
+  a **lazo** (percorso libero): pulsante nella barra degli strumenti subito
+  sotto la freccia, tasto **Q** (V torna alla freccia), oppure tenendo premuto
+  **Alt** durante il trascinamento sull'area vuota con la freccia. Dal menu tasto destro su un oggetto:
   **"Seleziona stesso colore"** e **"Seleziona stesso ruolo"** selezionano
   tutte le forme visibili che condividono quella caratteristica.
 - **Verifica sovrapposizioni e duplicati** (menu Strumenti): individua forme

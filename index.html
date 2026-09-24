@@ -625,7 +625,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.13.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.13.3</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1844,6 +1844,17 @@ const I18N = {
     "Correzione proposta:": "Proposed correction:",
     "Nessuna correzione automatica per questo problema: va sistemato a mano.": "No automatic correction for this problem: it has to be fixed by hand.",
     "(entrambe le estremità).": "(both ends).",
+    "Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso. Si risolve correggendo i problemi n. {nums}.": "This fold is fine (its ends touch the other lines), but it isn’t used because the cut outline it sits in isn’t closed. It is solved by fixing problems no. {nums}.",
+    "Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso.": "This fold is fine (its ends touch the other lines), but it isn’t used because the cut outline it sits in isn’t closed.",
+    "Corregge il contorno che la blocca (problemi n. {nums}).": "Fixes the outline that blocks it (problems no. {nums}).",
+    "➜ Vai al problema {n}": "➜ Go to problem {n}",
+    "Mostra il problema del contorno che blocca questa piega": "Shows the outline problem that blocks this fold",
+    "Non c'è niente da correggere sulla piega: sistemando il contorno indicato si risolve da sola.": "There is nothing to fix on the fold: fixing the indicated outline solves it by itself.",
+    "Controllo 3D: {e} errori, {w} avvisi": "3D check: {e} errors, {w} warnings",
+    "+ {c} pieghe bloccate dal contorno": "+ {c} folds blocked by the outline",
+    "{f} correggibili in automatico": "{f} fixable automatically",
+    "I punti {a} e {b} sono i due capi della stessa linea dritta: unirli la ridurrebbe a un punto.": "Points {a} and {b} are the two ends of the same straight line: joining them would reduce it to a point.",
+    "Selezione a lazo (trascina intorno alle forme)": "Lasso selection (drag around the shapes)",
   },
   de: {
     "1 cm": "1 cm",
@@ -2492,6 +2503,17 @@ const I18N = {
     "Correzione proposta:": "Vorgeschlagene Korrektur:",
     "Nessuna correzione automatica per questo problema: va sistemato a mano.": "Keine automatische Korrektur für dieses Problem: Es muss von Hand behoben werden.",
     "(entrambe le estremità).": "(beide Enden).",
+    "Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso. Si risolve correggendo i problemi n. {nums}.": "Dieser Falz ist in Ordnung (seine Enden berühren die anderen Linien), wird aber nicht verwendet, weil die Schnittkontur, in der er liegt, nicht geschlossen ist. Das löst sich durch Beheben der Probleme Nr. {nums}.",
+    "Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso.": "Dieser Falz ist in Ordnung (seine Enden berühren die anderen Linien), wird aber nicht verwendet, weil die Schnittkontur, in der er liegt, nicht geschlossen ist.",
+    "Corregge il contorno che la blocca (problemi n. {nums}).": "Korrigiert die Kontur, die ihn blockiert (Probleme Nr. {nums}).",
+    "➜ Vai al problema {n}": "➜ Zu Problem {n}",
+    "Mostra il problema del contorno che blocca questa piega": "Zeigt das Konturproblem, das diesen Falz blockiert",
+    "Non c'è niente da correggere sulla piega: sistemando il contorno indicato si risolve da sola.": "Am Falz ist nichts zu korrigieren: Wenn die angegebene Kontur behoben wird, löst es sich von selbst.",
+    "Controllo 3D: {e} errori, {w} avvisi": "3D-Prüfung: {e} Fehler, {w} Warnungen",
+    "+ {c} pieghe bloccate dal contorno": "+ {c} durch die Kontur blockierte Falze",
+    "{f} correggibili in automatico": "{f} automatisch korrigierbar",
+    "I punti {a} e {b} sono i due capi della stessa linea dritta: unirli la ridurrebbe a un punto.": "Die Punkte {a} und {b} sind die beiden Enden derselben geraden Linie: Sie zu verbinden würde sie auf einen Punkt reduzieren.",
+    "Selezione a lazo (trascina intorno alle forme)": "Lasso-Auswahl (um die Formen ziehen)",
   },
   es: {
     "1 cm": "1 cm",
@@ -3140,6 +3162,17 @@ const I18N = {
     "Correzione proposta:": "Corrección propuesta:",
     "Nessuna correzione automatica per questo problema: va sistemato a mano.": "No hay corrección automática para este problema: hay que arreglarlo a mano.",
     "(entrambe le estremità).": "(ambos extremos).",
+    "Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso. Si risolve correggendo i problemi n. {nums}.": "Este pliegue está bien (sus extremos tocan las otras líneas), pero no se usa porque el contorno de corte en el que está no está cerrado. Se resuelve corrigiendo los problemas n.º {nums}.",
+    "Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso.": "Este pliegue está bien (sus extremos tocan las otras líneas), pero no se usa porque el contorno de corte en el que está no está cerrado.",
+    "Corregge il contorno che la blocca (problemi n. {nums}).": "Corrige el contorno que lo bloquea (problemas n.º {nums}).",
+    "➜ Vai al problema {n}": "➜ Ir al problema {n}",
+    "Mostra il problema del contorno che blocca questa piega": "Muestra el problema del contorno que bloquea este pliegue",
+    "Non c'è niente da correggere sulla piega: sistemando il contorno indicato si risolve da sola.": "No hay nada que corregir en el pliegue: arreglando el contorno indicado se resuelve solo.",
+    "Controllo 3D: {e} errori, {w} avvisi": "Control 3D: {e} errores, {w} avisos",
+    "+ {c} pieghe bloccate dal contorno": "+ {c} pliegues bloqueados por el contorno",
+    "{f} correggibili in automatico": "{f} corregibles automáticamente",
+    "I punti {a} e {b} sono i due capi della stessa linea dritta: unirli la ridurrebbe a un punto.": "Los puntos {a} y {b} son los dos extremos de la misma línea recta: unirlos la reduciría a un punto.",
+    "Selezione a lazo (trascina intorno alle forme)": "Selección con lazo (arrastra alrededor de las formas)",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -3788,6 +3821,17 @@ const I18N = {
     "Correzione proposta:": "建议的修正：",
     "Nessuna correzione automatica per questo problema: va sistemato a mano.": "此问题无法自动修正：需要手动处理。",
     "(entrambe le estremità).": "（两端）。",
+    "Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso. Si risolve correggendo i problemi n. {nums}.": "这条折线本身没问题（两端都接触到其他线），但因为它所在的切割轮廓未闭合而未被使用。修正问题 {nums} 即可解决。",
+    "Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso.": "这条折线本身没问题（两端都接触到其他线），但因为它所在的切割轮廓未闭合而未被使用。",
+    "Corregge il contorno che la blocca (problemi n. {nums}).": "修正阻碍它的轮廓（问题 {nums}）。",
+    "➜ Vai al problema {n}": "➜ 转到问题 {n}",
+    "Mostra il problema del contorno che blocca questa piega": "显示阻碍这条折线的轮廓问题",
+    "Non c'è niente da correggere sulla piega: sistemando il contorno indicato si risolve da sola.": "折线本身无需修正：修好所指出的轮廓后会自动解决。",
+    "Controllo 3D: {e} errori, {w} avvisi": "3D检查：{e} 个错误，{w} 个警告",
+    "+ {c} pieghe bloccate dal contorno": "+ {c} 条被轮廓阻碍的折线",
+    "{f} correggibili in automatico": "{f} 个可自动修正",
+    "I punti {a} e {b} sono i due capi della stessa linea dritta: unirli la ridurrebbe a un punto.": "点 {a} 和 {b} 是同一条直线的两端：连接它们会使该线缩成一个点。",
+    "Selezione a lazo (trascina intorno alle forme)": "套索选择（围绕形状拖动）",
   },
   fr: {
     "1 cm": "1 cm",
@@ -4436,6 +4480,17 @@ const I18N = {
     "Correzione proposta:": "Correction proposée :",
     "Nessuna correzione automatica per questo problema: va sistemato a mano.": "Pas de correction automatique pour ce problème : il faut le corriger à la main.",
     "(entrambe le estremità).": "(les deux extrémités).",
+    "Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso. Si risolve correggendo i problemi n. {nums}.": "Ce pli est correct (ses extrémités touchent les autres lignes), mais il n’est pas utilisé car le contour de découpe où il se trouve n’est pas fermé. Cela se règle en corrigeant les problèmes n° {nums}.",
+    "Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso.": "Ce pli est correct (ses extrémités touchent les autres lignes), mais il n’est pas utilisé car le contour de découpe où il se trouve n’est pas fermé.",
+    "Corregge il contorno che la blocca (problemi n. {nums}).": "Corrige le contour qui le bloque (problèmes n° {nums}).",
+    "➜ Vai al problema {n}": "➜ Aller au problème {n}",
+    "Mostra il problema del contorno che blocca questa piega": "Affiche le problème de contour qui bloque ce pli",
+    "Non c'è niente da correggere sulla piega: sistemando il contorno indicato si risolve da sola.": "Il n’y a rien à corriger sur le pli : en réparant le contour indiqué, cela se règle tout seul.",
+    "Controllo 3D: {e} errori, {w} avvisi": "Contrôle 3D : {e} erreurs, {w} avertissements",
+    "+ {c} pieghe bloccate dal contorno": "+ {c} plis bloqués par le contour",
+    "{f} correggibili in automatico": "{f} corrigeables automatiquement",
+    "I punti {a} e {b} sono i due capi della stessa linea dritta: unirli la ridurrebbe a un punto.": "Les points {a} et {b} sont les deux extrémités de la même ligne droite : les joindre la réduirait à un point.",
+    "Selezione a lazo (trascina intorno alle forme)": "Sélection au lasso (fais glisser autour des formes)",
   },
 };
 let currentLang = 'it';
@@ -5889,6 +5944,7 @@ function renderAll(){
 ============================================================ */
 const TOOLS = [
   {id:'select', key:'v', label:'Selezione', icon:'M4 3l6 15 2-6 6-2z'},
+  {id:'lasso', key:'q', label:'Selezione a lazo (trascina intorno alle forme)', icon:'M11 3.5c4.7 0 8 2.4 8 5.4s-3.3 5.4-8 5.4c-1.4 0-2.7-.2-3.8-.6M5.2 12.3C3.8 11.4 3 10.2 3 8.9 3 5.9 6.3 3.5 11 3.5M7.2 13.7c-1.3.9-1.7 2.2-1 3.3.8 1.2 2.6 1.3 3.6.3'},
   {id:'pen', key:'p', label:'Penna (punti / poligono)', icon:'M4 16l0-3 9-9 3 3-9 9zM17 5l2 2'},
   {id:'line', key:'l', label:'Linea', icon:'M4 18L18 4'},
   {id:'rect', key:'r', label:'Rettangolo', icon:'M4 5h14v12H4z'},
@@ -6102,8 +6158,8 @@ function foldModelAt(model, frac){
 /* ---------- controllo del disegno prima della simulazione 3D ----------
    Dice cosa il motore NON ha potuto usare e perché, con gli elementi da
    evidenziare sul disegno e, dove possibile, una correzione automatica. */
-const FOLD_FIX_MAX = 5; // mm: una piega che si ferma entro questa distanza dal contorno viene allungata dalla correzione automatica
-const JOIN_FIX_MAX = 5;   // mm: estremità di un'altra linea entro cui proporre l'unione
+const FOLD_FIX_MAX = 10; // mm: una piega che si ferma entro questa distanza dal contorno viene allungata dalla correzione automatica
+const JOIN_FIX_MAX = 10;   // mm: estremità di un'altra linea entro cui proporre l'unione
 const CLOSE_FIX_MAX = 10; // mm: contorno aperto che si propone di chiudere
 function checkFoldModel(model){
   const issues = [];
@@ -6114,10 +6170,14 @@ function checkFoldModel(model){
     const L = elen(e);
     e.srcs.forEach(src=>{
       if(src.style.role==='fold'){
-        const st = foldStats.get(src) || {tot:0, hinge:0, pruned:0, border:0, same:0};
+        const st = foldStats.get(src) || {tot:0, hinge:0, pruned:0, border:0, openSide:0, same:0};
         st.tot += L;
         if(e.pruned) st.pruned += L;
-        else if(e.fa==null || e.fb==null) st.border += L;
+        else if(e.fa==null || e.fb==null){
+          // sul bordo davvero solo se coincide con una linea di taglio; altrimenti da un lato manca il pannello
+          // perché il contorno lì è aperto
+          if([...e.srcs].some(x=>x.style.role!=='fold')) st.border += L; else st.openSide += L;
+        }
         else if(e.fa===e.fb) st.same += L;
         else st.hinge += L;
         foldStats.set(src, st);
@@ -6183,10 +6243,18 @@ function checkFoldModel(model){
     if(st.hinge >= st.tot*0.98 - 0.2) return; // usata (quasi) per intero
     const partial = st.hinge > 0.5;
     const pct = Math.round(st.hinge/st.tot*100);
-    const main = Math.max(st.pruned, st.border, st.same);
+    const main = Math.max(st.pruned, st.border, st.openSide, st.same);
     let text, ends = [];
+    if(main===st.openSide && !partial){
+      issues.push({level:'warn', consequence:true, text:'', shapes:[s], points:[], gaps:[], fix:null});
+      return;
+    }
     if(main===st.pruned){
       ends = freeEnds(s);
+      if(!ends.length && !partial){ // la piega è attaccata alle altre linee: il problema è il contorno intorno, aperto altrove
+        issues.push({level:'warn', consequence:true, text:'', shapes:[s], points:[], gaps:[], fix:null});
+        return;
+      }
       text = ends.length
         ? translate('Piega che non divide nessun pannello:') + ' ' + ends.map(e=>e.why).join('; ') + '.'
         : translate('Piega che non divide nessun pannello: termina all\'interno di un pannello senza separarlo in due parti.');
@@ -6240,7 +6308,33 @@ function checkFoldModel(model){
   const noDir = state.shapes.filter(s=>s.style && s.style.role==='fold' && !s.foldDir && isShapeEffVisible(s)).length;
   if(noDir && model.hinges.length) issues.push({level:'info', shapes:[], points:[], gaps:[], fix:null,
     text: tpl('{n} pieghe senza verso impostato: considerate a monte, 90°.', {n:noDir})});
-  return {issues, fixes: issues.filter(i=>i.fix)};
+  // Ordine: prima i problemi veri, poi le pieghe che ne sono solo la conseguenza, infine le informazioni.
+  // Ogni piega "conseguenza" rimanda ai problemi del contorno a cui è collegata, e ne eredita le correzioni.
+  const uf = model.nodes.map((_,i)=>i);
+  const root = x=>{ while(uf[x]!==x){ uf[x]=uf[uf[x]]; x=uf[x]; } return x; };
+  model.edges.forEach(e=>{ uf[root(e.i)] = root(e.j); });
+  const compOf = s=>{ const e = model.edges.find(ed=>ed.srcs.has(s)); return e ? root(e.i) : null; };
+  const real = issues.filter(i=>i.level!=='info' && !i.consequence);
+  const cons = issues.filter(i=>i.consequence);
+  const infos = issues.filter(i=>i.level==='info');
+  real.forEach((is,k)=> is.num = k+1);
+  cons.forEach((is,k)=> is.num = real.length+k+1);
+  cons.forEach(is=>{
+    const comp = compOf(is.shapes[0]);
+    const causes = real.filter(o=> o.shapes.length && o.shapes.some(sh=> compOf(sh)===comp));
+    is.causeNums = causes.map(o=>o.num);
+    if(causes.length){
+      const nums = is.causeNums.join(', ');
+      is.text = tpl('Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso. Si risolve correggendo i problemi n. {nums}.', {nums});
+      const fx = causes.filter(o=>o.fix);
+      if(fx.length) is.fix = { moves: fx.flatMap(o=>o.fix.moves||[]), roles: fx.flatMap(o=>o.fix.roles||[]), close: fx.flatMap(o=>o.fix.close||[]),
+        desc: tpl('Corregge il contorno che la blocca (problemi n. {nums}).', {nums: fx.map(o=>o.num).join(', ')}) };
+    } else {
+      is.text = translate('Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso.');
+    }
+  });
+  const ordered = real.concat(cons, infos);
+  return {issues: ordered, fixes: ordered.filter(i=>i.fix)};
 }
 function renderFold3DCheck(result){
   const host = document.getElementById('fold3dCheck');
@@ -6474,15 +6568,19 @@ function renderFoldCheckBanner(){
     bar.classList.add('ok');
   } else {
     bar.classList.remove('ok');
-    const er = fc.issues.filter(i=>i.level==='error').length, w = n-er;
-    title.textContent = tpl('Controllo 3D: {n} problemi da correggere ({e} errori, {w} avvisi)', {n, e:er, w});
+    const er = fc.issues.filter(i=>i.level==='error').length, cq = fc.issues.filter(i=>i.consequence).length, w = n-er-cq;
+    const fixable = fc.issues.filter(i=>i.fix && !i.consequence).length;
+    title.textContent = tpl('Controllo 3D: {e} errori, {w} avvisi', {e:er, w})
+      + (cq ? ' ' + tpl('+ {c} pieghe bloccate dal contorno', {c:cq}) : '')
+      + ' — ' + tpl('{f} correggibili in automatico', {f:fixable});
     mkB('◀', ()=>focusFoldIssue(fc.focus-1), false, translate('Problema precedente'));
     const cnt = document.createElement('span'); cnt.className='fcb-count'; cnt.textContent = (fc.focus+1)+' / '+n; top.appendChild(cnt);
     mkB('▶', ()=>focusFoldIssue(fc.focus+1), false, translate('Problema successivo'));
     const is = fc.issues[fc.focus];
+    if(is.causeNums && is.causeNums.length) mkB(tpl('➜ Vai al problema {n}', {n:is.causeNums[0]}), ()=> focusFoldIssue(is.causeNums[0]-1), false, translate('Mostra il problema del contorno che blocca questa piega'));
     if(is.fix) mkB(translate('🔧 Correggi questo'), ()=> applyIssueFixes([is]), true, is.fix.desc);
-    const fixable = fc.issues.filter(i=>i.fix);
-    if(fixable.length>1) mkB(tpl('🔧 Correggi tutti ({n})', {n:fixable.length}), ()=> applyIssueFixes(fixable), false, translate('Applica tutte le correzioni proposte: poi sul disegno potrai confermarle o annullarle con un clic.'));
+    const fixableAll = fc.issues.filter(i=>i.fix && !i.consequence);
+    if(fixableAll.length>1) mkB(tpl('🔧 Correggi tutti ({n})', {n:fixableAll.length}), ()=> applyIssueFixes(fixableAll), false, translate('Applica tutte le correzioni proposte: poi sul disegno potrai confermarle o annullarle con un clic.'));
   }
   mkB(translate('🧊 Riprendi anteprima 3D'), ()=>{ endFoldCheckOverlay(); restoreModal('fold3dModal'); }, !n);
   mkB('✕', endFoldCheckOverlay, false, translate('Nascondi l\'evidenziazione'));
@@ -6492,7 +6590,9 @@ function renderFoldCheckBanner(){
     d.textContent = (fc.focus+1) + '. ' + is.text;
     bar.appendChild(d);
     const f = document.createElement('div'); f.className='fcb-note';
-    f.textContent = is.fix ? translate('Correzione proposta:') + ' ' + is.fix.desc : translate('Nessuna correzione automatica per questo problema: va sistemato a mano.');
+    f.textContent = is.fix ? translate('Correzione proposta:') + ' ' + is.fix.desc
+      : (is.consequence ? translate('Non c\'è niente da correggere sulla piega: sistemando il contorno indicato si risolve da sola.')
+                        : translate('Nessuna correzione automatica per questo problema: va sistemato a mano.'));
     bar.appendChild(f);
   }
 }
@@ -6632,13 +6732,23 @@ function renderJoinSection(host){
 }
 // coppie proposte: ogni volta la coppia di punti più vicina tra quelli ancora liberi
 function suggestJoinPairs(cands){
+  // Propongo sempre la coppia più vicina; le successive solo se hanno una distanza simile
+  // (entro 10 mm o 3 volte la prima). Le coppie molto più lontane — tipicamente le estremità
+  // opposte delle linee selezionate — non vanno unite: si possono aggiungere a mano.
+  const pointsOf = id=> ((state.shapes.find(s=>s.id===id)||{}).points||[]).length;
   const left = cands.slice(), pairs = [];
+  let firstD = null;
   while(left.length>=2){
-    let best=null;
+    let best = null;
     for(let i=0;i<left.length;i++) for(let j=i+1;j<left.length;j++){
-      const d = dist(left[i].pt, left[j].pt);
+      const a = left[i], b = left[j];
+      if(a.shapeId===b.shapeId && pointsOf(a.shapeId)<3) continue; // i due capi di un segmento dritto: unirli lo annullerebbe
+      const d = dist(a.pt, b.pt);
       if(!best || d<best.d) best = {i, j, d};
     }
+    if(!best) break;
+    if(firstD!=null && best.d > Math.max(10, firstD*3)) break;
+    if(firstD==null) firstD = best.d;
     const a = left[best.i], b = left[best.j];
     pairs.push([Math.min(a.n,b.n), Math.max(a.n,b.n)]);
     left.splice(best.j,1); left.splice(best.i,1);
@@ -6694,6 +6804,11 @@ function validateJoinPairs(){
     if(a===b) return tpl('Il punto {n} non può essere unito a se stesso.', {n:a});
     if(froms.has(a)) return tpl('Il punto {n} compare due volte come punto di partenza.', {n:a});
     froms.add(a); tos.add(b);
+  }
+  for(const [a,b] of pairs){
+    const A = joinState.cands.find(c=>c.n===a), B = joinState.cands.find(c=>c.n===b);
+    const sh = A && B && A.shapeId===B.shapeId ? state.shapes.find(s=>s.id===A.shapeId) : null;
+    if(sh && sh.points && sh.points.length<3) return tpl('I punti {a} e {b} sono i due capi della stessa linea dritta: unirli la ridurrebbe a un punto.', {a, b});
   }
   for(const a of froms) if(tos.has(a)) return tpl('Il punto {n} è sia punto di partenza sia punto di arrivo: una catena non si può risolvere, usa coppie che puntano tutte a punti fermi.', {n:a});
   // i punti non devono essere cambiati da quando è stata aperta la finestra
@@ -7317,10 +7432,15 @@ function buildRail(){
   rail.appendChild(closeAllBtn);
 }
 function setTool(id){
+  // il lazo è una variante della Selezione: tutto funziona come con la freccia, ma trascinando
+  // sull'area vuota si disegna un percorso libero invece del rettangolo
+  state.lassoMode = (id==='lasso');
+  if(id==='lasso') id = 'select';
   state.tool = id;
   state.draft = null;
   state.refImageSelected = false;
-  document.querySelectorAll('.tool').forEach(b=>b.classList.toggle('active', b.dataset.tool===id));
+  const activeBtn = state.lassoMode ? 'lasso' : id;
+  document.querySelectorAll('.tool').forEach(b=>b.classList.toggle('active', b.dataset.tool===activeBtn));
   stage.style.cursor = id==='select' ? 'default' : 'crosshair';
   renderAll();
 }
@@ -7641,7 +7761,7 @@ function handleMouseDown(mm, e){
     } else {
       state.refImageSelected = false;
       if(!e.shiftKey){ state.selection.clear(); state.joinRegion = null; }
-      if(e.altKey){
+      if(e.altKey || state.lassoMode){
         dragMode='lasso'; state.drag={points:[mm]};
       } else {
         dragMode='rubberband'; state.drag={start:mm, current:mm};
@@ -8228,7 +8348,7 @@ window.addEventListener('keydown', (e)=>{
   }
   if((e.ctrlKey||e.metaKey) && k==='v'){ e.preventDefault(); pasteClipboardShapesAt(null); return; }
   if((e.ctrlKey||e.metaKey)) return; // avoid clobbering other browser shortcuts
-  const map = {v:'select',p:'pen',l:'line',r:'rect',o:'ellipse',a:'arc',b:'freehand',t:'text'};
+  const map = {v:'select',q:'lasso',p:'pen',l:'line',r:'rect',o:'ellipse',a:'arc',b:'freehand',t:'text'};
   if(map[k]){ setTool(map[k]); return; }
   if(k==='delete' || k==='backspace'){
     e.preventDefault();
