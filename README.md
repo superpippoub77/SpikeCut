@@ -47,6 +47,18 @@ l'**angolo di piegatura** (90° = angolo retto di una parete, 180° = piega
 completa su se stessa). Sul disegno compare a metà di ogni tratto una
 freccia a V che indica il verso, con l'angolo accanto.
 
+### Ordine di piegatura
+Ogni piega ha un numero di **passo** (pannello proprietà → "Ordine di
+piegatura", anche su più pieghe selezionate insieme, con − e +). Nella
+simulazione 3D le pieghe si chiudono per passi, dal numero più basso; quelle
+con lo stesso numero si chiudono insieme — così una linguetta non si chiude
+prima delle alette che deve coprire. Sul disegno il passo compare accanto
+all'angolo ("90° · passo 2") e nella finestra 3D accanto al cursore ("Passo 2
+di 3"); ogni passo dell'animazione accelera e rallenta per conto suo. Le
+scatole generate hanno già un ordine sensato: scatola americana 1 tubo,
+2 alette corte, 3 alette lunghe (ora una piega per ogni aletta); astuccio
+1 tubo, 2 alette antipolvere, 3 aletta posteriore, 4 linguetta di chiusura.
+
 ### Anteprima 3D piegata (menu Strumenti)
 Ricava i pannelli dai contorni di **taglio** chiusi, divisi dalle linee di
 **piega**, e li piega in 3D usando verso e angolo di ogni piega (quelle
@@ -93,6 +105,10 @@ vicino (taglio di scarico, asola, taglio dritto) non è un errore: compare solo
 come informazione. Se una piega resta bloccata e nessuna causa è correggibile
 in automatico, il controllo fa lampeggiare le estremità libere di taglio più
 vicine alla piega, cioè dove il contorno probabilmente si interrompe.
+**Pieghe sovrapposte al bordo**: se una piega (per esempio disegnata a L)
+ha all'inizio o alla fine un tratto sopra il taglio del bordo esterno, il
+controllo dice dove e quanto è lungo, e la correzione lo toglie; se la piega
+coincide tutta con il bordo, la correzione la elimina.
 **Linee chiuse su se stesse**: un segmento dritto marcato come "chiuso" (come
 faceva "Chiudi tutti i percorsi aperti" nelle versioni precedenti) sembra
 normale ma non ha più estremità; il controllo lo segnala e lo riapre con un

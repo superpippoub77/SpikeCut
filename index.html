@@ -625,7 +625,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.13.5</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.14.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -785,6 +785,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
         <span style="font-size:12px;color:var(--ink-dim);">Piegatura</span>
         <input type="range" id="fold3dSlider" min="0" max="100" value="100" style="flex:1;">
         <span id="fold3dPct" style="font-size:12px;min-width:38px;text-align:right;">100%</span>
+        <span id="fold3dStep" style="font-size:12px;font-weight:700;color:var(--brass);min-width:80px;"></span>
         <button class="btn" id="fold3dReset" style="width:auto;margin:0;">Vista iniziale</button>
       </div>
       <div class="hint" id="fold3dInfo" style="margin-top:8px;"></div>
@@ -1859,6 +1860,20 @@ const I18N = {
     "Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso. Le interruzioni più vicine sono nei punti che lampeggiano, a {d} dalla piega: se lì il contorno deve continuare, unisci quei punti (seleziona le linee e usa \"Unisci punti\").": "This fold is fine (its ends touch the other lines), but it isn’t used because the cut outline it sits in isn’t closed. The nearest breaks are at the flashing points, {d} from the fold: if the outline should continue there, join those points (select the lines and use \"Join points\").",
     "{n} linee dritte risultano \"chiuse su se stesse\" (un segmento percorso avanti e indietro): sembrano normali ma non hanno più estremità, quindi non si collegano come dovrebbero. Succede ad esempio usando \"Chiudi tutti i percorsi aperti\".": "{n} straight lines are \"closed onto themselves\" (a segment traced back and forth): they look normal but no longer have ends, so they don’t connect as they should. This happens, for example, when using \"Close all open paths\".",
     "Riapre {n} linee chiuse su se stesse, riportandole a linee normali.": "Reopens {n} lines closed onto themselves, turning them back into normal lines.",
+    "all'inizio e alla fine": "at the start and at the end",
+    "all'inizio": "at the start",
+    "alla fine": "at the end",
+    "Piega corretta per il {pct}%: {where} un tratto di {len} mm coincide con il bordo esterno di taglio, dove non c'è niente da piegare. Il 3D funziona lo stesso, ma in fustellatura quel tratto verrebbe sia tagliato sia cordonato.": "Fold correct for {pct}%: {where} a {len} mm stretch coincides with the outer cut edge, where there is nothing to fold. The 3D still works, but in die-cutting that stretch would be both cut and creased.",
+    "Toglie dalla piega il tratto di {len} mm sovrapposto al bordo di taglio.": "Removes the {len} mm stretch overlapping the cut edge from the fold.",
+    "Piega che coincide del tutto con il bordo esterno di taglio: lì non c'è niente da piegare, e in fustellatura verrebbe sia tagliata sia cordonata.": "Fold that entirely coincides with the outer cut edge: there is nothing to fold there, and in die-cutting it would be both cut and creased.",
+    "Elimina la piega: coincide con il taglio del bordo esterno.": "Deletes the fold: it coincides with the outer edge cut.",
+    "Passo {s} di {k}": "Step {s} of {k}",
+    "Piegatura in {k} passi (ordine impostato sulle pieghe).": "Folding in {k} steps (order set on the folds).",
+    "passo {n}": "step {n}",
+    "Ordine di piegatura (passo)": "Folding order (step)",
+    "misto": "mixed",
+    "Nella simulazione 3D le pieghe con il numero più basso si chiudono prima; quelle con lo stesso numero si chiudono insieme. Esempio: 1 per il tubo, 2 per le alette antipolvere, 3 per la linguetta di chiusura.": "In the 3D simulation, folds with the lowest number close first; those with the same number close together. Example: 1 for the tube, 2 for the dust flaps, 3 for the closing tuck flap.",
+    "Vale per le {n} pieghe selezionate.": "Applies to the {n} selected folds.",
   },
   de: {
     "1 cm": "1 cm",
@@ -2522,6 +2537,20 @@ const I18N = {
     "Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso. Le interruzioni più vicine sono nei punti che lampeggiano, a {d} dalla piega: se lì il contorno deve continuare, unisci quei punti (seleziona le linee e usa \"Unisci punti\").": "Dieser Falz ist in Ordnung (seine Enden berühren die anderen Linien), wird aber nicht verwendet, weil die Schnittkontur, in der er liegt, nicht geschlossen ist. Die nächsten Unterbrechungen sind an den blinkenden Punkten, {d} vom Falz entfernt: Wenn die Kontur dort weitergehen soll, verbinde diese Punkte (Linien auswählen und \"Punkte verbinden\" verwenden).",
     "{n} linee dritte risultano \"chiuse su se stesse\" (un segmento percorso avanti e indietro): sembrano normali ma non hanno più estremità, quindi non si collegano come dovrebbero. Succede ad esempio usando \"Chiudi tutti i percorsi aperti\".": "{n} gerade Linien sind \"in sich geschlossen\" (ein hin und zurück verlaufender Abschnitt): Sie sehen normal aus, haben aber keine Enden mehr und verbinden sich daher nicht wie gewünscht. Das passiert z.B. mit \"Alle offenen Pfade schließen\".",
     "Riapre {n} linee chiuse su se stesse, riportandole a linee normali.": "Öffnet {n} in sich geschlossene Linien wieder und macht sie zu normalen Linien.",
+    "all'inizio e alla fine": "am Anfang und am Ende",
+    "all'inizio": "am Anfang",
+    "alla fine": "am Ende",
+    "Piega corretta per il {pct}%: {where} un tratto di {len} mm coincide con il bordo esterno di taglio, dove non c'è niente da piegare. Il 3D funziona lo stesso, ma in fustellatura quel tratto verrebbe sia tagliato sia cordonato.": "Falz zu {pct}% korrekt: {where} fällt ein Abschnitt von {len} mm mit dem äußeren Schnittrand zusammen, wo es nichts zu falten gibt. Das 3D funktioniert trotzdem, aber beim Stanzen würde dieser Abschnitt sowohl geschnitten als auch gerillt.",
+    "Toglie dalla piega il tratto di {len} mm sovrapposto al bordo di taglio.": "Entfernt den {len} mm langen Abschnitt, der den Schnittrand überlappt, aus dem Falz.",
+    "Piega che coincide del tutto con il bordo esterno di taglio: lì non c'è niente da piegare, e in fustellatura verrebbe sia tagliata sia cordonata.": "Falz, der vollständig mit dem äußeren Schnittrand zusammenfällt: Dort gibt es nichts zu falten, und beim Stanzen würde er sowohl geschnitten als auch gerillt.",
+    "Elimina la piega: coincide con il taglio del bordo esterno.": "Löscht den Falz: Er fällt mit dem Schnitt des Außenrands zusammen.",
+    "Passo {s} di {k}": "Schritt {s} von {k}",
+    "Piegatura in {k} passi (ordine impostato sulle pieghe).": "Faltung in {k} Schritten (Reihenfolge an den Falzen festgelegt).",
+    "passo {n}": "Schritt {n}",
+    "Ordine di piegatura (passo)": "Faltreihenfolge (Schritt)",
+    "misto": "gemischt",
+    "Nella simulazione 3D le pieghe con il numero più basso si chiudono prima; quelle con lo stesso numero si chiudono insieme. Esempio: 1 per il tubo, 2 per le alette antipolvere, 3 per la linguetta di chiusura.": "In der 3D-Simulation schließen sich Falze mit der niedrigsten Nummer zuerst; solche mit derselben Nummer schließen sich gemeinsam. Beispiel: 1 für den Schlauch, 2 für die Staublaschen, 3 für die Einstecklasche.",
+    "Vale per le {n} pieghe selezionate.": "Gilt für die {n} ausgewählten Falze.",
   },
   es: {
     "1 cm": "1 cm",
@@ -3185,6 +3214,20 @@ const I18N = {
     "Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso. Le interruzioni più vicine sono nei punti che lampeggiano, a {d} dalla piega: se lì il contorno deve continuare, unisci quei punti (seleziona le linee e usa \"Unisci punti\").": "Este pliegue está bien (sus extremos tocan las otras líneas), pero no se usa porque el contorno de corte en el que está no está cerrado. Las interrupciones más cercanas están en los puntos que parpadean, a {d} del pliegue: si ahí el contorno debe continuar, une esos puntos (selecciona las líneas y usa \"Unir puntos\").",
     "{n} linee dritte risultano \"chiuse su se stesse\" (un segmento percorso avanti e indietro): sembrano normali ma non hanno più estremità, quindi non si collegano come dovrebbero. Succede ad esempio usando \"Chiudi tutti i percorsi aperti\".": "{n} líneas rectas están \"cerradas sobre sí mismas\" (un tramo recorrido de ida y vuelta): parecen normales pero ya no tienen extremos, así que no se conectan como deberían. Ocurre, por ejemplo, al usar \"Cerrar todos los trazados abiertos\".",
     "Riapre {n} linee chiuse su se stesse, riportandole a linee normali.": "Vuelve a abrir {n} líneas cerradas sobre sí mismas, convirtiéndolas de nuevo en líneas normales.",
+    "all'inizio e alla fine": "al principio y al final",
+    "all'inizio": "al principio",
+    "alla fine": "al final",
+    "Piega corretta per il {pct}%: {where} un tratto di {len} mm coincide con il bordo esterno di taglio, dove non c'è niente da piegare. Il 3D funziona lo stesso, ma in fustellatura quel tratto verrebbe sia tagliato sia cordonato.": "Pliegue correcto al {pct}%: {where} un tramo de {len} mm coincide con el borde exterior de corte, donde no hay nada que plegar. El 3D funciona igual, pero al troquelar ese tramo quedaría cortado y hendido a la vez.",
+    "Toglie dalla piega il tratto di {len} mm sovrapposto al bordo di taglio.": "Quita del pliegue el tramo de {len} mm superpuesto al borde de corte.",
+    "Piega che coincide del tutto con il bordo esterno di taglio: lì non c'è niente da piegare, e in fustellatura verrebbe sia tagliata sia cordonata.": "Pliegue que coincide por completo con el borde exterior de corte: ahí no hay nada que plegar, y al troquelar quedaría cortado y hendido a la vez.",
+    "Elimina la piega: coincide con il taglio del bordo esterno.": "Elimina el pliegue: coincide con el corte del borde exterior.",
+    "Passo {s} di {k}": "Paso {s} de {k}",
+    "Piegatura in {k} passi (ordine impostato sulle pieghe).": "Plegado en {k} pasos (orden fijado en los pliegues).",
+    "passo {n}": "paso {n}",
+    "Ordine di piegatura (passo)": "Orden de plegado (paso)",
+    "misto": "mixto",
+    "Nella simulazione 3D le pieghe con il numero più basso si chiudono prima; quelle con lo stesso numero si chiudono insieme. Esempio: 1 per il tubo, 2 per le alette antipolvere, 3 per la linguetta di chiusura.": "En la simulación 3D, los pliegues con el número más bajo se cierran primero; los que tienen el mismo número se cierran juntos. Ejemplo: 1 para el tubo, 2 para las solapas antipolvo, 3 para la lengüeta de cierre.",
+    "Vale per le {n} pieghe selezionate.": "Se aplica a los {n} pliegues seleccionados.",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -3848,6 +3891,20 @@ const I18N = {
     "Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso. Le interruzioni più vicine sono nei punti che lampeggiano, a {d} dalla piega: se lì il contorno deve continuare, unisci quei punti (seleziona le linee e usa \"Unisci punti\").": "这条折线本身没问题（两端都接触到其他线），但因为它所在的切割轮廓未闭合而未被使用。最近的断开处位于闪烁的点，距折线 {d}：如果轮廓应在那里继续，请连接这些点（选中线条并使用\"连接点\"）。",
     "{n} linee dritte risultano \"chiuse su se stesse\" (un segmento percorso avanti e indietro): sembrano normali ma non hanno più estremità, quindi non si collegano come dovrebbero. Succede ad esempio usando \"Chiudi tutti i percorsi aperti\".": "{n} 条直线处于\"自闭合\"状态（线段被来回描绘）：看起来正常，但已没有端点，因此无法正常连接。例如使用\"闭合所有开放路径\"时会出现这种情况。",
     "Riapre {n} linee chiuse su se stesse, riportandole a linee normali.": "重新打开 {n} 条自闭合的线，将其恢复为普通线条。",
+    "all'inizio e alla fine": "在开头和结尾",
+    "all'inizio": "在开头",
+    "alla fine": "在结尾",
+    "Piega corretta per il {pct}%: {where} un tratto di {len} mm coincide con il bordo esterno di taglio, dove non c'è niente da piegare. Il 3D funziona lo stesso, ma in fustellatura quel tratto verrebbe sia tagliato sia cordonato.": "折线 {pct}% 正确：{where}有一段 {len} 毫米与外侧切割边缘重合，那里没有可折叠的部分。3D仍然可用，但模切时该段会同时被切割和压痕。",
+    "Toglie dalla piega il tratto di {len} mm sovrapposto al bordo di taglio.": "从折线中删除与切割边缘重叠的 {len} 毫米段。",
+    "Piega che coincide del tutto con il bordo esterno di taglio: lì non c'è niente da piegare, e in fustellatura verrebbe sia tagliata sia cordonata.": "折线与外侧切割边缘完全重合：那里没有可折叠的部分，模切时会同时被切割和压痕。",
+    "Elimina la piega: coincide con il taglio del bordo esterno.": "删除该折线：它与外侧边缘的切割线重合。",
+    "Passo {s} di {k}": "第 {s} 步，共 {k} 步",
+    "Piegatura in {k} passi (ordine impostato sulle pieghe).": "分 {k} 步折叠（顺序在折线上设置）。",
+    "passo {n}": "第 {n} 步",
+    "Ordine di piegatura (passo)": "折叠顺序（步骤）",
+    "misto": "混合",
+    "Nella simulazione 3D le pieghe con il numero più basso si chiudono prima; quelle con lo stesso numero si chiudono insieme. Esempio: 1 per il tubo, 2 per le alette antipolvere, 3 per la linguetta di chiusura.": "在3D模拟中，编号最小的折线最先闭合；编号相同的折线同时闭合。例如：1 为盒身，2 为防尘翼，3 为插舌。",
+    "Vale per le {n} pieghe selezionate.": "应用于所选的 {n} 条折线。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -4511,6 +4568,20 @@ const I18N = {
     "Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso. Le interruzioni più vicine sono nei punti che lampeggiano, a {d} dalla piega: se lì il contorno deve continuare, unisci quei punti (seleziona le linee e usa \"Unisci punti\").": "Ce pli est correct (ses extrémités touchent les autres lignes), mais il n’est pas utilisé car le contour de découpe où il se trouve n’est pas fermé. Les interruptions les plus proches sont aux points qui clignotent, à {d} du pli : si le contour doit continuer là, joins ces points (sélectionne les lignes et utilise « Joindre les points »).",
     "{n} linee dritte risultano \"chiuse su se stesse\" (un segmento percorso avanti e indietro): sembrano normali ma non hanno più estremità, quindi non si collegano come dovrebbero. Succede ad esempio usando \"Chiudi tutti i percorsi aperti\".": "{n} lignes droites sont « fermées sur elles-mêmes » (un segment parcouru aller-retour) : elles semblent normales mais n’ont plus d’extrémités, donc elles ne se relient pas comme elles le devraient. Cela arrive par exemple en utilisant « Fermer tous les tracés ouverts ».",
     "Riapre {n} linee chiuse su se stesse, riportandole a linee normali.": "Rouvre {n} lignes fermées sur elles-mêmes pour en refaire des lignes normales.",
+    "all'inizio e alla fine": "au début et à la fin",
+    "all'inizio": "au début",
+    "alla fine": "à la fin",
+    "Piega corretta per il {pct}%: {where} un tratto di {len} mm coincide con il bordo esterno di taglio, dove non c'è niente da piegare. Il 3D funziona lo stesso, ma in fustellatura quel tratto verrebbe sia tagliato sia cordonato.": "Pli correct à {pct}% : {where}, un segment de {len} mm coïncide avec le bord extérieur de découpe, où il n’y a rien à plier. La 3D fonctionne quand même, mais à la découpe ce segment serait à la fois coupé et rainé.",
+    "Toglie dalla piega il tratto di {len} mm sovrapposto al bordo di taglio.": "Retire du pli le segment de {len} mm superposé au bord de découpe.",
+    "Piega che coincide del tutto con il bordo esterno di taglio: lì non c'è niente da piegare, e in fustellatura verrebbe sia tagliata sia cordonata.": "Pli qui coïncide entièrement avec le bord extérieur de découpe : il n’y a rien à plier, et à la découpe il serait à la fois coupé et rainé.",
+    "Elimina la piega: coincide con il taglio del bordo esterno.": "Supprime le pli : il coïncide avec la découpe du bord extérieur.",
+    "Passo {s} di {k}": "Étape {s} sur {k}",
+    "Piegatura in {k} passi (ordine impostato sulle pieghe).": "Pliage en {k} étapes (ordre défini sur les plis).",
+    "passo {n}": "étape {n}",
+    "Ordine di piegatura (passo)": "Ordre de pliage (étape)",
+    "misto": "mixte",
+    "Nella simulazione 3D le pieghe con il numero più basso si chiudono prima; quelle con lo stesso numero si chiudono insieme. Esempio: 1 per il tubo, 2 per le alette antipolvere, 3 per la linguetta di chiusura.": "Dans la simulation 3D, les plis ayant le plus petit numéro se ferment en premier ; ceux qui ont le même numéro se ferment ensemble. Exemple : 1 pour le tube, 2 pour les rabats anti-poussière, 3 pour la languette de fermeture.",
+    "Vale per le {n} pieghe selezionate.": "S’applique aux {n} plis sélectionnés.",
   },
 };
 let currentLang = 'it';
@@ -5745,6 +5816,7 @@ function renderEndpointMarkers(){
 // Sono solo un'annotazione visiva: non fanno parte della geometria di taglio.
 function renderFoldIndicators(){
   renderFoldCheckOverlay();
+  const showOrders = state.shapes.some(s=>s.style && s.style.role==='fold' && foldOrderOf(s)>1);
   for(const s of state.shapes){
     if(!s.points || s.style.role!=='fold' || !s.foldDir || !isShapeEffVisible(s)) continue;
     const n = s.points.length;
@@ -5767,7 +5839,7 @@ function renderFoldIndicators(){
       if(s.foldAngle!=null){
         const labelPos = [mid[0]+normal[0]*(apexDist+3.5)*sign, mid[1]+normal[1]*(apexDist+3.5)*sign];
         const t = el('text', {x:labelPos[0]*state.scale, y:labelPos[1]*state.scale, 'font-size':9, fill:'#3572d6', 'text-anchor':'middle', 'dominant-baseline':'middle', 'pointer-events':'none'});
-        t.textContent = Math.round(s.foldAngle)+'°';
+        t.textContent = Math.round(s.foldAngle)+'°' + (showOrders ? ' · ' + tpl('passo {n}', {n: foldOrderOf(s)}) : '');
         layerOverlay.appendChild(t);
       }
     }
@@ -6147,9 +6219,16 @@ function tfRotAxis(P, u, ang){ // rotazione di ang radianti attorno alla retta p
 // Piega il modello alla frazione frac (0 = piatto, 1 = completamente piegato).
 // Pieghe senza verso impostato: a monte (le pareti si allontanano da chi
 // guarda il lato stampato, che resta così all'esterno), 90°.
+// Ordine di piegatura: ogni piega ha un numero di passo (s.foldOrder, predefinito 1). Le pieghe
+// si chiudono per passi, dal numero più basso; quelle con lo stesso numero si chiudono insieme.
+function foldOrderOf(s){ return s && s.foldOrder>=1 ? Math.round(s.foldOrder) : 1; }
+function foldSteps(model){
+  return [...new Set(model.order.map(fi=>model.parentHinge[fi]).filter(Boolean).map(h=>foldOrderOf(h.fold)))].sort((a,b)=>a-b);
+}
 function foldModelAt(model, frac){
   const I = {m:[1,0,0,0,1,0,0,0,1], t:[0,0,0]};
   const T = model.faces.map(()=>I);
+  const steps = foldSteps(model), K = steps.length || 1;
   model.order.forEach(fi=>{
     const pf = model.parent[fi];
     if(pf==null){ T[fi]=I; return; }
@@ -6162,7 +6241,8 @@ function foldModelAt(model, frac){
     const side = (d[0]*(cy-P[1]) - d[1]*(cx-P[0])) > 0 ? 1 : -1;
     const dirSign = h.fold.foldDir==='valley' ? 1 : -1;
     const angDeg = h.fold.foldAngle!=null ? h.fold.foldAngle : 90;
-    const R = tfRotAxis(P, u, side*dirSign*angDeg*Math.PI/180*frac);
+    const local = Math.max(0, Math.min(1, frac*K - Math.max(0, steps.indexOf(foldOrderOf(h.fold))))); // avanzamento di questa piega nel suo passo
+    const R = tfRotAxis(P, u, side*dirSign*angDeg*Math.PI/180*local);
     T[fi] = tfCompose(T[pf], R);
   });
   const unreached = new Set(model.unreached || []);
@@ -6264,7 +6344,7 @@ function checkFoldModel(model){
     const partial = st.hinge > 0.5;
     const pct = Math.round(st.hinge/st.tot*100);
     const main = Math.max(st.pruned, st.border, st.openSide, st.same);
-    let text, ends = [];
+    let text, ends = [], issueFix = null, trimMarks = [];
     if(main===st.openSide && !partial){
       issues.push({level:'warn', consequence:true, text:'', shapes:[s], points:[], gaps:[], fix:null});
       return;
@@ -6280,12 +6360,34 @@ function checkFoldModel(model){
         : translate('Piega che non divide nessun pannello: termina all\'interno di un pannello senza separarlo in due parti.');
     } else if(main===st.border){
       text = translate('Piega sovrapposta al bordo esterno della fustella: da un lato non c\'è nessun pannello da piegare.');
+      // quali tratti della piega coincidono con una linea di taglio? se sono all'inizio e/o alla fine si tolgono
+      const cutSegs = model.segs.filter(g=> g.src!==s && g.src.style.role!=='fold');
+      const onCut = (a,b)=>{ const m=[(a[0]+b[0])/2,(a[1]+b[1])/2]; return [a,b,m].every(q=> cutSegs.some(g=>segDist(q,g.a,g.b) < model.TOL)); };
+      const P = s.points || [];
+      if(P.length>=2 && !s.closed){
+        const nseg = P.length-1;
+        let lead = 0; while(lead<nseg && onCut(P[lead], P[lead+1])) lead++;
+        let trail = 0; while(trail<nseg-lead && onCut(P[nseg-trail-1], P[nseg-trail])) trail++;
+        let lenOn = 0;
+        for(let k=0;k<lead;k++) lenOn += dist(P[k],P[k+1]);
+        for(let k=0;k<trail;k++) lenOn += dist(P[nseg-k-1],P[nseg-k]);
+        if(lead+trail>0 && lead+trail<nseg){
+          const where = lead && trail ? translate('all\'inizio e alla fine') : (lead ? translate('all\'inizio') : translate('alla fine'));
+          text = tpl('Piega corretta per il {pct}%: {where} un tratto di {len} mm coincide con il bordo esterno di taglio, dove non c\'è niente da piegare. Il 3D funziona lo stesso, ma in fustellatura quel tratto verrebbe sia tagliato sia cordonato.', {pct, where, len: fmt(lenOn)});
+          issueFix = { moves:[], roles:[], close:[], reopen:[], removes:[], trims:[{shape:s, lead, trail}],
+                       desc: tpl('Toglie dalla piega il tratto di {len} mm sovrapposto al bordo di taglio.', {len: fmt(lenOn)}) };
+          trimMarks = [lead ? P[lead] : null, trail ? P[nseg-trail] : null].filter(Boolean);
+        } else if(lead===nseg){
+          text = translate('Piega che coincide del tutto con il bordo esterno di taglio: lì non c\'è niente da piegare, e in fustellatura verrebbe sia tagliata sia cordonata.');
+          issueFix = { moves:[], roles:[], close:[], reopen:[], trims:[], removes:[s], desc: translate('Elimina la piega: coincide con il taglio del bordo esterno.') };
+        }
+      }
     } else {
       text = translate('Piega che non separa due pannelli distinti: il contorno di taglio intorno non è chiuso da entrambi i lati.');
     }
-    if(partial) text = tpl('Usata solo in parte ({pct}%).', {pct}) + ' ' + text;
-    issues.push({level: partial ? 'warn' : 'error', text, shapes:[s], points: ends.map(e=>e.pt),
-      gaps: ends.filter(e=>e.visual).map(e=>e.visual), fix: makeFix(ends.map(e=>e.fix))});
+    if(partial && !issueFix) text = tpl('Usata solo in parte ({pct}%).', {pct}) + ' ' + text;
+    issues.push({level: partial ? 'warn' : 'error', text, shapes:[s], points: ends.map(e=>e.pt).concat(trimMarks),
+      gaps: ends.filter(e=>e.visual).map(e=>e.visual), fix: issueFix || makeFix(ends.map(e=>e.fix))});
   });
   // Linee "chiuse su se stesse": un segmento dritto (o punti tutti allineati) marcato come chiuso
   // è percorso avanti e indietro. Sembra una linea normale ma non ha più estremità, quindi non si
@@ -6369,7 +6471,7 @@ function checkFoldModel(model){
       const nums = is.causeNums.join(', ');
       is.text = tpl('Questa piega è a posto (le sue estremità toccano le altre linee), ma non viene usata perché il contorno di taglio in cui si trova non è chiuso. Si risolve correggendo i problemi n. {nums}.', {nums});
       const fx = causes.filter(o=>o.fix);
-      if(fx.length) is.fix = { moves: fx.flatMap(o=>o.fix.moves||[]), roles: fx.flatMap(o=>o.fix.roles||[]), close: fx.flatMap(o=>o.fix.close||[]), reopen: fx.flatMap(o=>o.fix.reopen||[]),
+      if(fx.length) is.fix = { moves: fx.flatMap(o=>o.fix.moves||[]), roles: fx.flatMap(o=>o.fix.roles||[]), close: fx.flatMap(o=>o.fix.close||[]), reopen: fx.flatMap(o=>o.fix.reopen||[]), trims: fx.flatMap(o=>o.fix.trims||[]), removes: fx.flatMap(o=>o.fix.removes||[]),
         desc: tpl('Corregge il contorno che la blocca (problemi n. {nums}).', {nums: fx.map(o=>o.num).join(', ')}) };
     } else {
       // nessuna causa correggibile: indico dove il contorno probabilmente si interrompe,
@@ -6473,6 +6575,19 @@ function applyIssueFixes(list){
     setPtDetached(m.shape, i, false);
     if(m.shape.arc) rebuildArc(m.shape);
     marks.push(m.to);
+  }));
+  fixes.forEach(f=> (f.trims||[]).forEach(t=>{
+    const s = t.shape, n = s.points.length;
+    if(n - t.lead - t.trail < 2) return;
+    s.points = s.points.slice(t.lead, n - t.trail);
+    if(s.smooth) s.smooth = s.smooth.slice(t.lead, n - t.trail);
+    delete s.detached; delete s.arc;
+    marks.push(s.points[0], s.points[s.points.length-1]);
+  }));
+  fixes.forEach(f=> (f.removes||[]).forEach(s=>{
+    if(s.points) marks.push(s.points[0], s.points[s.points.length-1]);
+    state.shapes = state.shapes.filter(x=>x!==s);
+    state.selection.delete(s.id);
   }));
   fixes.forEach(f=> (f.close||[]).forEach(s=>{
     if(s.closed) return;
@@ -6670,7 +6785,9 @@ function openFold3D(){
 function refreshFold3D(){
   const model = buildFoldModel(state.shapes);
   fold3d.model = model;
-  document.getElementById('fold3dInfo').textContent = tpl('{p} pannelli, {h} pieghe collegate.', {p:model.faces.length, h:model.hinges.length});
+  const K = foldSteps(model).length;
+  document.getElementById('fold3dInfo').textContent = tpl('{p} pannelli, {h} pieghe collegate.', {p:model.faces.length, h:model.hinges.length})
+    + (K>1 ? ' ' + tpl('Piegatura in {k} passi (ordine impostato sulle pieghe).', {k:K}) : '');
   renderFold3DCheck(checkFoldModel(model));
   if(model.faces.length) playFold3D(); else setFold3DFrac(0);
 }
@@ -6678,14 +6795,19 @@ function setFold3DFrac(f){
   fold3d.frac = Math.max(0, Math.min(1, f));
   document.getElementById('fold3dSlider').value = Math.round(fold3d.frac*100);
   document.getElementById('fold3dPct').textContent = Math.round(fold3d.frac*100)+'%';
+  const K = fold3d.model ? foldSteps(fold3d.model).length : 0;
+  document.getElementById('fold3dStep').textContent = K>1 ? tpl('Passo {s} di {k}', {s: Math.min(K, Math.floor(fold3d.frac*K + 1e-9) + 1), k:K}) : '';
   renderFold3D();
 }
 function playFold3D(){
   if(fold3d.anim) cancelAnimationFrame(fold3d.anim);
-  const t0 = performance.now(), DUR = 2400;
+  const K = fold3d.model ? Math.max(1, foldSteps(fold3d.model).length) : 1;
+  const t0 = performance.now(), DUR = Math.max(2400, 1400*K);
+  const ease = x=> x<0.5 ? 2*x*x : 1-Math.pow(-2*x+2,2)/2;
   const step = now=>{
     const k = Math.min(1, (now-t0)/DUR);
-    setFold3DFrac(k<0.5 ? 2*k*k : 1-Math.pow(-2*k+2,2)/2); // accelera e rallenta
+    const s = k*K, i = Math.min(K-1, Math.floor(s)); // ogni passo accelera e rallenta per conto suo
+    setFold3DFrac(k>=1 ? 1 : (i + ease(s - i))/K);
     fold3d.anim = k<1 ? requestAnimationFrame(step) : null;
   };
   fold3d.anim = requestAnimationFrame(step);
@@ -7194,6 +7316,29 @@ function booleanOp(op){
   if(skipped.length) t += ' ' + tpl('{n} forme ignorate perché aperte o non geometriche.', {n:skipped.length});
   showToast(t, false);
 }
+function renderFoldOrderSection(host, ids){
+  const folds = ids.map(id=>state.shapes.find(s=>s.id===id)).filter(s=>s && s.points && s.style && s.style.role==='fold' && !s.locked);
+  if(!folds.length) return;
+  host.appendChild(document.createElement('hr')).className='sep';
+  const f = document.createElement('div'); f.className='field';
+  f.innerHTML = `<label>${translate('Ordine di piegatura (passo)')}</label>`;
+  const row = document.createElement('div'); row.style.cssText='display:flex;gap:6px;align-items:center;';
+  const orders = [...new Set(folds.map(foldOrderOf))];
+  const inp = document.createElement('input'); inp.type='number'; inp.min='1'; inp.step='1'; inp.style.width='80px';
+  if(orders.length===1) inp.value = orders[0]; else inp.placeholder = translate('misto');
+  const apply = v=>{ folds.forEach(s=>{ if(v>1) s.foldOrder = v; else delete s.foldOrder; }); renderCanvasOnly(); };
+  inp.oninput = ()=>{ const v = parseInt(inp.value,10); if(v>=1) apply(v); };
+  inp.onchange = ()=>{ const v = parseInt(inp.value,10); if(v>=1){ apply(v); pushHistory(); renderAll(); } };
+  const mk = (lbl, d)=>{ const b=document.createElement('button'); b.className='iconbtn'; b.textContent=lbl;
+    b.onclick=()=>{ const cur = parseInt(inp.value,10) || 1; const v = Math.max(1, cur+d); inp.value = v; apply(v); pushHistory(); renderAll(); }; return b; };
+  row.append(mk('−',-1), inp, mk('+',+1));
+  f.appendChild(row);
+  const h = document.createElement('div'); h.className='hint'; h.style.marginTop='6px';
+  h.textContent = translate('Nella simulazione 3D le pieghe con il numero più basso si chiudono prima; quelle con lo stesso numero si chiudono insieme. Esempio: 1 per il tubo, 2 per le alette antipolvere, 3 per la linguetta di chiusura.')
+    + (folds.length>1 ? ' ' + tpl('Vale per le {n} pieghe selezionate.', {n:folds.length}) : '');
+  f.appendChild(h);
+  host.appendChild(f);
+}
 function renderBooleanSection(host, ids){
   if(ids.length<2) return;
   host.appendChild(document.createElement('hr')).className='sep';
@@ -7289,8 +7434,10 @@ function generateAmericanBox(L, W, H, glueW){
     shapes.push(boxLineShape([x,0],[x,flapH],'cut'));
     shapes.push(boxLineShape([x,flapH+H],[x,totalH],'cut'));
   });
-  [x1,x2,x3,x4].forEach(x=> shapes.push(boxLineShape([x,flapH],[x,flapH+H],'fold')));
-  [flapH, flapH+H].forEach(y=> shapes.push(boxLineShape([x1,y],[totalW,y],'fold')));
+  [x1,x2,x3,x4].forEach(x=>{ const f = boxLineShape([x,flapH],[x,flapH+H],'fold'); f.foldOrder = 1; shapes.push(f); }); // 1: il tubo
+  // una piega per ogni aletta, così si possono chiudere in ordine: prima le alette corte (sui fianchi), poi le lunghe
+  const panels = [[x1,x2,'long'],[x2,x3,'short'],[x3,x4,'long'],[x4,totalW,'short']];
+  [flapH, flapH+H].forEach(y=> panels.forEach(([a,b,kind])=>{ const f = boxLineShape([a,y],[b,y],'fold'); f.foldOrder = kind==='short' ? 2 : 3; shapes.push(f); }));
   setDefaultFolds(shapes);
   return {shapes, totalW, totalH};
 }
@@ -7315,8 +7462,7 @@ function generateTuckBox(L, W, H, glueW){
   shapes.push(boxLineShape([0,bodyY1],[totalW,bodyY1],'cut'));
   shapes.push(boxLineShape([0,bodyY0],[0,bodyY1],'cut'));
   shapes.push(boxLineShape([totalW,bodyY0],[totalW,bodyY1],'cut'));
-  [xs.front, xs.side1, xs.back, xs.side2].forEach(x=>
-    shapes.push(boxLineShape([x,bodyY0],[x,bodyY1],'fold')));
+  [xs.front, xs.side1, xs.back, xs.side2].forEach(x=>{ const f = boxLineShape([x,bodyY0],[x,bodyY1],'fold'); f.foldOrder = 1; shapes.push(f); }); // 1: il tubo
 
   function addEnd(y0, dir){ // dir=+1 sopra il corpo (verso l'alto), -1 sotto (verso il basso)
     const dustY = y0 + dir*dustH;
@@ -7327,19 +7473,19 @@ function generateTuckBox(L, W, H, glueW){
       shapes.push(boxPolyShape([
         [x0, y0], [x0+w, y0], [x0+w-inset, dustY], [x0+inset, dustY]
       ], 'cut'));
-      shapes.push(boxLineShape([x0,y0],[x0+w,y0],'fold'));
+      const fd = boxLineShape([x0,y0],[x0+w,y0],'fold'); fd.foldOrder = 2; shapes.push(fd); // 2: alette antipolvere
     });
     // aletta rettangolare sul pannello posteriore (back)
     shapes.push(boxPolyShape([
       [xs.back, y0], [xs.back+L, y0], [xs.back+L, dustY], [xs.back, dustY]
     ], 'cut'));
-    shapes.push(boxLineShape([xs.back,y0],[xs.back+L,y0],'fold'));
+    { const fb = boxLineShape([xs.back,y0],[xs.back+L,y0],'fold'); fb.foldOrder = 3; shapes.push(fb); } // 3: aletta posteriore
     // aletta a incastro sul pannello frontale (front), leggermente più lunga e rastremata in punta
     const tipInset = L*0.12;
     shapes.push(boxPolyShape([
       [xs.front, y0], [xs.front+L, y0], [xs.front+L-tipInset, tuckY], [xs.front+tipInset, tuckY]
     ], 'cut'));
-    shapes.push(boxLineShape([xs.front,y0],[xs.front+L,y0],'fold'));
+    { const ff = boxLineShape([xs.front,y0],[xs.front+L,y0],'fold'); ff.foldOrder = 4; shapes.push(ff); } // 4: linguetta di chiusura, per ultima
   }
   addEnd(bodyY0, -1); // fasce superiori (sopra il corpo, y decrescente)
   addEnd(bodyY1, +1); // fasce inferiori (sotto il corpo, y crescente)
@@ -9952,6 +10098,7 @@ function renderPropPanelInner(){
     host.appendChild(foldHint);
   }
   if(ids.length>1) renderAlignSection(host, ids);
+  if(ids.length) renderFoldOrderSection(host, ids);
   if(ids.length>1) renderBooleanSection(host, ids);
   if(ids.length) renderLinkSection(host, ids);
   if(ids.length) renderJoinSection(host);
