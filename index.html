@@ -583,6 +583,11 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
               <rect width="6" height="6" fill="#cfcfcf"/>
               <rect x="6" y="6" width="6" height="6" fill="#cfcfcf"/>
             </pattern>
+            <!-- tratteggio delle zone di incollaggio: solo a schermo, non viene esportato né stampato -->
+            <pattern id="glue-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+              <rect width="8" height="8" fill="#a3651e" fill-opacity="0.07"/>
+              <line x1="0" y1="0" x2="0" y2="8" stroke="#a3651e" stroke-width="1.8" stroke-opacity="0.55"/>
+            </pattern>
           </defs>
         </svg>
       </div>
@@ -626,7 +631,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.15.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.15.1</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -5489,9 +5494,12 @@ function pathD(points, closed, smoothArr){
 
 function shapeToNode(s){
   const st = s.style;
+  // zona di incollaggio chiusa e senza un riempimento scelto: tratteggio a schermo (l'esportazione e la
+  // stampa usano i dati della forma, dove il riempimento resta "nessuno", quindi il tratteggio non compare)
+  const glueHatch = st.role==='glue' && (!st.fill || st.fill==='none') && ((s.points && s.closed) || s.type==='rect' || s.type==='ellipse');
   const common = {
     stroke: st.stroke, 'stroke-width': st.strokeWidth,
-    fill: st.fill||'none', 'fill-opacity': st.fillOpacity!=null?st.fillOpacity:1,
+    fill: glueHatch ? 'url(#glue-hatch)' : (st.fill||'none'), 'fill-opacity': glueHatch ? 1 : (st.fillOpacity!=null?st.fillOpacity:1),
     'stroke-dasharray': st.dash && st.dash!=='none' ? st.dash : '',
     'stroke-linejoin':'round', 'stroke-linecap':'round',
     'data-id': s.id, 'data-role': st.role
@@ -6460,7 +6468,7 @@ function checkFoldModel(model){
   const segDist = (p,a,b)=>{ const dx=b[0]-a[0], dy=b[1]-a[1], l2=dx*dx+dy*dy; let t = l2 ? ((p[0]-a[0])*dx+(p[1]-a[1])*dy)/l2 : 0; t=Math.max(0,Math.min(1,t)); return Math.hypot(a[0]+dx*t-p[0], a[1]+dy*t-p[1]); };
   const cutFoldShapes = [...new Set(model.segs.map(g=>g.src))];
   const vertsOf = s=> s.points ? s.points : ((shapeToRing(s)||[]).slice(0,-1));
-  const otherRoleShapes = state.shapes.filter(s=> s.points && s.points.length>1 && isShapeEffVisible(s) && s.style && !['cut','diecut','fold'].includes(s.style.role));
+  const otherRoleShapes = state.shapes.filter(s=> s.points && s.points.length>1 && !s.closed && isShapeEffVisible(s) && s.style && !['cut','diecut','fold'].includes(s.style.role));
   // estremità libere di una forma aperta, con la correzione più adatta per ciascuna
   const freeEnds = s=>{
     if(!s.points || s.closed || s.points.length<2) return [];
@@ -7804,6 +7812,7 @@ function generateAmericanBox(L, W, H, glueW){
     shapes.push(boxLineShape([x,flapH+H],[x,totalH],'cut'));
   });
   [x1,x2,x3,x4].forEach(x=>{ const f = boxLineShape([x,flapH],[x,flapH+H],'fold'); f.foldOrder = 1; shapes.push(f); }); // 1: il tubo
+  shapes.push(glueZoneShape(0, flapH, glueW, H)); // zona di incollaggio sull'aletta
   // una piega per ogni aletta, così si possono chiudere in ordine: prima le alette corte (sui fianchi), poi le lunghe
   const panels = [[x1,x2,'long'],[x2,x3,'short'],[x3,x4,'long'],[x4,totalW,'short']];
   [flapH, flapH+H].forEach(y=> panels.forEach(([a,b,kind])=>{ const f = boxLineShape([a,y],[b,y],'fold'); f.foldOrder = kind==='short' ? 2 : 3; shapes.push(f); }));
@@ -7812,6 +7821,12 @@ function generateAmericanBox(L, W, H, glueW){
 }
 // Le fustelle generate hanno il lato stampato all'esterno: tutte le pieghe
 // sono "a monte" a 90° (angolo retto delle pareti).
+// zona di incollaggio: poligono con ruolo Incollaggio, rientrato di 1,5 mm dai bordi dell'aletta
+// (così le sue linee non si sovrappongono a taglio e piega); a schermo è tratteggiato
+function glueZoneShape(x, y, w, h){
+  const m = Math.min(1.5, w/4, h/4);
+  return boxPolyShape([[x+m,y+m],[x+w-m,y+m],[x+w-m,y+h-m],[x+m,y+h-m]], 'glue');
+}
 function setDefaultFolds(shapes){
   shapes.forEach(s=>{ if(s.style.role==='fold'){ s.foldDir='mountain'; s.foldAngle=90; } });
 }
@@ -7832,6 +7847,7 @@ function generateTuckBox(L, W, H, glueW){
   shapes.push(boxLineShape([0,bodyY0],[0,bodyY1],'cut'));
   shapes.push(boxLineShape([totalW,bodyY0],[totalW,bodyY1],'cut'));
   [xs.front, xs.side1, xs.back, xs.side2].forEach(x=>{ const f = boxLineShape([x,bodyY0],[x,bodyY1],'fold'); f.foldOrder = 1; shapes.push(f); }); // 1: il tubo
+  shapes.push(glueZoneShape(0, bodyY0, glueW, H)); // zona di incollaggio sull'aletta
 
   function addEnd(y0, dir){ // dir=+1 sopra il corpo (verso l'alto), -1 sotto (verso il basso)
     const dustY = y0 + dir*dustH;

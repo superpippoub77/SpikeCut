@@ -39,6 +39,12 @@ polvere sui lati e aletta a incastro davanti/dietro. L'aletta di
 incollaggio si può impostare a mano o lasciare calcolare automaticamente.
 Le pieghe delle fustelle generate sono già impostate "a monte", 90°, così
 l'anteprima 3D le chiude subito correttamente.
+La zona di incollaggio dell'aletta è un poligono con ruolo **Incollaggio**
+(rientrato di 1,5 mm dai bordi). Ogni forma chiusa con ruolo Incollaggio e
+senza un riempimento scelto viene mostrata **a schermo** con un tratteggio
+diagonale; esportazioni SVG/PDF, stampa di prova e anteprima di taglio sono
+costruite dai dati delle forme, dove il riempimento resta "nessuno", quindi il
+tratteggio non compare mai in stampa (resta solo il contorno della zona).
 
 ### Verso e angolo delle pieghe
 Selezionando una linea con ruolo **Piega**, il pannello proprietà permette
