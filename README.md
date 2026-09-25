@@ -30,6 +30,14 @@ disabilitato finché non è servito da un vero server web.
 
 ## 2. L'editor (index.html)
 
+### Guida integrata
+Il pulsante **?** in alto (o il tasto **F1**) apre la guida completa del
+programma: ricerca a testo libero su tutti gli argomenti (ignora maiuscole e
+accenti, trova anche sinonimi, evidenzia le parole trovate) e menu a tendina
+per capitolo (Per iniziare, Disegnare, Modificare, Fustella e scatole,
+Anteprima 3D, Livelli, Salvare ed esportare, Riferimento). Include le
+scorciatoie da tastiera, i problemi frequenti e le novità versione per versione.
+
 ### Generazione automatica scatole
 Menu File → "📦 Genera scatola…": inserendo Larghezza, Profondità e Altezza
 (mm), genera automaticamente la fustella completa in una nuova scheda —
@@ -505,6 +513,12 @@ progetti o account già presenti sul server.
 ---
 
 ## 6. Note per chi continua lo sviluppo
+
+- **Guida**: i contenuti sono nell'array `GUIDE_TOPICS` in `index.html`
+  (titolo, capitolo, parole chiave per la ricerca, testo HTML; i collegamenti
+  tra argomenti si scrivono `<a data-topic="id">`). Va aggiornata insieme a
+  ogni modifica del programma, compresi `GUIDE_VERSION` e l'argomento
+  "Novità".
 
 - Tutto il JavaScript dell'editor vive in un unico blocco `<script>` di
   `index.html`: niente moduli, niente build step, si modifica e si

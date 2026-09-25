@@ -344,6 +344,30 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   align-items:center; justify-content:center; z-index:200;
 }
 .modal-overlay.open{display:flex;}
+.guide-bar{ display:flex; gap:8px; padding:10px 14px; border-bottom:1px solid var(--line); }
+.guide-bar input{ flex:1; }
+.guide-bar select{ width:auto; max-width:40%; }
+.guide-main{ display:flex; flex:1; min-height:0; }
+#guideList{ width:280px; overflow:auto; border-right:1px solid var(--line); padding:6px; flex:none; }
+#guideContent{ flex:1; overflow:auto; padding:14px 20px; font-size:13px; line-height:1.6; }
+#guideContent h2{ font-size:18px; margin:0 0 4px; }
+#guideContent .guide-cat{ font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-dim); margin-bottom:10px; }
+#guideContent a[data-topic]{ color:var(--brass); cursor:pointer; text-decoration:underline; }
+#guideContent ul, #guideContent ol{ padding-left:20px; }
+#guideContent li{ margin:3px 0; }
+.guide-table{ border-collapse:collapse; margin:8px 0; width:100%; }
+.guide-table th, .guide-table td{ border:1px solid var(--line); padding:4px 8px; text-align:left; vertical-align:top; }
+.guide-table th{ background:rgba(128,128,128,.12); }
+.guide-faq dt{ font-weight:700; margin-top:10px; }
+.guide-faq dd{ margin:2px 0 0 0; }
+.guide-cathead{ font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-dim); margin:10px 6px 3px; }
+.guide-item{ padding:6px 8px; border-radius:6px; cursor:pointer; font-size:12.5px; }
+.guide-item:hover{ background:rgba(128,128,128,.12); }
+.guide-item.active{ background:rgba(201,151,63,.22); font-weight:700; }
+.guide-item .guide-snip{ display:block; font-weight:400; font-size:11px; color:var(--ink-dim); margin-top:2px; }
+mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 1px; }
+.guide-note{ font-size:11.5px; color:var(--ink-dim); margin-bottom:10px; }
+
 #foldCheckBanner{ position:fixed; top:92px; left:50%; transform:translateX(-50%); z-index:160; max-width:min(880px,94vw);
   background:var(--bg-1); border:2px solid #ff3b30; border-radius:10px; box-shadow:0 6px 24px rgba(0,0,0,.4); padding:8px 10px; font-size:12.5px; }
 #foldCheckBanner.ok{ border-color:#2f9e5a; }
@@ -527,7 +551,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <div class="grp">
     <button class="iconbtn" id="btnNew" title="Nuovo progetto">＋</button>
     <button class="iconbtn" id="btnImportSVGTop" title="Importa un file SVG esistente da modificare">⇪</button>
-    <button class="iconbtn" id="btnHelp" title="Comandi da tastiera">?</button>
+    <button class="iconbtn" id="btnHelp" title="Guida (F1)">?</button>
   </div>
   <div class="grp" id="accountArea">
     <button class="iconbtn" id="btnAccount" title="Account">👤 Accedi</button>
@@ -646,7 +670,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.20.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.21.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1190,39 +1214,18 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 </div>
 
 <div id="helpModal" class="modal-overlay">
-  <div class="modal-box" style="width:min(480px, 90vw);">
+  <div class="modal-box" style="width:min(1000px,96vw);height:min(740px,90vh);display:flex;flex-direction:column;">
     <div class="modal-head">
-      <h3>Comandi da tastiera</h3>
+      <h3>Guida di SpikeCut</h3>
       <button class="iconbtn" id="helpModalClose" title="Chiudi">✕</button>
     </div>
-    <div class="modal-body">
-      <div class="hint" style="font-size:11.5px;line-height:1.7;">
-        <b style="color:var(--ink);">Strumenti</b><br>
-        V Selezione &nbsp; P Penna (poligono/percorso)<br>
-        L Linea &nbsp; R Rettangolo &nbsp; O Ellisse<br>
-        A Curva/Arco (3 clic: inizio, fine, curvatura)<br>
-        B Matita libera &nbsp; T Testo
-        <hr class="sep">
-        <b style="color:var(--ink);">Durante il disegno con la Penna</b><br>
-        Clic: aggiungi punto &nbsp; Invio: termina percorso aperto<br>
-        C: chiudi percorso &nbsp; Esc: annulla
-        <hr class="sep">
-        <b style="color:var(--ink);">Modifica</b><br>
-        Canc/Backspace: elimina selezione<br>
-        Frecce: sposta di 1mm (Shift = 5mm)<br>
-        Doppio clic su un tracciato selezionato: aggiunge un punto<br>
-        Trascina su spazio vuoto: selezione a riquadro (Shift = aggiungi)
-        <hr class="sep">
-        <b style="color:var(--ink);">Generali</b><br>
-        Ctrl+Z / Ctrl+Shift+Z: annulla / ripeti<br>
-        Ctrl+S: esporta SVG<br>
-        G: griglia &nbsp; M: calamita<br>
-        Ctrl + rotella: zoom centrato sul cursore<br>
-        Ctrl+] / Ctrl+[: avanti/indietro di un livello &nbsp; Ctrl+Shift+]/[: primo/secondo piano<br>
-        + / - / 0: zoom avanti / indietro / reimposta
-        <hr class="sep">
-        La calamita aggancia i nuovi punti a estremi già esistenti entro un piccolo raggio, così le linee si uniscono senza lasciare spazi vuoti.
-      </div>
+    <div class="guide-bar">
+      <input type="search" id="guideSearch" placeholder="Cerca nella guida (es. piega, arco, esportare)…" autocomplete="off">
+      <select id="guideTopic"></select>
+    </div>
+    <div class="guide-main">
+      <div id="guideList"></div>
+      <div id="guideContent"></div>
     </div>
   </div>
 </div>
@@ -2072,6 +2075,12 @@ const I18N = {
     "Niente da esportare: non ci sono linee di taglio o piega visibili.": "Nothing to export: there are no visible cut or fold lines.",
     "Esportati due file DXF: taglio e pieghe.": "Two DXF files exported: cut and folds.",
     "File DXF esportato.": "DXF file exported.",
+    "Guida di SpikeCut": "SpikeCut guide",
+    "Guida (F1)": "Guide (F1)",
+    "Cerca nella guida (es. piega, arco, esportare)…": "Search the guide (e.g. piega, arco, esportare)…",
+    "{n} argomenti trovati": "{n} topics found",
+    "Nessun argomento trovato: prova con altre parole.": "No topic found: try other words.",
+    "La guida è disponibile in italiano.": "The guide is available in Italian.",
   },
   de: {
     "1 cm": "1 cm",
@@ -2848,6 +2857,12 @@ const I18N = {
     "Niente da esportare: non ci sono linee di taglio o piega visibili.": "Nichts zu exportieren: Es gibt keine sichtbaren Schnitt- oder Falzlinien.",
     "Esportati due file DXF: taglio e pieghe.": "Zwei DXF-Dateien exportiert: Schnitt und Falze.",
     "File DXF esportato.": "DXF-Datei exportiert.",
+    "Guida di SpikeCut": "SpikeCut-Handbuch",
+    "Guida (F1)": "Handbuch (F1)",
+    "Cerca nella guida (es. piega, arco, esportare)…": "Im Handbuch suchen (z.B. piega, arco, esportare)…",
+    "{n} argomenti trovati": "{n} Themen gefunden",
+    "Nessun argomento trovato: prova con altre parole.": "Kein Thema gefunden: Versuche es mit anderen Wörtern.",
+    "La guida è disponibile in italiano.": "Das Handbuch ist auf Italienisch verfügbar.",
   },
   es: {
     "1 cm": "1 cm",
@@ -3624,6 +3639,12 @@ const I18N = {
     "Niente da esportare: non ci sono linee di taglio o piega visibili.": "Nada que exportar: no hay líneas de corte ni pliegue visibles.",
     "Esportati due file DXF: taglio e pieghe.": "Exportados dos archivos DXF: corte y pliegues.",
     "File DXF esportato.": "Archivo DXF exportado.",
+    "Guida di SpikeCut": "Guía de SpikeCut",
+    "Guida (F1)": "Guía (F1)",
+    "Cerca nella guida (es. piega, arco, esportare)…": "Buscar en la guía (p. ej. piega, arco, esportare)…",
+    "{n} argomenti trovati": "{n} temas encontrados",
+    "Nessun argomento trovato: prova con altre parole.": "Ningún tema encontrado: prueba con otras palabras.",
+    "La guida è disponibile in italiano.": "La guía está disponible en italiano.",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -4400,6 +4421,12 @@ const I18N = {
     "Niente da esportare: non ci sono linee di taglio o piega visibili.": "没有可导出的内容：没有可见的切割线或折线。",
     "Esportati due file DXF: taglio e pieghe.": "已导出两个 DXF 文件：切割线和折线。",
     "File DXF esportato.": "DXF 文件已导出。",
+    "Guida di SpikeCut": "SpikeCut 指南",
+    "Guida (F1)": "指南（F1）",
+    "Cerca nella guida (es. piega, arco, esportare)…": "在指南中搜索（如 piega、arco、esportare）…",
+    "{n} argomenti trovati": "找到 {n} 个主题",
+    "Nessun argomento trovato: prova con altre parole.": "未找到主题：请尝试其他词语。",
+    "La guida è disponibile in italiano.": "本指南提供意大利语版本。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -5176,6 +5203,12 @@ const I18N = {
     "Niente da esportare: non ci sono linee di taglio o piega visibili.": "Rien à exporter : il n’y a aucune ligne de découpe ou de pli visible.",
     "Esportati due file DXF: taglio e pieghe.": "Deux fichiers DXF exportés : découpe et plis.",
     "File DXF esportato.": "Fichier DXF exporté.",
+    "Guida di SpikeCut": "Guide de SpikeCut",
+    "Guida (F1)": "Guide (F1)",
+    "Cerca nella guida (es. piega, arco, esportare)…": "Chercher dans le guide (ex. piega, arco, esportare)…",
+    "{n} argomenti trovati": "{n} sujets trouvés",
+    "Nessun argomento trovato: prova con altre parole.": "Aucun sujet trouvé : essaie d’autres mots.",
+    "La guida è disponibile in italiano.": "Le guide est disponible en italien.",
   },
 };
 let currentLang = 'it';
@@ -8613,6 +8646,410 @@ function doSilhouetteExport(){
   if(pl.mode==='separate' && pl.foldPolys.length) setTimeout(()=> downloadText(buildDXF(pl.foldPolys), base + '_pieghe.dxf', 'application/dxf'), 400);
   document.getElementById('silModal').classList.remove('open');
   showToast(pl.mode==='separate' && pl.foldPolys.length ? translate('Esportati due file DXF: taglio e pieghe.') : translate('File DXF esportato.'), false);
+}
+
+/* ============================================================
+   GUIDA DI SPIKECUT — contenuti. Da aggiornare a ogni modifica
+   del programma (anche la sezione "Novità" e GUIDE_VERSION).
+   Collegamenti tra argomenti: <a data-topic="id">testo</a>
+============================================================ */
+const GUIDE_VERSION = '2.21.0';
+const GUIDE_TOPICS = [
+/* ---------------- PER INIZIARE ---------------- */
+{ id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
+html:`<p>SpikeCut è un editor di disegno vettoriale pensato per <b>fustelle</b>: sagome da tagliare, piegare e incollare, come scatole, astucci, espositori e packaging.</p>
+<p>Oltre agli strumenti di un normale programma di disegno offre:</p>
+<ul><li><b>ruoli delle linee</b> (taglio, piega, fustella speciale, incollaggio, disegno) con i colori convenzionali di settore: vedi <a data-topic="ruoli">Ruoli delle linee</a>;</li>
+<li>la <b>generazione automatica di scatole</b> da larghezza, profondità e altezza: vedi <a data-topic="genera-scatola">Genera scatola</a>;</li>
+<li>l'<b>anteprima 3D piegata</b> con simulazione e controllo degli errori: vedi <a data-topic="anteprima-3d">Anteprima 3D</a>;</li>
+<li>esportazioni per stampa e taglio, compresa la <a data-topic="silhouette">Silhouette Cameo</a>;</li>
+<li>una <a data-topic="libreria">libreria online</a> con account, cartelle, versioni e condivisione.</li></ul>
+<p>Le misure sono sempre in <b>scala reale</b>: quello che disegni in millimetri viene esportato in millimetri.</p>` },
+
+{ id:'interfaccia', cat:'Per iniziare', title:'L\'interfaccia', keys:'barra menu pannello laterale topbar schermo zone finestra',
+html:`<p>Lo schermo è diviso in cinque zone:</p>
+<ul><li><b>Barra in alto</b>: annulla/ripeti e <a data-topic="cronologia">cronologia</a>, i menu <b>File</b>, <b>Strumenti</b> e <b>Stampa</b>, salvataggio locale (💾) e in libreria (☁), account, lingua, colore del foglio.</li>
+<li><b>Schede</b> sotto la barra: più disegni aperti insieme, vedi <a data-topic="schede">Schede</a>.</li>
+<li><b>Barra degli strumenti</b> a sinistra: vedi <a data-topic="strumenti">Strumenti di disegno</a>.</li>
+<li><b>Foglio</b> al centro, con righelli, griglia e quote.</li>
+<li><b>Pannello laterale</b> a destra, con quattro schede: <b>Proprietà</b> (dell'oggetto selezionato, o la <a data-topic="descrizione">descrizione del progetto</a> se non c'è selezione), <b>Livelli</b>, <b>Immagine</b> e <b>Componenti</b>.</li></ul>
+<p>In basso c'è la <b>barra di stato</b> con coordinate del cursore, unità di misura, griglia, calamita, punti, quote e pagine.</p>
+<p>Molti comandi sono anche nel <b>menu del tasto destro</b>, sia sugli oggetti sia sull'area vuota del foglio.</p>` },
+
+{ id:'schede', cat:'Per iniziare', title:'Schede e documenti', keys:'tab nuovo disegno più disegni aperti',
+html:`<p>Con il pulsante <b>＋</b> accanto alle schede crei un nuovo disegno. Ogni scheda ha il suo foglio, i suoi livelli e la sua <a data-topic="cronologia">cronologia annulla/ripeti</a>.</p>
+<p>Anche alcune funzioni aprono nuove schede: <a data-topic="genera-scatola">Genera scatola</a>, l'apertura di più progetti dalla <a data-topic="libreria">libreria</a> e l'apertura di una versione passata.</p>` },
+
+{ id:'foglio', cat:'Per iniziare', title:'Foglio, unità, griglia, righelli e zoom', keys:'pagina formato dimensione sfondo trasparente unità mm cm pollici griglia passo righello zoom rotella',
+html:`<ul><li><b>Formato del foglio</b>: dal pannello Proprietà senza selezione, oppure trascinando la maniglia nell'angolo del foglio. Lo sfondo può avere un colore o essere trasparente.</li>
+<li><b>Unità di misura</b> (mm, cm, m, pollici): dalla barra di stato. Tutti i campi numerici usano l'unità scelta.</li>
+<li><b>Griglia</b> millimetrica o centimetrica, con aggancio: tasto <b>G</b> o "▦ griglia" nella barra di stato.</li>
+<li><b>Zoom</b>: Ctrl + rotella (centrato sul cursore), oppure <b>+</b>, <b>−</b> e <b>0</b> per reimpostarlo.</li>
+<li><b>Quote</b> (📐) e <b>punti</b> (●) dalla barra di stato: le quote mostrano le misure dei tratti; i punti evidenziano le estremità libere (arancio) o collegate (verde) e gli angoli tra i tratti.</li></ul>` },
+
+{ id:'lingua', cat:'Per iniziare', title:'Lingua dell\'interfaccia', keys:'lingua inglese tedesco spagnolo cinese francese traduzione language',
+html:`<p>Il selettore in alto cambia la lingua dell'interfaccia: Italiano, English, Deutsch, Español, 中文, Français. La scelta viene ricordata.</p>
+<p>I nomi che scegli tu (progetti, cartelle, livelli, testi nel disegno) non vengono mai tradotti. Questa guida è in italiano.</p>` },
+
+/* ---------------- DISEGNARE ---------------- */
+{ id:'strumenti', cat:'Disegnare', title:'Strumenti di disegno', keys:'selezione lazo penna linea rettangolo ellisse arco matita testo tool',
+html:`<table class="guide-table"><tr><th>Tasto</th><th>Strumento</th><th>Come si usa</th></tr>
+<tr><td>V</td><td>Selezione</td><td>Seleziona, sposta, ridimensiona e ruota: vedi <a data-topic="selezione">Selezionare</a>.</td></tr>
+<tr><td>Q</td><td>Lazo</td><td>Selezione con un percorso libero: vedi <a data-topic="selezione">Selezionare</a>.</td></tr>
+<tr><td>P</td><td>Penna</td><td>Un clic per ogni punto. Invio termina il percorso aperto, <b>C</b> lo chiude, Esc annulla. Si può anche usare "⏹ Chiudi forma" nella barra che compare in alto.</td></tr>
+<tr><td>L</td><td>Linea</td><td>Trascina dal punto di inizio a quello di fine. Puoi digitare la lunghezza: vedi <a data-topic="input-numerico">Misure esatte</a>.</td></tr>
+<tr><td>R / O</td><td>Rettangolo / Ellisse</td><td>Trascina da un angolo all'altro.</td></tr>
+<tr><td>A</td><td>Arco</td><td>Tre clic: inizio, fine, un punto di passaggio. Vedi <a data-topic="archi">Archi</a>.</td></tr>
+<tr><td>B</td><td>Matita</td><td>Disegno a mano libera.</td></tr>
+<tr><td>T</td><td>Testo</td><td>Clic nel punto, scrivi e premi Invio. Vedi <a data-topic="testo">Testo e font</a>.</td></tr></table>
+<p>Il <a data-topic="ruoli">ruolo</a> scelto nel pannello Proprietà senza selezione vale per le forme che disegnerai.</p>` },
+
+{ id:'input-numerico', cat:'Disegnare', title:'Misure esatte (input numerico)', keys:'lunghezza esatta digitare numero invio misura precisa coordinate',
+html:`<ul><li><b>Durante il disegno di una linea</b>: digita un numero e la linea prende quella lunghezza esatta (nell'unità corrente), mentre il mouse continua a indicare la direzione. Invio conferma, Backspace corregge.</li>
+<li><b>Dopo</b>: nel pannello Proprietà ci sono le coordinate di ogni punto e la lunghezza di ogni tratto (per forme fino a 20 punti), oppure fai <b>doppio clic su un tratto</b> per modificarne lunghezza e curvatura sul posto.</li>
+<li>Rettangoli ed ellissi hanno posizione, larghezza e altezza modificabili.</li></ul>` },
+
+{ id:'magnete', cat:'Disegnare', title:'Magnete (aggancio)', keys:'calamita snap aggancio vertice linea punto griglia magnetizzare unire',
+html:`<p>Con il magnete acceso (tasto <b>M</b> o "🧲 calamita" nella barra di stato), un punto che disegni o trascini si aggancia:</p>
+<ol><li>a un <b>vertice</b> vicino di un'altra forma (ha la precedenza);</li>
+<li>altrimenti al punto più vicino di una <b>linea</b>: tratti, archi, lati di rettangoli ed ellissi. Serve ad esempio per far partire una piega esattamente sul contorno di taglio;</li>
+<li>altrimenti alla <b>griglia</b>, se attiva.</li></ol>
+<p>I punti che coincidono restano <b>uniti</b>: spostandone uno si trascina anche l'altro. Per separarli vedi <a data-topic="scollega">Scollegare i punti</a>. Spostando oggetti interi il magnete lavora con le <a data-topic="guide">guide di allineamento</a>.</p>` },
+
+{ id:'archi', cat:'Disegnare', title:'Archi', keys:'arco curva circonferenza raggio tre clic',
+html:`<p>Con lo strumento Arco (<b>A</b>): clic sul punto di <b>inizio</b>, clic sul punto di <b>fine</b>, poi muovi il mouse e clic su un <b>punto di passaggio</b> che definisce la curvatura.</p>
+<p>L'arco è una linea vera, con i punti sulla circonferenza abbastanza fitti da scostarsi al massimo 0,05 mm dalla curva: prende il colore del <a data-topic="ruoli">ruolo</a>, si aggancia col <a data-topic="magnete">magnete</a> e vale per anteprima 3D, operazioni booleane e unione dei punti.</p>
+<p>Mostra solo le maniglie delle estremità: trascinandole, o spostando una linea collegata, viene ricalcolato e resta un arco. Le quote indicano lunghezza e raggio. Se aggiungi o togli un punto al suo interno, o lo unisci a un'altra linea, diventa una linea normale con la stessa forma.</p>` },
+
+{ id:'testo', cat:'Disegnare', title:'Testo e font', keys:'testo scritta font carattere tipo personalizzato caricare',
+html:`<p>Con lo strumento Testo (<b>T</b>) clicca nel punto, scrivi e conferma. Dal pannello Proprietà cambi testo, dimensione e font.</p>
+<p>Oltre ai font di sistema puoi caricare font personalizzati (anche in blocco da un file .zip) e usarli nel disegno. Il riquadro di selezione si adatta alla larghezza reale del testo nel font scelto.</p>` },
+
+{ id:'immagini', cat:'Disegnare', title:'Immagini e vettorizzazione', keys:'immagine foto jpg png vettorizzare tracciare riferimento luminosità contrasto',
+html:`<p>Dalla scheda <b>Immagine</b> del pannello laterale puoi caricare un'immagine JPG o PNG di riferimento: regolarne colori e filtri (luminosità, contrasto, saturazione, scala di grigi, seppia, negativo, tonalità, sfocatura) e spostarla, ruotarla e ridimensionarla.</p>
+<p>La <b>vettorizzazione</b> automatica la trasforma in forme vettoriali. I tracciati vettorizzati si spostano e ridimensionano, ma non hanno punti modificabili uno per uno, quindi non valgono come linee di taglio o piega per l'<a data-topic="anteprima-3d">anteprima 3D</a>.</p>` },
+
+{ id:'importa-svg', cat:'Disegnare', title:'Importare un SVG', keys:'importare svg file aprire disegno esterno illustrator inkscape',
+html:`<p>Un file SVG esistente viene letto con curve, archi e trasformazioni. I ruoli vengono riconosciuti dai colori del file, e i doppioni tecnici tipici dei programmi CAD vengono ripuliti.</p>
+<p>Subito dopo la scelta del file puoi decidere se centrarlo o portarlo in alto a sinistra adattando il foglio, e applicare una scala percentuale. Se hai già un disegno aperto, ti viene chiesto se aggiungere l'SVG o aprirlo a parte.</p>` },
+
+/* ---------------- MODIFICARE ---------------- */
+{ id:'selezione', cat:'Modificare', title:'Selezionare', keys:'selezione lazo rettangolo shift ctrl+a tutto stesso colore stesso ruolo',
+html:`<ul><li><b>Clic</b> su una forma per selezionarla; <b>Shift+clic</b> per aggiungerne altre.</li>
+<li><b>Trascina sull'area vuota</b> per un rettangolo di selezione.</li>
+<li><b>Lazo</b>: pulsante sotto la freccia nella barra degli strumenti, o tasto <b>Q</b> (V torna alla freccia), oppure Alt + trascina con la freccia. Seleziona le forme il cui centro cade dentro il percorso.</li>
+<li><b>Ctrl+A</b> seleziona tutto.</li>
+<li>Tasto destro su una forma → <b>Seleziona stesso colore</b> o <b>stesso ruolo</b>.</li></ul>` },
+
+{ id:'guide', cat:'Modificare', title:'Spostare e guide di allineamento', keys:'spostare trascinare guide allineamento centratura centro bordi linee rosa azzurre alt frecce',
+html:`<p>Trascina una forma (o una selezione) per spostarla; con le <b>frecce</b> la sposti di 1 mm (Shift = 5 mm).</p>
+<p>Mentre trascini, i bordi e il centro dell'oggetto vengono confrontati con quelli degli altri oggetti e del foglio. Quando si allineano compare una <b>guida</b>:</p>
+<ul><li><b>continua</b> per i bordi, <b>tratteggiata</b> per i centri;</li>
+<li><b>rosa</b> se l'allineamento è con un altro oggetto, <b>azzurra</b> se è con il foglio (per esempio il centro della pagina).</li></ul>
+<p>Con il <a data-topic="magnete">magnete</a> acceso l'oggetto si aggancia all'allineamento quando è a meno di 6 pixel. Tieni premuto <b>Alt</b> per spostarlo liberamente.</p>` },
+
+{ id:'punti', cat:'Modificare', title:'Modificare i punti', keys:'punto vertice maniglia coordinate curvatura aggiungere eliminare doppio clic tratto',
+html:`<ul><li>Selezionata una forma, trascina le <b>maniglie</b> dei suoi punti.</li>
+<li>Nel pannello Proprietà trovi le <b>coordinate</b> di ogni punto, la <b>lunghezza</b> di ogni tratto e la <b>curvatura</b> dei vertici (0 = angolo vivo).</li>
+<li><b>Doppio clic su un tratto</b> apre un piccolo editor sul posto: lunghezza, curvatura e "+ vertice qui".</li>
+<li>La ✕ accanto a un punto lo elimina (almeno 2 punti per linea).</li>
+<li>"Chiudi percorso" unisce le due estremità di una linea aperta.</li></ul>` },
+
+{ id:'trasforma', cat:'Modificare', title:'Ruotare, riflettere, ridimensionare', keys:'ruotare rotazione riflettere mirror specchio ribaltare scala ridimensionare',
+html:`<ul><li><b>Ruotare</b>: trascina la maniglia circolare sopra la selezione (Shift = scatti di 15°).</li>
+<li><b>Ridimensionare</b>: trascina le maniglie negli angoli.</li>
+<li><b>Riflettere</b> (mirror): nel pannello Proprietà, "⇋ Orizzontale" o "⇵ Verticale", attorno al centro della selezione. Per immagini e tracciati ribalta anche il contenuto.</li>
+<li>Per rendere simmetrico un disegno rispetto a un asse vedi <a data-topic="simmetria">Simmetria</a>.</li></ul>` },
+
+{ id:'allinea', cat:'Modificare', title:'Allinea e distribuisci', keys:'allineare distribuire sinistra destra centro alto basso spaziatura uniforme',
+html:`<p>Con 2 o più forme selezionate, il pannello Proprietà mostra i comandi per allineare i bordi (sinistra, destra, centro orizzontale, alto, basso, centro verticale). Con 3 o più forme puoi anche <b>distribuirle</b> uniformemente in orizzontale o in verticale.</p>` },
+
+{ id:'offset', cat:'Modificare', title:'Offset (copia parallela)', keys:'offset parallelo copia distanza margine abbondanza aletta',
+html:`<p>Per una forma a punti selezionata, "Offset / parallelo" nel pannello Proprietà crea una <b>copia parallela</b> alla distanza indicata: positiva verso l'esterno, negativa verso l'interno. Utile per alette, margini e abbondanze.</p>` },
+
+{ id:'booleane', cat:'Modificare', title:'Operazioni booleane', keys:'unione sottrai sottrazione intersezione esclusione booleane fori combinare forme',
+html:`<p>Con 2 o più forme chiuse selezionate (percorsi chiusi, rettangoli, ellissi), dal pannello Proprietà o dal tasto destro:</p>
+<ul><li><b>⊕ Unione</b>: un unico contorno;</li>
+<li><b>⊖ Sottrai</b>: toglie dalla forma più in basso quelle che le stanno sopra (fori, finestre, intagli);</li>
+<li><b>⊗ Intersezione</b>: solo la parte comune;</li>
+<li><b>⊘ Esclusione</b>: le parti non sovrapposte.</li></ul>
+<p>Il risultato prende stile e livello della forma più in basso. I fori interni diventano linee chiuse separate (per la fustella sono tagli interni). Le curve diventano segmenti fitti; le linee aperte vengono ignorate con un avviso.</p>` },
+
+{ id:'simmetria', cat:'Modificare', title:'Simmetria', keys:'simmetria simmetrico speculare asse correggere metà sopra sotto sinistra destra quasi',
+html:`<p>Menu <b>Strumenti → ⇅ Simmetria…</b>. Rende il disegno (o la selezione) simmetrico rispetto a un asse orizzontale (sopra/sotto) o verticale (sinistra/destra). Scegli il lato da tenere come riferimento; l'altro viene corretto.</p>
+<ul><li><b>Correggi il lato opposto</b>: ogni punto del lato da correggere va nella posizione speculare esatta del punto corrispondente, se ce n'è uno entro la <b>tolleranza</b> (predefinita 3 mm). Adatto a un disegno "quasi" simmetrico.</li>
+<li><b>Rifai il lato opposto</b>: le forme tutte dal lato da rifare vengono sostituite dalla copia speculare del lato tenuto.</li></ul>
+<p>Sul disegno compaiono l'asse (viola) e la zona che verrà corretta; un riepilogo dice in anticipo cosa cambierà. I punti senza corrispondente non vengono toccati e vengono cerchiati in arancione. Dopo l'applicazione puoi <b>Confermare</b> o <b>Annullare</b>.</p>
+<p>L'asse viene proposto al centro del disegno: in un disegno quasi simmetrico conviene verificarlo o scriverlo a mano.</p>` },
+
+{ id:'unisci', cat:'Modificare', title:'Unire i punti', keys:'unire unisci punti numerati estremità libere collegare fondere chiudere gap distanza',
+html:`<p>Seleziona le linee (clic e Shift+clic, rettangolo o <a data-topic="selezione">lazo</a>): le <b>estremità libere</b> (che non toccano nient'altro) vengono numerate 1, 2, … sul disegno. Poi tasto destro o pannello Proprietà → <b>🔗 Unisci punti…</b>.</p>
+<ul><li>Nella finestra imposti le coppie "Da → a": il punto <b>Da</b> va sul punto <b>a</b>, che resta fermo. ⇄ inverte la coppia.</li>
+<li>Viene proposta la coppia più vicina, e le altre solo se hanno una distanza simile; le estremità lontane si aggiungono a mano con "+ Aggiungi coppia".</li>
+<li><b>Sposta</b> oppure <b>Collega con un nuovo tratto</b>.</li>
+<li>"Fondi in un unico percorso" unisce le linee con lo stesso ruolo e livello; una linea che si richiude su se stessa diventa chiusa.</li></ul>
+<p>Funziona a qualunque distanza. Riduci la finestra a icona per guardare i numeri sul disegno.</p>` },
+
+{ id:'scollega', cat:'Modificare', title:'Scollegare e ricollegare i punti', keys:'scollegare ricollegare separare staccare punto collegato trascina insieme viola',
+html:`<p>I punti che coincidono sono uniti: spostandone uno si trascina l'altro. Per separarli senza spostarli:</p>
+<ul><li><b>un punto</b>: tasto destro sulla sua maniglia → "⛓ Scollega il punto", oppure "⛓ Scollega" accanto al punto nel pannello coordinate;</li>
+<li><b>tutti i vertici</b> di una forma o della selezione: "⛓ Scollega tutti i vertici" nel pannello Proprietà o col tasto destro.</li></ul>
+<p>I punti scollegati hanno la maniglia <b>viola tratteggiata</b> e contano come punti liberi. Si ricollegano con "🔗 Ricollega", o unendoli con <a data-topic="unisci">Unisci punti</a>.</p>` },
+
+{ id:'copia', cat:'Modificare', title:'Copiare, incollare, duplicare, ordinare', keys:'copia incolla taglia duplica elimina ordine sovrapposizione primo piano secondo piano bloccare',
+html:`<ul><li><b>Ctrl+C / Ctrl+X / Ctrl+V</b> copiano, tagliano e incollano la selezione; tasto destro sull'area vuota → "Incolla qui" incolla nel punto cliccato.</li>
+<li>Tasto destro su una forma: <b>Duplica</b>, <b>Elimina</b>, <b>Blocca/Sblocca</b>.</li>
+<li><b>Ordine di sovrapposizione</b> nello stesso livello: Ctrl+] / Ctrl+[ avanti/indietro, Ctrl+Shift+] / [ primo/secondo piano.</li>
+<li><b>Canc</b> o Backspace elimina la selezione.</li></ul>` },
+
+{ id:'cronologia', cat:'Modificare', title:'Annulla, ripeti e cronologia', keys:'annulla ripeti undo redo ctrl+z cronologia storico tornare indietro',
+html:`<p><b>Ctrl+Z</b> annulla, <b>Ctrl+Shift+Z</b> ripete. Il pulsante <b>🕐</b> in alto apre la cronologia visuale: l'elenco degli stati passati (fino a 300), con orario e numero di forme. Un clic su uno stato ci torna direttamente.</p>
+<p>Ogni scheda ha la sua cronologia. Per le versioni salvate in libreria vedi <a data-topic="libreria">Libreria</a>.</p>` },
+
+/* ---------------- FUSTELLA E SCATOLE ---------------- */
+{ id:'ruoli', cat:'Fustella e scatole', title:'Ruoli delle linee', keys:'ruolo taglio piega cordonatura fustella speciale incollaggio disegno colori rosso blu verde',
+html:`<table class="guide-table"><tr><th>Ruolo</th><th>Aspetto</th><th>Significato</th></tr>
+<tr><td>Disegno</td><td>nero continuo</td><td>grafica e annotazioni: non si taglia né si piega (compare sui pannelli dell'<a data-topic="grafica-3d">anteprima 3D</a>)</td></tr>
+<tr><td>Taglio</td><td>rosso continuo</td><td>contorni da tagliare</td></tr>
+<tr><td>Piega</td><td>blu tratteggiato</td><td>cordonature, dove il cartone si piega</td></tr>
+<tr><td>Fustella speciale</td><td>verde punto-linea</td><td>tagli speciali; vale come taglio</td></tr>
+<tr><td>Incollaggio</td><td>marrone puntinato</td><td>zone di colla; se chiusa, a schermo è <a data-topic="incollaggio">tratteggiata</a></td></tr></table>
+<p>Il ruolo si sceglie nel pannello Proprietà: per le forme selezionate o, senza selezione, per quelle che disegnerai.</p>` },
+
+{ id:'pieghe', cat:'Fustella e scatole', title:'Verso e angolo delle pieghe', keys:'piega verso monte valle angolo gradi freccia 90 180 esterno interno',
+html:`<p>Selezionando una linea con ruolo Piega, il pannello Proprietà permette di scegliere:</p>
+<ul><li>il <b>verso</b>: <b>a monte</b> (verso l'esterno) o <b>a valle</b> (verso l'interno);</li>
+<li>l'<b>angolo</b>: 90° è l'angolo retto di una parete, 180° una piega completa su se stessa.</li></ul>
+<p>A metà di ogni tratto compare una freccia a V con l'angolo. Le pieghe senza verso vengono considerate a monte, 90°. Per l'ordine in cui si chiudono vedi <a data-topic="ordine">Ordine di piegatura</a>.</p>` },
+
+{ id:'ordine', cat:'Fustella e scatole', title:'Ordine di piegatura e sequenza', keys:'ordine passo sequenza prima dopo linguetta chiude automatico trascinare frecce struttura',
+html:`<p>Ogni piega ha un numero di <b>passo</b>: nella simulazione 3D si chiudono prima le pieghe con il numero più basso; quelle con lo stesso numero si chiudono insieme. Così una linguetta non si chiude prima delle alette che deve coprire.</p>
+<ul><li><b>A mano</b>: pannello Proprietà → "Ordine di piegatura", con − e +, anche su più pieghe insieme.</li>
+<li><b>Ordine automatico</b> ("Ordina" nel pannello, o "Applica e simula" nell'anteprima 3D): dal pannello principale verso l'esterno, da sinistra a destra, da destra a sinistra, dall'alto, dal basso, dal centro, oppure tutte insieme. Le pieghe alla stessa posizione (entro 2 mm) finiscono nello stesso passo.</li>
+<li><b>Sequenza di piegatura</b> (menu Strumenti, "📋 Sequenza…" nel 3D, o nel pannello): elenco dei passi. Trascina una piega su un altro passo per spostarla, tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo o unirlo a un altro. Oppure usa le frecce ↑ ↓. Passando col mouse su una piega la vedi evidenziata sul disegno.</li></ul>
+<p>Sul disegno il passo compare accanto all'angolo ("90° · passo 2"), nel 3D accanto al cursore ("Passo 2 di 3"). Ctrl+Z annulla ogni modifica.</p>` },
+
+{ id:'genera-scatola', cat:'Fustella e scatole', title:'Genera scatola', keys:'genera scatola americana rsc astuccio tuck box dimensioni larghezza profondità altezza automatica',
+html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profondità e Altezza in mm e scegli il tipo. La fustella viene creata in una nuova scheda.</p>
+<ul><li><b>Scatola americana (RSC)</b>: 4 pareti con aletta di incollaggio, alette sopra e sotto separate da tagli.</li>
+<li><b>Astuccio con coperchio a incastro</b>: alette antipolvere, aletta posteriore e linguetta di chiusura.</li></ul>
+<p>Le pieghe sono già impostate a monte, 90°, con un <a data-topic="ordine">ordine di piegatura</a> sensato, e la zona di incollaggio è un poligono <a data-topic="incollaggio">tratteggiato</a>. L'aletta di incollaggio si può impostare o lasciare automatica. Gli spigoli delle alette sono semplificati: verifica le misure prima della produzione.</p>` },
+
+{ id:'componenti', cat:'Fustella e scatole', title:'Libreria componenti', keys:'componenti pezzi pronti aletta foro europeo maniglia linguetta gancio condivisi community',
+html:`<p>Scheda <b>Componenti</b> del pannello laterale: pezzi pronti da inserire con un clic al centro del foglio (aletta standard, foro europeo, maniglia, linguetta, gancio), modificabili come qualunque forma.</p>
+<p>Sotto ai predefiniti compaiono i progetti salvati come <b>condivisi</b> nella <a data-topic="libreria">libreria</a> (serve l'accesso): si inseriscono allo stesso modo.</p>` },
+
+{ id:'incollaggio', cat:'Fustella e scatole', title:'Zone di incollaggio', keys:'incollaggio colla tratteggio zona aletta stampa',
+html:`<p>Una forma <b>chiusa</b> con ruolo Incollaggio e senza colore di riempimento viene mostrata a schermo con un <b>tratteggio diagonale</b>. Il tratteggio serve solo sul disegno: esportazioni SVG e PDF, stampa di prova e anteprima di taglio non lo contengono (resta solo il contorno).</p>
+<p>Le scatole generate hanno già la zona di incollaggio sull'aletta, rientrata di 1,5 mm dai bordi.</p>` },
+
+{ id:'verifiche', cat:'Fustella e scatole', title:'Verifiche e pulizia del disegno', keys:'verifica chiusure percorsi aperti sovrapposizioni duplicati salda punti vicini chiudi percorsi aperti',
+html:`<p>Dal menu <b>Strumenti</b>:</p>
+<ul><li><b>Verifica chiusure percorsi</b>: evidenzia percorsi aperti e punti non collegati.</li>
+<li><b>Verifica sovrapposizioni e duplicati</b>: trova forme doppie e tratti di taglio sovrapposti, e li seleziona.</li>
+<li><b>Salda punti vicini</b>: unisce i punti di linee diverse più vicini della tolleranza scelta.</li>
+<li><b>Chiudi tutti i percorsi aperti</b>: chiude solo i contorni veri (almeno 3 punti, niente pieghe né archi, estremità libere).</li></ul>
+<p>Il controllo più completo per le scatole è quello dell'<a data-topic="controllo-3d">anteprima 3D</a>.</p>` },
+
+{ id:'anteprima-taglio', cat:'Fustella e scatole', title:'Anteprima taglio', keys:'anteprima taglio fustella sagoma senza piegature',
+html:`<p>Menu <b>Strumenti → Anteprima taglio (fustella)</b>: mostra la sagoma che si ottiene tagliando i contorni con ruolo Taglio, senza le piegature. Segnala anche i tratti di taglio rimasti aperti.</p>` },
+
+{ id:'descrizione', cat:'Fustella e scatole', title:'Descrizione e istruzioni del progetto', keys:'descrizione istruzioni montaggio carta materiale tipo scatola passaggi',
+html:`<p>Senza nessun oggetto selezionato, il pannello Proprietà mostra la scheda del progetto: tipo di scatola, carta o materiale consigliato, istruzioni di stampa e taglio, e i passaggi di montaggio uno per uno (riordinabili). Viene salvata con il progetto.</p>` },
+
+/* ---------------- ANTEPRIMA 3D ---------------- */
+{ id:'anteprima-3d', cat:'Anteprima 3D', title:'Anteprima 3D piegata', keys:'3d anteprima simulazione piegare ruotare zoom pannelli modello animazione',
+html:`<p>Menu <b>Strumenti → 🧊 Anteprima 3D piegata</b>. I pannelli vengono ricavati dai contorni di <b>taglio</b> chiusi, divisi dalle linee di <b>piega</b>, e piegati secondo <a data-topic="pieghe">verso e angolo</a> di ogni piega.</p>
+<ul><li><b>▶ Simula piegatura</b> anima il passaggio dal foglio piatto alla scatola chiusa, per <a data-topic="ordine">passi</a>; il cursore si ferma a qualunque punto.</li>
+<li>Trascina per <b>ruotare</b>, rotella per lo <b>zoom</b>, "Vista iniziale" per tornare alla vista di partenza.</li>
+<li>Lato chiaro = lato stampato (esterno), color cartone = interno; i pannelli <b>rossi</b> non sono collegati da nessuna piega.</li>
+<li>La casella <b>Grafica</b> mostra la <a data-topic="grafica-3d">grafica</a> sui pannelli.</li></ul>
+<p>Sotto il modello c'è il <a data-topic="controllo-3d">controllo del disegno</a>. Limiti: curve approssimate con segmenti, fori non ritagliati nel 3D.</p>` },
+
+{ id:'controllo-3d', cat:'Anteprima 3D', title:'Controllo del disegno e correzioni', keys:'errori problemi controllo correggi automaticamente conferma annulla piega non arriva contorno aperto bloccata linea chiusa su se stessa',
+html:`<p>Aprendo l'anteprima 3D, sotto il modello compare l'elenco di ciò che non è stato possibile usare, con il motivo. Gli errori sono <b>numerati</b>, con gli stessi numeri usati sul disegno.</p>
+<ul><li><b>Mostra sul disegno</b> riduce la finestra 3D e passa al disegno: le linee coinvolte hanno un alone (rosso = errore, arancione = avviso), le estremità libere lampeggiano e la distanza mancante è scritta ("manca 2 mm"). Una barra in alto dice quanti problemi restano, con ◀ ▶ per passare dall'uno all'altro; diventa <b>verde</b> quando è tutto a posto. Il controllo si rifà dopo ogni modifica.</li>
+<li><b>🔧 Correggi</b> (per un problema) e <b>Correggi tutti</b>: uniscono estremità vicine, prolungano linee corte, chiudono contorni, assegnano il ruolo Taglio, riaprono linee "chiuse su se stesse", tolgono tratti di piega sovrapposti al bordo. I punti modificati vengono cerchiati di verde e scegli <b>✓ Conferma</b> o <b>↶ Annulla</b>.</li>
+<li>Una piega "<b>bloccata dal contorno</b>" è a posto ma non viene usata perché il contorno intorno è aperto altrove: "➜ Vai al problema" porta alla causa.</li>
+<li>I tagli aperti senza niente da unire vicino (tagli di scarico, asole) sono considerati <b>voluti</b> e compaiono solo come informazione.</li></ul>
+<p>Vedi anche <a data-topic="faq">Problemi frequenti</a>.</p>` },
+
+{ id:'grafica-3d', cat:'Anteprima 3D', title:'Grafica sui pannelli del 3D', keys:'grafica disegno livello stampa pannelli texture immagine 3d',
+html:`<p>La grafica viene riportata sui pannelli dell'anteprima 3D, sul lato stampato, e li segue mentre si piegano, con luce e ombre. È grafica tutto ciò che non ha ruolo Taglio, Piega, Fustella speciale o Incollaggio, sui <a data-topic="livelli">livelli</a> visibili (anche testo e immagini).</p>
+<p>La casella "Grafica" accanto al cursore la mostra o la nasconde. I font personalizzati potrebbero comparire con un font di sistema.</p>` },
+
+/* ---------------- LIVELLI ---------------- */
+{ id:'livelli', cat:'Livelli', title:'Livelli', keys:'livello layer rinominare nascondere bloccare ordine accordion aprire chiudere nuovo',
+html:`<p>Scheda <b>Livelli</b> del pannello laterale. Ogni forma appartiene a un livello; le nuove forme vanno nel livello attivo.</p>
+<ul><li>L'elenco funziona come un <b>accordion</b>: il clic sul titolo apre l'elenco degli oggetti del livello (e lo rende attivo) chiudendo gli altri; un nuovo clic lo richiude. ▸/▾ indica lo stato, il numero accanto al nome quanti oggetti contiene.</li>
+<li><b>Rinominare</b>: pulsante ✎, doppio clic sul nome o tasto destro; Invio conferma, Esc annulla.</li>
+<li>👁 mostra/nasconde, 🔒 blocca, le frecce cambiano l'ordine, il cestino elimina il livello.</li>
+<li>"＋ Nuovo livello" crea un livello, che diventa attivo e aperto.</li></ul>
+<p>Uso tipico: un livello per taglio e pieghe, uno sopra per la grafica.</p>` },
+
+/* ---------------- SALVARE ED ESPORTARE ---------------- */
+{ id:'salvataggio', cat:'Salvare ed esportare', title:'Salvataggio', keys:'salvare salvataggio automatico locale json aprire file progetto dischetto',
+html:`<ul><li><b>Salvataggio automatico</b> nel browser a ogni modifica: riaprendo la pagina ritrovi il lavoro. Resta solo su quel browser.</li>
+<li><b>💾 Salva</b>: salva subito una copia locale.</li>
+<li><b>File → Salva / Apri progetto (.json)</b>: un file da scaricare e riaprire quando vuoi. Da File si può anche aprire un SVG o un progetto da <b>Google Drive</b> (se configurato).</li>
+<li><b>☁ Libreria</b>: salvataggio sul server, vedi <a data-topic="libreria">Libreria</a>.</li></ul>` },
+
+{ id:'libreria', cat:'Salvare ed esportare', title:'Account e libreria online', keys:'account accesso registrazione libreria server cartelle condividere privato versioni nuvola password',
+html:`<ul><li><b>Account</b>: registrazione, accesso (anche "ricordami"), recupero della password via email.</li>
+<li><b>☁ Libreria</b>: se il progetto è già collegato alla libreria, un clic lo sovrascrive subito; la prima volta chiede nome, cartella e condivisione. File → "Salva in libreria (server)" riapre sempre la finestra completa (per salvare con un altro nome).</li>
+<li><b>Libreria progetti</b> in stile Esplora risorse: cartelle annidate, trascinamento, tasto destro con copia, taglia, incolla, rinomina, elimina.</li>
+<li><b>Privato o condiviso</b>: i progetti condivisi sono visibili a tutti gli utenti e compaiono tra i <a data-topic="componenti">componenti</a>; aprendo un progetto altrui e salvandolo si crea una copia tua.</li>
+<li><b>Versioni</b>: ogni salvataggio conserva il precedente (fino a 30); puoi aprire una versione in una scheda o ripristinarla.</li></ul>` },
+
+{ id:'esporta', cat:'Salvare ed esportare', title:'Esportare e stampare', keys:'esportare svg pdf multipagina stampa di prova formato a4 a3 scala reale',
+html:`<p>Dal menu <b>Stampa</b>:</p>
+<ul><li><b>Esporta SVG</b> (Ctrl+S): pronto per taglio e stampa, raggruppato per ruolo.</li>
+<li><b>Esporta PDF</b> in scala reale 1:1.</li>
+<li><b>PDF multi-pagina</b>: divide un disegno grande su più fogli (A3, A4, A5 o personalizzato) con sovrapposizione e riferimenti per riassemblarli.</li>
+<li><b>Stampa di prova</b>: scalata per stare nel foglio scelto, per controllare le proporzioni.</li>
+<li><b>Silhouette Cameo</b>: vedi <a data-topic="silhouette">Silhouette Cameo</a>.</li></ul>
+<p>Le esportazioni sono costruite dai dati delle forme: gli aiuti visivi dello schermo (tratteggio dell'incollaggio, guide, evidenziazioni) non compaiono mai.</p>` },
+
+{ id:'silhouette', cat:'Salvare ed esportare', title:'Silhouette Cameo', keys:'silhouette cameo plotter dxf taglio studio cordonatura perforazione tratteggio',
+html:`<p>Menu <b>Stampa → ✂ Esporta per Silhouette Cameo (DXF)…</b>. Crea un file DXF in millimetri reali, che Silhouette Studio apre anche nell'edizione gratuita con le linee pronte per il taglio (gli SVG richiedono la Designer Edition). Contiene solo le linee tecniche dei livelli visibili.</p>
+<p>Per le pieghe scegli: <b>tratteggiate</b> (taglio a tratti, lunghezza di tratto e ponte regolabili: pronte da tagliare), <b>nel file del taglio come linee continue</b> (in Studio vanno assegnate alla cordonatura), <b>in un file separato</b>, oppure non esportarle.</p>
+<p>In Studio: File → Apri, seleziona tutto, verifica nel pannello Invia che le linee siano su "Taglio" e controlla le misure prima di tagliare. Il Print &amp; Cut non è supportato.</p>` },
+
+/* ---------------- RIFERIMENTO ---------------- */
+{ id:'finestre', cat:'Riferimento', title:'Finestre riducibili a icona', keys:'finestra ridurre icona minimizzare barra in basso riprendere',
+html:`<p>Le finestre di lavoro hanno il pulsante <b>▁</b> accanto alla ✕: la finestra si riduce nella barra in basso, modifichi il disegno e la riprendi con un clic, com'era rimasta. L'anteprima 3D si ricalcola sul disegno aggiornato. La ✕ nella barra la chiude.</p>` },
+
+{ id:'scorciatoie', cat:'Riferimento', title:'Scorciatoie da tastiera', keys:'tasti tastiera scorciatoie shortcut comandi rapidi',
+html:`<table class="guide-table">
+<tr><th colspan="2">Strumenti</th></tr>
+<tr><td>V / Q</td><td>Selezione / Lazo</td></tr><tr><td>P</td><td>Penna</td></tr><tr><td>L</td><td>Linea</td></tr><tr><td>R / O</td><td>Rettangolo / Ellisse</td></tr><tr><td>A</td><td>Arco</td></tr><tr><td>B</td><td>Matita</td></tr><tr><td>T</td><td>Testo</td></tr>
+<tr><th colspan="2">Durante il disegno</th></tr>
+<tr><td>Invio</td><td>termina la linea della penna, conferma una lunghezza digitata</td></tr><tr><td>C</td><td>chiude il percorso della penna</td></tr><tr><td>Esc</td><td>annulla</td></tr><tr><td>numeri</td><td>lunghezza esatta della linea</td></tr>
+<tr><th colspan="2">Modifica</th></tr>
+<tr><td>Canc / Backspace</td><td>elimina la selezione</td></tr><tr><td>Frecce</td><td>sposta di 1 mm (Shift = 5 mm)</td></tr><tr><td>Alt + trascina</td><td>sposta senza agganci; sull'area vuota: lazo</td></tr><tr><td>Ctrl+A</td><td>seleziona tutto</td></tr><tr><td>Ctrl+C / X / V</td><td>copia / taglia / incolla</td></tr><tr><td>Ctrl+] / Ctrl+[</td><td>avanti / indietro di una posizione</td></tr><tr><td>Ctrl+Shift+] / [</td><td>primo / secondo piano</td></tr>
+<tr><th colspan="2">Generali</th></tr>
+<tr><td>Ctrl+Z / Ctrl+Shift+Z</td><td>annulla / ripeti</td></tr><tr><td>Ctrl+S</td><td>esporta SVG</td></tr><tr><td>G / M</td><td>griglia / calamita</td></tr><tr><td>Ctrl + rotella, + / − / 0</td><td>zoom</td></tr><tr><td>F1</td><td>questa guida</td></tr></table>` },
+
+{ id:'faq', cat:'Riferimento', title:'Problemi frequenti', keys:'problema errore non funziona faq aiuto piega ignorata arco nero tratteggio stampa annulla',
+html:`<dl class="guide-faq">
+<dt>Il 3D non tiene conto di una piega.</dt><dd>Di solito la piega non tocca davvero il contorno. Apri il <a data-topic="controllo-3d">controllo del disegno</a>: dice di quanti millimetri manca e spesso la corregge in automatico. Col <a data-topic="magnete">magnete</a> acceso, le estremità si agganciano anche ai lati delle linee.</dd>
+<dt>Una piega risulta "bloccata dal contorno".</dt><dd>La piega va bene: il contorno di taglio intorno è aperto da un'altra parte. Usa "➜ Vai al problema".</dd>
+<dt>Il controllo dice che una linea è "chiusa su se stessa".</dt><dd>Un segmento dritto marcato come chiuso non ha più estremità e non si collega. Usa "🔧 Correggi" per riaprirlo.</dd>
+<dt>Due punti sembrano uniti ma non lo sono.</dt><dd>Seleziona le linee e usa <a data-topic="unisci">Unisci punti</a>: i numeri sulle estremità libere mostrano quali non sono collegate.</dd>
+<dt>Il tratteggio dell'incollaggio finirà in stampa?</dt><dd>No, è solo a schermo: vedi <a data-topic="incollaggio">Zone di incollaggio</a>.</dd>
+<dt>Ho annullato troppo.</dt><dd>Ctrl+Shift+Z ripete, oppure torna a qualunque stato con la <a data-topic="cronologia">cronologia</a> 🕐.</dd>
+</dl>` },
+
+{ id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
+html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
+<ul>
+<li><b>2.21</b> — Questa guida, con ricerca e argomenti (F1 o ? in alto).</li>
+<li><b>2.20</b> — <a data-topic="silhouette">Esportazione per Silhouette Cameo</a> (DXF).</li>
+<li><b>2.19</b> — <a data-topic="grafica-3d">Grafica sui pannelli del 3D</a>, <a data-topic="guide">guide di allineamento</a>, <a data-topic="livelli">livelli</a> ad accordion e rinomina più comoda.</li>
+<li><b>2.18</b> — Grafica dei livelli di disegno nell'anteprima 3D.</li>
+<li><b>2.17</b> — <a data-topic="ordine">Sequenza di piegatura</a> con trascinamento; corretto l'annullamento dopo "Genera scatola".</li>
+<li><b>2.16</b> — Ordine di piegatura automatico.</li>
+<li><b>2.15</b> — <a data-topic="simmetria">Simmetria</a>; <a data-topic="incollaggio">zone di incollaggio</a> tratteggiate.</li>
+<li><b>2.14</b> — <a data-topic="ordine">Ordine di piegatura</a> a passi; correzione delle pieghe sovrapposte al bordo.</li>
+<li><b>2.13</b> — <a data-topic="controllo-3d">Correzioni automatiche</a> con Conferma/Annulla, pieghe bloccate dal contorno, tagli voluti, lazo con pulsante, proposte più prudenti in Unisci punti.</li>
+<li><b>2.12</b> — <a data-topic="booleane">Operazioni booleane</a>, <a data-topic="archi">archi</a> come linee vere, <a data-topic="magnete">magnete sulle linee</a>, evidenziazione degli errori dal vivo.</li>
+<li><b>2.11</b> — <a data-topic="scollega">Scollega / Ricollega</a>.</li>
+<li><b>2.10</b> — <a data-topic="unisci">Unisci punti</a>, <a data-topic="finestre">finestre riducibili a icona</a>.</li>
+<li><b>2.9</b> — Controllo del disegno nell'anteprima 3D.</li>
+<li><b>2.8</b> — <a data-topic="anteprima-3d">Anteprima 3D</a> con simulazione; <a data-topic="pieghe">verso e angolo</a> delle pieghe.</li>
+<li><b>2.6–2.7</b> — Salvataggio rapido in libreria, larghezza reale del testo.</li>
+<li><b>2.4–2.5</b> — <a data-topic="genera-scatola">Genera scatola</a>, componenti condivisi.</li>
+<li><b>2.1–2.3</b> — Allinea e distribuisci, rifletti, offset, misure esatte, lazo, verifica sovrapposizioni, cronologia visuale, libreria componenti.</li>
+<li><b>2.0</b> — Interfaccia in 6 lingue.</li>
+</ul>` },
+];
+
+/* ---------- interfaccia della guida: ricerca e argomenti ---------- */
+const guideState = { current:'intro', query:'' };
+const guideNorm = s=> String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+function guidePlain(html){ const d = document.createElement('div'); d.innerHTML = html; return d.textContent.replace(/\s+/g,' ').trim(); }
+const guideIndex = GUIDE_TOPICS.map(t=>({ t, title: guideNorm(t.title), keys: guideNorm(t.keys||''), text: guideNorm(guidePlain(t.html)), plain: guidePlain(t.html) }));
+function guideSearchResults(q){
+  const terms = guideNorm(q).split(/\s+/).filter(w=>w.length>1);
+  if(!terms.length) return null;
+  const res = [];
+  guideIndex.forEach(ix=>{
+    let score = 0, ok = true;
+    for(const w of terms){
+      const inT = ix.title.includes(w), inK = ix.keys.includes(w), cnt = ix.text.split(w).length-1;
+      if(!inT && !inK && !cnt){ ok = false; break; }
+      score += (inT ? 10 : 0) + (inK ? 4 : 0) + Math.min(cnt, 5);
+    }
+    if(ok) res.push({ix, score, terms});
+  });
+  return res.sort((a,b)=> b.score-a.score);
+}
+function guideSnippet(ix, terms){
+  const n = guideNorm(ix.plain); let pos = -1;
+  for(const w of terms){ const p = n.indexOf(w); if(p>=0 && (pos<0 || p<pos)) pos = p; }
+  if(pos<0) return '';
+  const a = Math.max(0, pos-40), b = Math.min(ix.plain.length, pos+90);
+  return (a>0?'…':'') + ix.plain.slice(a,b) + (b<ix.plain.length?'…':'');
+}
+function guideHighlight(root, terms){
+  if(!terms || !terms.length) return;
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const nodes = []; while(walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach(node=>{
+    const txt = node.nodeValue, n = guideNorm(txt);
+    const hits = [];
+    terms.forEach(w=>{ let p = n.indexOf(w); while(p>=0){ hits.push([p, p+w.length]); p = n.indexOf(w, p+w.length); } });
+    if(!hits.length) return;
+    hits.sort((x,y)=>x[0]-y[0]);
+    const frag = document.createDocumentFragment(); let last = 0;
+    hits.forEach(([s,e])=>{ if(s<last) return; frag.appendChild(document.createTextNode(txt.slice(last,s))); const m=document.createElement('mark'); m.className='guide-hit'; m.textContent=txt.slice(s,e); frag.appendChild(m); last=e; });
+    frag.appendChild(document.createTextNode(txt.slice(last)));
+    node.parentNode.replaceChild(frag, node);
+  });
+}
+function guideShow(id, keepScroll){
+  const t = GUIDE_TOPICS.find(x=>x.id===id) || GUIDE_TOPICS[0];
+  guideState.current = t.id;
+  const box = document.getElementById('guideContent');
+  box.innerHTML = (currentLang!=='it' ? `<div class="guide-note">${escapeHTML(translate('La guida è disponibile in italiano.'))}</div>` : '')
+    + `<div class="guide-cat">${escapeHTML(t.cat)}</div><h2>${escapeHTML(t.title)}</h2>` + t.html;
+  box.querySelectorAll('a[data-topic]').forEach(a=> a.onclick = (e)=>{ e.preventDefault(); guideShow(a.dataset.topic); guideRenderList(); });
+  const terms = guideNorm(guideState.query).split(/\s+/).filter(w=>w.length>1);
+  guideHighlight(box, terms);
+  if(!keepScroll) box.scrollTop = 0;
+  document.getElementById('guideTopic').value = t.id;
+  guideRenderList();
+  const first = box.querySelector('mark.guide-hit'); if(first && first.scrollIntoView) first.scrollIntoView({block:'center'});
+}
+function guideRenderList(){
+  const host = document.getElementById('guideList'); host.innerHTML = '';
+  const res = guideSearchResults(guideState.query);
+  const item = (t, snip)=>{
+    const d = document.createElement('div'); d.className = 'guide-item' + (t.id===guideState.current ? ' active' : '');
+    d.textContent = t.title;
+    if(snip){ const s = document.createElement('span'); s.className='guide-snip'; s.textContent = snip; d.appendChild(s); }
+    d.onclick = ()=> guideShow(t.id);
+    host.appendChild(d);
+  };
+  if(res){
+    const h = document.createElement('div'); h.className='guide-cathead';
+    h.textContent = res.length ? tpl('{n} argomenti trovati', {n:res.length}) : translate('Nessun argomento trovato: prova con altre parole.');
+    host.appendChild(h);
+    res.forEach(r=> item(r.ix.t, guideSnippet(r.ix, r.terms)));
+  } else {
+    let cat = null;
+    GUIDE_TOPICS.forEach(t=>{ if(t.cat!==cat){ cat = t.cat; const h=document.createElement('div'); h.className='guide-cathead'; h.textContent = cat; host.appendChild(h); } item(t, null); });
+  }
+}
+function openGuide(topicId){
+  const sel = document.getElementById('guideTopic');
+  if(!sel.options.length){
+    let cat=null, grp=null;
+    GUIDE_TOPICS.forEach(t=>{ if(t.cat!==cat){ cat=t.cat; grp=document.createElement('optgroup'); grp.label=cat; sel.appendChild(grp); } const o=document.createElement('option'); o.value=t.id; o.textContent=t.title; grp.appendChild(o); });
+  }
+  openModal('helpModal');
+  guideShow(topicId || guideState.current);
+  setTimeout(()=>{ const s=document.getElementById('guideSearch'); if(s && s.focus) s.focus(); }, 30);
 }
 
 /* ============================================================
@@ -13841,7 +14278,15 @@ function doClearAll(){
   pushHistory(); renderAll(); refreshImageTabPreview();
 }
 document.getElementById('btnNew').onclick = clearAll;
-document.getElementById('btnHelp').onclick = ()=> openModal('helpModal');
+document.getElementById('btnHelp').onclick = ()=> openGuide();
+document.getElementById('guideSearch').addEventListener('input', e=>{
+  guideState.query = e.target.value;
+  const res = guideSearchResults(guideState.query);
+  if(res && res.length) guideShow(res[0].ix.t.id); else { guideShow(guideState.current, true); }
+});
+document.getElementById('guideSearch').addEventListener('keydown', e=> e.stopPropagation()); // i tasti della ricerca non attivano gli strumenti
+document.getElementById('guideTopic').onchange = e=> guideShow(e.target.value);
+window.addEventListener('keydown', e=>{ if(e.key==='F1'){ e.preventDefault(); openGuide(); } });
 document.getElementById('helpModalClose').onclick = ()=> document.getElementById('helpModal').classList.remove('open');
 setupOverlayClickClose(document.getElementById('helpModal'), ()=> document.getElementById('helpModal').classList.remove('open'));
 
