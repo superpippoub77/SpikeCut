@@ -98,6 +98,39 @@ In Studio: File → Apri, selezionare tutto, verificare nel pannello Invia che l
 linee siano su "Taglio" e controllare le misure prima di tagliare. Non
 supporta il Print & Cut (stampa della grafica con i segni di registrazione).
 
+### Importazione da PDF (pulsante ⇪ in alto)
+Oltre agli SVG si possono importare i PDF, tipicamente modelli di scatole
+scaricati online: le linee della pagina vengono lette in scala reale (1 punto
+PDF = 25,4/72 mm) con pdf.js (Mozilla, licenza Apache 2.0, caricato da CDN solo
+al primo uso). Una finestra mostra i gruppi di linee trovati, per colore e
+tratteggio, e per ognuno si sceglie il ruolo (Taglio, Piega, Fustella speciale,
+Incollaggio, Disegno o Ignora); proposta iniziale: linea continua più lunga =
+taglio, tratteggiate = pieghe, riempimenti = grafica. Con più pagine si sceglie
+quale importare. Le curve diventano spezzate fitte (circa 0,8 mm per segmento)
+così che i contorni siano linee vere, usabili dal 3D. Testi e immagini del PDF
+non vengono importati. Poi si prosegue come per un SVG (aggiungi/sostituisci,
+scala, posizione) e si salva in libreria come sempre.
+
+### Individuazione automatica di taglio e pieghe da un'immagine
+Nella scheda Immagine, spuntando "Individua automaticamente le linee di taglio
+e di piega", il pulsante cerca nell'immagine (scansione o schermata di una
+fustella) le linee e le trasforma in linee vere, già unite tra loro: continue
+nere/grigie/rosse = Taglio, continue blu/verdi = Piega, tratteggiate di
+qualunque colore = Piega (i trattini vengono riuniti); testi e macchie
+vengono scartati. Procedimento: classificazione dei pixel per colore,
+assottigliamento (Zhang-Suen), tracciamento dello scheletro, semplificazione
+(Ramer-Douglas-Peucker), raggruppamento dei trattini allineati, unione delle
+estremità vicine. Le misure seguono le dimensioni dell'immagine sul foglio.
+
+### Dividi in segmenti, Stacca
+- **Dividi in segmenti** (pulsante nella barra a sinistra, sotto il cestino, o
+  tasto destro): ogni lato di poligoni, rettangoli e linee a più tratti
+  diventa una linea a sé, con stesso ruolo e stile, unita alle altre nei punti.
+- **Stacca**: cliccando su un punto di una linea selezionata compare accanto
+  il pulsante "✂ Stacca" (o "🔗 Riattacca"); il punto staccato si può
+  trascinare lungo il segmento a cui era unito o su altri punti e linee, e se
+  lo si lascia su un altro punto si riattacca alla nuova unione.
+
 ### Grafica nell'anteprima 3D
 La grafica dei livelli di disegno viene riportata sui pannelli dell'anteprima
 3D, sul lato stampato (esterno), e li segue mentre si piegano, con luce e
@@ -133,7 +166,10 @@ dei passi nell'ordine in cui avvengono, ciascuno con le sue pieghe descritte
 (orientamento, lunghezza, posizione, verso e angolo). Si riordina
 trascinando: una piega su un altro passo la sposta lì, nello spazio tra due
 passi crea un passo nuovo; l'intestazione di un passo lo sposta tutto, o lo
-unisce a un altro passo se rilasciata sopra. In alternativa le frecce ↑ ↓
+unisce a un altro passo se rilasciata sopra. L'elenco è **pezzo per pezzo**: ogni tratto
+di piega tra due pannelli è una voce a sé, anche quando una sola linea
+attraversa più pannelli; spostando un solo tratto la linea viene divisa
+automaticamente nei suoi tratti. Le pieghe non usate nel 3D compaiono in grigio. In alternativa le frecce ↑ ↓
 sulle pieghe e sui passi. Passando col mouse su una piega la si vede
 evidenziata sul disegno; "Simula nel 3D" mostra subito il risultato. Ogni
 modifica si annulla con Ctrl+Z.

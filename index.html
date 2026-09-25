@@ -344,6 +344,13 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   align-items:center; justify-content:center; z-index:200;
 }
 .modal-overlay.open{display:flex;}
+#vertexBar{ position:fixed; z-index:120; display:none; gap:6px; align-items:center; background:var(--bg-1); border:1px solid var(--line); border-radius:8px; padding:4px 6px; box-shadow:0 4px 14px rgba(0,0,0,.35); }
+#vertexBar .btn{ width:auto; margin:0; padding:3px 9px; font-size:12px; }
+#vertexBar .vb-note{ font-size:11.5px; color:var(--ink-dim); white-space:nowrap; }
+.pdf-grp{ display:flex; align-items:center; gap:8px; padding:6px 0; border-top:1px solid var(--line); font-size:12px; }
+.pdf-sw{ width:34px; height:14px; flex:none; border-radius:3px; display:inline-block; }
+.pdf-grp-txt{ flex:1; }
+.pdf-grp select{ width:auto; }
 .guide-bar{ display:flex; gap:8px; padding:10px 14px; border-bottom:1px solid var(--line); }
 .guide-bar input{ flex:1; }
 .guide-bar select{ width:auto; max-width:40%; }
@@ -390,6 +397,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
 .seq-head .seq-handle, .seq-item .seq-handle{ cursor:grab; color:var(--ink-dim); user-select:none; }
 .seq-item{ display:flex; align-items:center; gap:6px; font-size:12px; padding:4px 6px; border-radius:6px; margin:2px 0; background:rgba(128,128,128,.08); }
 .seq-item:hover{ background:rgba(53,114,214,.16); }
+.seq-item.seq-unused{ opacity:.6; font-style:italic; }
 .seq-item.dragging, .seq-step.dragging{ opacity:.45; }
 .seq-grow{ flex:1; }
 .seq-head .iconbtn, .seq-item .iconbtn{ padding:1px 6px; font-size:11px; }
@@ -550,7 +558,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
   <div class="spacer"></div>
   <div class="grp">
     <button class="iconbtn" id="btnNew" title="Nuovo progetto">＋</button>
-    <button class="iconbtn" id="btnImportSVGTop" title="Importa un file SVG esistente da modificare">⇪</button>
+    <button class="iconbtn" id="btnImportSVGTop" title="Importa un file SVG o PDF esistente da modificare">⇪</button>
     <button class="iconbtn" id="btnHelp" title="Guida (F1)">?</button>
   </div>
   <div class="grp" id="accountArea">
@@ -670,7 +678,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.21.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.23.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -794,6 +802,22 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
 <div id="modalDock"></div>
 <div id="foldCheckBanner" style="display:none;"></div>
 
+<div id="pdfImportModal" class="modal-overlay">
+  <div class="modal-box" style="width:560px;max-width:96vw;">
+    <div class="modal-head">
+      <h3>Importa da PDF</h3>
+      <button class="iconbtn" id="pdfImportClose" title="Chiudi">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="hint" style="margin-bottom:10px;">Le linee del PDF vengono lette in scala reale. Qui sotto trovi i gruppi di linee trovati (per colore e tratteggio): per ognuno scegli il ruolo. La proposta: la linea continua più lunga è il taglio, le tratteggiate sono pieghe, i riempimenti sono grafica. Metti "Ignora" su quote, cornici e marchi che non ti servono.</div>
+      <div class="field" id="pdfImpPageRow"><label>Pagina</label><select id="pdfImpPage"></select></div>
+      <div id="pdfImpGroups"></div>
+      <div id="pdfImpSummary" class="hint" style="margin-top:10px;padding:8px;border-radius:6px;background:rgba(201,151,63,0.12);font-weight:600;"></div>
+      <button class="btn primary" id="pdfImpApply" style="width:100%;margin-top:12px;">Importa</button>
+    </div>
+  </div>
+</div>
+
 <div id="silModal" class="modal-overlay">
   <div class="modal-box" style="width:500px;">
     <div class="modal-head">
@@ -830,7 +854,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
       <button class="iconbtn" id="seqModalClose" title="Chiudi">✕</button>
     </div>
     <div class="modal-body" style="max-height:72vh;overflow:auto;">
-      <div class="hint" style="margin-bottom:10px;">Le pieghe si chiudono passo dopo passo, dall'alto dell'elenco verso il basso. Trascina una piega su un altro passo per spostarla, o nello spazio tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo tutto (o su un altro passo per unirli). In alternativa usa le frecce. Passando sopra una piega la vedi evidenziata sul disegno.</div>
+      <div class="hint" style="margin-bottom:10px;">Ogni tratto di piega tra due pannelli è una voce a sé: spostandone uno, la linea viene divisa automaticamente nei suoi tratti. Le pieghe si chiudono passo dopo passo, dall'alto dell'elenco verso il basso. Trascina una piega su un altro passo per spostarla, o nello spazio tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo tutto (o su un altro passo per unirli). In alternativa usa le frecce. Passando sopra una piega la vedi evidenziata sul disegno.</div>
       <div id="seqList"></div>
       <div style="display:flex;gap:8px;margin-top:12px;">
         <button class="btn primary" id="seqSimulate" style="width:auto;margin:0;">🧊 Simula nel 3D</button>
@@ -2081,6 +2105,50 @@ const I18N = {
     "{n} argomenti trovati": "{n} topics found",
     "Nessun argomento trovato: prova con altre parole.": "No topic found: try other words.",
     "La guida è disponibile in italiano.": "The guide is available in Italian.",
+    "Importa un file SVG o PDF esistente da modificare": "Import an existing SVG or PDF file to edit",
+    "Importa da PDF": "Import from PDF",
+    "Le linee del PDF vengono lette in scala reale. Qui sotto trovi i gruppi di linee trovati (per colore e tratteggio): per ognuno scegli il ruolo. La proposta: la linea continua più lunga è il taglio, le tratteggiate sono pieghe, i riempimenti sono grafica. Metti \"Ignora\" su quote, cornici e marchi che non ti servono.": "The PDF lines are read at true scale. Below are the groups of lines found (by color and dashing): choose the role for each. The proposal: the longest solid line is the cut, dashed lines are folds, fills are artwork. Set \"Ignore\" for dimensions, frames and marks you don’t need.",
+    "Pagina": "Page",
+    "Importa": "Import",
+    "Ignora": "Ignore",
+    "Lettura del PDF…": "Reading the PDF…",
+    "Impossibile caricare il lettore PDF (serve la connessione a internet la prima volta).": "Could not load the PDF reader (an internet connection is needed the first time).",
+    "Impossibile leggere questo PDF (forse è protetto o danneggiato).": "Could not read this PDF (it may be protected or damaged).",
+    "Pagina {n} ({w} × {h} mm)": "Page {n} ({w} × {h} mm)",
+    "Analisi della pagina…": "Analyzing the page…",
+    "Questa pagina non contiene linee vettoriali: probabilmente è un'immagine (scansione). Puoi importarla come immagine di riferimento dalla scheda Immagine e vettorizzarla.": "This page contains no vector lines: it is probably an image (scan). You can import it as a reference image from the Image tab and vectorize it.",
+    "Riempimenti": "Fills",
+    "Linee tratteggiate": "Dashed lines",
+    "Linee continue": "Solid lines",
+    "{n} elementi": "{n} items",
+    "Pagina {w} × {h} mm: verranno importati {n} elementi in scala reale.": "Page {w} × {h} mm: {n} items will be imported at true scale.",
+    "{n} testi non vengono importati (vanno riscritti con lo strumento Testo, se servono).": "{n} texts are not imported (rewrite them with the Text tool if needed).",
+    "{n} immagini non vengono importate.": "{n} images are not imported.",
+    "Niente da importare: tutti i gruppi sono impostati su \"Ignora\".": "Nothing to import: all groups are set to \"Ignore\".",
+    "Dividi in segmenti: ogni lato della forma selezionata diventa una linea a sé, unita alle altre nei punti": "Split into segments: each side of the selected shape becomes a separate line, joined to the others at the points",
+    "✂ Dividi in segmenti": "✂ Split into segments",
+    "Seleziona prima uno o più poligoni o linee da dividere in segmenti.": "First select one or more polygons or lines to split into segments.",
+    "Niente da dividere: seleziona poligoni, rettangoli o linee con più di un tratto (archi ed ellissi restano interi).": "Nothing to split: select polygons, rectangles or lines with more than one segment (arcs and ellipses stay whole).",
+    "{n} forme divise in {k} segmenti uniti tra loro.": "{n} shapes split into {k} joined segments.",
+    "{m} elementi non divisibili lasciati interi.": "{m} items that cannot be split were left whole.",
+    "🔗 Riattacca": "🔗 Reattach",
+    "Riunisce il punto alle linee che lo toccano": "Rejoins the point to the lines touching it",
+    "staccato: trascinalo dove vuoi": "detached: drag it wherever you want",
+    "✂ Stacca": "✂ Detach",
+    "Stacca il punto dalle linee a cui è unito: poi puoi spostarlo lungo il segmento o su altri punti e linee": "Detaches the point from the lines it is joined to: then you can move it along the segment or onto other points and lines",
+    "Punto staccato: trascinalo dove vuoi. Se lo lasci su un altro punto si riattacca lì.": "Point detached: drag it wherever you want. If you drop it on another point it reattaches there.",
+    "punto libero: trascinalo su un punto o una linea per unirlo": "free point: drag it onto a point or a line to join it",
+    "Punto riattaccato alla nuova unione.": "Point reattached to the new joint.",
+    "Questa piega non è dritta: i suoi tratti si spostano tutti insieme.": "This fold isn’t straight: its segments move all together.",
+    "tratto {k} di {n}": "segment {k} of {n}",
+    "(non usata nel 3D)": "(not used in 3D)",
+    "Individua taglio e pieghe": "Detect cuts and folds",
+    "Individua automaticamente le linee di taglio e di piega (per scansioni o schermate di una fustella)": "Automatically detect cut and fold lines (for scans or screenshots of a die-line)",
+    "Ricerca delle linee in corso…": "Searching for lines…",
+    "Nessuna linea individuata: l'immagine deve mostrare la fustella con linee ben visibili su sfondo chiaro.": "No lines detected: the image must show the die-line with clearly visible lines on a light background.",
+    "Individuate {c} linee di taglio e {f} pieghe ({r} frammenti scartati, es. testi). Controllale sul disegno e con l'anteprima 3D.": "Detected {c} cut lines and {f} folds ({r} fragments discarded, e.g. text). Check them on the drawing and with the 3D preview.",
+    "Impossibile analizzare l'immagine.": "Could not analyze the image.",
+    "Ogni tratto di piega tra due pannelli è una voce a sé: spostandone uno, la linea viene divisa automaticamente nei suoi tratti. Le pieghe si chiudono passo dopo passo, dall'alto dell'elenco verso il basso. Trascina una piega su un altro passo per spostarla, o nello spazio tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo tutto (o su un altro passo per unirli). In alternativa usa le frecce. Passando sopra una piega la vedi evidenziata sul disegno.": "Each fold segment between two panels is a separate item: moving one splits the line into its segments automatically. The folds close step by step, from the top of the list downwards. Drag a fold onto another step to move it, or into the space between two steps to create a new one; drag a step’s header to move it as a whole (or onto another step to merge them). Alternatively use the arrows. Hovering over a fold highlights it on the drawing.",
   },
   de: {
     "1 cm": "1 cm",
@@ -2863,6 +2931,50 @@ const I18N = {
     "{n} argomenti trovati": "{n} Themen gefunden",
     "Nessun argomento trovato: prova con altre parole.": "Kein Thema gefunden: Versuche es mit anderen Wörtern.",
     "La guida è disponibile in italiano.": "Das Handbuch ist auf Italienisch verfügbar.",
+    "Importa un file SVG o PDF esistente da modificare": "Eine vorhandene SVG- oder PDF-Datei zum Bearbeiten importieren",
+    "Importa da PDF": "Aus PDF importieren",
+    "Le linee del PDF vengono lette in scala reale. Qui sotto trovi i gruppi di linee trovati (per colore e tratteggio): per ognuno scegli il ruolo. La proposta: la linea continua più lunga è il taglio, le tratteggiate sono pieghe, i riempimenti sono grafica. Metti \"Ignora\" su quote, cornici e marchi che non ti servono.": "Die Linien des PDFs werden im Originalmaßstab gelesen. Unten findest du die gefundenen Liniengruppen (nach Farbe und Strichelung): Wähle für jede die Rolle. Vorschlag: Die längste durchgehende Linie ist der Schnitt, gestrichelte Linien sind Falze, Füllungen sind Grafik. Setze \"Ignorieren\" für Maße, Rahmen und Marken, die du nicht brauchst.",
+    "Pagina": "Seite",
+    "Importa": "Importieren",
+    "Ignora": "Ignorieren",
+    "Lettura del PDF…": "PDF wird gelesen…",
+    "Impossibile caricare il lettore PDF (serve la connessione a internet la prima volta).": "Der PDF-Leser konnte nicht geladen werden (beim ersten Mal ist eine Internetverbindung nötig).",
+    "Impossibile leggere questo PDF (forse è protetto o danneggiato).": "Dieses PDF kann nicht gelesen werden (vielleicht geschützt oder beschädigt).",
+    "Pagina {n} ({w} × {h} mm)": "Seite {n} ({w} × {h} mm)",
+    "Analisi della pagina…": "Seite wird analysiert…",
+    "Questa pagina non contiene linee vettoriali: probabilmente è un'immagine (scansione). Puoi importarla come immagine di riferimento dalla scheda Immagine e vettorizzarla.": "Diese Seite enthält keine Vektorlinien: Wahrscheinlich ist es ein Bild (Scan). Du kannst sie als Referenzbild im Tab Bild importieren und vektorisieren.",
+    "Riempimenti": "Füllungen",
+    "Linee tratteggiate": "Gestrichelte Linien",
+    "Linee continue": "Durchgehende Linien",
+    "{n} elementi": "{n} Elemente",
+    "Pagina {w} × {h} mm: verranno importati {n} elementi in scala reale.": "Seite {w} × {h} mm: {n} Elemente werden im Originalmaßstab importiert.",
+    "{n} testi non vengono importati (vanno riscritti con lo strumento Testo, se servono).": "{n} Texte werden nicht importiert (bei Bedarf mit dem Textwerkzeug neu schreiben).",
+    "{n} immagini non vengono importate.": "{n} Bilder werden nicht importiert.",
+    "Niente da importare: tutti i gruppi sono impostati su \"Ignora\".": "Nichts zu importieren: Alle Gruppen stehen auf \"Ignorieren\".",
+    "Dividi in segmenti: ogni lato della forma selezionata diventa una linea a sé, unita alle altre nei punti": "In Segmente teilen: Jede Seite der gewählten Form wird eine eigene Linie, an den Punkten mit den anderen verbunden",
+    "✂ Dividi in segmenti": "✂ In Segmente teilen",
+    "Seleziona prima uno o più poligoni o linee da dividere in segmenti.": "Wähle zuerst ein oder mehrere Polygone oder Linien zum Teilen aus.",
+    "Niente da dividere: seleziona poligoni, rettangoli o linee con più di un tratto (archi ed ellissi restano interi).": "Nichts zu teilen: Wähle Polygone, Rechtecke oder Linien mit mehr als einem Abschnitt (Bögen und Ellipsen bleiben ganz).",
+    "{n} forme divise in {k} segmenti uniti tra loro.": "{n} Formen in {k} verbundene Segmente geteilt.",
+    "{m} elementi non divisibili lasciati interi.": "{m} nicht teilbare Elemente blieben ganz.",
+    "🔗 Riattacca": "🔗 Wieder verbinden",
+    "Riunisce il punto alle linee che lo toccano": "Verbindet den Punkt wieder mit den Linien, die ihn berühren",
+    "staccato: trascinalo dove vuoi": "gelöst: zieh ihn, wohin du willst",
+    "✂ Stacca": "✂ Lösen",
+    "Stacca il punto dalle linee a cui è unito: poi puoi spostarlo lungo il segmento o su altri punti e linee": "Löst den Punkt von den verbundenen Linien: Dann kannst du ihn entlang des Segments oder auf andere Punkte und Linien verschieben",
+    "Punto staccato: trascinalo dove vuoi. Se lo lasci su un altro punto si riattacca lì.": "Punkt gelöst: Zieh ihn, wohin du willst. Legst du ihn auf einen anderen Punkt, wird er dort wieder verbunden.",
+    "punto libero: trascinalo su un punto o una linea per unirlo": "freier Punkt: Zieh ihn auf einen Punkt oder eine Linie, um ihn zu verbinden",
+    "Punto riattaccato alla nuova unione.": "Punkt an der neuen Verbindung wieder verbunden.",
+    "Questa piega non è dritta: i suoi tratti si spostano tutti insieme.": "Dieser Falz ist nicht gerade: Seine Abschnitte bewegen sich alle zusammen.",
+    "tratto {k} di {n}": "Abschnitt {k} von {n}",
+    "(non usata nel 3D)": "(im 3D nicht verwendet)",
+    "Individua taglio e pieghe": "Schnitte und Falze erkennen",
+    "Individua automaticamente le linee di taglio e di piega (per scansioni o schermate di una fustella)": "Schnitt- und Falzlinien automatisch erkennen (für Scans oder Screenshots einer Stanzform)",
+    "Ricerca delle linee in corso…": "Linien werden gesucht…",
+    "Nessuna linea individuata: l'immagine deve mostrare la fustella con linee ben visibili su sfondo chiaro.": "Keine Linien erkannt: Das Bild muss die Stanzform mit gut sichtbaren Linien auf hellem Hintergrund zeigen.",
+    "Individuate {c} linee di taglio e {f} pieghe ({r} frammenti scartati, es. testi). Controllale sul disegno e con l'anteprima 3D.": "{c} Schnittlinien und {f} Falze erkannt ({r} Fragmente verworfen, z.B. Texte). Prüfe sie in der Zeichnung und mit der 3D-Vorschau.",
+    "Impossibile analizzare l'immagine.": "Das Bild konnte nicht analysiert werden.",
+    "Ogni tratto di piega tra due pannelli è una voce a sé: spostandone uno, la linea viene divisa automaticamente nei suoi tratti. Le pieghe si chiudono passo dopo passo, dall'alto dell'elenco verso il basso. Trascina una piega su un altro passo per spostarla, o nello spazio tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo tutto (o su un altro passo per unirli). In alternativa usa le frecce. Passando sopra una piega la vedi evidenziata sul disegno.": "Jeder Falzabschnitt zwischen zwei Feldern ist ein eigener Eintrag: Verschiebst du einen, wird die Linie automatisch in ihre Abschnitte geteilt. Die Falze schließen sich Schritt für Schritt, von oben in der Liste nach unten. Ziehe einen Falz auf einen anderen Schritt, um ihn zu verschieben, oder in den Raum zwischen zwei Schritten, um einen neuen zu erstellen; ziehe die Kopfzeile eines Schritts, um ihn ganz zu verschieben (oder auf einen anderen Schritt, um sie zu vereinen). Alternativ die Pfeile verwenden. Beim Überfahren eines Falzes wird er in der Zeichnung hervorgehoben.",
   },
   es: {
     "1 cm": "1 cm",
@@ -3645,6 +3757,50 @@ const I18N = {
     "{n} argomenti trovati": "{n} temas encontrados",
     "Nessun argomento trovato: prova con altre parole.": "Ningún tema encontrado: prueba con otras palabras.",
     "La guida è disponibile in italiano.": "La guía está disponible en italiano.",
+    "Importa un file SVG o PDF esistente da modificare": "Importar un archivo SVG o PDF existente para editarlo",
+    "Importa da PDF": "Importar desde PDF",
+    "Le linee del PDF vengono lette in scala reale. Qui sotto trovi i gruppi di linee trovati (per colore e tratteggio): per ognuno scegli il ruolo. La proposta: la linea continua più lunga è il taglio, le tratteggiate sono pieghe, i riempimenti sono grafica. Metti \"Ignora\" su quote, cornici e marchi che non ti servono.": "Las líneas del PDF se leen a escala real. Abajo están los grupos de líneas encontrados (por color y discontinuidad): elige el rol de cada uno. La propuesta: la línea continua más larga es el corte, las discontinuas son pliegues, los rellenos son gráfica. Pon \"Ignorar\" en cotas, marcos y marcas que no necesites.",
+    "Pagina": "Página",
+    "Importa": "Importar",
+    "Ignora": "Ignorar",
+    "Lettura del PDF…": "Leyendo el PDF…",
+    "Impossibile caricare il lettore PDF (serve la connessione a internet la prima volta).": "No se pudo cargar el lector de PDF (la primera vez se necesita conexión a internet).",
+    "Impossibile leggere questo PDF (forse è protetto o danneggiato).": "No se puede leer este PDF (quizá esté protegido o dañado).",
+    "Pagina {n} ({w} × {h} mm)": "Página {n} ({w} × {h} mm)",
+    "Analisi della pagina…": "Analizando la página…",
+    "Questa pagina non contiene linee vettoriali: probabilmente è un'immagine (scansione). Puoi importarla come immagine di riferimento dalla scheda Immagine e vettorizzarla.": "Esta página no contiene líneas vectoriales: probablemente es una imagen (escaneo). Puedes importarla como imagen de referencia desde la pestaña Imagen y vectorizarla.",
+    "Riempimenti": "Rellenos",
+    "Linee tratteggiate": "Líneas discontinuas",
+    "Linee continue": "Líneas continuas",
+    "{n} elementi": "{n} elementos",
+    "Pagina {w} × {h} mm: verranno importati {n} elementi in scala reale.": "Página {w} × {h} mm: se importarán {n} elementos a escala real.",
+    "{n} testi non vengono importati (vanno riscritti con lo strumento Testo, se servono).": "{n} textos no se importan (reescríbelos con la herramienta Texto si hace falta).",
+    "{n} immagini non vengono importate.": "{n} imágenes no se importan.",
+    "Niente da importare: tutti i gruppi sono impostati su \"Ignora\".": "Nada que importar: todos los grupos están en \"Ignorar\".",
+    "Dividi in segmenti: ogni lato della forma selezionata diventa una linea a sé, unita alle altre nei punti": "Dividir en segmentos: cada lado de la forma seleccionada se convierte en una línea aparte, unida a las demás en los puntos",
+    "✂ Dividi in segmenti": "✂ Dividir en segmentos",
+    "Seleziona prima uno o più poligoni o linee da dividere in segmenti.": "Selecciona primero uno o más polígonos o líneas para dividir en segmentos.",
+    "Niente da dividere: seleziona poligoni, rettangoli o linee con più di un tratto (archi ed ellissi restano interi).": "Nada que dividir: selecciona polígonos, rectángulos o líneas con más de un tramo (arcos y elipses quedan enteros).",
+    "{n} forme divise in {k} segmenti uniti tra loro.": "{n} formas divididas en {k} segmentos unidos entre sí.",
+    "{m} elementi non divisibili lasciati interi.": "{m} elementos no divisibles quedaron enteros.",
+    "🔗 Riattacca": "🔗 Volver a unir",
+    "Riunisce il punto alle linee che lo toccano": "Vuelve a unir el punto a las líneas que lo tocan",
+    "staccato: trascinalo dove vuoi": "separado: arrástralo donde quieras",
+    "✂ Stacca": "✂ Separar",
+    "Stacca il punto dalle linee a cui è unito: poi puoi spostarlo lungo il segmento o su altri punti e linee": "Separa el punto de las líneas a las que está unido: luego puedes moverlo a lo largo del segmento o a otros puntos y líneas",
+    "Punto staccato: trascinalo dove vuoi. Se lo lasci su un altro punto si riattacca lì.": "Punto separado: arrástralo donde quieras. Si lo sueltas sobre otro punto, se vuelve a unir allí.",
+    "punto libero: trascinalo su un punto o una linea per unirlo": "punto libre: arrástralo sobre un punto o una línea para unirlo",
+    "Punto riattaccato alla nuova unione.": "Punto unido de nuevo a la nueva unión.",
+    "Questa piega non è dritta: i suoi tratti si spostano tutti insieme.": "Este pliegue no es recto: sus tramos se mueven todos juntos.",
+    "tratto {k} di {n}": "tramo {k} de {n}",
+    "(non usata nel 3D)": "(no usada en 3D)",
+    "Individua taglio e pieghe": "Detectar cortes y pliegues",
+    "Individua automaticamente le linee di taglio e di piega (per scansioni o schermate di una fustella)": "Detectar automáticamente las líneas de corte y pliegue (para escaneos o capturas de un troquel)",
+    "Ricerca delle linee in corso…": "Buscando líneas…",
+    "Nessuna linea individuata: l'immagine deve mostrare la fustella con linee ben visibili su sfondo chiaro.": "No se detectó ninguna línea: la imagen debe mostrar el troquel con líneas bien visibles sobre fondo claro.",
+    "Individuate {c} linee di taglio e {f} pieghe ({r} frammenti scartati, es. testi). Controllale sul disegno e con l'anteprima 3D.": "Detectadas {c} líneas de corte y {f} pliegues ({r} fragmentos descartados, p. ej. textos). Revísalas en el dibujo y con la vista previa 3D.",
+    "Impossibile analizzare l'immagine.": "No se pudo analizar la imagen.",
+    "Ogni tratto di piega tra due pannelli è una voce a sé: spostandone uno, la linea viene divisa automaticamente nei suoi tratti. Le pieghe si chiudono passo dopo passo, dall'alto dell'elenco verso il basso. Trascina una piega su un altro passo per spostarla, o nello spazio tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo tutto (o su un altro passo per unirli). In alternativa usa le frecce. Passando sopra una piega la vedi evidenziata sul disegno.": "Cada tramo de pliegue entre dos paneles es un elemento aparte: al mover uno, la línea se divide automáticamente en sus tramos. Los pliegues se cierran paso a paso, desde arriba de la lista hacia abajo. Arrastra un pliegue a otro paso para moverlo, o al espacio entre dos pasos para crear uno nuevo; arrastra el encabezado de un paso para moverlo entero (o sobre otro paso para unirlos). También puedes usar las flechas. Al pasar sobre un pliegue se resalta en el dibujo.",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -4427,6 +4583,50 @@ const I18N = {
     "{n} argomenti trovati": "找到 {n} 个主题",
     "Nessun argomento trovato: prova con altre parole.": "未找到主题：请尝试其他词语。",
     "La guida è disponibile in italiano.": "本指南提供意大利语版本。",
+    "Importa un file SVG o PDF esistente da modificare": "导入现有的 SVG 或 PDF 文件进行编辑",
+    "Importa da PDF": "从 PDF 导入",
+    "Le linee del PDF vengono lette in scala reale. Qui sotto trovi i gruppi di linee trovati (per colore e tratteggio): per ognuno scegli il ruolo. La proposta: la linea continua più lunga è il taglio, le tratteggiate sono pieghe, i riempimenti sono grafica. Metti \"Ignora\" su quote, cornici e marchi che non ti servono.": "PDF 中的线条按真实比例读取。下方列出找到的线条分组（按颜色和虚实）：为每组选择角色。建议：最长的实线为切割，虚线为折线，填充为图案。对不需要的尺寸标注、边框和标记选择\"忽略\"。",
+    "Pagina": "页面",
+    "Importa": "导入",
+    "Ignora": "忽略",
+    "Lettura del PDF…": "正在读取 PDF…",
+    "Impossibile caricare il lettore PDF (serve la connessione a internet la prima volta).": "无法加载 PDF 阅读器（首次使用需要联网）。",
+    "Impossibile leggere questo PDF (forse è protetto o danneggiato).": "无法读取此 PDF（可能受保护或已损坏）。",
+    "Pagina {n} ({w} × {h} mm)": "第 {n} 页（{w} × {h} 毫米）",
+    "Analisi della pagina…": "正在分析页面…",
+    "Questa pagina non contiene linee vettoriali: probabilmente è un'immagine (scansione). Puoi importarla come immagine di riferimento dalla scheda Immagine e vettorizzarla.": "此页面不含矢量线条：可能是图像（扫描件）。可在\"图像\"选项卡中将其作为参考图像导入并矢量化。",
+    "Riempimenti": "填充",
+    "Linee tratteggiate": "虚线",
+    "Linee continue": "实线",
+    "{n} elementi": "{n} 个元素",
+    "Pagina {w} × {h} mm: verranno importati {n} elementi in scala reale.": "页面 {w} × {h} 毫米：将按真实比例导入 {n} 个元素。",
+    "{n} testi non vengono importati (vanno riscritti con lo strumento Testo, se servono).": "{n} 个文本未导入（如需要，请用文本工具重新输入）。",
+    "{n} immagini non vengono importate.": "{n} 张图像未导入。",
+    "Niente da importare: tutti i gruppi sono impostati su \"Ignora\".": "没有可导入的内容：所有分组均设为\"忽略\"。",
+    "Dividi in segmenti: ogni lato della forma selezionata diventa una linea a sé, unita alle altre nei punti": "拆分为线段：所选形状的每条边成为独立的线，并在端点处与其他线相连",
+    "✂ Dividi in segmenti": "✂ 拆分为线段",
+    "Seleziona prima uno o più poligoni o linee da dividere in segmenti.": "请先选择一个或多个要拆分的多边形或线条。",
+    "Niente da dividere: seleziona poligoni, rettangoli o linee con più di un tratto (archi ed ellissi restano interi).": "没有可拆分的内容：请选择多边形、矩形或多段线（圆弧和椭圆保持完整）。",
+    "{n} forme divise in {k} segmenti uniti tra loro.": "{n} 个形状已拆分为 {k} 条相连的线段。",
+    "{m} elementi non divisibili lasciati interi.": "{m} 个无法拆分的元素保持原样。",
+    "🔗 Riattacca": "🔗 重新连接",
+    "Riunisce il punto alle linee che lo toccano": "将该点重新连接到与其接触的线",
+    "staccato: trascinalo dove vuoi": "已分离：可拖动到任意位置",
+    "✂ Stacca": "✂ 分离",
+    "Stacca il punto dalle linee a cui è unito: poi puoi spostarlo lungo il segmento o su altri punti e linee": "将该点从相连的线上分离：之后可沿线段或移到其他点和线上",
+    "Punto staccato: trascinalo dove vuoi. Se lo lasci su un altro punto si riattacca lì.": "点已分离：可拖动到任意位置。若放到另一个点上，将在那里重新连接。",
+    "punto libero: trascinalo su un punto o una linea per unirlo": "自由点：拖到某个点或线上即可连接",
+    "Punto riattaccato alla nuova unione.": "点已重新连接到新的连接处。",
+    "Questa piega non è dritta: i suoi tratti si spostano tutti insieme.": "此折线不是直线：其各段将一起移动。",
+    "tratto {k} di {n}": "第 {k} 段，共 {n} 段",
+    "(non usata nel 3D)": "（3D中未使用）",
+    "Individua taglio e pieghe": "识别切割线与折线",
+    "Individua automaticamente le linee di taglio e di piega (per scansioni o schermate di una fustella)": "自动识别切割线和折线（适用于刀模的扫描件或截图）",
+    "Ricerca delle linee in corso…": "正在查找线条…",
+    "Nessuna linea individuata: l'immagine deve mostrare la fustella con linee ben visibili su sfondo chiaro.": "未识别到线条：图像需以浅色背景清晰显示刀模线条。",
+    "Individuate {c} linee di taglio e {f} pieghe ({r} frammenti scartati, es. testi). Controllale sul disegno e con l'anteprima 3D.": "识别出 {c} 条切割线和 {f} 条折线（舍弃 {r} 个碎片，如文字）。请在图纸和3D预览中检查。",
+    "Impossibile analizzare l'immagine.": "无法分析图像。",
+    "Ogni tratto di piega tra due pannelli è una voce a sé: spostandone uno, la linea viene divisa automaticamente nei suoi tratti. Le pieghe si chiudono passo dopo passo, dall'alto dell'elenco verso il basso. Trascina una piega su un altro passo per spostarla, o nello spazio tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo tutto (o su un altro passo per unirli). In alternativa usa le frecce. Passando sopra una piega la vedi evidenziata sul disegno.": "两个面板之间的每段折线都是独立条目：移动其中一段时，该线会自动拆分为各段。折线按步骤依次闭合，从列表顶部到底部。将折线拖到另一个步骤上即可移动，拖到两个步骤之间的空白处则新建步骤；拖动步骤标题可整体移动（或拖到另一个步骤上合并）。也可以使用箭头。鼠标悬停在折线上时会在图纸上高亮显示。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -5209,6 +5409,50 @@ const I18N = {
     "{n} argomenti trovati": "{n} sujets trouvés",
     "Nessun argomento trovato: prova con altre parole.": "Aucun sujet trouvé : essaie d’autres mots.",
     "La guida è disponibile in italiano.": "Le guide est disponible en italien.",
+    "Importa un file SVG o PDF esistente da modificare": "Importer un fichier SVG ou PDF existant à modifier",
+    "Importa da PDF": "Importer depuis un PDF",
+    "Le linee del PDF vengono lette in scala reale. Qui sotto trovi i gruppi di linee trovati (per colore e tratteggio): per ognuno scegli il ruolo. La proposta: la linea continua più lunga è il taglio, le tratteggiate sono pieghe, i riempimenti sono grafica. Metti \"Ignora\" su quote, cornici e marchi che non ti servono.": "Les lignes du PDF sont lues à l’échelle réelle. Ci-dessous, les groupes de lignes trouvés (par couleur et pointillé) : choisis le rôle de chacun. La proposition : la ligne continue la plus longue est la découpe, les pointillés sont des plis, les remplissages sont du graphisme. Mets « Ignorer » sur les cotes, cadres et marques inutiles.",
+    "Pagina": "Page",
+    "Importa": "Importer",
+    "Ignora": "Ignorer",
+    "Lettura del PDF…": "Lecture du PDF…",
+    "Impossibile caricare il lettore PDF (serve la connessione a internet la prima volta).": "Impossible de charger le lecteur PDF (une connexion internet est nécessaire la première fois).",
+    "Impossibile leggere questo PDF (forse è protetto o danneggiato).": "Impossible de lire ce PDF (il est peut-être protégé ou endommagé).",
+    "Pagina {n} ({w} × {h} mm)": "Page {n} ({w} × {h} mm)",
+    "Analisi della pagina…": "Analyse de la page…",
+    "Questa pagina non contiene linee vettoriali: probabilmente è un'immagine (scansione). Puoi importarla come immagine di riferimento dalla scheda Immagine e vettorizzarla.": "Cette page ne contient aucune ligne vectorielle : c’est probablement une image (scan). Tu peux l’importer comme image de référence depuis l’onglet Image et la vectoriser.",
+    "Riempimenti": "Remplissages",
+    "Linee tratteggiate": "Lignes en pointillé",
+    "Linee continue": "Lignes continues",
+    "{n} elementi": "{n} éléments",
+    "Pagina {w} × {h} mm: verranno importati {n} elementi in scala reale.": "Page {w} × {h} mm : {n} éléments seront importés à l’échelle réelle.",
+    "{n} testi non vengono importati (vanno riscritti con lo strumento Testo, se servono).": "{n} textes ne sont pas importés (réécris-les avec l’outil Texte si besoin).",
+    "{n} immagini non vengono importate.": "{n} images ne sont pas importées.",
+    "Niente da importare: tutti i gruppi sono impostati su \"Ignora\".": "Rien à importer : tous les groupes sont réglés sur « Ignorer ».",
+    "Dividi in segmenti: ogni lato della forma selezionata diventa una linea a sé, unita alle altre nei punti": "Diviser en segments : chaque côté de la forme sélectionnée devient une ligne à part, reliée aux autres aux points",
+    "✂ Dividi in segmenti": "✂ Diviser en segments",
+    "Seleziona prima uno o più poligoni o linee da dividere in segmenti.": "Sélectionne d’abord un ou plusieurs polygones ou lignes à diviser en segments.",
+    "Niente da dividere: seleziona poligoni, rettangoli o linee con più di un tratto (archi ed ellissi restano interi).": "Rien à diviser : sélectionne des polygones, rectangles ou lignes à plusieurs segments (arcs et ellipses restent entiers).",
+    "{n} forme divise in {k} segmenti uniti tra loro.": "{n} formes divisées en {k} segments reliés entre eux.",
+    "{m} elementi non divisibili lasciati interi.": "{m} éléments non divisibles laissés entiers.",
+    "🔗 Riattacca": "🔗 Rattacher",
+    "Riunisce il punto alle linee che lo toccano": "Relie à nouveau le point aux lignes qui le touchent",
+    "staccato: trascinalo dove vuoi": "détaché : fais-le glisser où tu veux",
+    "✂ Stacca": "✂ Détacher",
+    "Stacca il punto dalle linee a cui è unito: poi puoi spostarlo lungo il segmento o su altri punti e linee": "Détache le point des lignes auxquelles il est relié : tu peux ensuite le déplacer le long du segment ou sur d’autres points et lignes",
+    "Punto staccato: trascinalo dove vuoi. Se lo lasci su un altro punto si riattacca lì.": "Point détaché : fais-le glisser où tu veux. Si tu le déposes sur un autre point, il s’y rattache.",
+    "punto libero: trascinalo su un punto o una linea per unirlo": "point libre : fais-le glisser sur un point ou une ligne pour le relier",
+    "Punto riattaccato alla nuova unione.": "Point rattaché à la nouvelle jonction.",
+    "Questa piega non è dritta: i suoi tratti si spostano tutti insieme.": "Ce pli n’est pas droit : ses segments se déplacent tous ensemble.",
+    "tratto {k} di {n}": "segment {k} sur {n}",
+    "(non usata nel 3D)": "(non utilisé en 3D)",
+    "Individua taglio e pieghe": "Détecter découpes et plis",
+    "Individua automaticamente le linee di taglio e di piega (per scansioni o schermate di una fustella)": "Détecter automatiquement les lignes de découpe et de pli (pour scans ou captures d’une forme de découpe)",
+    "Ricerca delle linee in corso…": "Recherche des lignes…",
+    "Nessuna linea individuata: l'immagine deve mostrare la fustella con linee ben visibili su sfondo chiaro.": "Aucune ligne détectée : l’image doit montrer la forme de découpe avec des lignes bien visibles sur fond clair.",
+    "Individuate {c} linee di taglio e {f} pieghe ({r} frammenti scartati, es. testi). Controllale sul disegno e con l'anteprima 3D.": "{c} lignes de découpe et {f} plis détectés ({r} fragments écartés, ex. textes). Vérifie-les sur le dessin et avec l’aperçu 3D.",
+    "Impossibile analizzare l'immagine.": "Impossible d’analyser l’image.",
+    "Ogni tratto di piega tra due pannelli è una voce a sé: spostandone uno, la linea viene divisa automaticamente nei suoi tratti. Le pieghe si chiudono passo dopo passo, dall'alto dell'elenco verso il basso. Trascina una piega su un altro passo per spostarla, o nello spazio tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo tutto (o su un altro passo per unirli). In alternativa usa le frecce. Passando sopra una piega la vedi evidenziata sul disegno.": "Chaque segment de pli entre deux panneaux est un élément à part : en en déplaçant un, la ligne est divisée automatiquement en ses segments. Les plis se ferment étape par étape, du haut de la liste vers le bas. Fais glisser un pli sur une autre étape pour le déplacer, ou dans l’espace entre deux étapes pour en créer une nouvelle ; fais glisser l’en-tête d’une étape pour la déplacer entière (ou sur une autre étape pour les fusionner). Tu peux aussi utiliser les flèches. En survolant un pli, tu le vois mis en évidence sur le dessin.",
   },
 };
 let currentLang = 'it';
@@ -6448,8 +6692,8 @@ function renderEndpointMarkers(){
 // Sono solo un'annotazione visiva: non fanno parte della geometria di taglio.
 function renderFoldIndicators(){
   if(state.seqHover){
-    const s = state.shapes.find(x=>x.id===state.seqHover);
-    if(s && s.points){ const d = shapeOutlineD(s);
+    const hv = state.seqHover, s = state.shapes.find(x=>x.id===hv.id);
+    if(s && s.points){ const d = hv.a ? `M ${hv.a[0]*state.scale} ${hv.a[1]*state.scale} L ${hv.b[0]*state.scale} ${hv.b[1]*state.scale}` : shapeOutlineD(s);
       layerOverlay.appendChild(el('path', {d, fill:'none', stroke:'#3572d6', 'stroke-width':14, 'stroke-opacity':0.35, 'stroke-linecap':'round', 'pointer-events':'none'}));
       layerOverlay.appendChild(el('path', {d, fill:'none', stroke:'#3572d6', 'stroke-width':3, 'stroke-dasharray':'8,6', class:'fc-march', 'pointer-events':'none'})); }
   }
@@ -6658,6 +6902,7 @@ function renderCanvasOnly(){
   renderGapMarkers();
   renderFoldIndicators();
   renderSmartGuides();
+  renderVertexBar();
   renderJoinLabels();
   renderTileGuidesOverlay();
   drawRulers();
@@ -7830,7 +8075,7 @@ function closeJoinDialog(){
    ridurre nella barra in basso, modificare il disegno e poi riprenderle
    esattamente come le si era lasciate.
 ============================================================ */
-const MINIMIZABLE_MODALS = ['silModal','seqModal','symModal','joinModal','fold3dModal','boxGenModal','historyModal','versionsModal','libraryModal','saveLibraryModal',
+const MINIMIZABLE_MODALS = ['pdfImportModal','silModal','seqModal','symModal','joinModal','fold3dModal','boxGenModal','historyModal','versionsModal','libraryModal','saveLibraryModal',
   'pageSizeModal','fontModal','scaleModal','tilePrintModal','printProofModal','cutPreviewModal','weldModal','helpModal'];
 const MODAL_HOOKS = {
   fold3dModal: { onMinimize: ()=>{ stopFold3D(); if(!state.foldCheck) runFoldCheckOverlay(true); }, onRestore: ()=>{ if(state.foldCheck) endFoldCheckOverlay(); refreshFold3D(); } },
@@ -8370,56 +8615,92 @@ function allFoldShapes(){ return state.shapes.filter(s=>s.points && s.style && s
    trascinamento o con le frecce. Scrive s.foldOrder sulle pieghe.
 ============================================================ */
 let seqDrag = null; // {type:'fold', id} oppure {type:'step', index}
+// Voci della sequenza: ogni tratto di piega tra due pannelli è una voce a sé ("pezzo per pezzo").
+// Una linea che attraversa più pannelli ha più voci; finché non si separa, i suoi tratti restano nello stesso passo.
+function foldIsStraight(s){
+  const P = s.points, a = P[0], b = P[P.length-1], L = dist(a,b); if(L < 1e-6) return false;
+  return P.every(q=> Math.abs((b[0]-a[0])*(q[1]-a[1]) - (b[1]-a[1])*(q[0]-a[0]))/L < 0.05);
+}
+function foldPieces(){
+  const model = buildFoldModel(state.shapes);
+  const byShape = new Map();
+  model.hinges.forEach(h=>{
+    const s = h.fold; if(!s) return;
+    const key = Math.min(h.f1,h.f2) + '-' + Math.max(h.f1,h.f2);
+    if(!byShape.has(s)) byShape.set(s, new Map());
+    const g = byShape.get(s); if(!g.has(key)) g.set(key, []); g.get(key).push(h);
+  });
+  const entries = [];
+  allFoldShapes().forEach(s=>{
+    const g = byShape.get(s);
+    if(!g){ entries.push({key:s.id, shape:s, idx:0, n:1, unused:true}); return; }
+    const P0 = s.points[0], P1 = s.points[s.points.length-1], L = dist(P0,P1) || 1, u = [(P1[0]-P0[0])/L, (P1[1]-P0[1])/L];
+    const tOf = q=> (q[0]-P0[0])*u[0] + (q[1]-P0[1])*u[1];
+    const pieces = [...g.values()].map(hs=>{
+      const pts = hs.flatMap(h=>[model.nodes[h.i], model.nodes[h.j]]);
+      let a = pts[0], b = pts[0];
+      pts.forEach(q=>{ if(tOf(q) < tOf(a)) a = q; if(tOf(q) > tOf(b)) b = q; });
+      return {a, b, len: hs.reduce((sum,h)=> sum + dist(model.nodes[h.i], model.nodes[h.j]), 0)};
+    }).sort((x,y)=> tOf(x.a) - tOf(y.a));
+    pieces.forEach((pc,k)=> entries.push({key: pieces.length>1 ? s.id+'#'+k : s.id, shape:s, idx:k, n:pieces.length, a:pc.a, b:pc.b, len:pc.len}));
+  });
+  return entries;
+}
+function entryMid(en){ return en.a ? [(en.a[0]+en.b[0])/2, (en.a[1]+en.b[1])/2] : foldMidpoint(en.shape); }
 function buildSeq(){
-  const folds = allFoldShapes();
   const byStep = new Map();
-  folds.forEach(s=>{ const o = foldOrderOf(s); if(!byStep.has(o)) byStep.set(o, []); byStep.get(o).push(s); });
-  return [...byStep.keys()].sort((a,b)=>a-b).map(k=> byStep.get(k).sort((a,b)=>{ const ma=foldMidpoint(a), mb=foldMidpoint(b); return (ma[1]-mb[1]) || (ma[0]-mb[0]); }));
+  foldPieces().forEach(en=>{ const o = foldOrderOf(en.shape); if(!byStep.has(o)) byStep.set(o, []); byStep.get(o).push(en); });
+  return [...byStep.keys()].sort((a,b)=>a-b).map(k=> byStep.get(k).sort((x,y)=>{ const ma=entryMid(x), mb=entryMid(y); return (ma[1]-mb[1]) || (ma[0]-mb[0]); }));
 }
 function writeSeq(steps){
-  steps.filter(a=>a.length).forEach((arr,i)=> arr.forEach(s=>{ s.foldOrder = i+1; }));
+  steps.filter(a=>a.length).forEach((arr,i)=> arr.forEach(en=>{ en.shape.foldOrder = i+1; }));
   pushHistory();
   renderAll();
   renderSeq();
 }
-function foldSeqLabel(s){
-  const P = s.points, a = P[0], b = P[P.length-1];
-  let len = 0; for(let i=0;i<P.length-1;i++) len += dist(P[i],P[i+1]);
-  const dx = Math.abs(b[0]-a[0]), dy = Math.abs(b[1]-a[1]);
-  const m = foldMidpoint(s);
-  let txt;
-  if(P.length===2 && dy < 0.5) txt = tpl('↔ orizzontale · {len} · a y {y}', {len: fmtUnit(len), y: fmtUnit(m[1])});
-  else if(P.length===2 && dx < 0.5) txt = tpl('↕ verticale · {len} · a x {x}', {len: fmtUnit(len), x: fmtUnit(m[0])});
-  else txt = tpl('⤢ obliqua · {len} · centro {x}, {y}', {len: fmtUnit(len), x: fmtUnit(m[0]), y: fmtUnit(m[1])});
-  const dir = s.foldDir==='valley' ? translate('valle') : translate('monte');
-  return txt + ' · ' + dir + ' ' + Math.round(s.foldAngle!=null ? s.foldAngle : 90) + '°';
+// Rende il tratto indicato una linea a sé, dividendo la piega nei suoi tratti (solo per pieghe dritte).
+// Restituisce la forma che contiene quel tratto.
+function seqEnsureOwnShape(key){
+  const [id, part] = key.split('#');
+  const s = state.shapes.find(x=>x.id===id); if(!s) return null;
+  if(part==null) return s;
+  const mine = foldPieces().filter(en=>en.shape===s).sort((x,y)=>x.idx-y.idx);
+  if(mine.length<2) return s;
+  if(!foldIsStraight(s)){ showToast('Questa piega non è dritta: i suoi tratti si spostano tutti insieme.', false); return s; }
+  const P0 = s.points[0], P1 = s.points[s.points.length-1], L = dist(P0,P1), u = [(P1[0]-P0[0])/L, (P1[1]-P0[1])/L];
+  const tOf = q=> (q[0]-P0[0])*u[0] + (q[1]-P0[1])*u[1];
+  const at = t=> [P0[0]+u[0]*t, P0[1]+u[1]*t];
+  // punti di divisione: a metà tra la fine di un tratto e l'inizio del successivo (così la linea resta intera)
+  const cuts = [0]; for(let k=0;k<mine.length-1;k++) cuts.push((tOf(mine[k].b) + tOf(mine[k+1].a))/2); cuts.push(L);
+  const parts = mine.map((en,k)=>{
+    const cp = JSON.parse(JSON.stringify(s));
+    cp.id = k===0 ? s.id : uid();
+    cp.points = [at(cuts[k]), at(cuts[k+1])]; cp.smooth = [0,0]; delete cp.detached; delete cp.arc;
+    return cp;
+  });
+  const at0 = state.shapes.indexOf(s);
+  state.shapes.splice(at0, 1, ...parts);
+  state.selection.delete(s.id);
+  return parts[parseInt(part,10)] || parts[0];
 }
-function openFoldSequence(){
-  if(!allFoldShapes().length){ showToast('Nel disegno non ci sono pieghe.', true); return; }
-  openModal('seqModal');
-  renderSeq();
-}
-function closeFoldSequence(){
-  state.seqHover = null;
-  const ov = document.getElementById('seqModal'); ov.classList.remove('open'); delete ov.dataset.minimized;
-  renderModalDock(); renderCanvasOnly();
-  const f3 = document.getElementById('fold3dModal');
-  if(f3.classList.contains('open')) refreshFold3D(); // il 3D sotto si aggiorna con la nuova sequenza
-}
-// operazioni sulla sequenza
-function seqMoveFold(id, toIndex, asNewStep){
+function seqMoveFold(key, toIndex, asNewStep){
+  const s = seqEnsureOwnShape(key); if(!s) return;
   const steps = buildSeq();
-  const s = state.shapes.find(x=>x.id===id); if(!s) return;
-  if(asNewStep){ steps.splice(toIndex, 0, [s]); steps.forEach(a=>{ if(!(a.length===1 && a[0]===s)){ const i=a.indexOf(s); if(i>=0) a.splice(i,1); } }); }
-  else { const target = steps[toIndex]; if(!target || target.includes(s)) return; steps.forEach(a=>{ const i=a.indexOf(s); if(i>=0) a.splice(i,1); }); target.push(s); }
+  const target = asNewStep ? null : steps[toIndex];
+  const moving = [];
+  steps.forEach(a=>{ for(let i=a.length-1;i>=0;i--) if(a[i].shape===s) moving.push(...a.splice(i,1)); });
+  if(!moving.length) return;
+  if(asNewStep) steps.splice(Math.min(toIndex, steps.length), 0, moving);
+  else if(target) target.push(...moving);
+  else return;
   writeSeq(steps.filter(a=>a.length));
 }
-function seqFoldStep(id, delta){
+function seqFoldStep(key, delta){
   const steps = buildSeq();
-  const k = steps.findIndex(a=>a.some(s=>s.id===id)); if(k<0) return;
+  const k = steps.findIndex(a=>a.some(en=>en.key===key)); if(k<0) return;
   const alone = steps[k].length===1;
-  if(delta<0){ if(k>0) seqMoveFold(id, k-1, false); else if(!alone) seqMoveFold(id, 0, true); }
-  else { if(k<steps.length-1) seqMoveFold(id, k+1, false); else if(!alone) seqMoveFold(id, steps.length, true); }
+  if(delta<0){ if(k>0) seqMoveFold(key, k-1, false); else if(!alone) seqMoveFold(key, 0, true); }
+  else { if(k<steps.length-1) seqMoveFold(key, k+1, false); else if(!alone) seqMoveFold(key, steps.length, true); }
 }
 function seqMoveStep(from, toGap){
   const steps = buildSeq(); if(!steps[from]) return;
@@ -8432,6 +8713,33 @@ function seqMergeStep(from, into){
   const steps = buildSeq(); if(!steps[from] || !steps[into]) return;
   steps[into].push(...steps[from]); steps[from] = [];
   writeSeq(steps.filter(a=>a.length));
+}
+function foldEntryLabel(en){
+  const s = en.shape;
+  let a = en.a, b = en.b, len = en.len;
+  if(!a){ a = s.points[0]; b = s.points[s.points.length-1]; len = 0; for(let i=0;i<s.points.length-1;i++) len += dist(s.points[i], s.points[i+1]); }
+  const dx = Math.abs(b[0]-a[0]), dy = Math.abs(b[1]-a[1]), m = [(a[0]+b[0])/2, (a[1]+b[1])/2];
+  let txt;
+  if(dy < 0.5 && (en.a || s.points.length===2)) txt = tpl('↔ orizzontale · {len} · a y {y}', {len: fmtUnit(len), y: fmtUnit(m[1])});
+  else if(dx < 0.5 && (en.a || s.points.length===2)) txt = tpl('↕ verticale · {len} · a x {x}', {len: fmtUnit(len), x: fmtUnit(m[0])});
+  else txt = tpl('⤢ obliqua · {len} · centro {x}, {y}', {len: fmtUnit(len), x: fmtUnit(m[0]), y: fmtUnit(m[1])});
+  const dir = s.foldDir==='valley' ? translate('valle') : translate('monte');
+  let out = txt + ' · ' + dir + ' ' + Math.round(s.foldAngle!=null ? s.foldAngle : 90) + '°';
+  if(en.n>1) out = tpl('tratto {k} di {n}', {k:en.idx+1, n:en.n}) + ' · ' + out;
+  if(en.unused) out += ' · ' + translate('(non usata nel 3D)');
+  return out;
+}
+function openFoldSequence(){
+  if(!allFoldShapes().length){ showToast('Nel disegno non ci sono pieghe.', true); return; }
+  openModal('seqModal');
+  renderSeq();
+}
+function closeFoldSequence(){
+  state.seqHover = null;
+  const ov = document.getElementById('seqModal'); ov.classList.remove('open'); delete ov.dataset.minimized;
+  renderModalDock(); renderCanvasOnly();
+  const f3 = document.getElementById('fold3dModal');
+  if(f3.classList.contains('open')) refreshFold3D(); // il 3D sotto si aggiorna con la nuova sequenza
 }
 function renderSeq(){
   const host = document.getElementById('seqList'); if(!host) return;
@@ -8466,15 +8774,17 @@ function renderSeq(){
     head.appendChild(mkBtn('↑', 'Sposta il passo prima', ()=>seqMoveStep(k, k-1), k===0));
     head.appendChild(mkBtn('↓', 'Sposta il passo dopo', ()=>seqMoveStep(k, k+2), k===steps.length-1));
     box.appendChild(head);
-    arr.forEach(s=>{
-      const it = document.createElement('div'); it.className='seq-item'; it.dataset.fold = s.id;
+    arr.forEach(en=>{
+      const s = en.shape;
+      const it = document.createElement('div'); it.className='seq-item' + (en.unused ? ' seq-unused' : ''); it.dataset.fold = en.key;
       const hd = document.createElement('span'); hd.className='seq-handle'; hd.textContent='⠿'; it.appendChild(hd);
-      const lb = document.createElement('span'); lb.className='seq-grow'; lb.textContent = foldSeqLabel(s); it.appendChild(lb);
-      it.appendChild(mkBtn('↑', 'Chiudi questa piega un passo prima', ()=>seqFoldStep(s.id, -1), k===0 && arr.length===1));
-      it.appendChild(mkBtn('↓', 'Chiudi questa piega un passo dopo', ()=>seqFoldStep(s.id, +1), k===steps.length-1 && arr.length===1));
-      startDrag(it, {type:'fold', id:s.id});
-      it.addEventListener('mouseenter', ()=>{ state.seqHover = s.id; renderCanvasOnly(); });
-      it.addEventListener('mouseleave', ()=>{ if(state.seqHover===s.id){ state.seqHover = null; renderCanvasOnly(); } });
+      const lb = document.createElement('span'); lb.className='seq-grow'; lb.textContent = foldEntryLabel(en); it.appendChild(lb);
+      it.appendChild(mkBtn('↑', 'Chiudi questa piega un passo prima', ()=>seqFoldStep(en.key, -1), k===0 && arr.length===1));
+      it.appendChild(mkBtn('↓', 'Chiudi questa piega un passo dopo', ()=>seqFoldStep(en.key, +1), k===steps.length-1 && arr.length===1));
+      startDrag(it, {type:'fold', id:en.key});
+      const hov = {id:s.id, a:en.a, b:en.b};
+      it.addEventListener('mouseenter', ()=>{ state.seqHover = hov; renderCanvasOnly(); });
+      it.addEventListener('mouseleave', ()=>{ if(state.seqHover===hov){ state.seqHover = null; renderCanvasOnly(); } });
       it.addEventListener('click', ()=>{ state.selection = new Set([s.id]); renderAll(); });
       box.appendChild(it);
     });
@@ -8653,7 +8963,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.21.0';
+const GUIDE_VERSION = '2.23.0';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -8702,6 +9012,7 @@ html:`<table class="guide-table"><tr><th>Tasto</th><th>Strumento</th><th>Come si
 <tr><td>A</td><td>Arco</td><td>Tre clic: inizio, fine, un punto di passaggio. Vedi <a data-topic="archi">Archi</a>.</td></tr>
 <tr><td>B</td><td>Matita</td><td>Disegno a mano libera.</td></tr>
 <tr><td>T</td><td>Testo</td><td>Clic nel punto, scrivi e premi Invio. Vedi <a data-topic="testo">Testo e font</a>.</td></tr></table>
+<p>Sotto gli strumenti ci sono due pulsanti d'azione sulla selezione: il <b>cestino</b> (elimina) e <b>Dividi in segmenti</b>, vedi <a data-topic="dividi">Dividere in segmenti</a>.</p>
 <p>Il <a data-topic="ruoli">ruolo</a> scelto nel pannello Proprietà senza selezione vale per le forme che disegnerai.</p>` },
 
 { id:'input-numerico', cat:'Disegnare', title:'Misure esatte (input numerico)', keys:'lunghezza esatta digitare numero invio misura precisa coordinate',
@@ -8727,11 +9038,19 @@ html:`<p>Con lo strumento Testo (<b>T</b>) clicca nel punto, scrivi e conferma. 
 
 { id:'immagini', cat:'Disegnare', title:'Immagini e vettorizzazione', keys:'immagine foto jpg png vettorizzare tracciare riferimento luminosità contrasto',
 html:`<p>Dalla scheda <b>Immagine</b> del pannello laterale puoi caricare un'immagine JPG o PNG di riferimento: regolarne colori e filtri (luminosità, contrasto, saturazione, scala di grigi, seppia, negativo, tonalità, sfocatura) e spostarla, ruotarla e ridimensionarla.</p>
-<p>La <b>vettorizzazione</b> automatica la trasforma in forme vettoriali. I tracciati vettorizzati si spostano e ridimensionano, ma non hanno punti modificabili uno per uno, quindi non valgono come linee di taglio o piega per l'<a data-topic="anteprima-3d">anteprima 3D</a>.</p>` },
+<p>La <b>vettorizzazione</b> automatica la trasforma in forme vettoriali. I tracciati vettorizzati si spostano e ridimensionano, ma non hanno punti modificabili uno per uno, quindi non valgono come linee di taglio o piega per l'<a data-topic="anteprima-3d">anteprima 3D</a>.</p>
+<p><b>Individua automaticamente le linee di taglio e di piega</b>: spuntando questa casella, il pulsante diventa "Individua taglio e pieghe" e, invece di vettorizzare, cerca nell'immagine le linee della fustella e le trasforma in <b>linee vere</b>, con i punti, già unite tra loro:</p>
+<ul><li>linee continue nere, grigie o rosse → <b>Taglio</b>; continue blu o verdi → <b>Piega</b>;</li>
+<li>linee <b>tratteggiate</b> di qualunque colore → <b>Piega</b> (i trattini vengono riconosciuti e riuniti in una linea sola);</li>
+<li>testi, scritte e macchie vengono scartati.</li></ul>
+<p>Funziona con scansioni o schermate di una fustella dritta, con linee ben visibili su sfondo chiaro; non con foto in prospettiva. Le misure dipendono da come hai dimensionato l'immagine sul foglio: prima di avviare portala alla misura reale (per esempio misurando un lato noto). Poi controlla il risultato con il <a data-topic="controllo-3d">controllo del disegno</a>.</p>` },
 
-{ id:'importa-svg', cat:'Disegnare', title:'Importare un SVG', keys:'importare svg file aprire disegno esterno illustrator inkscape',
-html:`<p>Un file SVG esistente viene letto con curve, archi e trasformazioni. I ruoli vengono riconosciuti dai colori del file, e i doppioni tecnici tipici dei programmi CAD vengono ripuliti.</p>
-<p>Subito dopo la scelta del file puoi decidere se centrarlo o portarlo in alto a sinistra adattando il foglio, e applicare una scala percentuale. Se hai già un disegno aperto, ti viene chiesto se aggiungere l'SVG o aprirlo a parte.</p>` },
+{ id:'importa-svg', cat:'Disegnare', title:'Importare SVG e PDF', keys:'importare svg pdf file aprire disegno esterno illustrator inkscape scaricato online template modello',
+html:`<p>Il pulsante <b>⇪</b> in alto importa un file <b>SVG</b> o <b>PDF</b>.</p>
+<ul><li><b>SVG</b>: viene letto con curve, archi e trasformazioni. I ruoli vengono riconosciuti dai colori del file e i doppioni tecnici dei programmi CAD vengono ripuliti.</li>
+<li><b>PDF</b>: comodo per i modelli di scatole scaricati online, che di solito sono vettoriali e in scala reale. Le linee della pagina vengono lette esattamente, in millimetri. Si apre una finestra con i <b>gruppi di linee</b> trovati (per colore e tratteggio), e per ognuno scegli il ruolo: Taglio, Piega, Fustella speciale, Incollaggio, Disegno oppure <b>Ignora</b> (per quote, cornici, marchi). La proposta iniziale: la linea continua più lunga è il taglio, le tratteggiate sono pieghe, i riempimenti sono grafica. Se il PDF ha più pagine scegli quale importare. Testi e immagini del PDF non vengono importati; un PDF che è solo una scansione non ha linee da leggere (in quel caso usa la scheda <a data-topic="immagini">Immagine</a> e la vettorizzazione).</li></ul>
+<p>Poi, per entrambi i formati: se hai già un disegno aperto scegli se aggiungere o sostituire, e puoi centrarlo o portarlo in alto a sinistra adattando il foglio, con una scala percentuale. Per metterlo in libreria salvalo con <a data-topic="libreria">☁ Libreria</a>, privato o condiviso.</p>
+<p>Il lettore PDF (pdf.js) viene scaricato la prima volta che serve: in quel momento occorre la connessione a internet.</p>` },
 
 /* ---------------- MODIFICARE ---------------- */
 { id:'selezione', cat:'Modificare', title:'Selezionare', keys:'selezione lazo rettangolo shift ctrl+a tutto stesso colore stesso ruolo',
@@ -8767,6 +9086,11 @@ html:`<p>Con 2 o più forme selezionate, il pannello Proprietà mostra i comandi
 { id:'offset', cat:'Modificare', title:'Offset (copia parallela)', keys:'offset parallelo copia distanza margine abbondanza aletta',
 html:`<p>Per una forma a punti selezionata, "Offset / parallelo" nel pannello Proprietà crea una <b>copia parallela</b> alla distanza indicata: positiva verso l'esterno, negativa verso l'interno. Utile per alette, margini e abbondanze.</p>` },
 
+{ id:'dividi', cat:'Modificare', title:'Dividere in segmenti', keys:'dividi segmenti esplodi spezza poligono lati linee separate unite scomponi',
+html:`<p>Seleziona uno o più poligoni, rettangoli o linee con più tratti e premi <b>Dividi in segmenti</b> nella barra a sinistra (sotto il cestino), oppure tasto destro → "✂ Dividi in segmenti".</p>
+<p>Ogni lato diventa una linea a sé, con lo stesso ruolo, stile e livello, e i segmenti restano <b>uniti nei punti</b>: trascinando un angolo, i due lati che lo toccano lo seguono. Gli angoli arrotondati diventano tanti piccoli segmenti; archi, ellissi, testi e immagini restano interi.</p>
+<p>Utile per assegnare ruoli diversi ai lati di un contorno (per esempio un lato che deve diventare piega) o per staccarne uno: vedi <a data-topic="scollega">Staccare i punti</a>.</p>` },
+
 { id:'booleane', cat:'Modificare', title:'Operazioni booleane', keys:'unione sottrai sottrazione intersezione esclusione booleane fori combinare forme',
 html:`<p>Con 2 o più forme chiuse selezionate (percorsi chiusi, rettangoli, ellissi), dal pannello Proprietà o dal tasto destro:</p>
 <ul><li><b>⊕ Unione</b>: un unico contorno;</li>
@@ -8790,9 +9114,10 @@ html:`<p>Seleziona le linee (clic e Shift+clic, rettangolo o <a data-topic="sele
 <li>"Fondi in un unico percorso" unisce le linee con lo stesso ruolo e livello; una linea che si richiude su se stessa diventa chiusa.</li></ul>
 <p>Funziona a qualunque distanza. Riduci la finestra a icona per guardare i numeri sul disegno.</p>` },
 
-{ id:'scollega', cat:'Modificare', title:'Scollegare e ricollegare i punti', keys:'scollegare ricollegare separare staccare punto collegato trascina insieme viola',
-html:`<p>I punti che coincidono sono uniti: spostandone uno si trascina l'altro. Per separarli senza spostarli:</p>
-<ul><li><b>un punto</b>: tasto destro sulla sua maniglia → "⛓ Scollega il punto", oppure "⛓ Scollega" accanto al punto nel pannello coordinate;</li>
+{ id:'scollega', cat:'Modificare', title:'Staccare e riattaccare i punti', keys:'stacca staccare scollegare ricollegare riattaccare separare punto collegato unione magnetismo trascina insieme viola spostare lungo segmento',
+html:`<p>I punti che coincidono sono uniti: spostandone uno si trascina l'altro. Per separarli:</p>
+<ul><li><b>Stacca</b>: seleziona la linea, fai clic sul punto (compare un anello arancione) e premi <b>✂ Stacca</b> nel pulsante che appare accanto. Ora puoi trascinare il punto dove vuoi: lungo il segmento a cui era unito (il magnete lo aggancia alla linea), su un altro segmento, o su un'altra unione. <b>Se lo lasci su un altro punto si riattacca lì</b>, e da quel momento si muove insieme alla nuova unione. "🔗 Riattacca" lo riunisce dov'è.</li>
+<li><b>un punto</b>, anche: tasto destro sulla sua maniglia → "⛓ Scollega il punto", oppure "⛓ Scollega" accanto al punto nel pannello coordinate;</li>
 <li><b>tutti i vertici</b> di una forma o della selezione: "⛓ Scollega tutti i vertici" nel pannello Proprietà o col tasto destro.</li></ul>
 <p>I punti scollegati hanno la maniglia <b>viola tratteggiata</b> e contano come punti liberi. Si ricollegano con "🔗 Ricollega", o unendoli con <a data-topic="unisci">Unisci punti</a>.</p>` },
 
@@ -8826,7 +9151,7 @@ html:`<p>Selezionando una linea con ruolo Piega, il pannello Proprietà permette
 html:`<p>Ogni piega ha un numero di <b>passo</b>: nella simulazione 3D si chiudono prima le pieghe con il numero più basso; quelle con lo stesso numero si chiudono insieme. Così una linguetta non si chiude prima delle alette che deve coprire.</p>
 <ul><li><b>A mano</b>: pannello Proprietà → "Ordine di piegatura", con − e +, anche su più pieghe insieme.</li>
 <li><b>Ordine automatico</b> ("Ordina" nel pannello, o "Applica e simula" nell'anteprima 3D): dal pannello principale verso l'esterno, da sinistra a destra, da destra a sinistra, dall'alto, dal basso, dal centro, oppure tutte insieme. Le pieghe alla stessa posizione (entro 2 mm) finiscono nello stesso passo.</li>
-<li><b>Sequenza di piegatura</b> (menu Strumenti, "📋 Sequenza…" nel 3D, o nel pannello): elenco dei passi. Trascina una piega su un altro passo per spostarla, tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo o unirlo a un altro. Oppure usa le frecce ↑ ↓. Passando col mouse su una piega la vedi evidenziata sul disegno.</li></ul>
+<li><b>Sequenza di piegatura</b> (menu Strumenti, "📋 Sequenza…" nel 3D, o nel pannello): elenco dei passi, <b>pezzo per pezzo</b>: ogni tratto di piega tra due pannelli è una voce a sé ("tratto 2 di 3"), anche quando una sola linea attraversa più pannelli. Spostando un solo tratto, la linea viene divisa automaticamente nei suoi tratti. Le pieghe non usate nel 3D compaiono in grigio. Trascina una piega su un altro passo per spostarla, tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo o unirlo a un altro. Oppure usa le frecce ↑ ↓. Passando col mouse su una piega la vedi evidenziata sul disegno.</li></ul>
 <p>Sul disegno il passo compare accanto all'angolo ("90° · passo 2"), nel 3D accanto al cursore ("Passo 2 di 3"). Ctrl+Z annulla ogni modifica.</p>` },
 
 { id:'genera-scatola', cat:'Fustella e scatole', title:'Genera scatola', keys:'genera scatola americana rsc astuccio tuck box dimensioni larghezza profondità altezza automatica',
@@ -8943,6 +9268,8 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.23</b> — <a data-topic="dividi">Dividi in segmenti</a>; <a data-topic="scollega">Stacca</a> sul punto selezionato, con riaggancio sulla nuova unione; <a data-topic="ordine">sequenza di piegatura</a> pezzo per pezzo; <a data-topic="immagini">individuazione automatica</a> di taglio e pieghe dalle immagini.</li>
+<li><b>2.22</b> — <a data-topic="importa-svg">Importazione da PDF</a>, con scelta del ruolo per ogni gruppo di linee.</li>
 <li><b>2.21</b> — Questa guida, con ricerca e argomenti (F1 o ? in alto).</li>
 <li><b>2.20</b> — <a data-topic="silhouette">Esportazione per Silhouette Cameo</a> (DXF).</li>
 <li><b>2.19</b> — <a data-topic="grafica-3d">Grafica sui pannelli del 3D</a>, <a data-topic="guide">guide di allineamento</a>, <a data-topic="livelli">livelli</a> ad accordion e rinomina più comoda.</li>
@@ -9050,6 +9377,70 @@ function openGuide(topicId){
   openModal('helpModal');
   guideShow(topicId || guideState.current);
   setTimeout(()=>{ const s=document.getElementById('guideSearch'); if(s && s.focus) s.focus(); }, 30);
+}
+
+
+/* ---------- punto selezionato: pulsante "Stacca" / "Riattacca" accanto al punto ---------- */
+function renderVertexBar(){
+  let bar = document.getElementById('vertexBar');
+  if(!bar){ bar = document.createElement('div'); bar.id = 'vertexBar'; document.body.appendChild(bar); }
+  const av = state.activeVertex;
+  const s = av && state.shapes.find(x=>x.id===av.shapeId);
+  if(!s || !s.points || !s.points[av.idx] || !state.selection.has(s.id) || state.tool!=='select' || (dragMode && dragMode!=='none')){ bar.style.display='none'; return; }
+  const p = s.points[av.idx];
+  // anello sul punto selezionato
+  layerOverlay.appendChild(el('circle', {cx:p[0]*state.scale, cy:p[1]*state.scale, r:9, fill:'none', stroke:'#ff9f0a', 'stroke-width':2.5, 'pointer-events':'none'}));
+  const linked = isVertexLinked(s, av.idx, collectConnectionPoints()), detached = isPtDetached(s, av.idx);
+  bar.innerHTML = '';
+  const mk = (label, tip, fn)=>{ const b=document.createElement('button'); b.className='btn'; b.textContent=translate(label); b.title=translate(tip); b.onmousedown=e=>e.stopPropagation(); b.onclick=(e)=>{ e.stopPropagation(); fn(); }; bar.appendChild(b); };
+  if(detached){
+    mk('🔗 Riattacca', 'Riunisce il punto alle linee che lo toccano', ()=>{ setPtDetached(s, av.idx, false); pushHistory(); renderAll(); });
+    const t = document.createElement('span'); t.className='vb-note'; t.textContent = translate('staccato: trascinalo dove vuoi'); bar.appendChild(t);
+  } else if(linked){
+    mk('✂ Stacca', 'Stacca il punto dalle linee a cui è unito: poi puoi spostarlo lungo il segmento o su altri punti e linee', ()=>{
+      setPtDetached(s, av.idx, true); pushHistory(); renderAll();
+      showToast('Punto staccato: trascinalo dove vuoi. Se lo lasci su un altro punto si riattacca lì.', false);
+    });
+  } else {
+    const t = document.createElement('span'); t.className='vb-note'; t.textContent = translate('punto libero: trascinalo su un punto o una linea per unirlo'); bar.appendChild(t);
+  }
+  const r = stage.getBoundingClientRect();
+  bar.style.display = 'flex';
+  bar.style.left = Math.round(r.left + p[0]*state.scale + 14) + 'px';
+  bar.style.top = Math.round(r.top + p[1]*state.scale - 38) + 'px';
+}
+
+
+/* ---------- dividi in segmenti ---------- */
+function explodeSelectionToSegments(){
+  const sel = state.shapes.filter(s=> state.selection.has(s.id) && !s.locked);
+  if(!sel.length){ showToast('Seleziona prima uno o più poligoni o linee da dividere in segmenti.', true); return; }
+  let made = 0, skipped = 0; const newIds = [];
+  sel.forEach(s=>{
+    let pts = null, closed = false;
+    if(s.points && s.points.length>=2 && !s.arc){
+      pts = (s.smooth && s.smooth.some(v=>v>0)) ? flattenPathD(buildSmoothPathD(s.points, !!s.closed, s.smooth, 1)) : s.points;
+      closed = !!s.closed;
+    } else if(s.type==='rect'){ const r = shapeToRing(s); if(r){ pts = r.slice(0,-1); closed = true; } }
+    const segN = pts ? (closed ? pts.length : pts.length-1) : 0;
+    if(segN < 2){ skipped++; return; } // archi, ellissi, testi, immagini e segmenti singoli restano come sono
+    const segs = [];
+    for(let i=0;i<segN;i++){
+      const a = pts[i], b = pts[(i+1)%pts.length]; if(dist(a,b) < 1e-6) continue;
+      const cp = JSON.parse(JSON.stringify(s));
+      cp.id = uid(); cp.type = 'path'; cp.points = [[a[0],a[1]],[b[0],b[1]]]; cp.closed = false; cp.smooth = [0,0];
+      ['detached','arc','x','y','w','h','rotation','rx','ry'].forEach(k=> delete cp[k]);
+      cp.style.fill = 'none';
+      segs.push(cp);
+    }
+    state.shapes.splice(state.shapes.indexOf(s), 1, ...segs);
+    newIds.push(...segs.map(x=>x.id)); made++;
+  });
+  if(!made){ showToast('Niente da dividere: seleziona poligoni, rettangoli o linee con più di un tratto (archi ed ellissi restano interi).', true); return; }
+  state.selection = new Set(newIds); state.activeVertex = null;
+  pushHistory(); renderAll();
+  showToast(tpl('{n} forme divise in {k} segmenti uniti tra loro.', {n:made, k:newIds.length})
+    + (skipped ? ' ' + tpl('{m} elementi non divisibili lasciati interi.', {m:skipped}) : ''), false);
 }
 
 /* ============================================================
@@ -9318,6 +9709,12 @@ function buildRail(){
   del.innerHTML = `<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 6h12M9 6V4h4v2M6 6l1 13h8l1-13"/></svg>`;
   del.onclick = deleteSelection;
   rail.appendChild(del);
+  // dividi in segmenti: ogni lato del poligono diventa una linea a sé, unita alle altre nei punti
+  const expl = document.createElement('button');
+  expl.className='tool'; expl.id='railExplode'; expl.title='Dividi in segmenti: ogni lato della forma selezionata diventa una linea a sé, unita alle altre nei punti';
+  expl.innerHTML = `<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 16L8.5 6.5M11 4.5L17 8M18 11L14.5 17.5M11.5 18.5L6 17"/><circle cx="4.5" cy="17" r="1.3" fill="currentColor"/><circle cx="9.5" cy="4.8" r="1.3" fill="currentColor"/><circle cx="18" cy="9.2" r="1.3" fill="currentColor"/><circle cx="13" cy="18.6" r="1.3" fill="currentColor"/></svg>`;
+  expl.onclick = explodeSelectionToSegments;
+  rail.appendChild(expl);
   const sep2 = document.createElement('div'); sep2.className='rail-sep'; rail.appendChild(sep2);
   const clearAllBtn = document.createElement('button');
   clearAllBtn.className='tool'; clearAllBtn.title='Cancella tutto il disegno';
@@ -9483,6 +9880,7 @@ function shapeContextItems(s){
     'sep',
     {label:'Seleziona stesso colore', action:()=> selectSameColor(s)},
     {label:'Seleziona stesso ruolo', action:()=> selectSameRole(s)},
+    {label:'✂ Dividi in segmenti', action:()=>{ if(!state.selection.has(s.id)) state.selection = new Set([s.id]); explodeSelectionToSegments(); }},
     'sep',
     {label: s.locked ? '🔓 Sblocca' : '🔒 Blocca', action:()=>{ s.locked = !s.locked; pushHistory(); renderAll(); }},
   ];
@@ -9624,8 +10022,10 @@ function handleMouseDown(mm, e){
     }
     if(target.dataset && target.dataset.vertex!==undefined){
       dragMode='move-vertex'; state.drag={shapeId:target.dataset.shape, vertex:+target.dataset.vertex, start:mm};
+      state.activeVertex = {shapeId:target.dataset.shape, idx:+target.dataset.vertex}; // punto selezionato: compare "Stacca"
       return;
     }
+    state.activeVertex = null;
     if(target.dataset && target.dataset.rotate){
       const s = state.shapes.find(x=>x.id===target.dataset.shape);
       if(s){
@@ -9754,7 +10154,8 @@ function handleMouseMove(mm, e){
   if(dragMode==='move-vertex' && state.drag){
     const s = state.shapes.find(x=>x.id===state.drag.shapeId);
     if(s){
-      const snapped = snapPoint(mm, s.id, s.points[state.drag.vertex]);
+      // un punto staccato può scorrere anche lungo le linee a cui era unito: per lui niente eccezioni al magnete
+      const snapped = snapPoint(mm, s.id, isPtDetached(s, state.drag.vertex) ? null : s.points[state.drag.vertex]);
       moveConnectedVertex(s, state.drag.vertex, snapped);
       updateSnapBadge();
       renderAll();
@@ -9869,6 +10270,15 @@ function handleMouseUp(mm, e){
     state.draft=null;
   } else if(dragMode==='move-shape' || dragMode==='move-vertex' || dragMode==='resize' || dragMode==='resize-text' || dragMode==='rotate-shape'){
     state.guides = null;
+    if(dragMode==='move-vertex' && state.drag){
+      // un punto staccato lasciato su un altro punto si riattacca lì (nuova unione)
+      const s = state.shapes.find(x=>x.id===state.drag.shapeId), i = state.drag.vertex;
+      if(s && s.points && isPtDetached(s, i)){
+        const p = s.points[i];
+        const landed = state.shapes.some(o=> o!==s && o.points && isShapeEffVisible(o) && o.points.some(q=>pointsEqual(q,p)));
+        if(landed){ setPtDetached(s, i, false); showToast('Punto riattaccato alla nuova unione.', false); }
+      }
+    }
     pushHistory();
   } else if(dragMode==='rubberband'){
     if(state.drag && state.drag.current){
@@ -11064,6 +11474,10 @@ document.getElementById('silModalClose').onclick = ()=> document.getElementById(
 setupOverlayClickClose(document.getElementById('silModal'), ()=> document.getElementById('silModal').classList.remove('open'));
 ['silFolds','silCut','silGap'].forEach(id=>{ const e=document.getElementById(id); e.onchange = silRefresh; e.oninput = silRefresh; });
 document.getElementById('silExport').onclick = doSilhouetteExport;
+document.getElementById('pdfImportClose').onclick = ()=> document.getElementById('pdfImportModal').classList.remove('open');
+setupOverlayClickClose(document.getElementById('pdfImportModal'), ()=> document.getElementById('pdfImportModal').classList.remove('open'));
+document.getElementById('pdfImpPage').onchange = e=> pdfAnalyzePage(parseInt(e.target.value,10));
+document.getElementById('pdfImpApply').onclick = applyPdfImport;
 function closeFold3D(){ stopFold3D(); if(state.foldCheck) endFoldCheckOverlay(); document.getElementById('fold3dModal').classList.remove('open'); }
 document.getElementById('fold3dClose').onclick = closeFold3D;
 setupOverlayClickClose(document.getElementById('fold3dModal'), closeFold3D);
@@ -12593,6 +13007,7 @@ function buildImageTab(){
           </select>
         </div>
       </div>
+      <label style="display:flex;gap:6px;align-items:flex-start;font-size:12px;margin:8px 0;cursor:pointer;"><input type="checkbox" id="traceDieline" style="width:auto;margin-top:2px;"><span>Individua automaticamente le linee di taglio e di piega (per scansioni o schermate di una fustella)</span></label>
       <button class="btn primary" id="btnTrace">Trasforma in disegno vettoriale</button>
       <button class="btn" id="btnRemoveRef">Rimuovi immagine di riferimento</button>
       <div class="hint">La vettorizzazione automatica converte l'immagine in tracciati SVG modificabili (colore, contorno, posizione, dimensione). Non genera singoli punti editabili nodo-per-nodo: per un ridisegno a mano libera usa lo strumento Penna sopra l'immagine di riferimento con la calamita attiva.</div>
@@ -12607,6 +13022,12 @@ function buildImageTab(){
   document.getElementById('imgOpacity').oninput = (e)=>{ if(state.refImage){ state.refImage.opacity=parseFloat(e.target.value); renderAll(); } };
   document.getElementById('btnRemoveRef').onclick = ()=>{ state.refImage=null; renderAll(); refreshImageTabPreview(); };
   document.getElementById('btnTrace').onclick = runTrace;
+  const tdl = document.getElementById('traceDieline');
+  if(tdl){
+    tdl.checked = !!state.traceDieline;
+    const syncTraceBtn = ()=>{ state.traceDieline = tdl.checked; document.getElementById('btnTrace').textContent = translate(tdl.checked ? 'Individua taglio e pieghe' : 'Trasforma in disegno vettoriale'); };
+    tdl.onchange = syncTraceBtn; syncTraceBtn();
+  }
 }
 function refreshImageTabPreview(){
   const prev = document.getElementById('imgPrev');
@@ -12635,7 +13056,213 @@ function loadRefImage(file){
   };
   reader.readAsDataURL(file);
 }
+/* ============================================================
+   INDIVIDUAZIONE AUTOMATICA DI TAGLIO E PIEGHE DA UN'IMMAGINE
+   (scansione, foto dritta o schermata di una fustella).
+   Pixel → classi di colore → assottigliamento (Zhang-Suen) →
+   spezzate → tratteggi riconosciuti come pieghe → estremità unite.
+   Funzione pura su {width, height, data} (come ImageData).
+============================================================ */
+function detectDielineLines(img){
+  const W = img.width, H = img.height, D = img.data, N = W*H;
+  const diag = Math.hypot(W, H);
+  // 1) classi: 1 = nero/scuro, 2 = rosso/magenta, 3 = blu/verde
+  const cls = new Uint8Array(N);
+  for(let i=0;i<N;i++){
+    const r = D[i*4], g = D[i*4+1], b = D[i*4+2], a = D[i*4+3];
+    if(a < 128) continue;
+    const mx = Math.max(r,g,b), mn = Math.min(r,g,b), v = mx/255, s = mx ? (mx-mn)/mx : 0;
+    if(s > 0.35 && v > 0.25){
+      let h;
+      if(mx===r) h = 60*(((g-b)/(mx-mn)) % 6); else if(mx===g) h = 60*((b-r)/(mx-mn) + 2); else h = 60*((r-g)/(mx-mn) + 4);
+      if(h < 0) h += 360;
+      if(h >= 290 || h < 22) cls[i] = 2; else if(h >= 80 && h < 265) cls[i] = 3;
+    } else if(v < 0.5 && s < 0.4) cls[i] = 1;
+  }
+  const out = { lines: [], rejected: 0 };
+  const allPieces = [];
+  for(const c of [1,2,3]){
+    const m = new Uint8Array(N); let any = false;
+    for(let i=0;i<N;i++) if(cls[i]===c){ m[i] = 1; any = true; }
+    if(!any) continue;
+    zhangSuenThin(m, W, H);
+    traceSkeleton(m, W, H).forEach(pl=>{
+      const simp = rdpSimplify(pl, 1.2);
+      let len = 0; for(let k=0;k<pl.length-1;k++) len += Math.hypot(pl[k+1][0]-pl[k][0], pl[k+1][1]-pl[k][1]);
+      if(len < 3) return; // puntini
+      allPieces.push({pts: simp, raw: pl, len, cls: c, closed: pl.length>3 && pl[0][0]===pl[pl.length-1][0] && pl[0][1]===pl[pl.length-1][1]});
+    });
+  }
+  // 2) pezzi corti = possibili trattini di una linea tratteggiata
+  const shortMax = Math.max(6, 0.045*diag);
+  const longs = allPieces.filter(p=> p.len >= shortMax);
+  const shorts = allPieces.filter(p=> p.len < shortMax);
+  const straight = p=>{ const a = p.raw[0], b = p.raw[p.raw.length-1], L = Math.hypot(b[0]-a[0], b[1]-a[1]); if(L < 2) return false;
+    return p.raw.every(q=> Math.abs((b[0]-a[0])*(q[1]-a[1]) - (b[1]-a[1])*(q[0]-a[0]))/L < 1.6) && L > 0.7*p.len; };
+  const dashes = shorts.filter(straight).map(p=>{ const a = p.raw[0], b = p.raw[p.raw.length-1], L = Math.hypot(b[0]-a[0], b[1]-a[1]);
+    return {p, a, b, L, u:[(b[0]-a[0])/L, (b[1]-a[1])/L], m:[(a[0]+b[0])/2, (a[1]+b[1])/2]}; });
+  out.rejected += shorts.length - dashes.length;
+  // raggruppo i trattini allineati (stessa direzione, sulla stessa retta, a distanza regolare)
+  const par = dashes.map((_,i)=>i), find = x=>{ while(par[x]!==x){ par[x]=par[par[x]]; x=par[x]; } return x; };
+  for(let i=0;i<dashes.length;i++) for(let j=i+1;j<dashes.length;j++){
+    const A = dashes[i], B = dashes[j];
+    if(Math.abs(A.u[0]*B.u[0] + A.u[1]*B.u[1]) < Math.cos(10*Math.PI/180)) continue;
+    const off = Math.abs(A.u[0]*(B.m[1]-A.m[1]) - A.u[1]*(B.m[0]-A.m[0]));
+    if(off > 2.5) continue;
+    const gap = Math.min(...[[A.a,B.a],[A.a,B.b],[A.b,B.a],[A.b,B.b]].map(([p,q])=>Math.hypot(p[0]-q[0], p[1]-q[1])));
+    if(gap > 2.2*Math.max(A.L, B.L) + 4) continue;
+    if(Math.max(A.L,B.L) > 3*Math.min(A.L,B.L) + 3) continue; // trattini di lunghezza simile
+    par[find(i)] = find(j);
+  }
+  const groups = new Map();
+  dashes.forEach((d,i)=>{ const r = find(i); if(!groups.has(r)) groups.set(r, []); groups.get(r).push(d); });
+  groups.forEach(g=>{
+    if(g.length < 3){ out.rejected += g.length; return; }
+    const u = g[0].u, o = g[0].a;
+    let lo = Infinity, hi = -Infinity, lp = null, hp = null;
+    g.forEach(d=> [d.a, d.b].forEach(q=>{ const t = (q[0]-o[0])*u[0] + (q[1]-o[1])*u[1]; if(t<lo){ lo=t; lp=q; } if(t>hi){ hi=t; hp=q; } }));
+    out.lines.push({pts:[lp.slice(), hp.slice()], closed:false, role:'fold', dashed:true});
+  });
+  // 3) linee continue: blu/verde → piega, altrimenti taglio
+  longs.forEach(p=>{
+    const pts = p.closed ? p.pts.slice(0, -1) : p.pts;
+    out.lines.push({pts: pts.map(q=>q.slice()), closed: p.closed, role: p.cls===3 ? 'fold' : 'cut', dashed:false});
+  });
+  // 4) estremità vicine unite, ed estremità che sfiorano una linea agganciate a quella linea
+  const tolW = Math.max(3, 0.008*diag);
+  const ends = [];
+  out.lines.forEach((l,li)=>{ if(!l.closed){ ends.push({li, k:0}); ends.push({li, k:l.pts.length-1}); } });
+  const ep = e=> out.lines[e.li].pts[e.k];
+  const used = new Set();
+  ends.forEach((e,i)=>{
+    if(used.has(i)) return;
+    const cl = [i];
+    ends.forEach((f,j)=>{ if(j!==i && !used.has(j) && Math.hypot(ep(e)[0]-ep(f)[0], ep(e)[1]-ep(f)[1]) <= tolW) cl.push(j); });
+    if(cl.length<2) return;
+    const mx = cl.reduce((s,j)=>s+ep(ends[j])[0],0)/cl.length, my = cl.reduce((s,j)=>s+ep(ends[j])[1],0)/cl.length;
+    cl.forEach(j=>{ used.add(j); const q = ep(ends[j]); q[0] = mx; q[1] = my; });
+  });
+  ends.forEach((e,i)=>{
+    if(used.has(i)) return;
+    const P = ep(e); let best = null, bd = tolW;
+    out.lines.forEach((l,li)=>{ if(li===e.li) return;
+      const n = l.pts.length, segN = l.closed ? n : n-1;
+      for(let k=0;k<segN;k++){ const a = l.pts[k], b = l.pts[(k+1)%n], dx=b[0]-a[0], dy=b[1]-a[1], l2=dx*dx+dy*dy; if(!l2) continue;
+        const t = Math.max(0, Math.min(1, ((P[0]-a[0])*dx + (P[1]-a[1])*dy)/l2)), q = [a[0]+dx*t, a[1]+dy*t], d = Math.hypot(q[0]-P[0], q[1]-P[1]);
+        if(d < bd){ bd = d; best = q; } } });
+    if(best){ P[0] = best[0]; P[1] = best[1]; }
+  });
+  return out;
+}
+// Assottigliamento di Zhang-Suen (sul posto): lascia l'asse centrale delle linee, spesso 1 pixel
+function zhangSuenThin(m, W, H){
+  const idx = (x,y)=> y*W+x;
+  let changed = true; const del = [];
+  while(changed){
+    changed = false;
+    for(let pass=0; pass<2; pass++){
+      del.length = 0;
+      for(let y=1;y<H-1;y++) for(let x=1;x<W-1;x++){
+        const i = idx(x,y); if(!m[i]) continue;
+        const p2=m[i-W], p3=m[i-W+1], p4=m[i+1], p5=m[i+W+1], p6=m[i+W], p7=m[i+W-1], p8=m[i-1], p9=m[i-W-1];
+        const B = p2+p3+p4+p5+p6+p7+p8+p9; if(B<2 || B>6) continue;
+        const A = (!p2&&p3)+(!p3&&p4)+(!p4&&p5)+(!p5&&p6)+(!p6&&p7)+(!p7&&p8)+(!p8&&p9)+(!p9&&p2); if(A!==1) continue;
+        if(pass===0){ if(p2*p4*p6 || p4*p6*p8) continue; } else { if(p2*p4*p8 || p2*p6*p8) continue; }
+        del.push(i);
+      }
+      if(del.length){ changed = true; for(const i of del) m[i] = 0; }
+    }
+  }
+}
+// Segue lo scheletro e restituisce spezzate (in pixel); i giri chiusi tornano al punto di partenza
+function traceSkeleton(m, W, H){
+  const N8 = [[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]];
+  const on = (x,y)=> x>=0 && y>=0 && x<W && y<H && m[y*W+x]===1;
+  const nb = (x,y)=> N8.map(([dx,dy])=>[x+dx,y+dy]).filter(([a,b])=>on(a,b));
+  const deg = (x,y)=> nb(x,y).length;
+  const visited = new Set(); const ek = (a,b)=> a<b ? a+'_'+b : b+'_'+a;
+  const lines = [];
+  const walk = (sx, sy, nx, ny)=>{
+    const pl = [[sx,sy]]; let px = sx, py = sy, cx = nx, cy = ny;
+    visited.add(ek(py*W+px, cy*W+cx));
+    while(true){
+      pl.push([cx,cy]);
+      const d = deg(cx,cy);
+      if(d!==2) break; // estremità o incrocio
+      const next = nb(cx,cy).find(([a,b])=> !(a===px && b===py) && !visited.has(ek(cy*W+cx, b*W+a)));
+      if(!next) break;
+      visited.add(ek(cy*W+cx, next[1]*W+next[0]));
+      px = cx; py = cy; cx = next[0]; cy = next[1];
+      if(cx===sx && cy===sy){ pl.push([cx,cy]); break; }
+    }
+    return pl;
+  };
+  // prima dalle estremità e dagli incroci, poi i giri chiusi rimasti
+  for(let y=0;y<H;y++) for(let x=0;x<W;x++){
+    if(!on(x,y)) continue; const d = deg(x,y); if(d===2) continue;
+    nb(x,y).forEach(([a,b])=>{ if(!visited.has(ek(y*W+x, b*W+a))) lines.push(walk(x,y,a,b)); });
+  }
+  for(let y=0;y<H;y++) for(let x=0;x<W;x++){
+    if(!on(x,y)) continue;
+    nb(x,y).forEach(([a,b])=>{ if(!visited.has(ek(y*W+x, b*W+a))) lines.push(walk(x,y,a,b)); });
+  }
+  return lines;
+}
+function rdpSimplify(pts, eps){
+  if(pts.length < 3) return pts.slice();
+  const keep = new Uint8Array(pts.length); keep[0] = keep[pts.length-1] = 1;
+  const stack = [[0, pts.length-1]];
+  while(stack.length){
+    const [s,e] = stack.pop(); const a = pts[s], b = pts[e], L = Math.hypot(b[0]-a[0], b[1]-a[1]) || 1e-9;
+    let md = -1, mi = -1;
+    for(let i=s+1;i<e;i++){ const d = Math.abs((b[0]-a[0])*(pts[i][1]-a[1]) - (b[1]-a[1])*(pts[i][0]-a[0]))/L; if(d>md){ md=d; mi=i; } }
+    if(md > eps){ keep[mi] = 1; stack.push([s,mi],[mi,e]); }
+  }
+  return pts.filter((_,i)=>keep[i]);
+}
+
+// Legge l'immagine di riferimento e crea le linee di taglio e piega individuate
+function runDielineDetect(){
+  const ri = state.refImage; if(!ri) return;
+  const btn = document.getElementById('btnTrace'); btn.disabled = true; btn.textContent = translate('Ricerca delle linee in corso…');
+  const img = new Image();
+  img.onload = ()=>{
+    setTimeout(()=>{ // lascia aggiornare il pulsante prima del calcolo
+      try{
+        const sw = img.width || ri.srcW, shh = img.height || ri.srcH;
+        const k = Math.min(1, 1600/Math.max(sw, shh));
+        const cv = document.createElement('canvas'); cv.width = Math.max(1, Math.round(sw*k)); cv.height = Math.max(1, Math.round(shh*k));
+        const g = cv.getContext('2d'); g.fillStyle = '#ffffff'; g.fillRect(0,0,cv.width,cv.height); g.drawImage(img, 0, 0, cv.width, cv.height);
+        const data = g.getImageData(0, 0, cv.width, cv.height);
+        const res = detectDielineLines(data);
+        const sx = ri.w/cv.width, sy = ri.h/cv.height;
+        const toMM = q=> [ri.x + q[0]*sx, ri.y + q[1]*sy];
+        const made = [];
+        res.lines.forEach(l=>{
+          const s = makeShape('path', {points: l.pts.map(toMM), closed: l.closed});
+          const rs = ROLE_STYLE[l.role];
+          s.style.role = l.role; s.style.stroke = rs.stroke; s.style.dash = rs.dash; s.style.fill = 'none'; s.style.hasRealStroke = true;
+          state.shapes.push(s); made.push(s);
+        });
+        btn.disabled = false; btn.textContent = translate('Individua taglio e pieghe');
+        if(!made.length){ showToast('Nessuna linea individuata: l\'immagine deve mostrare la fustella con linee ben visibili su sfondo chiaro.', true); return; }
+        state.selection = new Set(made.map(s=>s.id));
+        pushHistory(); renderAll();
+        const nc = res.lines.filter(l=>l.role==='cut').length, nf = res.lines.filter(l=>l.role==='fold').length;
+        showToast(tpl('Individuate {c} linee di taglio e {f} pieghe ({r} frammenti scartati, es. testi). Controllale sul disegno e con l\'anteprima 3D.', {c:nc, f:nf, r:res.rejected}), false);
+      }catch(err){
+        btn.disabled = false; btn.textContent = translate('Individua taglio e pieghe');
+        showToast('Impossibile analizzare l\'immagine.', true);
+      }
+    }, 30);
+  };
+  img.onerror = ()=>{ btn.disabled = false; showToast('Impossibile analizzare l\'immagine.', true); };
+  img.src = ri.dataUrl;
+}
+
 function runTrace(){
+  const dl = document.getElementById('traceDieline');
+  if(state.refImage && dl && dl.checked){ runDielineDetect(); return; } // individua taglio e pieghe invece di vettorizzare
   if(!state.refImage || typeof ImageTracer==='undefined'){
     showToast('Libreria di vettorizzazione non disponibile (verifica la connessione a Internet).', true);
     return;
@@ -12644,7 +13271,7 @@ function runTrace(){
   const detailMap = {low:{ltres:2,qtres:2,pathomit:12}, mid:{ltres:1,qtres:1,pathomit:6}, high:{ltres:0.5,qtres:0.5,pathomit:2}};
   const opts = Object.assign({numberofcolors:colors, scale:1, strokewidth:0}, detailMap[document.getElementById('traceDetail').value]);
   const btn = document.getElementById('btnTrace'); btn.textContent='Vettorizzazione in corso…'; btn.disabled=true;
-  ImageTracer.imageToSVG(state.refImage.dataUrl, function(svgstr){
+  ImageTracer.imageToSVG(state.refImage.dataUrl, function(svgstr){ // vettorizzazione classica: contorni delle macchie di colore
     btn.textContent='Trasforma in disegno vettoriale'; btn.disabled=false;
     const doc = new DOMParser().parseFromString(svgstr, 'image/svg+xml');
     const paths = [...doc.querySelectorAll('path')].map(p=>({ d:p.getAttribute('d'), fill:p.getAttribute('fill') }));
@@ -12945,7 +13572,7 @@ function importSVGString(text, opts){
       fillOpacity: st.fillOpacity!=null ? st.fillOpacity : 1,
       strokeWidth: Math.max(0.05, (st.strokeWidth||1) * factor),
       dash: scaleDashArray(st.dash, factor),
-      role: roleFromColor(roleSrc)
+      role: (st.forcedRole && (ROLE_STYLE[st.forcedRole] || st.forcedRole==='design')) ? st.forcedRole : roleFromColor(roleSrc)
     };
   }
   function pushPath(points, closed, styleObj){
@@ -13069,7 +13696,9 @@ function importSVGString(text, opts){
       const tag = child.tagName.toLowerCase();
       if(SKIP.includes(tag)) continue;
       const ownMat = matMul(mat, matFromTransformAttr(child.getAttribute('transform')));
-      const st = readStyleFromEl(child, inh);
+      let st = readStyleFromEl(child, inh);
+      const forcedRole = child.getAttribute && child.getAttribute('data-spikecut-role'); // ruolo scelto dall'utente (importazione PDF)
+      if(forcedRole) st = Object.assign({}, st, {forcedRole});
       if(tag==='g' || tag==='svg' || tag==='a'){ walk(child, ownMat, st); continue; }
       if(tag==='image'){ handleImageEl(child, ownMat); continue; } // non dipende da fill/stroke: gestita a parte
       const styleObj = styleToShapeStyle(st, ownMat);
@@ -13283,12 +13912,228 @@ async function autoFitImportedShapes(newShapes, opts){
   const fitNote = opts.fitTopLeft ? translate(' — foglio adattato al disegno') : '';
   showToast(tpl('Importati {n} elementi ({bw}×{bh} mm){scaleNote}{fitNote}.{weldNote}', {n: newShapes.length, bw: bw.toFixed(1), bh: bh.toFixed(1), scaleNote, fitNote, weldNote}), false);
 }
+/* ============================================================
+   IMPORTAZIONE PDF — i PDF di fustelle sono quasi sempre vettoriali
+   e in scala reale: leggo i tracciati della pagina con pdf.js
+   (Mozilla, Apache 2.0, caricato solo quando serve), li raggruppo per
+   colore e tratteggio, l'utente sceglie il ruolo di ogni gruppo, e
+   ne ricavo un SVG in mm che passa dall'importazione SVG di sempre.
+============================================================ */
+const PDFJS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+function loadPdfJs(){
+  if(typeof window!=='undefined' && window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+  return new Promise((resolve, reject)=>{
+    const s = document.createElement('script');
+    s.src = PDFJS_CDN + 'pdf.min.js';
+    s.onload = ()=>{
+      if(!window.pdfjsLib) return reject(new Error('pdf.js'));
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_CDN + 'pdf.worker.min.js';
+      resolve(window.pdfjsLib);
+    };
+    s.onerror = ()=> reject(new Error('pdf.js'));
+    document.head.appendChild(s);
+  });
+}
+const PT2MM = 25.4/72;
+function pdfHex(c){ const h = v=> Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0'); return '#'+h(c[0])+h(c[1])+h(c[2]); }
+// Legge i tracciati di una pagina: restituisce {items, w, h, texts, images} con coordinate in mm (y verso il basso)
+async function pdfPageToItems(page, OPS){
+  const vp = page.getViewport({scale:1});
+  const VT = vp.transform;
+  const mul = (m, n)=> [m[0]*n[0]+m[2]*n[1], m[1]*n[0]+m[3]*n[1], m[0]*n[2]+m[2]*n[3], m[1]*n[2]+m[3]*n[3], m[0]*n[4]+m[2]*n[5]+m[4], m[1]*n[4]+m[3]*n[5]+m[5]];
+  const opl = await page.getOperatorList();
+  let st = { ctm:[1,0,0,1,0,0], stroke:[0,0,0], fill:[0,0,0], lw:1, dash:[] };
+  const stack = [];
+  const items = [];
+  let path = [], cur = null, start = null, texts = 0, images = 0;
+  const T = ()=> mul(VT, st.ctm);
+  const P = (t, x, y)=> [ (t[0]*x + t[2]*y + t[4])*PT2MM, (t[1]*x + t[3]*y + t[5])*PT2MM ];
+  const f = v=> (Math.round(v*1000)/1000).toString();
+  const paint = (doStroke, doFill, close, evenodd)=>{
+    if(close && path.length) path.push({c:'Z'});
+    if(path.length && (doStroke || doFill)){
+      const t = T(), sc = Math.sqrt(Math.abs(t[0]*t[3]-t[1]*t[2])) * PT2MM;
+      let d = '', len = 0, prev = null, first = null, minX=Infinity, minY=Infinity, maxX=-Infinity, maxY=-Infinity;
+      const upd = p=>{ minX=Math.min(minX,p[0]); minY=Math.min(minY,p[1]); maxX=Math.max(maxX,p[0]); maxY=Math.max(maxY,p[1]); };
+      path.forEach(sg=>{
+        if(sg.c==='M'){ d += `M${f(sg.p[0])} ${f(sg.p[1])} `; prev = sg.p; first = sg.p; upd(sg.p); }
+        else if(sg.c==='L'){ d += `L${f(sg.p[0])} ${f(sg.p[1])} `; if(prev) len += Math.hypot(sg.p[0]-prev[0], sg.p[1]-prev[1]); prev = sg.p; upd(sg.p); }
+        else if(sg.c==='C'){
+          // curva → spezzata fitta (circa 0,8 mm per segmento): così diventa una linea vera, con i punti,
+          // usabile da anteprima 3D, verifiche e unioni (una curva resterebbe un tracciato non modificabile)
+          const s0 = prev || sg.a, poly = Math.hypot(sg.a[0]-s0[0],sg.a[1]-s0[1]) + Math.hypot(sg.b[0]-sg.a[0],sg.b[1]-sg.a[1]) + Math.hypot(sg.p[0]-sg.b[0],sg.p[1]-sg.b[1]);
+          const n = Math.max(6, Math.min(240, Math.ceil(poly/0.8)));
+          let q0 = s0;
+          for(let k=1;k<=n;k++){
+            const t = k/n, u = 1-t;
+            const q = [u*u*u*s0[0]+3*u*u*t*sg.a[0]+3*u*t*t*sg.b[0]+t*t*t*sg.p[0], u*u*u*s0[1]+3*u*u*t*sg.a[1]+3*u*t*t*sg.b[1]+t*t*t*sg.p[1]];
+            d += `L${f(q[0])} ${f(q[1])} `; len += Math.hypot(q[0]-q0[0], q[1]-q0[1]); q0 = q; upd(q);
+          }
+          prev = sg.p; }
+        else if(sg.c==='Z'){ d += 'Z '; if(prev && first) len += Math.hypot(first[0]-prev[0], first[1]-prev[1]); prev = first; }
+      });
+      items.push({ d: d.trim(), stroke: doStroke ? pdfHex(st.stroke) : null, fill: doFill ? pdfHex(st.fill) : null,
+        dashed: doStroke && st.dash.length>0 && st.dash.some(v=>v>0), lw: st.lw*sc, len, evenodd:!!evenodd,
+        bbox:[minX,minY,maxX,maxY] });
+    }
+    path = []; cur = null; start = null;
+  };
+  for(let i=0;i<opl.fnArray.length;i++){
+    const fn = opl.fnArray[i], a = opl.argsArray[i];
+    switch(fn){
+      case OPS.save: stack.push({ctm:st.ctm.slice(), stroke:st.stroke.slice(), fill:st.fill.slice(), lw:st.lw, dash:st.dash.slice()}); break;
+      case OPS.restore: if(stack.length) st = stack.pop(); break;
+      case OPS.transform: st.ctm = mul(st.ctm, a); break;
+      case OPS.paintFormXObjectBegin: stack.push({ctm:st.ctm.slice(), stroke:st.stroke.slice(), fill:st.fill.slice(), lw:st.lw, dash:st.dash.slice()}); if(a && a[0] && a[0].length===6) st.ctm = mul(st.ctm, a[0]); break;
+      case OPS.paintFormXObjectEnd: if(stack.length) st = stack.pop(); break;
+      case OPS.setStrokeRGBColor: st.stroke = [a[0],a[1],a[2]]; break;
+      case OPS.setFillRGBColor: st.fill = [a[0],a[1],a[2]]; break;
+      case OPS.setLineWidth: st.lw = a[0]; break;
+      case OPS.setDash: st.dash = (a[0]||[]).slice(); break;
+      case OPS.setGState: (a[0]||[]).forEach(([k,v])=>{ if(k==='LW') st.lw = v; else if(k==='D' && v) st.dash = (v[0]||[]).slice(); }); break;
+      case OPS.constructPath: {
+        const ops = a[0], args = a[1]; let j = 0; const t = T();
+        for(const op of ops){
+          if(op===OPS.moveTo){ cur = P(t, args[j], args[j+1]); start = cur; path.push({c:'M', p:cur}); j+=2; }
+          else if(op===OPS.lineTo){ cur = P(t, args[j], args[j+1]); path.push({c:'L', p:cur}); j+=2; }
+          else if(op===OPS.curveTo){ const A=P(t,args[j],args[j+1]), B=P(t,args[j+2],args[j+3]); cur=P(t,args[j+4],args[j+5]); path.push({c:'C', a:A, b:B, p:cur}); j+=6; }
+          else if(op===OPS.curveTo2){ const A=cur, B=P(t,args[j],args[j+1]); cur=P(t,args[j+2],args[j+3]); path.push({c:'C', a:A, b:B, p:cur}); j+=4; }
+          else if(op===OPS.curveTo3){ const A=P(t,args[j],args[j+1]); cur=P(t,args[j+2],args[j+3]); path.push({c:'C', a:A, b:cur, p:cur}); j+=4; }
+          else if(op===OPS.closePath){ path.push({c:'Z'}); cur = start; }
+          else if(op===OPS.rectangle){ const x=args[j], y=args[j+1], w=args[j+2], h=args[j+3];
+            const p0=P(t,x,y), p1=P(t,x+w,y), p2=P(t,x+w,y+h), p3=P(t,x,y+h);
+            path.push({c:'M',p:p0},{c:'L',p:p1},{c:'L',p:p2},{c:'L',p:p3},{c:'Z'}); cur = p0; start = p0; j+=4; }
+        }
+        break; }
+      case OPS.stroke: paint(true,false,false); break;
+      case OPS.closeStroke: paint(true,false,true); break;
+      case OPS.fill: paint(false,true,false); break;
+      case OPS.eoFill: paint(false,true,false,true); break;
+      case OPS.fillStroke: paint(true,true,false); break;
+      case OPS.eoFillStroke: paint(true,true,false,true); break;
+      case OPS.closeFillStroke: paint(true,true,true); break;
+      case OPS.closeEOFillStroke: paint(true,true,true,true); break;
+      case OPS.endPath: path = []; cur = null; break; // tracciato usato solo come maschera (clip)
+      case OPS.showText: case OPS.showSpacedText: case OPS.nextLineShowText: case OPS.nextLineSetSpacingShowText: texts++; break;
+      case OPS.paintImageXObject: case OPS.paintInlineImageXObject: case OPS.paintImageMaskXObject: case OPS.paintJpegXObject: images++; break;
+    }
+  }
+  return { items, w: vp.width*PT2MM, h: vp.height*PT2MM, texts, images };
+}
+// Raggruppa per colore e tratteggio, con un ruolo proposto per ciascun gruppo
+function groupPdfItems(items){
+  const map = new Map();
+  items.forEach(it=>{
+    const key = it.stroke ? 'S|'+it.stroke+'|'+(it.dashed?'d':'s') : 'F|'+it.fill;
+    if(!map.has(key)) map.set(key, {key, kind: it.stroke ? 'stroke' : 'fill', color: it.stroke || it.fill, dashed: !!it.dashed, count:0, len:0, items:[]});
+    const g = map.get(key); g.count++; g.len += it.len; g.items.push(it);
+  });
+  const groups = [...map.values()];
+  const solid = groups.filter(g=>g.kind==='stroke' && !g.dashed).sort((a,b)=> b.len-a.len);
+  groups.forEach(g=>{
+    if(g.kind==='fill') g.role = 'design';                 // riempimenti: grafica
+    else if(g.dashed) g.role = 'fold';                     // tratteggiate: pieghe
+    else g.role = (g===solid[0]) ? 'cut' : 'design';       // la linea continua più lunga è il contorno di taglio
+  });
+  return groups.sort((a,b)=> ({cut:0,fold:1,diecut:2,glue:3,design:4,ignore:5}[a.role]) - ({cut:0,fold:1,diecut:2,glue:3,design:4,ignore:5}[b.role]) || b.len-a.len);
+}
+// SVG in mm con il ruolo scritto su ogni elemento (data-spikecut-role), letto dall'importatore
+function buildPdfSVG(groups, w, h, roleStyle){
+  const esc = s=> String(s).replace(/"/g,'&quot;');
+  let body = '';
+  groups.forEach(g=>{
+    if(g.role==='ignore') return;
+    g.items.forEach(it=>{
+      let stroke = 'none', fill = 'none', dash = '';
+      if(g.role==='design'){ stroke = it.stroke || 'none'; fill = it.fill || 'none'; if(it.dashed) dash = '2,2'; }
+      else { stroke = roleStyle[g.role].stroke; dash = roleStyle[g.role].dash!=='none' ? roleStyle[g.role].dash : ''; }
+      body += `<path d="${esc(it.d)}" stroke="${stroke}" fill="${fill}"${it.evenodd?' fill-rule="evenodd"':''}${dash?` stroke-dasharray="${dash}"`:''} data-spikecut-role="${g.role}"/>\n`;
+    });
+  });
+  const W = Math.round(w*1000)/1000, H = Math.round(h*1000)/1000;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}mm" height="${H}mm" viewBox="0 0 ${W} ${H}">\n${body}</svg>`;
+}
+
+/* ---------- finestra dell'importazione PDF ---------- */
+const pdfImp = { doc:null, name:null, page:1, res:null, groups:[] };
+const PDF_ROLE_OPTIONS = [['cut','Taglio'],['fold','Piega'],['diecut','Fustella speciale'],['glue','Incollaggio'],['design','Disegno'],['ignore','Ignora']];
+async function openPdfImport(buffer, fileName){
+  showToast('Lettura del PDF…', false);
+  let lib;
+  try{ lib = await loadPdfJs(); }
+  catch(err){ showToast('Impossibile caricare il lettore PDF (serve la connessione a internet la prima volta).', true); return; }
+  try{ pdfImp.doc = await lib.getDocument({data: new Uint8Array(buffer)}).promise; }
+  catch(err){ showToast('Impossibile leggere questo PDF (forse è protetto o danneggiato).', true); return; }
+  pdfImp.lib = lib; pdfImp.name = fileName; pdfImp.page = 1;
+  const sel = document.getElementById('pdfImpPage'); sel.innerHTML = '';
+  for(let i=1;i<=pdfImp.doc.numPages;i++){
+    const pg = await pdfImp.doc.getPage(i), vp = pg.getViewport({scale:1});
+    const o = document.createElement('option'); o.value = i;
+    o.textContent = tpl('Pagina {n} ({w} × {h} mm)', {n:i, w:Math.round(vp.width*PT2MM), h:Math.round(vp.height*PT2MM)});
+    sel.appendChild(o);
+  }
+  document.getElementById('pdfImpPageRow').style.display = pdfImp.doc.numPages>1 ? '' : 'none';
+  openModal('pdfImportModal');
+  await pdfAnalyzePage(1);
+}
+async function pdfAnalyzePage(n){
+  pdfImp.page = n;
+  const host = document.getElementById('pdfImpGroups');
+  host.innerHTML = `<div class="hint">${escapeHTML(translate('Analisi della pagina…'))}</div>`;
+  const page = await pdfImp.doc.getPage(n);
+  pdfImp.res = await pdfPageToItems(page, pdfImp.lib.OPS);
+  pdfImp.groups = groupPdfItems(pdfImp.res.items);
+  renderPdfGroups();
+}
+function renderPdfGroups(){
+  const host = document.getElementById('pdfImpGroups'); host.innerHTML = '';
+  const r = pdfImp.res;
+  if(!pdfImp.groups.length){
+    host.innerHTML = `<div class="hint" style="color:var(--cut);">${escapeHTML(translate('Questa pagina non contiene linee vettoriali: probabilmente è un\'immagine (scansione). Puoi importarla come immagine di riferimento dalla scheda Immagine e vettorizzarla.'))}</div>`;
+  }
+  pdfImp.groups.forEach(g=>{
+    const row = document.createElement('div'); row.className='pdf-grp';
+    const sw = document.createElement('span'); sw.className='pdf-sw';
+    sw.style.cssText = g.kind==='fill' ? `background:${g.color};` : `border-top:3px ${g.dashed?'dashed':'solid'} ${g.color};`;
+    const tx = document.createElement('span'); tx.className='pdf-grp-txt';
+    tx.textContent = (g.kind==='fill' ? translate('Riempimenti') : (g.dashed ? translate('Linee tratteggiate') : translate('Linee continue')))
+      + ' ' + g.color + ' · ' + tpl('{n} elementi', {n:g.count}) + (g.kind==='stroke' ? ' · ' + fmtUnit(g.len) : '');
+    const sel = document.createElement('select');
+    PDF_ROLE_OPTIONS.forEach(([v,l])=>{ const o=document.createElement('option'); o.value=v; o.textContent=translate(l); if(v===g.role) o.selected=true; sel.appendChild(o); });
+    sel.onchange = ()=>{ g.role = sel.value; pdfSummary(); };
+    row.append(sw, tx, sel);
+    host.appendChild(row);
+  });
+  pdfSummary();
+}
+function pdfSummary(){
+  const r = pdfImp.res, n = pdfImp.groups.filter(g=>g.role!=='ignore').reduce((s,g)=>s+g.count,0);
+  let t = tpl('Pagina {w} × {h} mm: verranno importati {n} elementi in scala reale.', {w:Math.round(r.w), h:Math.round(r.h), n});
+  if(r.texts) t += ' ' + tpl('{n} testi non vengono importati (vanno riscritti con lo strumento Testo, se servono).', {n:r.texts});
+  if(r.images) t += ' ' + tpl('{n} immagini non vengono importate.', {n:r.images});
+  document.getElementById('pdfImpSummary').textContent = t;
+}
+function applyPdfImport(){
+  const svg = buildPdfSVG(pdfImp.groups, pdfImp.res.w, pdfImp.res.h, ROLE_STYLE);
+  if(!pdfImp.groups.some(g=>g.role!=='ignore')){ showToast('Niente da importare: tutti i gruppi sono impostati su "Ignora".', true); return; }
+  document.getElementById('pdfImportModal').classList.remove('open');
+  const name = pdfImp.name;
+  if(state.shapes.length > 0) openImportChoiceModal(svg, name);
+  else openSVGImportOptionsModal(svg, name);
+}
+
 let pendingSVGImportText = null;
 let pendingSVGImportName = null;
 function openSVGFilePicker(){
-  const inp = document.createElement('input'); inp.type='file'; inp.accept='.svg,image/svg+xml';
+  const inp = document.createElement('input'); inp.type='file'; inp.accept='.svg,image/svg+xml,.pdf,application/pdf';
   inp.onchange = ()=>{
     if(!inp.files[0]) return;
+    if(/\.pdf$/i.test(inp.files[0].name) || inp.files[0].type==='application/pdf'){ // PDF: prima si leggono i tracciati
+      const fr = new FileReader(); const nm = inp.files[0].name.replace(/\.pdf$/i, '');
+      fr.onload = ()=> openPdfImport(fr.result, nm);
+      fr.readAsArrayBuffer(inp.files[0]);
+      return;
+    }
     const fileName = inp.files[0].name.replace(/\.svg$/i, '');
     const r = new FileReader();
     r.onload = ()=>{
