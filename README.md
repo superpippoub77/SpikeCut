@@ -138,6 +138,17 @@ ombre. È grafica tutto ciò che non ha ruolo Taglio, Piega, Fustella speciale
 o Incollaggio, sui livelli visibili (anche testo e immagini). La casella
 "Grafica" accanto al cursore la mostra o la nasconde.
 
+### Asole e linguette nel 3D
+I tratti di taglio aperti che cadono dentro un pannello (asole, tagli di
+scarico) vengono individuati nel modello (`model.slits`) e disegnati sul loro
+pannello. `applySlotTucks()` controlla, a ogni fotogramma, se un pannello è
+parallelo al pannello di un'asola ed entro 5 mm dal suo piano, e se l'asola lo
+attraversa in un tratto più corto dell'asola stessa: in quel caso lo divide
+lungo la linea dell'asola, lasciando la parte verso la sua cerniera dal lato da
+cui è arrivato (ricavato dalla posizione un attimo prima) e portando la punta
+dall'altra parte, a ±0,8 mm dal piano. È una resa grafica: la simulazione
+resta a fogli rigidi.
+
 ### Ordine di piegatura
 Ogni piega ha un numero di **passo** (pannello proprietà → "Ordine di
 piegatura", anche su più pieghe selezionate insieme, con − e +). Nella
@@ -177,7 +188,7 @@ sulle pieghe e sui passi. Passando col mouse su una piega la si vede
 evidenziata sul disegno; "Simula nel 3D" mostra subito il risultato. Ogni
 modifica si annulla con Ctrl+Z.
 
-### Anteprima 3D piegata (menu Strumenti)
+### Anteprima 3D piegata (pulsante con il cubo nella barra a sinistra, o menu Strumenti)
 Ricava i pannelli dai contorni di **taglio** chiusi, divisi dalle linee di
 **piega**, e li piega in 3D usando verso e angolo di ogni piega (quelle
 senza verso impostato sono considerate a monte, 90°). "▶ Simula piegatura"
