@@ -138,6 +138,13 @@ ombre. È grafica tutto ciò che non ha ruolo Taglio, Piega, Fustella speciale
 o Incollaggio, sui livelli visibili (anche testo e immagini). La casella
 "Grafica" accanto al cursore la mostra o la nasconde.
 
+### Trasparenza nel 3D
+La casella "Trasparenza" nell'anteprima 3D rende semitrasparenti i pannelli
+(opacità regolabile dal cursore accanto, 10–80%, predefinita 35%) mantenendo i
+bordi marcati: si vedono le parti interne nascoste dal contenitore esterno.
+Il disegno dal più lontano al più vicino (algoritmo del pittore) fa sì che le
+parti interne compaiano correttamente dietro quelle esterne.
+
 ### Asole e linguette nel 3D
 I tratti di taglio aperti che cadono dentro un pannello (asole, tagli di
 scarico) vengono individuati nel modello (`model.slits`) e disegnati sul loro

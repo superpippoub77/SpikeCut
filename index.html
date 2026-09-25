@@ -684,7 +684,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.26.1</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.27.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -934,6 +934,8 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
         <span id="fold3dStep" style="font-size:12px;font-weight:700;color:var(--brass);min-width:80px;"></span>
         <button class="btn" id="fold3dReset" style="width:auto;margin:0;">Vista iniziale</button>
         <label style="display:flex;align-items:center;gap:5px;font-size:12px;white-space:nowrap;cursor:pointer;"><input type="checkbox" id="fold3dShowArt" checked style="width:auto;"><span>Grafica</span></label>
+        <label style="display:flex;align-items:center;gap:5px;font-size:12px;white-space:nowrap;cursor:pointer;" title="Pannelli semitrasparenti: si vedono le parti interne nascoste dal contenitore esterno"><input type="checkbox" id="fold3dXray" style="width:auto;"><span>Trasparenza</span></label>
+        <input type="range" id="fold3dXrayOpacity" min="10" max="80" value="35" title="Quanto sono visibili i pannelli con la trasparenza attiva" style="width:70px;display:none;">
       </div>
       <div style="display:flex;gap:8px;align-items:center;margin-top:8px;">
         <span style="font-size:12px;color:var(--ink-dim);white-space:nowrap;">Ordine automatico delle pieghe:</span>
@@ -2168,6 +2170,9 @@ const I18N = {
     "L'accesso è scaduto: accedi di nuovo per usare la libreria.": "Your session has expired: log in again to use the library.",
     "{n} linee di taglio aperte non formano un contorno e non hanno niente da unire lì vicino: sono considerate tagli voluti (es. tagli di scarico o asole). Nel 3D sono disegnate sul loro pannello, e una linguetta che si appoggia su un'asola ci viene infilata.": "{n} open cut lines don’t form an outline and have nothing nearby to join: they are treated as intentional cuts (e.g. relief cuts or slots). In 3D they are drawn on their panel, and a tab resting on a slot is tucked into it.",
     "Anteprima 3D piegata: crea il modello 3D della fustella e simula la piegatura": "Folded 3D preview: builds the 3D model of the die-line and simulates the folding",
+    "Trasparenza": "Transparency",
+    "Pannelli semitrasparenti: si vedono le parti interne nascoste dal contenitore esterno": "Semi-transparent panels: you can see the inner parts hidden by the outer container",
+    "Quanto sono visibili i pannelli con la trasparenza attiva": "How visible the panels are when transparency is on",
   },
   de: {
     "1 cm": "1 cm",
@@ -3006,6 +3011,9 @@ const I18N = {
     "L'accesso è scaduto: accedi di nuovo per usare la libreria.": "Die Anmeldung ist abgelaufen: Melde dich erneut an, um die Bibliothek zu nutzen.",
     "{n} linee di taglio aperte non formano un contorno e non hanno niente da unire lì vicino: sono considerate tagli voluti (es. tagli di scarico o asole). Nel 3D sono disegnate sul loro pannello, e una linguetta che si appoggia su un'asola ci viene infilata.": "{n} offene Schnittlinien bilden keine Kontur und haben in der Nähe nichts zum Verbinden: Sie gelten als gewollte Schnitte (z.B. Entlastungsschnitte oder Schlitze). Im 3D werden sie auf ihrem Feld gezeichnet, und eine Lasche, die auf einem Schlitz liegt, wird hineingesteckt.",
     "Anteprima 3D piegata: crea il modello 3D della fustella e simula la piegatura": "3D-Faltvorschau: erstellt das 3D-Modell der Stanzform und simuliert das Falten",
+    "Trasparenza": "Transparenz",
+    "Pannelli semitrasparenti: si vedono le parti interne nascoste dal contenitore esterno": "Halbtransparente Felder: Die vom äußeren Behälter verdeckten Innenteile werden sichtbar",
+    "Quanto sono visibili i pannelli con la trasparenza attiva": "Wie sichtbar die Felder bei aktiver Transparenz sind",
   },
   es: {
     "1 cm": "1 cm",
@@ -3844,6 +3852,9 @@ const I18N = {
     "L'accesso è scaduto: accedi di nuovo per usare la libreria.": "La sesión ha caducado: vuelve a acceder para usar la biblioteca.",
     "{n} linee di taglio aperte non formano un contorno e non hanno niente da unire lì vicino: sono considerate tagli voluti (es. tagli di scarico o asole). Nel 3D sono disegnate sul loro pannello, e una linguetta che si appoggia su un'asola ci viene infilata.": "{n} líneas de corte abiertas no forman un contorno y no tienen nada cerca que unir: se consideran cortes intencionados (p. ej. cortes de alivio o ranuras). En 3D se dibujan sobre su panel, y una lengüeta apoyada sobre una ranura se introduce en ella.",
     "Anteprima 3D piegata: crea il modello 3D della fustella e simula la piegatura": "Vista previa 3D plegada: crea el modelo 3D del troquel y simula el plegado",
+    "Trasparenza": "Transparencia",
+    "Pannelli semitrasparenti: si vedono le parti interne nascoste dal contenitore esterno": "Paneles semitransparentes: se ven las partes internas ocultas por el contenedor exterior",
+    "Quanto sono visibili i pannelli con la trasparenza attiva": "Qué tan visibles son los paneles con la transparencia activa",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -4682,6 +4693,9 @@ const I18N = {
     "L'accesso è scaduto: accedi di nuovo per usare la libreria.": "登录已过期：请重新登录以使用库。",
     "{n} linee di taglio aperte non formano un contorno e non hanno niente da unire lì vicino: sono considerate tagli voluti (es. tagli di scarico o asole). Nel 3D sono disegnate sul loro pannello, e una linguetta che si appoggia su un'asola ci viene infilata.": "{n} 条开放的切割线没有形成轮廓，附近也没有可连接的线：视为有意的切口（如释放切口或插槽）。在3D中它们绘制在所在面板上，搭在插槽上的插舌会被插入其中。",
     "Anteprima 3D piegata: crea il modello 3D della fustella e simula la piegatura": "3D折叠预览：生成刀模的3D模型并模拟折叠",
+    "Trasparenza": "透明",
+    "Pannelli semitrasparenti: si vedono le parti interne nascoste dal contenitore esterno": "半透明面板：可看到被外部容器遮挡的内部部件",
+    "Quanto sono visibili i pannelli con la trasparenza attiva": "开启透明时面板的可见程度",
   },
   fr: {
     "1 cm": "1 cm",
@@ -5520,6 +5534,9 @@ const I18N = {
     "L'accesso è scaduto: accedi di nuovo per usare la libreria.": "La session a expiré : reconnecte-toi pour utiliser la bibliothèque.",
     "{n} linee di taglio aperte non formano un contorno e non hanno niente da unire lì vicino: sono considerate tagli voluti (es. tagli di scarico o asole). Nel 3D sono disegnate sul loro pannello, e una linguetta che si appoggia su un'asola ci viene infilata.": "{n} lignes de découpe ouvertes ne forment pas de contour et n’ont rien à joindre à proximité : elles sont considérées comme des coupes voulues (ex. coupes de dégagement ou fentes). En 3D, elles sont dessinées sur leur panneau, et une languette posée sur une fente y est glissée.",
     "Anteprima 3D piegata: crea il modello 3D della fustella e simula la piegatura": "Aperçu 3D plié : crée le modèle 3D de la forme de découpe et simule le pliage",
+    "Trasparenza": "Transparence",
+    "Pannelli semitrasparenti: si vedono le parti interne nascoste dal contenitore esterno": "Panneaux semi-transparents : on voit les parties internes cachées par le contenant extérieur",
+    "Quanto sono visibili i pannelli con la trasparenza attiva": "Visibilité des panneaux quand la transparence est active",
   },
 };
 let currentLang = 'it';
@@ -7881,7 +7898,7 @@ function applySlotTucks(model, faces, frac){
   return out;
 }
 /* ---------- visualizzatore 3D (canvas 2D, algoritmo del pittore) ---------- */
-const fold3d = { model:null, frac:1, yaw:-0.6, pitch:0.45, zoom:1, anim:null, drag:null, art:null, artToken:0, artCount:0 };
+const fold3d = { model:null, frac:1, yaw:-0.6, pitch:0.45, zoom:1, anim:null, drag:null, art:null, artToken:0, artCount:0, xray:false, xrayOpacity:0.35 };
 function openFold3D(){
   fold3d.yaw=-0.6; fold3d.pitch=0.45; fold3d.zoom=1;
   openModal('fold3dModal');
@@ -7953,7 +7970,10 @@ function renderFold3D(){
     return { vs, depth: vs.reduce((a,v)=>a+v[2],0)/vs.length, n: rot(f.normal), bad: f.unreached, flat: f.flat, tris: f.tris, sl };
   });
   items.sort((a,b)=> a.depth-b.depth); // prima i pannelli lontani, poi quelli vicini
+  // Trasparenza: pannelli semitrasparenti per vedere le parti interne; i bordi restano marcati
+  const xray = !!fold3d.xray, alpha = xray ? fold3d.xrayOpacity : 1;
   items.forEach(it=>{
+    ctx.globalAlpha = alpha;
     const front = it.n[2] >= 0;                       // lato stampato rivolto verso chi guarda
     const nn = front ? it.n : it.n.map(v=>-v);
     const shade = 0.55 + 0.45*Math.max(0, nn[0]*light[0]+nn[1]*light[1]+nn[2]*light[2]);
@@ -7978,12 +7998,14 @@ function renderFold3D(){
       ctx.fillStyle = `rgba(0,0,0,${((1-shade)*0.85).toFixed(3)})`; // luce e ombra anche sopra la grafica
       ctx.beginPath(); it.vs.forEach((v,k2)=>{ const q = proj(v); if(k2) ctx.lineTo(q[0],q[1]); else ctx.moveTo(q[0],q[1]); }); ctx.closePath(); ctx.fill();
     }
-    ctx.strokeStyle = 'rgba(30,30,30,0.85)'; ctx.lineWidth = 1; ctx.stroke();
+    ctx.globalAlpha = xray ? Math.min(1, alpha + 0.5) : 1;
+    ctx.strokeStyle = xray ? 'rgba(20,20,20,0.95)' : 'rgba(30,30,30,0.85)'; ctx.lineWidth = xray ? 1.4 : 1; ctx.stroke();
     it.sl.forEach(([a,b])=>{ // asola: taglio scuro sul pannello
       const p = proj(a), q = proj(b);
       ctx.strokeStyle = '#111'; ctx.lineWidth = 3; ctx.lineCap = 'round';
       ctx.beginPath(); ctx.moveTo(p[0],p[1]); ctx.lineTo(q[0],q[1]); ctx.stroke();
     });
+    ctx.globalAlpha = 1;
   });
   renderFold3DHighlight(ctx, faces0, rot, proj, C);
 }
@@ -9172,7 +9194,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.26.1';
+const GUIDE_VERSION = '2.27.0';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -9392,12 +9414,13 @@ html:`<p>Menu <b>Strumenti → Anteprima taglio (fustella)</b>: mostra la sagoma
 html:`<p>Senza nessun oggetto selezionato, il pannello Proprietà mostra la scheda del progetto: tipo di scatola, carta o materiale consigliato, istruzioni di stampa e taglio, e i passaggi di montaggio uno per uno (riordinabili). Viene salvata con il progetto.</p>` },
 
 /* ---------------- ANTEPRIMA 3D ---------------- */
-{ id:'anteprima-3d', cat:'Anteprima 3D', title:'Anteprima 3D piegata', keys:'3d anteprima simulazione piegare ruotare zoom pannelli modello animazione asola linguetta incastro infilare fessura',
+{ id:'anteprima-3d', cat:'Anteprima 3D', title:'Anteprima 3D piegata', keys:'3d anteprima simulazione piegare ruotare zoom pannelli modello animazione asola linguetta incastro infilare fessura trasparenza trasparente raggi x interno nascosto',
 html:`<p>Pulsante con il <b>cubo</b> nella barra a sinistra, oppure menu <b>Strumenti → 🧊 Anteprima 3D piegata</b>. I pannelli vengono ricavati dai contorni di <b>taglio</b> chiusi, divisi dalle linee di <b>piega</b>, e piegati secondo <a data-topic="pieghe">verso e angolo</a> di ogni piega.</p>
 <ul><li><b>▶ Simula piegatura</b> anima il passaggio dal foglio piatto alla scatola chiusa, per <a data-topic="ordine">passi</a>; il cursore si ferma a qualunque punto.</li>
 <li>Trascina per <b>ruotare</b>, rotella per lo <b>zoom</b>, "Vista iniziale" per tornare alla vista di partenza.</li>
 <li>Lato chiaro = lato stampato (esterno), color cartone = interno; i pannelli <b>rossi</b> non sono collegati da nessuna piega.</li>
-<li>La casella <b>Grafica</b> mostra la <a data-topic="grafica-3d">grafica</a> sui pannelli.</li></ul>
+<li>La casella <b>Grafica</b> mostra la <a data-topic="grafica-3d">grafica</a> sui pannelli.</li>
+<li>La casella <b>Trasparenza</b> rende i pannelli semitrasparenti: si vedono le parti interne nascoste dal contenitore esterno (alette antipolvere, linguette infilate, aletta di incollaggio); i bordi restano marcati. Il cursore accanto regola quanto sono visibili i pannelli.</li></ul>
 <p><b>Asole e linguette</b>: i tagli aperti dentro un pannello (asole, tagli di scarico) sono disegnati sul pannello come tagli scuri e lo seguono mentre si piega. Quando, a piegatura finita, una linguetta si appoggia sul pannello di un'asola (anche a qualche millimetro, se le pareti opposte non sono identiche) e l'asola la attraversa, la linguetta viene mostrata <b>infilata</b>: la parte verso la sua piega resta dal lato da cui è arrivata, la punta passa dall'altra parte. Perché succeda, la linguetta deve essere più stretta dell'asola nel punto in cui la attraversa, e le pieghe devono portarla davvero sul pannello (verso e angolo giusti). La simulazione piega fogli rigidi: non piega la linguetta per farla passare.</p>
 <p>Sotto il modello c'è il <a data-topic="controllo-3d">controllo del disegno</a>. Limiti: curve approssimate con segmenti, fori non ritagliati nel 3D.</p>` },
 
@@ -9480,6 +9503,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.27</b> — <a data-topic="anteprima-3d">Trasparenza</a> nell'anteprima 3D, per vedere le parti interne.</li>
 <li><b>2.26.1</b> — Pulsante dell'<a data-topic="anteprima-3d">anteprima 3D</a> nella barra a sinistra.</li>
 <li><b>2.26</b> — Nell'<a data-topic="anteprima-3d">anteprima 3D</a> le asole sono visibili e le linguette vi si infilano.</li>
 <li><b>2.25.1</b> — Corretto il pulsante dell'account, che mostrava sempre "Accedi" anche da collegati; all'uscita dall'account i dati della <a data-topic="libreria">libreria</a> vengono cancellati dal browser.</li>
@@ -11821,6 +11845,12 @@ document.getElementById('fold3dClose').onclick = closeFold3D;
 setupOverlayClickClose(document.getElementById('fold3dModal'), closeFold3D);
 document.getElementById('fold3dPlay').onclick = playFold3D;
 document.getElementById('fold3dShowArt').onchange = ()=>{ buildArtTexture(); renderFold3D(); };
+document.getElementById('fold3dXray').onchange = e=>{
+  fold3d.xray = e.target.checked;
+  document.getElementById('fold3dXrayOpacity').style.display = fold3d.xray ? '' : 'none';
+  renderFold3D();
+};
+document.getElementById('fold3dXrayOpacity').oninput = e=>{ fold3d.xrayOpacity = parseInt(e.target.value,10)/100; renderFold3D(); };
 document.getElementById('fold3dSeq').onclick = openFoldSequence;
 document.getElementById('seqModalClose').onclick = closeFoldSequence;
 setupOverlayClickClose(document.getElementById('seqModal'), closeFoldSequence);
