@@ -325,6 +325,11 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   più vicino di qualsiasi linea (tratti, archi, lati di rettangoli ed
   ellissi). Serve ad esempio per far partire una piega esattamente sul
   contorno di taglio. I vertici hanno la precedenza sulle linee.
+- **Curvatura degli archi**: selezionato un arco, un rombo al centro della
+  curva si trascina lungo l'asse della corda (verso l'esterno più curvo, verso
+  la corda più piatto, oltre la corda si ribalta; Shift = raggio a mm interi);
+  nel pannello: raggio esatto, "⇅ Inverti", "Arco corto/lungo". Le estremità
+  restano ferme (funzioni `arcGeometry`, `setArcBulge`).
 - **Archi**: lo strumento Arco (clic su inizio, fine e un punto di passaggio)
   crea una linea vera, con i punti sulla circonferenza abbastanza fitti da
   scostarsi al massimo 0,05 mm dalla curva: prende colore e tratteggio del

@@ -684,7 +684,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.27.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.28.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2173,6 +2173,15 @@ const I18N = {
     "Trasparenza": "Transparency",
     "Pannelli semitrasparenti: si vedono le parti interne nascoste dal contenitore esterno": "Semi-transparent panels: you can see the inner parts hidden by the outer container",
     "Quanto sono visibili i pannelli con la trasparenza attiva": "How visible the panels are when transparency is on",
+    "freccia": "sagitta",
+    "Raggio": "Radius",
+    "Il raggio minimo per queste estremità è {r} (mezza circonferenza).": "The minimum radius for these endpoints is {r} (half circle).",
+    "⇅ Inverti": "⇅ Flip",
+    "Porta la curva dall'altra parte della corda, con lo stesso raggio": "Moves the curve to the other side of the chord, with the same radius",
+    "Arco corto": "Short arc",
+    "Arco lungo": "Long arc",
+    "Con lo stesso raggio e le stesse estremità ci sono due archi: quello corto e quello lungo": "With the same radius and endpoints there are two arcs: the short one and the long one",
+    "Oppure trascina il rombo al centro dell'arco: verso l'esterno si incurva di più, verso la corda si appiattisce, oltre la corda si ribalta. Shift: raggio a millimetri interi.": "Or drag the diamond at the middle of the arc: outwards it curves more, towards the chord it flattens, past the chord it flips. Shift: radius in whole millimeters.",
   },
   de: {
     "1 cm": "1 cm",
@@ -3014,6 +3023,15 @@ const I18N = {
     "Trasparenza": "Transparenz",
     "Pannelli semitrasparenti: si vedono le parti interne nascoste dal contenitore esterno": "Halbtransparente Felder: Die vom äußeren Behälter verdeckten Innenteile werden sichtbar",
     "Quanto sono visibili i pannelli con la trasparenza attiva": "Wie sichtbar die Felder bei aktiver Transparenz sind",
+    "freccia": "Pfeilhöhe",
+    "Raggio": "Radius",
+    "Il raggio minimo per queste estremità è {r} (mezza circonferenza).": "Der kleinste Radius für diese Endpunkte ist {r} (Halbkreis).",
+    "⇅ Inverti": "⇅ Umkehren",
+    "Porta la curva dall'altra parte della corda, con lo stesso raggio": "Bringt die Kurve auf die andere Seite der Sehne, mit demselben Radius",
+    "Arco corto": "Kurzer Bogen",
+    "Arco lungo": "Langer Bogen",
+    "Con lo stesso raggio e le stesse estremità ci sono due archi: quello corto e quello lungo": "Mit demselben Radius und denselben Endpunkten gibt es zwei Bögen: den kurzen und den langen",
+    "Oppure trascina il rombo al centro dell'arco: verso l'esterno si incurva di più, verso la corda si appiattisce, oltre la corda si ribalta. Shift: raggio a millimetri interi.": "Oder ziehe die Raute in der Mitte des Bogens: nach außen wird er stärker gekrümmt, zur Sehne hin flacher, über die Sehne hinaus kippt er. Umschalt: Radius in ganzen Millimetern.",
   },
   es: {
     "1 cm": "1 cm",
@@ -3855,6 +3873,15 @@ const I18N = {
     "Trasparenza": "Transparencia",
     "Pannelli semitrasparenti: si vedono le parti interne nascoste dal contenitore esterno": "Paneles semitransparentes: se ven las partes internas ocultas por el contenedor exterior",
     "Quanto sono visibili i pannelli con la trasparenza attiva": "Qué tan visibles son los paneles con la transparencia activa",
+    "freccia": "flecha",
+    "Raggio": "Radio",
+    "Il raggio minimo per queste estremità è {r} (mezza circonferenza).": "El radio mínimo para estos extremos es {r} (media circunferencia).",
+    "⇅ Inverti": "⇅ Invertir",
+    "Porta la curva dall'altra parte della corda, con lo stesso raggio": "Lleva la curva al otro lado de la cuerda, con el mismo radio",
+    "Arco corto": "Arco corto",
+    "Arco lungo": "Arco largo",
+    "Con lo stesso raggio e le stesse estremità ci sono due archi: quello corto e quello lungo": "Con el mismo radio y los mismos extremos hay dos arcos: el corto y el largo",
+    "Oppure trascina il rombo al centro dell'arco: verso l'esterno si incurva di più, verso la corda si appiattisce, oltre la corda si ribalta. Shift: raggio a millimetri interi.": "O arrastra el rombo del centro del arco: hacia fuera se curva más, hacia la cuerda se aplana, más allá de la cuerda se invierte. Mayús: radio en milímetros enteros.",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -4696,6 +4723,15 @@ const I18N = {
     "Trasparenza": "透明",
     "Pannelli semitrasparenti: si vedono le parti interne nascoste dal contenitore esterno": "半透明面板：可看到被外部容器遮挡的内部部件",
     "Quanto sono visibili i pannelli con la trasparenza attiva": "开启透明时面板的可见程度",
+    "freccia": "拱高",
+    "Raggio": "半径",
+    "Il raggio minimo per queste estremità è {r} (mezza circonferenza).": "这两个端点的最小半径为 {r}（半圆）。",
+    "⇅ Inverti": "⇅ 翻转",
+    "Porta la curva dall'altra parte della corda, con lo stesso raggio": "将曲线移到弦的另一侧，半径不变",
+    "Arco corto": "短弧",
+    "Arco lungo": "长弧",
+    "Con lo stesso raggio e le stesse estremità ci sono due archi: quello corto e quello lungo": "相同半径和端点可构成两条弧：短弧和长弧",
+    "Oppure trascina il rombo al centro dell'arco: verso l'esterno si incurva di più, verso la corda si appiattisce, oltre la corda si ribalta. Shift: raggio a millimetri interi.": "或拖动弧中间的菱形：向外弯曲更大，朝弦方向变平，越过弦则翻转。Shift：半径取整毫米。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -5537,6 +5573,15 @@ const I18N = {
     "Trasparenza": "Transparence",
     "Pannelli semitrasparenti: si vedono le parti interne nascoste dal contenitore esterno": "Panneaux semi-transparents : on voit les parties internes cachées par le contenant extérieur",
     "Quanto sono visibili i pannelli con la trasparenza attiva": "Visibilité des panneaux quand la transparence est active",
+    "freccia": "flèche",
+    "Raggio": "Rayon",
+    "Il raggio minimo per queste estremità è {r} (mezza circonferenza).": "Le rayon minimal pour ces extrémités est {r} (demi-cercle).",
+    "⇅ Inverti": "⇅ Inverser",
+    "Porta la curva dall'altra parte della corda, con lo stesso raggio": "Passe la courbe de l’autre côté de la corde, avec le même rayon",
+    "Arco corto": "Arc court",
+    "Arco lungo": "Arc long",
+    "Con lo stesso raggio e le stesse estremità ci sono due archi: quello corto e quello lungo": "Avec le même rayon et les mêmes extrémités, il y a deux arcs : le court et le long",
+    "Oppure trascina il rombo al centro dell'arco: verso l'esterno si incurva di più, verso la corda si appiattisce, oltre la corda si ribalta. Shift: raggio a millimetri interi.": "Ou fais glisser le losange au milieu de l’arc : vers l’extérieur il se courbe davantage, vers la corde il s’aplatit, au-delà de la corde il s’inverse. Maj : rayon en millimètres entiers.",
   },
 };
 let currentLang = 'it';
@@ -6398,6 +6443,14 @@ function renderSelectionHandles(){
           const h = el('circle', {cx:p[0]*state.scale, cy:p[1]*state.scale, r:4.5, fill:'#fff', stroke: det ? '#a970ff' : 'var(--brass)', 'stroke-width':1.6, 'stroke-dasharray': det ? '2.5,1.5' : '', 'data-vertex':idx, 'data-shape':s.id, style:'cursor:move'});
           layerOverlay.appendChild(h);
         });
+        // arco: maniglia a rombo nel punto più alto della curva, per cambiarne la curvatura
+        const ag = arcGeometry(s);
+        if(ag){
+          const ap = [ag.Mc[0] + ag.nrm[0]*ag.h, ag.Mc[1] + ag.nrm[1]*ag.h], sc = state.scale;
+          layerOverlay.appendChild(el('line', {x1:ag.Mc[0]*sc, y1:ag.Mc[1]*sc, x2:ap[0]*sc, y2:ap[1]*sc, stroke:'var(--brass)', 'stroke-width':1, 'stroke-dasharray':'3,3', 'pointer-events':'none'}));
+          layerOverlay.appendChild(el('path', {d:`M ${ap[0]*sc} ${ap[1]*sc-7} L ${ap[0]*sc+7} ${ap[1]*sc} L ${ap[0]*sc} ${ap[1]*sc+7} L ${ap[0]*sc-7} ${ap[1]*sc} Z`,
+            fill:'var(--brass)', stroke:'#fff', 'stroke-width':1.5, 'data-arc-mid':s.id, style:'cursor:move'}));
+        }
         // maniglia di rotazione: ruota l'intera linea/percorso attorno al centro del suo riquadro
         const rcx=bx+bw/2;
         const handlePt = [rcx, by-(16/state.scale)];
@@ -6995,6 +7048,11 @@ function renderCanvasOnly(){
   renderFoldIndicators();
   renderSmartGuides();
   renderVertexBar();
+  if(state.arcEditLabel && dragMode==='arc-bulge'){
+    const L = state.arcEditLabel, t = el('text', {x:L.p[0]*state.scale + 12, y:L.p[1]*state.scale - 12, 'font-size':12, 'font-weight':'700', fill:'var(--brass)',
+      'paint-order':'stroke', stroke:'var(--bg-0, #1a1c20)', 'stroke-width':4, 'pointer-events':'none'});
+    t.textContent = L.text; layerOverlay.appendChild(t);
+  }
   renderJoinLabels();
   renderTileGuidesOverlay();
   drawRulers();
@@ -9194,7 +9252,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.27.0';
+const GUIDE_VERSION = '2.28.0';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -9258,10 +9316,11 @@ html:`<p>Con il magnete acceso (tasto <b>M</b> o "🧲 calamita" nella barra di 
 <li>altrimenti alla <b>griglia</b>, se attiva.</li></ol>
 <p>I punti che coincidono restano <b>uniti</b>: spostandone uno si trascina anche l'altro. Per separarli vedi <a data-topic="scollega">Scollegare i punti</a>. Spostando oggetti interi il magnete lavora con le <a data-topic="guide">guide di allineamento</a>.</p>` },
 
-{ id:'archi', cat:'Disegnare', title:'Archi', keys:'arco curva circonferenza raggio tre clic',
+{ id:'archi', cat:'Disegnare', title:'Archi', keys:'arco curva circonferenza raggio tre clic curvatura freccia bombatura modificare invertire ribaltare rombo',
 html:`<p>Con lo strumento Arco (<b>A</b>): clic sul punto di <b>inizio</b>, clic sul punto di <b>fine</b>, poi muovi il mouse e clic su un <b>punto di passaggio</b> che definisce la curvatura.</p>
 <p>L'arco è una linea vera, con i punti sulla circonferenza abbastanza fitti da scostarsi al massimo 0,05 mm dalla curva: prende il colore del <a data-topic="ruoli">ruolo</a>, si aggancia col <a data-topic="magnete">magnete</a> e vale per anteprima 3D, operazioni booleane e unione dei punti.</p>
-<p>Mostra solo le maniglie delle estremità: trascinandole, o spostando una linea collegata, viene ricalcolato e resta un arco. Le quote indicano lunghezza e raggio. Se aggiungi o togli un punto al suo interno, o lo unisci a un'altra linea, diventa una linea normale con la stessa forma.</p>` },
+<p><b>Modificare la curvatura</b>: selezionato l'arco, al centro della curva compare un <b>rombo</b>. Trascinalo verso l'esterno per incurvare di più l'arco (raggio più piccolo), verso la corda per appiattirlo (raggio più grande); oltre la corda l'arco si <b>ribalta</b> dall'altra parte. Le estremità restano ferme, quindi le linee collegate non si muovono. Durante il trascinamento compaiono raggio e freccia; con <b>Shift</b> il raggio scatta a millimetri interi. Nel pannello Proprietà puoi scrivere il <b>raggio</b> esatto (minimo: mezza circonferenza), usare <b>⇅ Inverti</b> per portare la curva dall'altra parte e <b>Arco corto / Arco lungo</b> per scegliere tra i due archi possibili con lo stesso raggio.</p>
+<p>Oltre al rombo, l'arco mostra solo le maniglie delle estremità: trascinandole, o spostando una linea collegata, viene ricalcolato e resta un arco. Le quote indicano lunghezza e raggio. Se aggiungi o togli un punto al suo interno, o lo unisci a un'altra linea, diventa una linea normale con la stessa forma.</p>` },
 
 { id:'testo', cat:'Disegnare', title:'Testo e font', keys:'testo scritta font carattere tipo personalizzato caricare',
 html:`<p>Con lo strumento Testo (<b>T</b>) clicca nel punto, scrivi e conferma. Dal pannello Proprietà cambi testo, dimensione e font.</p>
@@ -9503,6 +9562,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.28</b> — <a data-topic="archi">Modifica della curvatura degli archi</a>: rombo da trascinare, raggio esatto, inverti, arco corto/lungo.</li>
 <li><b>2.27</b> — <a data-topic="anteprima-3d">Trasparenza</a> nell'anteprima 3D, per vedere le parti interne.</li>
 <li><b>2.26.1</b> — Pulsante dell'<a data-topic="anteprima-3d">anteprima 3D</a> nella barra a sinistra.</li>
 <li><b>2.26</b> — Nell'<a data-topic="anteprima-3d">anteprima 3D</a> le asole sono visibili e le linguette vi si infilano.</li>
@@ -10267,6 +10327,10 @@ function handleMouseDown(mm, e){
       dragMode='resize-image'; state.drag={corner:target.dataset.imgResize};
       return;
     }
+    if(target.dataset && target.dataset.arcMid){ // curvatura dell'arco
+      dragMode='arc-bulge'; state.drag={shapeId:target.dataset.arcMid};
+      return;
+    }
     if(target.dataset && target.dataset.vertex!==undefined){
       dragMode='move-vertex'; state.drag={shapeId:target.dataset.shape, vertex:+target.dataset.vertex, start:mm};
       state.activeVertex = {shapeId:target.dataset.shape, idx:+target.dataset.vertex}; // punto selezionato: compare "Stacca"
@@ -10398,6 +10462,22 @@ function handleMouseMove(mm, e){
     renderAll();
     return;
   }
+  if(dragMode==='arc-bulge' && state.drag){
+    const s = state.shapes.find(x=>x.id===state.drag.shapeId), g = s && arcGeometry(s);
+    if(g){
+      // il punto più alto della curva segue il mouse lungo l'asse della corda: oltre la corda l'arco si ribalta
+      let h = (mm[0]-g.Mc[0])*g.nrm[0] + (mm[1]-g.Mc[1])*g.nrm[1];
+      if(e && e.shiftKey && Math.abs(h) > 0.02){ // Shift: raggio a millimetri interi
+        const r = Math.max(Math.ceil(g.c/2), Math.round(arcRadiusFromBulge(g.c, h)));
+        h = arcBulgeFromRadius(g.c, r, Math.abs(h) > g.c/2, Math.sign(h));
+      }
+      setArcBulge(s, h);
+      const g2 = arcGeometry(s);
+      if(g2) state.arcEditLabel = {p:[g2.Mc[0]+g2.nrm[0]*g2.h, g2.Mc[1]+g2.nrm[1]*g2.h], text: 'R ' + fmtUnit(g2.r) + '  ·  ' + translate('freccia') + ' ' + fmtUnit(Math.abs(g2.h))};
+      renderCanvasOnly();
+    }
+    return;
+  }
   if(dragMode==='move-vertex' && state.drag){
     const s = state.shapes.find(x=>x.id===state.drag.shapeId);
     if(s){
@@ -10515,8 +10595,8 @@ function handleMouseUp(mm, e){
       commitShapeDraft(d);
     }
     state.draft=null;
-  } else if(dragMode==='move-shape' || dragMode==='move-vertex' || dragMode==='resize' || dragMode==='resize-text' || dragMode==='rotate-shape'){
-    state.guides = null;
+  } else if(dragMode==='move-shape' || dragMode==='move-vertex' || dragMode==='resize' || dragMode==='resize-text' || dragMode==='rotate-shape' || dragMode==='arc-bulge'){
+    state.guides = null; state.arcEditLabel = null;
     if(dragMode==='move-vertex' && state.drag){
       // un punto staccato lasciato su un altro punto si riattacca lì (nuova unione)
       const s = state.shapes.find(x=>x.id===state.drag.shapeId), i = state.drag.vertex;
@@ -10738,6 +10818,32 @@ function rebuildArc(s){
   delete s.detached;
   if(det0) setPtDetached(s, 0, true);
   if(detL) setPtDetached(s, s.points.length-1, true);
+}
+// Geometria di un arco: corda S→E, versore della corda u, normale nrm (a sinistra nel verso S→E),
+// centro della corda Mc, raggio r e freccia h con segno (quanto e da che parte la curva si stacca dalla corda)
+function arcGeometry(s){
+  if(!s.arc || !s.points || s.points.length<3) return null;
+  const n = s.points.length, S = s.points[0], E = s.points[n-1], M = s.points[Math.floor(n/2)];
+  const c = dist(S,E); if(c < 1e-6) return null;
+  const u = [(E[0]-S[0])/c, (E[1]-S[1])/c], nrm = [-u[1], u[0]], Mc = [(S[0]+E[0])/2, (S[1]+E[1])/2];
+  const circ = circleFrom3Points(S, M, E); if(!circ) return null;
+  const side = Math.sign((M[0]-Mc[0])*nrm[0] + (M[1]-Mc[1])*nrm[1]) || 1;
+  const h = (circ.center[0]-Mc[0])*nrm[0] + (circ.center[1]-Mc[1])*nrm[1] + side*circ.r;
+  return {S, E, c, u, nrm, Mc, h, r:circ.r, major: Math.abs(h) > c/2};
+}
+function arcRadiusFromBulge(c, h){ return (c*c/4 + h*h) / (2*Math.abs(h)); }
+function arcBulgeFromRadius(c, r, major, sign){ r = Math.max(r, c/2); const k = Math.sqrt(Math.max(0, r*r - c*c/4)); return (sign||1) * (major ? r + k : r - k); }
+// Ricostruisce l'arco con la freccia h: le estremità restano ferme (e unite alle linee a cui sono collegate)
+function setArcBulge(s, h){
+  const g = arcGeometry(s); if(!g) return false;
+  if(Math.abs(h) < 0.02) h = (Math.sign(h)||Math.sign(g.h)||1) * 0.02; // mai del tutto dritto: resterebbe un segmento
+  const T = [g.Mc[0] + g.nrm[0]*h, g.Mc[1] + g.nrm[1]*h];
+  const res = arcPolyline(g.S, g.E, T); if(!res) return false;
+  const n = s.points.length, det0 = isPtDetached(s, 0), detL = isPtDetached(s, n-1);
+  s.points = res.pts; s.smooth = s.points.map(()=>0); delete s.detached;
+  if(det0) setPtDetached(s, 0, true);
+  if(detL) setPtDetached(s, s.points.length-1, true);
+  return true;
 }
 function arcInfo(s){
   const n = s.points.length;
@@ -13082,6 +13188,32 @@ function renderGeometrySection(host, s){
       const box = document.createElement('div'); box.className='hint';
       box.textContent = tpl('Arco — raggio {r}, lunghezza {len}. Trascina le estremità per modificarlo: resta un arco e si aggancia col magnete agli altri punti.', {r: info.r ? fmtUnit(info.r) : '—', len: fmtUnit(info.len)});
       host.appendChild(box);
+      const g = arcGeometry(s);
+      if(g){
+        const f = document.createElement('div'); f.className='field'; f.style.marginTop='8px';
+        f.innerHTML = `<label>${translate('Raggio')} (${unitLabel()})</label>`;
+        const row = document.createElement('div'); row.style.cssText='display:flex;gap:6px;align-items:center;flex-wrap:wrap;';
+        const inp = document.createElement('input'); inp.type='number'; inp.step='0.1'; inp.style.width='90px';
+        inp.value = Math.round(mmToUnit(g.r)*100)/100; inp.min = Math.round(mmToUnit(g.c/2)*100)/100;
+        inp.onchange = ()=>{
+          const v = unitToMm(parseFloat(inp.value)); if(!(v>0)) return;
+          if(v < g.c/2 - 1e-6) showToast(tpl('Il raggio minimo per queste estremità è {r} (mezza circonferenza).', {r: fmtUnit(g.c/2)}), false);
+          setArcBulge(s, arcBulgeFromRadius(g.c, v, g.major, Math.sign(g.h))); pushHistory(); renderAll();
+        };
+        const inv = document.createElement('button'); inv.className='btn'; inv.style.cssText='width:auto;margin:0;';
+        inv.textContent = translate('⇅ Inverti'); inv.title = translate('Porta la curva dall\'altra parte della corda, con lo stesso raggio');
+        inv.onclick = ()=>{ setArcBulge(s, -g.h); pushHistory(); renderAll(); };
+        const maj = document.createElement('button'); maj.className='btn'; maj.style.cssText='width:auto;margin:0;';
+        maj.textContent = g.major ? translate('Arco corto') : translate('Arco lungo');
+        maj.title = translate('Con lo stesso raggio e le stesse estremità ci sono due archi: quello corto e quello lungo');
+        maj.onclick = ()=>{ setArcBulge(s, arcBulgeFromRadius(g.c, Math.max(g.r, g.c/2+0.01), !g.major, Math.sign(g.h))); pushHistory(); renderAll(); };
+        row.append(inp, inv, maj);
+        f.appendChild(row);
+        const hn = document.createElement('div'); hn.className='hint'; hn.style.marginTop='4px';
+        hn.textContent = translate('Oppure trascina il rombo al centro dell\'arco: verso l\'esterno si incurva di più, verso la corda si appiattisce, oltre la corda si ribalta. Shift: raggio a millimetri interi.');
+        f.appendChild(hn);
+        host.appendChild(f);
+      }
       const ends = [[0, translate('Inizio')], [n-1, translate('Fine')]];
       ends.forEach(([ix, lbl])=>{
         const b = document.createElement('div'); b.className='ptblock';
