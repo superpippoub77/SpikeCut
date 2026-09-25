@@ -309,6 +309,11 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   stesso ruolo e livello vengono fuse in un unico percorso, e una linea che
   si richiude su se stessa diventa un percorso chiuso. Le catene (un punto
   sia di partenza sia di arrivo) vengono segnalate e bloccate.
+- **Gruppi**: Ctrl+G raggruppa la selezione, Ctrl+Shift+G separa (anche dal
+  pannello Proprietà e dal tasto destro). Un clic su un membro seleziona tutto
+  il gruppo, Ctrl+clic un solo elemento; rettangolo e lazo prendono i gruppi
+  interi; incolla, duplica e simmetria creano gruppi nuovi. Il gruppo è il
+  campo `groupId` delle forme, salvato con il progetto.
 - **Guide di allineamento**: spostando un oggetto (o una selezione), i suoi
   bordi e il suo centro vengono confrontati con quelli degli altri oggetti e
   del foglio; quando si allineano compare una linea guida (continua per i
