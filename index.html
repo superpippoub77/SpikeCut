@@ -344,6 +344,8 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   align-items:center; justify-content:center; z-index:200;
 }
 .modal-overlay.open{display:flex;}
+.libitem-path{ font-size:11px; color:var(--ink-dim); margin-top:2px; cursor:pointer; }
+.libitem-path:hover{ text-decoration:underline; color:var(--brass); }
 #vertexBar{ position:fixed; z-index:120; display:none; gap:6px; align-items:center; background:var(--bg-1); border:1px solid var(--line); border-radius:8px; padding:4px 6px; box-shadow:0 4px 14px rgba(0,0,0,.35); }
 #vertexBar .btn{ width:auto; margin:0; padding:3px 9px; font-size:12px; }
 #vertexBar .vb-note{ font-size:11.5px; color:var(--ink-dim); white-space:nowrap; }
@@ -398,6 +400,9 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
 .seq-item{ display:flex; align-items:center; gap:6px; font-size:12px; padding:4px 6px; border-radius:6px; margin:2px 0; background:rgba(128,128,128,.08); }
 .seq-item:hover{ background:rgba(53,114,214,.16); }
 .seq-item.seq-unused{ opacity:.6; font-style:italic; }
+.seq-item.active{ background:rgba(255,159,10,.25); outline:2px solid #ff9f0a; }
+#seqModal{ background:transparent; pointer-events:none; justify-content:flex-end; align-items:flex-start; z-index:230; }
+#seqModal .modal-box{ pointer-events:auto; width:460px !important; margin:64px 16px 0 0; box-shadow:0 10px 36px rgba(0,0,0,.55); }
 .seq-item.dragging, .seq-step.dragging{ opacity:.45; }
 .seq-grow{ flex:1; }
 .seq-head .iconbtn, .seq-item .iconbtn{ padding:1px 6px; font-size:11px; }
@@ -418,6 +423,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
   display:flex; flex-direction:column; overflow:hidden;
 }
 .modal-head{
+  cursor:move; user-select:none;
   display:flex; align-items:center; justify-content:space-between;
   padding:12px 14px; border-bottom:1px solid var(--line);
 }
@@ -678,7 +684,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.23.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.25.1</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -975,6 +981,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
     <div class="modal-body" style="display:flex;flex-direction:column;flex:1;padding:0;overflow:hidden;">
       <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--line-soft);flex-shrink:0;">
         <button class="btn" id="libNewFolderBtn" style="width:auto;margin:0;">📁+ Nuova cartella</button>
+        <input type="search" id="libSearch" placeholder="🔍 Cerca in tutta la libreria (nome, cartella, autore)…" autocomplete="off" style="flex:1;min-width:120px;margin:0;">
         <div id="libOpenAllWrap"></div>
       </div>
       <div style="display:flex;flex:1;min-height:0;">
@@ -2149,6 +2156,16 @@ const I18N = {
     "Individuate {c} linee di taglio e {f} pieghe ({r} frammenti scartati, es. testi). Controllale sul disegno e con l'anteprima 3D.": "Detected {c} cut lines and {f} folds ({r} fragments discarded, e.g. text). Check them on the drawing and with the 3D preview.",
     "Impossibile analizzare l'immagine.": "Could not analyze the image.",
     "Ogni tratto di piega tra due pannelli è una voce a sé: spostandone uno, la linea viene divisa automaticamente nei suoi tratti. Le pieghe si chiudono passo dopo passo, dall'alto dell'elenco verso il basso. Trascina una piega su un altro passo per spostarla, o nello spazio tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo tutto (o su un altro passo per unirli). In alternativa usa le frecce. Passando sopra una piega la vedi evidenziata sul disegno.": "Each fold segment between two panels is a separate item: moving one splits the line into its segments automatically. The folds close step by step, from the top of the list downwards. Drag a fold onto another step to move it, or into the space between two steps to create a new one; drag a step’s header to move it as a whole (or onto another step to merge them). Alternatively use the arrows. Hovering over a fold highlights it on the drawing.",
+    "Questa piega non è usata nel 3D: non divide due pannelli (vedi il controllo del disegno).": "This fold is not used in 3D: it doesn’t separate two panels (see the drawing check).",
+    "🔍 Cerca in tutta la libreria (nome, cartella, autore)…": "🔍 Search the whole library (name, folder, author)…",
+    "Vai alla cartella": "Go to the folder",
+    "Libreria": "Library",
+    "Libreria comune": "Shared library",
+    "Ricerca in tutta la libreria: {n} risultati": "Search in the whole library: {n} results",
+    "Annulla ricerca": "Cancel search",
+    "Nessun progetto o cartella corrisponde alla ricerca. Prova con meno parole o con parte del nome.": "No project or folder matches the search. Try fewer words or part of the name.",
+    "di {name}": "by {name}",
+    "L'accesso è scaduto: accedi di nuovo per usare la libreria.": "Your session has expired: log in again to use the library.",
   },
   de: {
     "1 cm": "1 cm",
@@ -2975,6 +2992,16 @@ const I18N = {
     "Individuate {c} linee di taglio e {f} pieghe ({r} frammenti scartati, es. testi). Controllale sul disegno e con l'anteprima 3D.": "{c} Schnittlinien und {f} Falze erkannt ({r} Fragmente verworfen, z.B. Texte). Prüfe sie in der Zeichnung und mit der 3D-Vorschau.",
     "Impossibile analizzare l'immagine.": "Das Bild konnte nicht analysiert werden.",
     "Ogni tratto di piega tra due pannelli è una voce a sé: spostandone uno, la linea viene divisa automaticamente nei suoi tratti. Le pieghe si chiudono passo dopo passo, dall'alto dell'elenco verso il basso. Trascina una piega su un altro passo per spostarla, o nello spazio tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo tutto (o su un altro passo per unirli). In alternativa usa le frecce. Passando sopra una piega la vedi evidenziata sul disegno.": "Jeder Falzabschnitt zwischen zwei Feldern ist ein eigener Eintrag: Verschiebst du einen, wird die Linie automatisch in ihre Abschnitte geteilt. Die Falze schließen sich Schritt für Schritt, von oben in der Liste nach unten. Ziehe einen Falz auf einen anderen Schritt, um ihn zu verschieben, oder in den Raum zwischen zwei Schritten, um einen neuen zu erstellen; ziehe die Kopfzeile eines Schritts, um ihn ganz zu verschieben (oder auf einen anderen Schritt, um sie zu vereinen). Alternativ die Pfeile verwenden. Beim Überfahren eines Falzes wird er in der Zeichnung hervorgehoben.",
+    "Questa piega non è usata nel 3D: non divide due pannelli (vedi il controllo del disegno).": "Dieser Falz wird im 3D nicht verwendet: Er trennt keine zwei Felder (siehe Zeichnungsprüfung).",
+    "🔍 Cerca in tutta la libreria (nome, cartella, autore)…": "🔍 In der ganzen Bibliothek suchen (Name, Ordner, Autor)…",
+    "Vai alla cartella": "Zum Ordner",
+    "Libreria": "Bibliothek",
+    "Libreria comune": "Gemeinsame Bibliothek",
+    "Ricerca in tutta la libreria: {n} risultati": "Suche in der ganzen Bibliothek: {n} Ergebnisse",
+    "Annulla ricerca": "Suche abbrechen",
+    "Nessun progetto o cartella corrisponde alla ricerca. Prova con meno parole o con parte del nome.": "Kein Projekt oder Ordner entspricht der Suche. Versuche es mit weniger Wörtern oder einem Teil des Namens.",
+    "di {name}": "von {name}",
+    "L'accesso è scaduto: accedi di nuovo per usare la libreria.": "Die Anmeldung ist abgelaufen: Melde dich erneut an, um die Bibliothek zu nutzen.",
   },
   es: {
     "1 cm": "1 cm",
@@ -3801,6 +3828,16 @@ const I18N = {
     "Individuate {c} linee di taglio e {f} pieghe ({r} frammenti scartati, es. testi). Controllale sul disegno e con l'anteprima 3D.": "Detectadas {c} líneas de corte y {f} pliegues ({r} fragmentos descartados, p. ej. textos). Revísalas en el dibujo y con la vista previa 3D.",
     "Impossibile analizzare l'immagine.": "No se pudo analizar la imagen.",
     "Ogni tratto di piega tra due pannelli è una voce a sé: spostandone uno, la linea viene divisa automaticamente nei suoi tratti. Le pieghe si chiudono passo dopo passo, dall'alto dell'elenco verso il basso. Trascina una piega su un altro passo per spostarla, o nello spazio tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo tutto (o su un altro passo per unirli). In alternativa usa le frecce. Passando sopra una piega la vedi evidenziata sul disegno.": "Cada tramo de pliegue entre dos paneles es un elemento aparte: al mover uno, la línea se divide automáticamente en sus tramos. Los pliegues se cierran paso a paso, desde arriba de la lista hacia abajo. Arrastra un pliegue a otro paso para moverlo, o al espacio entre dos pasos para crear uno nuevo; arrastra el encabezado de un paso para moverlo entero (o sobre otro paso para unirlos). También puedes usar las flechas. Al pasar sobre un pliegue se resalta en el dibujo.",
+    "Questa piega non è usata nel 3D: non divide due pannelli (vedi il controllo del disegno).": "Este pliegue no se usa en 3D: no separa dos paneles (ver el control del dibujo).",
+    "🔍 Cerca in tutta la libreria (nome, cartella, autore)…": "🔍 Buscar en toda la biblioteca (nombre, carpeta, autor)…",
+    "Vai alla cartella": "Ir a la carpeta",
+    "Libreria": "Biblioteca",
+    "Libreria comune": "Biblioteca común",
+    "Ricerca in tutta la libreria: {n} risultati": "Búsqueda en toda la biblioteca: {n} resultados",
+    "Annulla ricerca": "Cancelar búsqueda",
+    "Nessun progetto o cartella corrisponde alla ricerca. Prova con meno parole o con parte del nome.": "Ningún proyecto o carpeta coincide con la búsqueda. Prueba con menos palabras o con parte del nombre.",
+    "di {name}": "de {name}",
+    "L'accesso è scaduto: accedi di nuovo per usare la libreria.": "La sesión ha caducado: vuelve a acceder para usar la biblioteca.",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -4627,6 +4664,16 @@ const I18N = {
     "Individuate {c} linee di taglio e {f} pieghe ({r} frammenti scartati, es. testi). Controllale sul disegno e con l'anteprima 3D.": "识别出 {c} 条切割线和 {f} 条折线（舍弃 {r} 个碎片，如文字）。请在图纸和3D预览中检查。",
     "Impossibile analizzare l'immagine.": "无法分析图像。",
     "Ogni tratto di piega tra due pannelli è una voce a sé: spostandone uno, la linea viene divisa automaticamente nei suoi tratti. Le pieghe si chiudono passo dopo passo, dall'alto dell'elenco verso il basso. Trascina una piega su un altro passo per spostarla, o nello spazio tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo tutto (o su un altro passo per unirli). In alternativa usa le frecce. Passando sopra una piega la vedi evidenziata sul disegno.": "两个面板之间的每段折线都是独立条目：移动其中一段时，该线会自动拆分为各段。折线按步骤依次闭合，从列表顶部到底部。将折线拖到另一个步骤上即可移动，拖到两个步骤之间的空白处则新建步骤；拖动步骤标题可整体移动（或拖到另一个步骤上合并）。也可以使用箭头。鼠标悬停在折线上时会在图纸上高亮显示。",
+    "Questa piega non è usata nel 3D: non divide due pannelli (vedi il controllo del disegno).": "此折线在3D中未使用：它没有分隔两个面板（见图纸检查）。",
+    "🔍 Cerca in tutta la libreria (nome, cartella, autore)…": "🔍 在整个库中搜索（名称、文件夹、作者）…",
+    "Vai alla cartella": "转到文件夹",
+    "Libreria": "库",
+    "Libreria comune": "公共库",
+    "Ricerca in tutta la libreria: {n} risultati": "在整个库中搜索：{n} 个结果",
+    "Annulla ricerca": "取消搜索",
+    "Nessun progetto o cartella corrisponde alla ricerca. Prova con meno parole o con parte del nome.": "没有匹配的项目或文件夹。请减少关键词或只输入名称的一部分。",
+    "di {name}": "作者 {name}",
+    "L'accesso è scaduto: accedi di nuovo per usare la libreria.": "登录已过期：请重新登录以使用库。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -5453,6 +5500,16 @@ const I18N = {
     "Individuate {c} linee di taglio e {f} pieghe ({r} frammenti scartati, es. testi). Controllale sul disegno e con l'anteprima 3D.": "{c} lignes de découpe et {f} plis détectés ({r} fragments écartés, ex. textes). Vérifie-les sur le dessin et avec l’aperçu 3D.",
     "Impossibile analizzare l'immagine.": "Impossible d’analyser l’image.",
     "Ogni tratto di piega tra due pannelli è una voce a sé: spostandone uno, la linea viene divisa automaticamente nei suoi tratti. Le pieghe si chiudono passo dopo passo, dall'alto dell'elenco verso il basso. Trascina una piega su un altro passo per spostarla, o nello spazio tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo tutto (o su un altro passo per unirli). In alternativa usa le frecce. Passando sopra una piega la vedi evidenziata sul disegno.": "Chaque segment de pli entre deux panneaux est un élément à part : en en déplaçant un, la ligne est divisée automatiquement en ses segments. Les plis se ferment étape par étape, du haut de la liste vers le bas. Fais glisser un pli sur une autre étape pour le déplacer, ou dans l’espace entre deux étapes pour en créer une nouvelle ; fais glisser l’en-tête d’une étape pour la déplacer entière (ou sur une autre étape pour les fusionner). Tu peux aussi utiliser les flèches. En survolant un pli, tu le vois mis en évidence sur le dessin.",
+    "Questa piega non è usata nel 3D: non divide due pannelli (vedi il controllo del disegno).": "Ce pli n’est pas utilisé en 3D : il ne sépare pas deux panneaux (voir le contrôle du dessin).",
+    "🔍 Cerca in tutta la libreria (nome, cartella, autore)…": "🔍 Chercher dans toute la bibliothèque (nom, dossier, auteur)…",
+    "Vai alla cartella": "Aller au dossier",
+    "Libreria": "Bibliothèque",
+    "Libreria comune": "Bibliothèque commune",
+    "Ricerca in tutta la libreria: {n} risultati": "Recherche dans toute la bibliothèque : {n} résultats",
+    "Annulla ricerca": "Annuler la recherche",
+    "Nessun progetto o cartella corrisponde alla ricerca. Prova con meno parole o con parte del nome.": "Aucun projet ou dossier ne correspond à la recherche. Essaie avec moins de mots ou une partie du nom.",
+    "di {name}": "de {name}",
+    "L'accesso è scaduto: accedi di nuovo per usare la libreria.": "La session a expiré : reconnecte-toi pour utiliser la bibliothèque.",
   },
 };
 let currentLang = 'it';
@@ -5473,33 +5530,41 @@ function tpl(str, vars){
 // e testo diretto degli elementi "foglia" (senza figli-elemento). Il testo
 // originale (italiano) resta sempre in un data-attribute, quindi cambiare
 // lingua più volte non perde né accumula traduzioni.
+// Testo di riferimento per la traduzione di un elemento: se nel frattempo il programma ha scritto un testo
+// nuovo (per esempio il nome dell'utente al posto di "Accedi"), quello diventa il nuovo riferimento
+// invece di essere sovrascritto con il testo iniziale.
+function i18nSource(elx, key, current){
+  const orig = elx.dataset[key], last = elx.dataset[key+'Last'];
+  if(orig==null || (current!==orig && current!==last && current!==translate(orig))) elx.dataset[key] = current;
+  return elx.dataset[key];
+}
 function applyI18n(root){
   root = root || document.body;
   root.querySelectorAll('[title]').forEach(elx=>{
-    if(elx.dataset.i18nOrigTitle==null) elx.dataset.i18nOrigTitle = elx.getAttribute('title');
-    elx.setAttribute('title', translate(elx.dataset.i18nOrigTitle));
+    const t = translate(i18nSource(elx, 'i18nOrigTitle', elx.getAttribute('title')));
+    elx.setAttribute('title', t); elx.dataset.i18nOrigTitleLast = t;
   });
   root.querySelectorAll('[placeholder]').forEach(elx=>{
-    if(elx.dataset.i18nOrigPh==null) elx.dataset.i18nOrigPh = elx.getAttribute('placeholder');
-    elx.setAttribute('placeholder', translate(elx.dataset.i18nOrigPh));
+    const t = translate(i18nSource(elx, 'i18nOrigPh', elx.getAttribute('placeholder')));
+    elx.setAttribute('placeholder', t); elx.dataset.i18nOrigPhLast = t;
   });
   root.querySelectorAll('optgroup[label]').forEach(elx=>{
-    if(elx.dataset.i18nOrigLabel==null) elx.dataset.i18nOrigLabel = elx.getAttribute('label');
-    elx.setAttribute('label', translate(elx.dataset.i18nOrigLabel));
+    const t = translate(i18nSource(elx, 'i18nOrigLabel', elx.getAttribute('label')));
+    elx.setAttribute('label', t); elx.dataset.i18nOrigLabelLast = t;
   });
   (function walk(node){
     Array.from(node.children||[]).forEach(child=>{
       if(child.tagName==='SELECT'){
         Array.from(child.options||[]).forEach(opt=>{
-          if(opt.dataset.i18nOrigText==null) opt.dataset.i18nOrigText = opt.textContent;
-          opt.textContent = translate(opt.dataset.i18nOrigText);
+          const t = translate(i18nSource(opt, 'i18nOrigText', opt.textContent));
+          opt.textContent = t; opt.dataset.i18nOrigTextLast = t;
         });
         return;
       }
       if(child.tagName==='INPUT' || child.tagName==='TEXTAREA') return;
       if(child.children.length===0 && child.textContent.trim()){
-        if(child.dataset.i18nOrigText==null) child.dataset.i18nOrigText = child.textContent;
-        child.textContent = translate(child.dataset.i18nOrigText);
+        const t = translate(i18nSource(child, 'i18nOrigText', child.textContent));
+        child.textContent = t; child.dataset.i18nOrigTextLast = t;
       } else {
         walk(child);
       }
@@ -7132,13 +7197,16 @@ function foldModelAt(model, frac){
     T[fi] = tfCompose(T[pf], R);
   });
   const unreached = new Set(model.unreached || []);
-  return model.faces.map((f,fi)=>({
+  const res = model.faces.map((f,fi)=>({
+    fi,
     flat: f.nodes.map(v=>model.nodes[v]), tris: f.tris || [],
     unreached: unreached.has(fi),
     pts: f.nodes.map(v=>tfApply(T[fi], model.flat3(v))),
     normal: (()=>{ const m=T[fi].m; return [m[2], m[5], m[8]]; })(),
     isRoot: fi===model.root
   }));
+  res.T = T; // posizione di ogni pannello: serve per disegnare le cerniere evidenziate
+  return res;
 }
 
 
@@ -7831,6 +7899,38 @@ function renderFold3D(){
     }
     ctx.strokeStyle = 'rgba(30,30,30,0.85)'; ctx.lineWidth = 1; ctx.stroke();
   });
+  renderFold3DHighlight(ctx, faces, rot, proj, C);
+}
+// Tratto di piega scelto nella sequenza: cerniera in arancione e pannello che vi si piega colorato,
+// disegnati sopra a tutto perché si vedano anche quando sono dietro ad altri pannelli
+function renderFold3DHighlight(ctx, faces, rot, proj, C){
+  const hl = fold3d.highlight, model = fold3d.model;
+  if(!hl || !model || !faces.T) return;
+  const onPiece = h=>{
+    if(!hl.a) return true;
+    const m = [(model.nodes[h.i][0]+model.nodes[h.j][0])/2, (model.nodes[h.i][1]+model.nodes[h.j][1])/2];
+    const a = hl.a, b = hl.b, dx=b[0]-a[0], dy=b[1]-a[1], l2=dx*dx+dy*dy;
+    const t = l2 ? Math.max(0, Math.min(1, ((m[0]-a[0])*dx + (m[1]-a[1])*dy)/l2)) : 0;
+    return Math.hypot(a[0]+dx*t-m[0], a[1]+dy*t-m[1]) < 0.5;
+  };
+  const hs = model.hinges.filter(h=> h.fold && h.fold.id===hl.id && onPiece(h));
+  if(!hs.length) return;
+  const P = v=> proj(rot([v[0]-C[0], v[1]-C[1], v[2]-C[2]]));
+  // il pannello che si piega su questa cerniera (il "figlio" nell'albero di piegatura)
+  model.order.forEach(fi=>{
+    const ph = model.parentHinge[fi];
+    if(!ph || !hs.some(h=> h===ph || (h.i===ph.i && h.j===ph.j) || (h.i===ph.j && h.j===ph.i))) return;
+    const f = faces[fi]; if(!f) return;
+    ctx.fillStyle = 'rgba(255,159,10,0.38)';
+    ctx.beginPath(); f.pts.forEach((v,k)=>{ const q = P(v); if(k) ctx.lineTo(q[0],q[1]); else ctx.moveTo(q[0],q[1]); }); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = '#ff9f0a'; ctx.lineWidth = 2; ctx.stroke();
+  });
+  hs.forEach(h=>{
+    const a = P(tfApply(faces.T[h.f1], model.flat3(h.i))), b = P(tfApply(faces.T[h.f1], model.flat3(h.j)));
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = 'rgba(255,159,10,0.35)'; ctx.lineWidth = 12; ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke();
+    ctx.strokeStyle = '#ff9f0a'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke();
+  });
 }
 
 
@@ -8107,6 +8207,11 @@ function minimizeModal(id){
 }
 function restoreModal(id){
   const ov = document.getElementById(id);
+  if(PRIVATE_MODALS.includes(id) && !currentUser){ // la libreria non si riapre senza accesso
+    delete ov.dataset.minimized; ov.classList.remove('open'); renderModalDock();
+    openAccountModal('login'); showToast('Accedi al tuo account per usare la libreria.', true);
+    return;
+  }
   delete ov.dataset.minimized;
   ov.parentNode.appendChild(ov); ov.classList.add('open');
   renderModalDock();
@@ -8729,13 +8834,30 @@ function foldEntryLabel(en){
   if(en.unused) out += ' · ' + translate('(non usata nel 3D)');
   return out;
 }
+// Voce scelta nella sequenza: selezionata sul disegno, evidenziata nel 3D, simulazione portata alla fine del suo passo
+function seqFocusEntry(en, stepIndex, rowEl){
+  const s = en.shape;
+  state.selection = new Set([s.id]);
+  fold3d.highlight = {id:s.id, a:en.a, b:en.b};
+  document.querySelectorAll('#seqList .seq-item.active').forEach(x=>x.classList.remove('active'));
+  if(rowEl) rowEl.classList.add('active');
+  const f3 = document.getElementById('fold3dModal');
+  if(!f3.classList.contains('open')) openFold3D();
+  else if(f3.dataset.minimized==='1') restoreModal('fold3dModal');
+  stopFold3D();
+  const sq = document.getElementById('seqModal'); sq.parentNode.appendChild(sq); // la sequenza resta sopra al 3D
+  const K = fold3d.model ? Math.max(1, foldSteps(fold3d.model).length) : 1;
+  setFold3DFrac(Math.min(1, (stepIndex+1)/K));
+  renderAll();
+  if(en.unused) showToast('Questa piega non è usata nel 3D: non divide due pannelli (vedi il controllo del disegno).', false);
+}
 function openFoldSequence(){
   if(!allFoldShapes().length){ showToast('Nel disegno non ci sono pieghe.', true); return; }
   openModal('seqModal');
   renderSeq();
 }
 function closeFoldSequence(){
-  state.seqHover = null;
+  state.seqHover = null; fold3d.highlight = null;
   const ov = document.getElementById('seqModal'); ov.classList.remove('open'); delete ov.dataset.minimized;
   renderModalDock(); renderCanvasOnly();
   const f3 = document.getElementById('fold3dModal');
@@ -8785,7 +8907,8 @@ function renderSeq(){
       const hov = {id:s.id, a:en.a, b:en.b};
       it.addEventListener('mouseenter', ()=>{ state.seqHover = hov; renderCanvasOnly(); });
       it.addEventListener('mouseleave', ()=>{ if(state.seqHover===hov){ state.seqHover = null; renderCanvasOnly(); } });
-      it.addEventListener('click', ()=>{ state.selection = new Set([s.id]); renderAll(); });
+      it.addEventListener('click', ()=> seqFocusEntry(en, k, it));
+      if(fold3d.highlight && fold3d.highlight.id===s.id && ((!fold3d.highlight.a && !en.a) || (fold3d.highlight.a && en.a && dist(fold3d.highlight.a, en.a)<1e-6))) it.classList.add('active');
       box.appendChild(it);
     });
     host.appendChild(box);
@@ -8963,7 +9086,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.23.0';
+const GUIDE_VERSION = '2.25.1';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -9151,7 +9274,7 @@ html:`<p>Selezionando una linea con ruolo Piega, il pannello Proprietà permette
 html:`<p>Ogni piega ha un numero di <b>passo</b>: nella simulazione 3D si chiudono prima le pieghe con il numero più basso; quelle con lo stesso numero si chiudono insieme. Così una linguetta non si chiude prima delle alette che deve coprire.</p>
 <ul><li><b>A mano</b>: pannello Proprietà → "Ordine di piegatura", con − e +, anche su più pieghe insieme.</li>
 <li><b>Ordine automatico</b> ("Ordina" nel pannello, o "Applica e simula" nell'anteprima 3D): dal pannello principale verso l'esterno, da sinistra a destra, da destra a sinistra, dall'alto, dal basso, dal centro, oppure tutte insieme. Le pieghe alla stessa posizione (entro 2 mm) finiscono nello stesso passo.</li>
-<li><b>Sequenza di piegatura</b> (menu Strumenti, "📋 Sequenza…" nel 3D, o nel pannello): elenco dei passi, <b>pezzo per pezzo</b>: ogni tratto di piega tra due pannelli è una voce a sé ("tratto 2 di 3"), anche quando una sola linea attraversa più pannelli. Spostando un solo tratto, la linea viene divisa automaticamente nei suoi tratti. Le pieghe non usate nel 3D compaiono in grigio. Trascina una piega su un altro passo per spostarla, tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo o unirlo a un altro. Oppure usa le frecce ↑ ↓. Passando col mouse su una piega la vedi evidenziata sul disegno.</li></ul>
+<li><b>Sequenza di piegatura</b> (menu Strumenti, "📋 Sequenza…" nel 3D, o nel pannello): elenco dei passi, <b>pezzo per pezzo</b>: ogni tratto di piega tra due pannelli è una voce a sé ("tratto 2 di 3"), anche quando una sola linea attraversa più pannelli. Spostando un solo tratto, la linea viene divisa automaticamente nei suoi tratti. Le pieghe non usate nel 3D compaiono in grigio. <b>Un clic su una voce</b> la evidenzia nell'anteprima 3D (che si apre da sola, se serve): la cerniera diventa arancione, il pannello che vi si piega viene colorato e la simulazione si porta alla fine del passo di quella voce. La finestra della sequenza non oscura il resto e si apre sul lato destro, così vedi insieme elenco, 3D e disegno. Trascina una piega su un altro passo per spostarla, tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo o unirlo a un altro. Oppure usa le frecce ↑ ↓. Passando col mouse su una piega la vedi evidenziata sul disegno.</li></ul>
 <p>Sul disegno il passo compare accanto all'angolo ("90° · passo 2"), nel 3D accanto al cursore ("Passo 2 di 3"). Ctrl+Z annulla ogni modifica.</p>` },
 
 { id:'genera-scatola', cat:'Fustella e scatole', title:'Genera scatola', keys:'genera scatola americana rsc astuccio tuck box dimensioni larghezza profondità altezza automatica',
@@ -9219,10 +9342,11 @@ html:`<ul><li><b>Salvataggio automatico</b> nel browser a ogni modifica: riapren
 <li><b>File → Salva / Apri progetto (.json)</b>: un file da scaricare e riaprire quando vuoi. Da File si può anche aprire un SVG o un progetto da <b>Google Drive</b> (se configurato).</li>
 <li><b>☁ Libreria</b>: salvataggio sul server, vedi <a data-topic="libreria">Libreria</a>.</li></ul>` },
 
-{ id:'libreria', cat:'Salvare ed esportare', title:'Account e libreria online', keys:'account accesso registrazione libreria server cartelle condividere privato versioni nuvola password',
-html:`<ul><li><b>Account</b>: registrazione, accesso (anche "ricordami"), recupero della password via email.</li>
+{ id:'libreria', cat:'Salvare ed esportare', title:'Account e libreria online', keys:'account accesso registrazione libreria server cartelle condividere privato versioni nuvola password cercare ricerca trovare file progetto',
+html:`<ul><li><b>Account</b>: registrazione, accesso (anche "ricordami"), recupero della password via email. Il pulsante in alto mostra il tuo nome quando sei collegato, "Accedi" quando non lo sei. Uscendo dall'account (o se l'accesso scade) tutto ciò che era stato scaricato dalla libreria viene cancellato dal browser e le finestre della libreria, delle versioni e del salvataggio si chiudono, anche se erano ridotte a icona. I progetti già aperti nelle schede restano: sono il tuo lavoro in corso.</li>
 <li><b>☁ Libreria</b>: se il progetto è già collegato alla libreria, un clic lo sovrascrive subito; la prima volta chiede nome, cartella e condivisione. File → "Salva in libreria (server)" riapre sempre la finestra completa (per salvare con un altro nome).</li>
 <li><b>Libreria progetti</b> in stile Esplora risorse: cartelle annidate, trascinamento, tasto destro con copia, taglia, incolla, rinomina, elimina.</li>
+<li><b>🔍 Ricerca</b>: la casella in alto nella finestra della libreria cerca in <b>tutte le cartelle</b> insieme, anche nella libreria comune, senza sapere dove si trova il file. Cerca nel nome del progetto, nei nomi delle cartelle e nell'autore dei progetti condivisi; ignora maiuscole e accenti e trova i progetti che contengono tutte le parole scritte (anche solo una parte: "scatol" trova "scatola" e "scatole"). Sotto ogni risultato c'è il suo percorso: un clic porta nella cartella. Esc o "✕ Annulla ricerca" tornano all'elenco normale.</li>
 <li><b>Privato o condiviso</b>: i progetti condivisi sono visibili a tutti gli utenti e compaiono tra i <a data-topic="componenti">componenti</a>; aprendo un progetto altrui e salvandolo si crea una copia tua.</li>
 <li><b>Versioni</b>: ogni salvataggio conserva il precedente (fino a 30); puoi aprire una versione in una scheda o ripristinarla.</li></ul>` },
 
@@ -9241,8 +9365,9 @@ html:`<p>Menu <b>Stampa → ✂ Esporta per Silhouette Cameo (DXF)…</b>. Crea 
 <p>In Studio: File → Apri, seleziona tutto, verifica nel pannello Invia che le linee siano su "Taglio" e controlla le misure prima di tagliare. Il Print &amp; Cut non è supportato.</p>` },
 
 /* ---------------- RIFERIMENTO ---------------- */
-{ id:'finestre', cat:'Riferimento', title:'Finestre riducibili a icona', keys:'finestra ridurre icona minimizzare barra in basso riprendere',
-html:`<p>Le finestre di lavoro hanno il pulsante <b>▁</b> accanto alla ✕: la finestra si riduce nella barra in basso, modifichi il disegno e la riprendi con un clic, com'era rimasta. L'anteprima 3D si ricalcola sul disegno aggiornato. La ✕ nella barra la chiude.</p>` },
+{ id:'finestre', cat:'Riferimento', title:'Finestre: spostarle e ridurle a icona', keys:'finestra spostare trascinare muovere ridurre icona minimizzare barra in basso riprendere',
+html:`<p>Tutte le finestre si <b>spostano</b> trascinandone l'intestazione (la barra con il titolo); un doppio clic sull'intestazione la rimette nella posizione iniziale.</p>
+<p>Le finestre di lavoro hanno anche il pulsante <b>▁</b> accanto alla ✕: la finestra si riduce nella barra in basso, modifichi il disegno e la riprendi con un clic, com'era rimasta. L'anteprima 3D si ricalcola sul disegno aggiornato. La ✕ nella barra la chiude.</p>` },
 
 { id:'scorciatoie', cat:'Riferimento', title:'Scorciatoie da tastiera', keys:'tasti tastiera scorciatoie shortcut comandi rapidi',
 html:`<table class="guide-table">
@@ -9268,6 +9393,9 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.25.1</b> — Corretto il pulsante dell'account, che mostrava sempre "Accedi" anche da collegati; all'uscita dall'account i dati della <a data-topic="libreria">libreria</a> vengono cancellati dal browser.</li>
+<li><b>2.25</b> — <a data-topic="libreria">Ricerca nella libreria</a>, in tutte le cartelle.</li>
+<li><b>2.24</b> — Nella <a data-topic="ordine">sequenza di piegatura</a> il clic su una voce la evidenzia nel 3D; <a data-topic="finestre">finestre trascinabili</a>; la sequenza non oscura più il disegno.</li>
 <li><b>2.23</b> — <a data-topic="dividi">Dividi in segmenti</a>; <a data-topic="scollega">Stacca</a> sul punto selezionato, con riaggancio sulla nuova unione; <a data-topic="ordine">sequenza di piegatura</a> pezzo per pezzo; <a data-topic="immagini">individuazione automatica</a> di taglio e pieghe dalle immagini.</li>
 <li><b>2.22</b> — <a data-topic="importa-svg">Importazione da PDF</a>, con scelta del ruolo per ogni gruppo di linee.</li>
 <li><b>2.21</b> — Questa guida, con ricerca e argomenti (F1 o ? in alto).</li>
@@ -10857,6 +10985,14 @@ async function apiFetch(path, opts){
   }
   let data = null;
   try{ data = await res.json(); }catch(e){ /* risposta non JSON */ }
+  if(res.status===401 && token && path!=='login.php' && path!=='logout.php'){
+    // accesso scaduto o revocato: come un'uscita dall'account, niente dati privati a video
+    setAuthToken(null);
+    if(currentUser){
+      currentUser = null; clearPrivateLibraryData(); updateAccountUI();
+      showToast('L\'accesso è scaduto: accedi di nuovo per usare la libreria.', true);
+    }
+  }
   if(!res.ok || !data || data.ok===false){
     throw new Error((data && data.error) ? data.error : ('Errore del server (' + res.status + ').'));
   }
@@ -10972,9 +11108,11 @@ let libCacheFolders = [];
 let libCurrentFolderId = null;
 let libClipboard = null; // {mode:'copy'|'cut', type:'project'|'folder', id, name}
 
+let libSearchQuery = '';
 function openLibraryModal(){
   if(!currentUser){ openAccountModal('login'); showToast('Accedi al tuo account per usare la libreria.', true); return; }
   libCurrentFolderId = null;
+  libSearchQuery = ''; const ls = document.getElementById('libSearch'); if(ls) ls.value = '';
   openModal('libraryModal');
   loadLibraryList();
 }
@@ -11009,6 +11147,7 @@ function folderPath(folderId){
 }
 function navigateToFolder(folderId){
   libCurrentFolderId = folderId;
+  if(libSearchQuery){ libSearchQuery = ''; document.getElementById('libSearch').value = ''; } // andando in una cartella la ricerca si chiude
   renderLibraryView();
 }
 function folderOptionsHTML(excludeId){
@@ -11091,10 +11230,16 @@ function renderLibraryView(){
   applyI18n(document.getElementById('libraryModal'));
 }
 function renderLibraryViewInner(){
+  if(!currentUser){ // mai mostrare la libreria senza un utente collegato
+    ['libTree','libBreadcrumb','libOpenAllWrap'].forEach(id=>{ const e=document.getElementById(id); if(e) e.innerHTML=''; });
+    document.getElementById('libList').innerHTML = `<div class="emptystate">${escapeHTML(translate('Accedi al tuo account per usare la libreria.'))}</div>`;
+    return;
+  }
   renderFolderTree();
   const host = document.getElementById('libList');
   const crumb = document.getElementById('libBreadcrumb');
   host.innerHTML = '';
+  if(libSearchQuery.trim()){ renderLibrarySearch(host, crumb); return; }
 
   // breadcrumb: Libreria > cartella > sottocartella...
   crumb.innerHTML = '';
@@ -11159,7 +11304,8 @@ function renderLibraryViewInner(){
     host.appendChild(row);
   });
 
-  function renderProjectRow(it){
+  libRenderProjectRow = renderProjectRow;
+  function renderProjectRow(it, pathInfo, terms){
     const row = document.createElement('div'); row.className='libitem-row';
     if(it.mine){
       row.draggable = true;
@@ -11168,8 +11314,14 @@ function renderLibraryViewInner(){
     row.oncontextmenu = (e)=>{ e.preventDefault(); e.stopPropagation(); showContextMenu(e.clientX, e.clientY, libProjectContextItems(it)); };
     const nameDiv = document.createElement('div'); nameDiv.className='libitem-name';
     const ownerNote = it.mine ? '' : ` <span style="color:var(--ink-dim);">${tpl('· di {name}', {name: escapeHTML(it.ownerName||'?')})}</span>`;
-    nameDiv.innerHTML = `📄 ${escapeHTML(it.name)}${it.shared?' 🌐':''}${ownerNote}`;
+    nameDiv.innerHTML = `📄 ${terms ? libHighlight(it.name, terms) : escapeHTML(it.name)}${it.shared?' 🌐':''}${ownerNote}`;
     nameDiv.onclick = ()=> loadFromLibrary(it.id);
+    if(pathInfo){ // nei risultati della ricerca: dove si trova, cliccabile
+      const pth = document.createElement('div'); pth.className = 'libitem-path';
+      pth.innerHTML = pathInfo.html; pth.title = translate('Vai alla cartella');
+      if(pathInfo.folder!==undefined) pth.onclick = (e)=>{ e.stopPropagation(); navigateToFolder(pathInfo.folder); };
+      nameDiv.appendChild(pth);
+    }
     row.appendChild(nameDiv);
 
     const dateDiv = document.createElement('div'); dateDiv.className='libitem-date';
@@ -11201,6 +11353,72 @@ function renderLibraryViewInner(){
     sharedItems.forEach(renderProjectRow);
   }
 }
+
+/* ---------- ricerca in tutta la libreria ---------- */
+let libRenderProjectRow = null;
+const libNorm = s=> String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+function libHighlight(text, terms){
+  const t = String(text), n = libNorm(t), hits = [];
+  terms.forEach(w=>{ let p = n.indexOf(w); while(p>=0){ hits.push([p, p+w.length]); p = n.indexOf(w, p+w.length); } });
+  if(!hits.length) return escapeHTML(t);
+  hits.sort((a,b)=>a[0]-b[0]);
+  let out = '', last = 0;
+  hits.forEach(([s,e])=>{ if(s<last) return; out += escapeHTML(t.slice(last,s)) + '<mark class="guide-hit">' + escapeHTML(t.slice(s,e)) + '</mark>'; last = e; });
+  return out + escapeHTML(t.slice(last));
+}
+function libPathText(folderId){ return ['📚 ' + translate('Libreria')].concat(folderPath(folderId).map(f=>f.name)).join(' / '); }
+function renderLibrarySearch(host, crumb){
+  const terms = libNorm(libSearchQuery).split(/\s+/).filter(Boolean);
+  const matchAll = hay=> terms.every(w=> hay.includes(w));
+  // cartelle
+  const folders = libCacheFolders.map(f=>{
+    const name = libNorm(f.name), path = libNorm(libPathText(f.parentId||null));
+    if(!matchAll(name + ' ' + path)) return null;
+    return {f, score: terms.filter(w=>name.includes(w)).length*10};
+  }).filter(Boolean).sort((a,b)=> b.score-a.score || a.f.name.localeCompare(b.f.name));
+  // progetti (i miei in tutte le cartelle, e quelli condivisi)
+  const projects = libCacheItems.map(it=>{
+    const name = libNorm(it.name), path = it.mine ? libNorm(libPathText(it.folderId||null)) : libNorm(translate('Libreria comune')), owner = libNorm(it.ownerName||'');
+    if(!matchAll(name + ' ' + path + ' ' + owner)) return null;
+    const score = terms.filter(w=>name.includes(w)).length*10 + (name.startsWith(terms[0]) ? 5 : 0);
+    return {it, score};
+  }).filter(Boolean).sort((a,b)=> b.score-a.score || (b.it.updated||'').localeCompare(a.it.updated||''));
+  crumb.innerHTML = '';
+  const t = document.createElement('span');
+  t.textContent = tpl('Ricerca in tutta la libreria: {n} risultati', {n: folders.length + projects.length});
+  crumb.appendChild(t);
+  const x = document.createElement('a'); x.href = '#'; x.textContent = '  ✕ ' + translate('Annulla ricerca'); x.style.marginLeft = '10px';
+  x.onclick = (e)=>{ e.preventDefault(); libSearchQuery = ''; document.getElementById('libSearch').value = ''; renderLibraryView(); };
+  crumb.appendChild(x);
+  document.getElementById('libOpenAllWrap').innerHTML = '';
+  if(!folders.length && !projects.length){
+    host.innerHTML = `<div class="emptystate">${escapeHTML(translate('Nessun progetto o cartella corrisponde alla ricerca. Prova con meno parole o con parte del nome.'))}</div>`;
+    return;
+  }
+  const head = document.createElement('div'); head.className='libitem-row libitem-head';
+  head.innerHTML = '<div>Nome</div><div>Ultima modifica</div><div style="text-align:right;">Dimensione</div><div></div>';
+  host.appendChild(head);
+  folders.forEach(({f})=>{
+    const row = document.createElement('div'); row.className='libitem-row';
+    const nameDiv = document.createElement('div'); nameDiv.className='libitem-name';
+    nameDiv.innerHTML = `📁 ${libHighlight(f.name, terms)}<div class="libitem-path">${escapeHTML(libPathText(f.parentId||null))}</div>`;
+    nameDiv.onclick = ()=> navigateToFolder(f.id);
+    row.appendChild(nameDiv); row.appendChild(document.createElement('div')); row.appendChild(document.createElement('div')); row.appendChild(document.createElement('div'));
+    row.oncontextmenu = (e)=>{ e.preventDefault(); e.stopPropagation(); showContextMenu(e.clientX, e.clientY, libFolderContextItems(f)); };
+    host.appendChild(row);
+  });
+  projects.forEach(({it})=>{
+    const info = it.mine ? {html: escapeHTML(libPathText(it.folderId||null)), folder: it.folderId||null}
+                         : {html: escapeHTML(translate('Libreria comune')) + (it.ownerName ? ' · ' + escapeHTML(tpl('di {name}', {name:it.ownerName})) : ''), folder: null};
+    libRenderProjectRow(it, info, terms);
+  });
+}
+
+document.getElementById('libSearch').addEventListener('input', e=>{ libSearchQuery = e.target.value; renderLibraryView(); });
+document.getElementById('libSearch').addEventListener('keydown', e=>{
+  e.stopPropagation(); // i tasti della ricerca non attivano gli strumenti di disegno
+  if(e.key==='Escape'){ e.preventDefault(); libSearchQuery = ''; e.target.value = ''; renderLibraryView(); }
+});
 document.getElementById('libNewFolderBtn').onclick = async ()=>{
   const name = await showPrompt('Nome della nuova cartella');
   if(!name) return;
@@ -11478,6 +11696,31 @@ document.getElementById('pdfImportClose').onclick = ()=> document.getElementById
 setupOverlayClickClose(document.getElementById('pdfImportModal'), ()=> document.getElementById('pdfImportModal').classList.remove('open'));
 document.getElementById('pdfImpPage').onchange = e=> pdfAnalyzePage(parseInt(e.target.value,10));
 document.getElementById('pdfImpApply').onclick = applyPdfImport;
+
+/* ---------- finestre trascinabili dall'intestazione ---------- */
+document.addEventListener('mousedown', e=>{
+  const head = e.target.closest && e.target.closest('.modal-head');
+  if(!head || e.button!==0 || e.target.closest('button, input, select, textarea, a, label')) return;
+  const box = head.closest('.modal-box'); if(!box) return;
+  const r = box.getBoundingClientRect();
+  box.style.position = 'fixed'; box.style.left = r.left + 'px'; box.style.top = r.top + 'px'; box.style.margin = '0';
+  const ox = e.clientX - r.left, oy = e.clientY - r.top;
+  const move = ev=>{
+    const x = Math.min(window.innerWidth - 80, Math.max(80 - r.width, ev.clientX - ox));
+    const y = Math.min(window.innerHeight - 40, Math.max(0, ev.clientY - oy)); // l'intestazione resta sempre raggiungibile
+    box.style.left = x + 'px'; box.style.top = y + 'px';
+  };
+  const up = ()=>{ window.removeEventListener('mousemove', move, true); window.removeEventListener('mouseup', up, true); };
+  window.addEventListener('mousemove', move, true); window.addEventListener('mouseup', up, true);
+  e.preventDefault();
+}, true);
+document.addEventListener('dblclick', e=>{ // doppio clic sull'intestazione: la finestra torna nella posizione iniziale
+  const head = e.target.closest && e.target.closest('.modal-head');
+  if(!head || e.target.closest('button, input, select, textarea, a, label')) return;
+  const box = head.closest('.modal-box'); if(!box) return;
+  box.style.position = ''; box.style.left = ''; box.style.top = ''; box.style.margin = '';
+}, true);
+
 function closeFold3D(){ stopFold3D(); if(state.foldCheck) endFoldCheckOverlay(); document.getElementById('fold3dModal').classList.remove('open'); }
 document.getElementById('fold3dClose').onclick = closeFold3D;
 setupOverlayClickClose(document.getElementById('fold3dModal'), closeFold3D);
@@ -11607,6 +11850,19 @@ async function restoreSpecificVersion(id, file){
    (vedi checkbox nella modale "Salva in libreria").
 ============================================================ */
 let currentUser = null;
+// Finestre che mostrano dati privati della libreria (nomi di progetti e cartelle, versioni)
+const PRIVATE_MODALS = ['libraryModal','versionsModal','saveLibraryModal','saveConflictModal'];
+// Cancella dal browser tutto ciò che è stato scaricato dalla libreria dell'utente e chiude le finestre
+// che lo mostrano (anche se ridotte a icona): va fatto all'uscita, allo scadere dell'accesso e al cambio utente.
+function clearPrivateLibraryData(){
+  libCacheItems = []; libCacheFolders = []; libCurrentFolderId = null; libSearchQuery = ''; libClipboard = null;
+  ['libList','libTree','libBreadcrumb','libOpenAllWrap','versionsList','sharedComponentsList'].forEach(id=>{ const e = document.getElementById(id); if(e) e.innerHTML = ''; });
+  const ls = document.getElementById('libSearch'); if(ls) ls.value = '';
+  const sf = document.getElementById('saveLibFolder'); if(sf) sf.innerHTML = '';
+  const sn = document.getElementById('saveLibName'); if(sn) sn.value = '';
+  PRIVATE_MODALS.forEach(id=>{ const ov = document.getElementById(id); if(!ov) return; ov.classList.remove('open'); delete ov.dataset.minimized; });
+  renderModalDock();
+}
 
 function updateAccountUI(){
   updateAccountUIInner();
@@ -11631,8 +11887,8 @@ async function checkAuthStatus(){
   try{
     const data = await apiFetch('me.php', {method:'GET'});
     currentUser = data.user || null;
-    if(!currentUser) setAuthToken(null); // il token salvato non è (più) valido: lo scarto
-  }catch(err){ currentUser = null; }
+    if(!currentUser){ setAuthToken(null); clearPrivateLibraryData(); } // il token salvato non è (più) valido: lo scarto
+  }catch(err){ currentUser = null; clearPrivateLibraryData(); }
   updateAccountUI();
 }
 function showAccountView(view){
@@ -11677,6 +11933,7 @@ document.getElementById('loginSubmit').onclick = async ()=>{
   try{
     const data = await apiFetch('login.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({identifier, password, remember})});
     setAuthToken(data.token);
+    clearPrivateLibraryData(); // nessun dato di un utente precedente deve restare visibile
     currentUser = data.user; updateAccountUI(); closeAccountModal();
     showToast('Accesso effettuato, ciao ' + currentUser.username + '!', false);
   }catch(err){ errEl.textContent = err.message; errEl.style.display=''; }
@@ -11704,6 +11961,7 @@ document.getElementById('registerSubmit').onclick = async ()=>{
   try{
     const data = await apiFetch('register.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username, email, password})});
     setAuthToken(data.token);
+    clearPrivateLibraryData(); // nessun dato di un utente precedente deve restare visibile
     currentUser = data.user; updateAccountUI(); closeAccountModal();
     showToast('Account creato, benvenuto ' + currentUser.username + '!', false);
   }catch(err){ errEl.textContent = err.message; errEl.style.display=''; }
@@ -11735,7 +11993,7 @@ document.getElementById('resetSubmit').onclick = async ()=>{
 document.getElementById('logoutSubmit').onclick = async ()=>{
   try{ await apiFetch('logout.php', {method:'POST'}); }catch(err){}
   setAuthToken(null);
-  currentUser = null; updateAccountUI(); closeAccountModal();
+  currentUser = null; clearPrivateLibraryData(); updateAccountUI(); closeAccountModal();
   showToast('Sei uscito dal tuo account.', false);
 };
 function checkPasswordResetURLParam(){

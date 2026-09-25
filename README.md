@@ -169,7 +169,10 @@ passi crea un passo nuovo; l'intestazione di un passo lo sposta tutto, o lo
 unisce a un altro passo se rilasciata sopra. L'elenco è **pezzo per pezzo**: ogni tratto
 di piega tra due pannelli è una voce a sé, anche quando una sola linea
 attraversa più pannelli; spostando un solo tratto la linea viene divisa
-automaticamente nei suoi tratti. Le pieghe non usate nel 3D compaiono in grigio. In alternativa le frecce ↑ ↓
+automaticamente nei suoi tratti. Le pieghe non usate nel 3D compaiono in grigio. Un clic su una voce
+la evidenzia nell'anteprima 3D (cerniera arancione, pannello che vi si piega
+colorato, simulazione portata alla fine del suo passo); la finestra della
+sequenza non ha sfondo scuro e si apre sul lato destro. In alternativa le frecce ↑ ↓
 sulle pieghe e sui passi. Passando col mouse su una piega la si vede
 evidenziata sul disegno; "Simula nel 3D" mostra subito il risultato. Ogni
 modifica si annulla con Ctrl+Z.
@@ -331,6 +334,8 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   linee chiuse separate (per la fustella sono tagli interni; se la forma è
   riempita, il foro compare come contorno). Usa la libreria polygon-clipping
   (MIT, inclusa nel file: vedi LICENSE-polygon-clipping.md).
+- **Finestre trascinabili**: tutte le finestre si spostano trascinandone
+  l'intestazione; doppio clic sull'intestazione per rimetterle al loro posto.
 - **Finestre riducibili a icona**: le finestre di lavoro (Unisci punti,
   Anteprima 3D, Genera scatola, Libreria, Cronologia, Salda punti, Stampa…)
   hanno il pulsante ▁ nell'intestazione: la finestra si riduce nella barra
@@ -469,6 +474,17 @@ memoria; un logout esplicito resta comunque efficace da subito, anche
 prima della scadenza naturale del token (vedi LEGGIMI.txt per i dettagli
 e l'avviso importante sull'header "Authorization" su hosting Apache).
 
+### Privacy nel browser
+All'uscita dall'account, allo scadere dell'accesso (il server risponde 401) e
+al cambio di utente, `clearPrivateLibraryData()` cancella dal browser elenco
+di progetti e cartelle, ricerca e appunti della libreria, e chiude (anche se
+ridotte a icona) le finestre libreria, versioni, salvataggio e conflitto di
+salvataggio; queste finestre non si riaprono dalla barra in basso senza
+accesso. Il server, da parte sua, non restituisce mai dati privati senza un
+token valido. Nota: i progetti già aperti nelle schede e il salvataggio
+automatico locale restano nel browser (sono il lavoro in corso): su un
+computer condiviso conviene chiudere le schede prima di uscire.
+
 ### Libreria progetti
 Ogni progetto salvato ha un proprietario. Al momento del salvataggio si
 può scegliere se tenerlo **privato** (visibile solo a chi l'ha creato)
@@ -486,6 +502,17 @@ progetto o un'intera cartella su un'altra per spostarli. È disponibile
 anche un **menu contestuale** (tasto destro) con copia/taglia/incolla,
 rinomina ed elimina — copiare o tagliare una cartella porta con sé tutto
 il suo contenuto, sottocartelle comprese.
+
+### Ricerca nella libreria
+La casella "🔍 Cerca in tutta la libreria" in alto nella finestra della
+libreria cerca in tutte le cartelle insieme (anche nella libreria comune), nel
+nome del progetto, nei nomi delle cartelle e nell'autore dei progetti
+condivisi; ignora maiuscole e accenti e richiede tutte le parole scritte. I
+risultati mostrano prima le cartelle, poi i progetti più pertinenti, ciascuno
+con il percorso (cliccabile per andare nella cartella); aprire, versioni,
+eliminare, tasto destro funzionano come nell'elenco normale. Esc o "✕ Annulla
+ricerca" tornano alla cartella. La ricerca lavora sull'elenco già scaricato
+da list.php, senza richieste aggiuntive al server.
 
 ### Cronologia versioni
 Ogni salvataggio successivo al primo conserva lo stato precedente. Dalla
