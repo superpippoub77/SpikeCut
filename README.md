@@ -31,8 +31,14 @@ disabilitato finché non è servito da un vero server web.
 ## 2. L'editor (index.html)
 
 ### Schermi piccoli e tocco
-Tre fasce di larghezza (media query): fino a 1100 px la barra in alto scorre
-orizzontalmente; fino a 820 px il pannello laterale è un cassetto sopra il
+Barre adattabili (`makePriorityBar`): quando la barra in alto o quella di
+stato non contengono tutti i gruppi, quelli con priorità più bassa escono e
+entrano nel menu "⋯" in fondo alla barra (gli elementi veri vengono spostati,
+non copiati, quindi gestori e stati restano identici); si ricalcola al
+ridimensionamento, al cambio di lingua e di utente. Ordine di uscita nella barra
+in alto: logo (solo nascosto), colore foglio, lingua, unità, formato, nome file,
+account, zoom, nuovo/importa/guida, libreria, salva, annulla/ripeti, Stampa,
+Strumenti, File. Poi le fasce di larghezza (media query): fino a 820 px il pannello laterale è un cassetto sopra il
 foglio (chiuso all'avvio, ✕ per chiuderlo, si richiude toccando il foglio),
 barra di stato scorrevole, finestre contenute nello schermo; fino a 560 px
 finestre a schermo intero, barra strumenti compatta, libreria e guida in
