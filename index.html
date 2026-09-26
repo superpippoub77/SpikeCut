@@ -320,13 +320,16 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 .more-btn{ width:auto !important; padding:0 10px; font-size:17px; font-weight:700; color:var(--ink) !important; background:var(--bg-2) !important; border-color:var(--line) !important; }
 #status .more-btn{ height:20px; font-size:14px; padding:0 8px; }
 .overflow-panel{ position:fixed; display:none; flex-direction:column; gap:2px; background:var(--bg-2); border:1px solid var(--line);
-  border-radius:10px; box-shadow:0 14px 34px rgba(0,0,0,.55); padding:6px; z-index:65; min-width:220px; max-width:min(94vw,440px); max-height:80vh; overflow-y:auto; }
+  border-radius:10px; box-shadow:0 14px 34px rgba(0,0,0,.55); padding:6px; z-index:190; min-width:220px; max-width:min(94vw,440px); max-height:80vh; overflow-y:auto; }
 .overflow-panel.open{ display:flex; }
 .overflow-panel > *{ display:flex !important; flex-wrap:wrap; align-items:center; gap:6px; padding:6px 4px; border-right:none !important; border-bottom:1px solid var(--line-soft); }
 .overflow-panel > *:last-child{ border-bottom:none; }
 .overflow-panel .iconbtn{ width:auto; min-width:30px; padding:0 8px; }
 .overflow-panel .spacer{ display:none !important; }
-.dropdown-menu{ z-index:80; }
+/* livelli: cassetto del pannello 150 < menu ⋯ 190 < tendine 195 < finestre 200 < menu del tasto destro 300 */
+.dropdown-menu{ z-index:195; }
+/* pulsanti con scritta ("💾 Salva", "Apri libreria", "👤 Accedi"): larghezza secondo il testo, su una sola riga */
+#topbar .iconbtn, .overflow-panel .iconbtn{ width:auto; min-width:30px; padding:0 7px; white-space:nowrap; }
 @media (max-width:1100px){
   #topbar{ gap:6px; padding:0 8px; }
   #topbar .grp{ padding:0 4px; }
@@ -366,7 +369,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 .dropdown-menu{
   position:absolute;top:calc(100% + 6px);right:0;min-width:230px;
   background:var(--bg-2);border:1px solid var(--line);border-radius:8px;
-  box-shadow:0 12px 30px rgba(0,0,0,.5);padding:6px;z-index:60;display:none;
+  box-shadow:0 12px 30px rgba(0,0,0,.5);padding:6px;z-index:195;display:none; /* sopra il cassetto del pannello (150) e al menu ⋯ (190) */
 }
 .dropdown-menu.open{display:block;}
 .dropdown-menu button{
@@ -742,7 +745,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.31.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.31.1</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -9399,7 +9402,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.31.0';
+const GUIDE_VERSION = '2.31.1';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -9726,6 +9729,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.31.1</b> — Il menu ⋯ e le tendine compaiono sopra il pannello laterale aperto; pulsanti con scritta su una sola riga.</li>
 <li><b>2.31</b> — Menu <a data-topic="schermi-piccoli">⋯</a> che raccoglie i pulsanti che non entrano nella barra, in alto e in basso.</li>
 <li><b>2.30</b> — Interfaccia adattabile agli <a data-topic="schermi-piccoli">schermi piccoli</a> e uso con le dita (zoom a due dita, pressione lunga).</li>
 <li><b>2.29</b> — <a data-topic="gruppi">Raggruppare e separare</a> gli oggetti (Ctrl+G, Ctrl+Shift+G).</li>
