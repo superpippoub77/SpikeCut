@@ -404,6 +404,8 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   align-items:center; justify-content:center; z-index:200;
 }
 .modal-overlay.open{display:flex;}
+.libvis{ font-size:11px; opacity:.85; }
+.libvis.pub{ color:#8ecbff; }
 .libitem-path{ font-size:11px; color:var(--ink-dim); margin-top:2px; cursor:pointer; }
 .libitem-path:hover{ text-decoration:underline; color:var(--brass); }
 #vertexBar{ position:fixed; z-index:120; display:none; gap:6px; align-items:center; background:var(--bg-1); border:1px solid var(--line); border-radius:8px; padding:4px 6px; box-shadow:0 4px 14px rgba(0,0,0,.35); }
@@ -745,7 +747,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.31.2</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.32.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2260,6 +2262,16 @@ const I18N = {
     "Ctrl+clic su un elemento del gruppo per selezionare solo quello.": "Ctrl+click on an item of the group to select only that one.",
     "Chiudi il pannello": "Close the panel",
     "Altri comandi": "More commands",
+    "🔒 Rendi privato": "🔒 Make private",
+    "🌐 Rendi pubblico": "🌐 Make public",
+    "🌐 Progetto generico: sempre pubblico": "🌐 Generic project: always public",
+    "«{name}» ora è pubblico: lo vedono tutti gli utenti.": "\"{name}\" is now public: all users can see it.",
+    "«{name}» ora è privato: lo vedi solo tu.": "\"{name}\" is now private: only you can see it.",
+    "Impossibile cambiare la visibilità del progetto.": "Could not change the project visibility.",
+    "Progetto generico, senza proprietario: sempre pubblico": "Generic project, without an owner: always public",
+    "generico": "generic",
+    "Pubblico: lo vedono tutti gli utenti": "Public: all users can see it",
+    "Privato: lo vedi solo tu": "Private: only you can see it",
   },
   de: {
     "1 cm": "1 cm",
@@ -3127,6 +3139,16 @@ const I18N = {
     "Ctrl+clic su un elemento del gruppo per selezionare solo quello.": "Strg+Klick auf ein Element der Gruppe, um nur dieses auszuwählen.",
     "Chiudi il pannello": "Bereich schließen",
     "Altri comandi": "Weitere Befehle",
+    "🔒 Rendi privato": "🔒 Privat machen",
+    "🌐 Rendi pubblico": "🌐 Öffentlich machen",
+    "🌐 Progetto generico: sempre pubblico": "🌐 Allgemeines Projekt: immer öffentlich",
+    "«{name}» ora è pubblico: lo vedono tutti gli utenti.": "„{name}“ ist jetzt öffentlich: Alle Benutzer sehen es.",
+    "«{name}» ora è privato: lo vedi solo tu.": "„{name}“ ist jetzt privat: Nur du siehst es.",
+    "Impossibile cambiare la visibilità del progetto.": "Die Sichtbarkeit des Projekts konnte nicht geändert werden.",
+    "Progetto generico, senza proprietario: sempre pubblico": "Allgemeines Projekt ohne Eigentümer: immer öffentlich",
+    "generico": "allgemein",
+    "Pubblico: lo vedono tutti gli utenti": "Öffentlich: Alle Benutzer sehen es",
+    "Privato: lo vedi solo tu": "Privat: Nur du siehst es",
   },
   es: {
     "1 cm": "1 cm",
@@ -3994,6 +4016,16 @@ const I18N = {
     "Ctrl+clic su un elemento del gruppo per selezionare solo quello.": "Ctrl+clic en un elemento del grupo para seleccionar solo ese.",
     "Chiudi il pannello": "Cerrar el panel",
     "Altri comandi": "Más comandos",
+    "🔒 Rendi privato": "🔒 Hacer privado",
+    "🌐 Rendi pubblico": "🌐 Hacer público",
+    "🌐 Progetto generico: sempre pubblico": "🌐 Proyecto genérico: siempre público",
+    "«{name}» ora è pubblico: lo vedono tutti gli utenti.": "«{name}» ahora es público: lo ven todos los usuarios.",
+    "«{name}» ora è privato: lo vedi solo tu.": "«{name}» ahora es privado: solo lo ves tú.",
+    "Impossibile cambiare la visibilità del progetto.": "No se pudo cambiar la visibilidad del proyecto.",
+    "Progetto generico, senza proprietario: sempre pubblico": "Proyecto genérico, sin propietario: siempre público",
+    "generico": "genérico",
+    "Pubblico: lo vedono tutti gli utenti": "Público: lo ven todos los usuarios",
+    "Privato: lo vedi solo tu": "Privado: solo lo ves tú",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -4861,6 +4893,16 @@ const I18N = {
     "Ctrl+clic su un elemento del gruppo per selezionare solo quello.": "按住 Ctrl 单击编组中的元素可只选中该元素。",
     "Chiudi il pannello": "关闭面板",
     "Altri comandi": "更多命令",
+    "🔒 Rendi privato": "🔒 设为私有",
+    "🌐 Rendi pubblico": "🌐 设为公开",
+    "🌐 Progetto generico: sempre pubblico": "🌐 通用项目：始终公开",
+    "«{name}» ora è pubblico: lo vedono tutti gli utenti.": "\"{name}\" 现已公开：所有用户都能看到。",
+    "«{name}» ora è privato: lo vedi solo tu.": "\"{name}\" 现已设为私有：只有你能看到。",
+    "Impossibile cambiare la visibilità del progetto.": "无法更改项目的可见性。",
+    "Progetto generico, senza proprietario: sempre pubblico": "通用项目，无所有者：始终公开",
+    "generico": "通用",
+    "Pubblico: lo vedono tutti gli utenti": "公开：所有用户可见",
+    "Privato: lo vedi solo tu": "私有：只有你能看到",
   },
   fr: {
     "1 cm": "1 cm",
@@ -5728,6 +5770,16 @@ const I18N = {
     "Ctrl+clic su un elemento del gruppo per selezionare solo quello.": "Ctrl+clic sur un élément du groupe pour ne sélectionner que lui.",
     "Chiudi il pannello": "Fermer le panneau",
     "Altri comandi": "Autres commandes",
+    "🔒 Rendi privato": "🔒 Rendre privé",
+    "🌐 Rendi pubblico": "🌐 Rendre public",
+    "🌐 Progetto generico: sempre pubblico": "🌐 Projet générique : toujours public",
+    "«{name}» ora è pubblico: lo vedono tutti gli utenti.": "« {name} » est maintenant public : tous les utilisateurs le voient.",
+    "«{name}» ora è privato: lo vedi solo tu.": "« {name} » est maintenant privé : toi seul le vois.",
+    "Impossibile cambiare la visibilità del progetto.": "Impossible de modifier la visibilité du projet.",
+    "Progetto generico, senza proprietario: sempre pubblico": "Projet générique, sans propriétaire : toujours public",
+    "generico": "générique",
+    "Pubblico: lo vedono tutti gli utenti": "Public : tous les utilisateurs le voient",
+    "Privato: lo vedi solo tu": "Privé : toi seul le vois",
   },
 };
 let currentLang = 'it';
@@ -9402,7 +9454,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.31.2';
+const GUIDE_VERSION = '2.32.0';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -9683,7 +9735,7 @@ html:`<ul><li><b>Account</b>: registrazione, accesso (anche "ricordami"), recupe
 <li><b>☁ Libreria</b>: se il progetto è già collegato alla libreria, un clic lo sovrascrive subito; la prima volta chiede nome, cartella e condivisione. File → "Salva in libreria (server)" riapre sempre la finestra completa (per salvare con un altro nome).</li>
 <li><b>Libreria progetti</b> in stile Esplora risorse: cartelle annidate, trascinamento, tasto destro con copia, taglia, incolla, rinomina, elimina.</li>
 <li><b>🔍 Ricerca</b>: la casella in alto nella finestra della libreria cerca in <b>tutte le cartelle</b> insieme, anche nella libreria comune, senza sapere dove si trova il file. Cerca nel nome del progetto, nei nomi delle cartelle e nell'autore dei progetti condivisi; ignora maiuscole e accenti e trova i progetti che contengono tutte le parole scritte (anche solo una parte: "scatol" trova "scatola" e "scatole"). Sotto ogni risultato c'è il suo percorso: un clic porta nella cartella. Esc o "✕ Annulla ricerca" tornano all'elenco normale.</li>
-<li><b>Privato o condiviso</b>: i progetti condivisi sono visibili a tutti gli utenti e compaiono tra i <a data-topic="componenti">componenti</a>; aprendo un progetto altrui e salvandolo si crea una copia tua.</li>
+<li><b>Privato o pubblico</b>: accanto al nome di ogni progetto c'è la sua visibilità: <b>🔒</b> privato (lo vedi solo tu), <b>🌐</b> pubblico (lo vedono tutti gli utenti), <b>🌐 generico</b>. I tuoi progetti si rendono pubblici o privati in qualsiasi momento col tasto destro nella libreria ("🌐 Rendi pubblico" / "🔒 Rendi privato"), senza doverli risalvare; la scelta si fa anche al primo salvataggio. I progetti <b>generici</b>, cioè senza proprietario, sono <b>sempre pubblici</b>: tutti li vedono e li aprono, nessuno può renderli privati, modificarli o eliminarli. I progetti pubblici compaiono anche tra i <a data-topic="componenti">componenti</a>; aprendo un progetto altrui (o generico) e salvandolo si crea una copia tua.</li>
 <li><b>Versioni</b>: ogni salvataggio conserva il precedente (fino a 30); puoi aprire una versione in una scheda o ripristinarla.</li></ul>` },
 
 { id:'esporta', cat:'Salvare ed esportare', title:'Esportare e stampare', keys:'esportare svg pdf multipagina stampa di prova formato a4 a3 scala reale',
@@ -9729,6 +9781,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.32</b> — Libreria su database (SQLite, pronta per MySQL); progetti pubblici o privati modificabili in qualsiasi momento; i progetti generici sono sempre pubblici.</li>
 <li><b>2.31.2</b> — Libreria online più sicura: i salvataggi contemporanei di più utenti non possono più far sparire progetti o account dall'elenco.</li>
 <li><b>2.31.1</b> — Il menu ⋯ e le tendine compaiono sopra il pannello laterale aperto; pulsanti con scritta su una sola riga.</li>
 <li><b>2.31</b> — Menu <a data-topic="schermi-piccoli">⋯</a> che raccoglie i pulsanti che non entrano nella barra, in alto e in basso.</li>
@@ -11948,8 +12001,8 @@ function renderLibraryViewInner(){
     }
     row.oncontextmenu = (e)=>{ e.preventDefault(); e.stopPropagation(); showContextMenu(e.clientX, e.clientY, libProjectContextItems(it)); };
     const nameDiv = document.createElement('div'); nameDiv.className='libitem-name';
-    const ownerNote = it.mine ? '' : ` <span style="color:var(--ink-dim);">${tpl('· di {name}', {name: escapeHTML(it.ownerName||'?')})}</span>`;
-    nameDiv.innerHTML = `📄 ${terms ? libHighlight(it.name, terms) : escapeHTML(it.name)}${it.shared?' 🌐':''}${ownerNote}`;
+    const ownerNote = (it.mine || it.generic) ? '' : ` <span style="color:var(--ink-dim);">${tpl('· di {name}', {name: escapeHTML(it.ownerName||'?')})}</span>`;
+    nameDiv.innerHTML = `📄 ${terms ? libHighlight(it.name, terms) : escapeHTML(it.name)}${libVisibilityBadge(it)}${ownerNote}`;
     nameDiv.onclick = ()=> loadFromLibrary(it.id);
     if(pathInfo){ // nei risultati della ricerca: dove si trova, cliccabile
       const pth = document.createElement('div'); pth.className = 'libitem-path';
@@ -12205,10 +12258,28 @@ function libProjectContextItems(it){
       {label:'✂ Taglia', action:()=> setClipboard('cut','project', it.id, it.name)},
       'sep',
       {label:'✎ Rinomina', action:()=> renameProjectAction(it)},
+      it.shared ? {label:'🔒 Rendi privato', action:()=> setProjectShared(it, false)}
+                : {label:'🌐 Rendi pubblico', action:()=> setProjectShared(it, true)},
       {label:'🗑 Elimina', action:()=> deleteFromLibrary(it.id)}
     );
+  } else if(it.generic){
+    items.push('sep', {label: translate('🌐 Progetto generico: sempre pubblico'), disabled:true, action:()=>{}});
   }
   return items;
+}
+// Pubblico/privato senza risalvare il progetto (solo il proprietario)
+async function setProjectShared(it, shared){
+  try{
+    await apiFetch('set_shared.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:it.id, shared})});
+    showToast(shared ? tpl('«{name}» ora è pubblico: lo vedono tutti gli utenti.', {name:it.name}) : tpl('«{name}» ora è privato: lo vedi solo tu.', {name:it.name}), false);
+    await loadLibraryList();
+  }catch(err){ showToast(err.message || 'Impossibile cambiare la visibilità del progetto.', true); }
+}
+// Indicazione della visibilità accanto al nome
+function libVisibilityBadge(it){
+  if(it.generic) return ` <span class="libvis pub" title="${escapeHTML(translate('Progetto generico, senza proprietario: sempre pubblico'))}">🌐 ${escapeHTML(translate('generico'))}</span>`;
+  if(it.shared) return ` <span class="libvis pub" title="${escapeHTML(translate('Pubblico: lo vedono tutti gli utenti'))}">🌐</span>`;
+  return ` <span class="libvis" title="${escapeHTML(translate('Privato: lo vedi solo tu'))}">🔒</span>`;
 }
 function libEmptyAreaContextItems(targetFolderId){
   return [

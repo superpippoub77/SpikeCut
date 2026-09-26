@@ -520,6 +520,37 @@ memoria; un logout esplicito resta comunque efficace da subito, anche
 prima della scadenza naturale del token (vedi LEGGIMI.txt per i dettagli
 e l'avviso importante sull'header "Authorization" su hosting Apache).
 
+### Database (dalla 2.32)
+Utenti, indice dei progetti e cartelle stanno in un database; i disegni e le
+loro versioni restano file JSON in `library/`. Tutto l'accesso ai dati passa da
+`api/db.php`; il tipo di database si sceglie in `api/config.php`:
+- `STORAGE = 'sqlite'` (predefinito): file `library/spikecut.sqlite`, in
+  modalità WAL, protetto dall'accesso web come il resto di `library/`.
+  Copia di sicurezza giornaliera in `library/backup/` (ultimi `DB_BACKUP_DAYS`
+  giorni, predefinito 7).
+- `STORAGE = 'mysql'`: compilare `DB_DSN` (es.
+  `mysql:host=sqlXXXX.aruba.it;dbname=Sql1234567_1;charset=utf8mb4`), `DB_USER`
+  e `DB_PASS`; le tabelle vengono create da sole. Verificato con MariaDB: stesse
+  prove superate cambiando solo queste righe.
+- `STORAGE = 'json'`: i vecchi file (usato anche in automatico se manca il
+  driver del database scelto).
+Ogni tabella ha colonne per cercare (proprietario, cartella, visibilità, nome)
+più la colonna `data` con il record completo in JSON: nessun campo si perde.
+
+**Installazione / aggiornamento**: caricare la cartella `api` al posto della
+precedente. Alla prima richiesta il backend importa da solo `users/index.json`,
+`library/index.json` e `library/folders.json` nel database (una sola volta) e
+li rinomina in `*.migrated-AAAAMMGG`, senza cancellarli. Gli utenti accedono
+con le stesse password.
+
+**Visibilità dei progetti**: un progetto con proprietario è privato o pubblico
+(campo `shared`); il proprietario lo cambia quando vuole dal tasto destro nella
+libreria (endpoint `set_shared.php`). I progetti **generici**, senza
+`ownerId`, sono sempre pubblici: tutti li vedono e li aprono, nessuno può
+renderli privati, modificarli o eliminarli (aprendoli e salvando si crea una
+copia propria). La regola è in `project_is_public()` / `project_is_generic()`
+di `common.php`.
+
 ### Protezione dei dati del server (dalla 2.31.2)
 `library/index.json`, `library/folders.json` e `users/index.json` contengono i
 dati di tutti gli utenti e vengono riscritti per intero a ogni modifica. Prima
@@ -536,7 +567,7 @@ contemporanei, tutti confermati come riusciti, in libreria ne comparivano solo
   errore 503 senza scrivere nulla.
 Stessa prova dopo la correzione: 40 su 40, sempre.
 
-### Verifica dei database (`api/diagnostica.php`)
+### Verifica dei database (`api/diagnostica.php`, non più inclusa nel pacchetto)
 Pagina da aprire nel browser (`https://tuo-sito/api/diagnostica.php`) per
 sapere cosa offre l'hosting: versione PHP, driver PDO, prova reale di SQLite
 (scrittura/lettura, modalità WAL), prova dei blocchi sui file e prova di

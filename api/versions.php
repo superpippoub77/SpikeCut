@@ -22,7 +22,7 @@ if (!is_array($current)) {
 }
 
 $isOwner  = ($current['ownerId'] ?? null) === $user['id'];
-$isShared = !empty($current['shared']);
+$isShared = project_is_public($current);
 if (!$isOwner && !$isShared) {
     json_error('Non hai accesso a questo progetto.', 403);
 }

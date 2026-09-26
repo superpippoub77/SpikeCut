@@ -28,6 +28,24 @@ define('USERS_INDEX_FILE', USERS_DIR . '/index.json');
 // Dimensione massima accettata per un progetto (bytes). Alzala se prevedi
 // di allegare immagini di riferimento grandi.
 define('MAX_PAYLOAD_BYTES', 15 * 1024 * 1024); // 15 MB
+/**
+ * DATABASE
+ * Utenti, indice dei progetti e cartelle stanno in un database; i disegni
+ * restano file JSON nella cartella library (con le loro versioni).
+ *  - 'sqlite' (predefinito): un unico file, nessuna configurazione. Al primo
+ *    avvio importa da solo i dati dai vecchi file JSON (che vengono rinominati
+ *    in *.migrated-AAAAMMGG, non cancellati).
+ *  - 'mysql': per il futuro. Compila DB_DSN, DB_USER e DB_PASS con i dati del
+ *    pannello Aruba (es. 'mysql:host=sqlXXXX.aruba.it;dbname=Sql1234567_1;charset=utf8mb4').
+ *  - 'json': i vecchi file JSON (protetti dalle scritture contemporanee).
+ * Se il driver del database scelto manca, si torna automaticamente a 'json'.
+ */
+define('STORAGE', 'sqlite');
+define('SQLITE_FILE', LIBRARY_DIR . '/spikecut.sqlite');
+define('DB_DSN', '');
+define('DB_USER', '');
+define('DB_PASS', '');
+define('DB_BACKUP_DAYS', 7); // copie di sicurezza giornaliere del database SQLite conservate
 
 // Quante versioni precedenti di ciascun progetto restano conservate nella
 // cronologia (le più vecchie oltre questo numero vengono eliminate ad ogni

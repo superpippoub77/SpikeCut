@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/db.php';
 
 header('Content-Type: application/json; charset=utf-8');
 // L'autenticazione ora passa dall'header "Authorization" (JWT), non da un
@@ -101,13 +102,18 @@ function acquire_data_lock() {
 
 function read_index() {
     ensure_library_dir();
-    return read_json_list(INDEX_FILE);
+    return storage_mode() === 'json' ? read_json_list(INDEX_FILE) : db_read_table('projects');
 }
 
 function write_index($items) {
     ensure_library_dir();
-    write_json_list(INDEX_FILE, $items);
+    if (storage_mode() === 'json') write_json_list(INDEX_FILE, $items); else db_write_table('projects', $items);
 }
+
+// Visibilità: un progetto è pubblico se il proprietario l'ha condiviso, oppure
+// se è "generico" (senza proprietario): i progetti generici sono sempre pubblici.
+function project_is_generic($p) { return empty($p['ownerId']); }
+function project_is_public($p) { return !empty($p['shared']) || project_is_generic($p); }
 
 // Accetta solo id generati dal server (esadecimali): evita path traversal
 // o accessi a file arbitrari tramite l'id passato dal client.
@@ -128,12 +134,12 @@ function project_path($id) {
 
 function read_folders() {
     ensure_library_dir();
-    return read_json_list(FOLDERS_FILE);
+    return storage_mode() === 'json' ? read_json_list(FOLDERS_FILE) : db_read_table('folders');
 }
 
 function write_folders($folders) {
     ensure_library_dir();
-    write_json_list(FOLDERS_FILE, $folders);
+    if (storage_mode() === 'json') write_json_list(FOLDERS_FILE, $folders); else db_write_table('folders', $folders);
 }
 
 // null (radice) è sempre valido; altrimenti l'id deve avere il formato giusto.
@@ -243,12 +249,12 @@ function ensure_users_dir() {
 
 function read_users() {
     ensure_users_dir();
-    return read_json_list(USERS_INDEX_FILE);
+    return storage_mode() === 'json' ? read_json_list(USERS_INDEX_FILE) : db_read_table('users');
 }
 
 function write_users($users) {
     ensure_users_dir();
-    write_json_list(USERS_INDEX_FILE, $users);
+    if (storage_mode() === 'json') write_json_list(USERS_INDEX_FILE, $users); else db_write_table('users', $users);
 }
 
 function find_user_by_username($users, $username) {

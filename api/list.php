@@ -9,10 +9,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 
 $index = read_index();
 $items = array_values(array_filter($index, function ($e) use ($user) {
-    return ($e['ownerId'] ?? null) === $user['id'] || !empty($e['shared']);
+    return ($e['ownerId'] ?? null) === $user['id'] || project_is_public($e);
 }));
 foreach ($items as &$it) {
     $it['mine'] = ($it['ownerId'] ?? null) === $user['id'];
+    $it['generic'] = project_is_generic($it);
+    if ($it['generic']) $it['shared'] = true; // i progetti generici sono sempre pubblici
     if (!array_key_exists('folderId', $it)) $it['folderId'] = null;
 }
 unset($it);
