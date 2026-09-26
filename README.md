@@ -30,6 +30,18 @@ disabilitato finché non è servito da un vero server web.
 
 ## 2. L'editor (index.html)
 
+### Schermi piccoli e tocco
+Tre fasce di larghezza (media query): fino a 1100 px la barra in alto scorre
+orizzontalmente; fino a 820 px il pannello laterale è un cassetto sopra il
+foglio (chiuso all'avvio, ✕ per chiuderlo, si richiude toccando il foglio),
+barra di stato scorrevole, finestre contenute nello schermo; fino a 560 px
+finestre a schermo intero, barra strumenti compatta, libreria e guida in
+verticale. I menu a tendina sono posizionati in modo fisso sotto il pulsante.
+Tocco: sul foglio, nel 3D e sulle intestazioni delle finestre un dito genera
+gli stessi eventi del mouse (quindi tutte le funzioni restano uguali), due dita
+zoomano e spostano la vista (nel 3D zoom), la pressione lunga (600 ms) apre il
+menu del tasto destro.
+
 ### Guida integrata
 Il pulsante **?** in alto (o il tasto **F1**) apre la guida completa del
 programma: ricerca a testo libero su tutti gli argomenti (ignora maiuscole e
