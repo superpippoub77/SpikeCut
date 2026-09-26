@@ -403,7 +403,21 @@ function require_login() {
 // Versione dell'utente sicura da restituire al client: mai l'hash password
 // né il token di reset.
 function public_user($u) {
-    return ['id' => $u['id'], 'username' => $u['username'], 'email' => $u['email']];
+    return ['id' => $u['id'], 'username' => $u['username'], 'email' => $u['email'], 'isAdmin' => is_admin($u)];
+}
+
+// Amministratori: quelli elencati in ADMIN_USERS, oppure (elenco vuoto) il primo utente registrato
+function is_admin($u) {
+    if (!$u || empty($u['id'])) return false;
+    $list = defined('ADMIN_USERS') ? ADMIN_USERS : [];
+    if (!empty($list)) return in_array(strtolower((string)$u['username']), array_map('strtolower', $list), true);
+    $users = read_users();                          // in ordine di registrazione
+    return !empty($users) && ($users[0]['id'] ?? null) === $u['id'];
+}
+function require_admin() {
+    $u = require_login();
+    if (!is_admin($u)) json_error('Questa funzione è riservata agli amministratori.', 403);
+    return $u;
 }
 
 function safe_username($u) {
@@ -428,6 +442,6 @@ function site_base_url() {
 // Le richieste che modificano dati passano una alla volta; quelle di sola lettura
 // non aspettano (grazie alla scrittura atomica non leggono mai un file a metà).
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'OPTIONS'
-    && !in_array(basename($_SERVER['SCRIPT_NAME'] ?? ''), ['list.php', 'load.php', 'load_version.php', 'versions.php', 'me.php'], true)) {
+    && !in_array(basename($_SERVER['SCRIPT_NAME'] ?? ''), ['list.php', 'load.php', 'load_version.php', 'versions.php', 'me.php', 'admin_status.php', 'admin_users.php'], true)) {
     acquire_data_lock();
 }

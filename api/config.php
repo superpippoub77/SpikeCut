@@ -40,6 +40,15 @@ define('MAX_PAYLOAD_BYTES', 15 * 1024 * 1024); // 15 MB
  *  - 'json': i vecchi file JSON (protetti dalle scritture contemporanee).
  * Se il driver del database scelto manca, si torna automaticamente a 'json'.
  */
+/**
+ * AMMINISTRATORI
+ * Nomi utente che possono aprire la finestra "Amministrazione" dell'app (stato
+ * del database, elenco di tutti gli utenti). Esempio: ['filippo'].
+ * Se l'elenco è vuoto, è amministratore il PRIMO utente registrato.
+ * Gli amministratori NON possono cambiare la visibilità dei progetti altrui:
+ * pubblico/privato resta una scelta del solo proprietario.
+ */
+define('ADMIN_USERS', []);
 define('STORAGE', 'sqlite');
 define('SQLITE_FILE', LIBRARY_DIR . '/spikecut.sqlite');
 define('DB_DSN', '');

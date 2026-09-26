@@ -22,6 +22,12 @@ if (!$user || !password_verify($password, $user['passwordHash'])) {
     json_error('Nome utente/email o password non corretti.', 401);
 }
 
+// ultimo accesso (visibile agli amministratori)
+foreach ($users as $i => $u) {
+    if (($u['id'] ?? null) === $user['id']) { $users[$i]['lastLogin'] = date('c'); $user = $users[$i]; break; }
+}
+write_users($users);
+
 $ttl = !empty($body['remember']) ? JWT_TTL_REMEMBER : JWT_TTL_DEFAULT;
 $token = issue_jwt($user, $ttl);
 

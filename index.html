@@ -405,6 +405,19 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 }
 .modal-overlay.open{display:flex;}
 .libvis{ font-size:11px; opacity:.85; }
+.admin-badge{ font-size:12px; font-weight:700; padding:2px 10px; border-radius:10px; background:rgba(128,128,128,.2); }
+.admin-badge.ok{ background:rgba(47,158,90,.2); color:#3fbf72; }
+.admin-badge.ko{ background:rgba(255,59,48,.18); color:#ff6a60; }
+.admin-badge.warn{ background:rgba(255,159,10,.18); color:#ffb340; }
+.admin-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:8px; }
+.admin-grid > div{ background:rgba(128,128,128,.08); border:1px solid var(--line); border-radius:8px; padding:7px 10px; font-size:12px; }
+.admin-grid .k{ color:var(--ink-dim); font-size:11px; display:block; }
+.admin-grid .v{ font-weight:700; }
+.admin-table{ width:100%; border-collapse:collapse; font-size:12px; }
+.admin-table th, .admin-table td{ text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); white-space:nowrap; }
+.admin-table th{ color:var(--ink-dim); font-weight:600; cursor:pointer; user-select:none; }
+.admin-table th:hover{ color:var(--ink); }
+.admin-table td.num{ text-align:right; }
 .libvis.pub{ color:#8ecbff; }
 .libitem-path{ font-size:11px; color:var(--ink-dim); margin-top:2px; cursor:pointer; }
 .libitem-path:hover{ text-decoration:underline; color:var(--brass); }
@@ -747,7 +760,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.32.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.33.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -803,6 +816,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
 
       <div id="acctViewLoggedIn" style="display:none;">
         <div class="hint" style="margin-bottom:12px;">Sei collegato come <b id="acctLoggedUsername"></b> (<span id="acctLoggedEmail"></span>).</div>
+        <button class="btn primary" id="btnAdminOpen" style="display:none;margin-bottom:8px;">🛠 Amministrazione</button>
         <button class="btn" id="logoutSubmit">Esci</button>
       </div>
 
@@ -870,6 +884,30 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
 
 <div id="modalDock"></div>
 <div id="foldCheckBanner" style="display:none;"></div>
+
+<div id="adminModal" class="modal-overlay">
+  <div class="modal-box" style="width:min(980px,96vw);">
+    <div class="modal-head">
+      <h3>Amministrazione</h3>
+      <button class="iconbtn" id="adminModalClose" title="Chiudi">✕</button>
+    </div>
+    <div class="modal-body" style="max-height:78vh;overflow:auto;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <h4 style="margin:0;font-size:14px;">Stato del database</h4>
+        <span id="adminDbBadge" class="admin-badge">…</span>
+        <button class="btn" id="adminRefresh" style="width:auto;margin:0 0 0 auto;">↻ Aggiorna</button>
+      </div>
+      <div id="adminDbInfo" class="admin-grid"></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:18px 0 8px;flex-wrap:wrap;">
+        <h4 style="margin:0;font-size:14px;">Utenti</h4>
+        <input type="search" id="adminUserSearch" placeholder="Cerca per nome o email…" autocomplete="off" style="flex:1;min-width:160px;margin:0;">
+      </div>
+      <div style="overflow-x:auto;"><table class="admin-table" id="adminUsersTable"></table></div>
+      <div id="adminUsersSummary" class="hint" style="margin-top:8px;"></div>
+      <div class="hint" style="margin-top:10px;">Gli amministratori vedono tutti gli utenti e lo stato del server, ma non possono rendere pubblici o privati i progetti altrui: la visibilità di un progetto la sceglie solo il suo proprietario.</div>
+    </div>
+  </div>
+</div>
 
 <div id="pdfImportModal" class="modal-overlay">
   <div class="modal-box" style="width:560px;max-width:96vw;">
@@ -2272,6 +2310,45 @@ const I18N = {
     "generico": "generic",
     "Pubblico: lo vedono tutti gli utenti": "Public: all users can see it",
     "Privato: lo vedi solo tu": "Private: only you can see it",
+    "🛠 Amministrazione": "🛠 Administration",
+    "Amministrazione": "Administration",
+    "Stato del database": "Database status",
+    "↻ Aggiorna": "↻ Refresh",
+    "Utenti": "Users",
+    "Cerca per nome o email…": "Search by name or email…",
+    "Gli amministratori vedono tutti gli utenti e lo stato del server, ma non possono rendere pubblici o privati i progetti altrui: la visibilità di un progetto la sceglie solo il suo proprietario.": "Administrators see all users and the server status, but cannot make other people’s projects public or private: only a project’s owner chooses its visibility.",
+    "Questa funzione è riservata agli amministratori.": "This function is reserved for administrators.",
+    "Verifica in corso…": "Checking…",
+    "Connesso": "Connected",
+    "Non connesso": "Not connected",
+    "Nessun database: file JSON": "No database: JSON files",
+    "Database in uso": "Database in use",
+    "File JSON": "JSON files",
+    "Configurato": "Configured",
+    "Versione": "Version",
+    "File": "File",
+    "Server": "Server",
+    "letture e scritture contemporanee": "simultaneous reads and writes",
+    "Migrazione dai file JSON": "Migration from JSON files",
+    "Copie di sicurezza": "Backups",
+    "{n} (ultima: {d})": "{n} (latest: {d})",
+    "nessuna ancora": "none yet",
+    "Progetti": "Projects",
+    "{n} ({pub} pubblici, {priv} privati, {gen} generici)": "{n} ({pub} public, {priv} private, {gen} generic)",
+    "Cartelle": "Folders",
+    "Il server non risponde.": "The server is not responding.",
+    "Impossibile leggere l'elenco degli utenti.": "Could not read the list of users.",
+    "Utente": "User",
+    "Registrato": "Registered",
+    "Ultimo accesso": "Last login",
+    "Ultimo salvataggio": "Last save",
+    "Pubblici": "Public",
+    "Privati": "Private",
+    "tu": "you",
+    "{n} utenti trovati su {t}.": "{n} users found out of {t}.",
+    "{n} utenti registrati.": "{n} registered users.",
+    "Progetti con proprietario: {p}; progetti generici (sempre pubblici): {g}.": "Projects with an owner: {p}; generic projects (always public): {g}.",
+    "Il backend è configurato per usare i file JSON (nessun database).": "The backend is configured to use JSON files (no database).",
   },
   de: {
     "1 cm": "1 cm",
@@ -3149,6 +3226,45 @@ const I18N = {
     "generico": "allgemein",
     "Pubblico: lo vedono tutti gli utenti": "Öffentlich: Alle Benutzer sehen es",
     "Privato: lo vedi solo tu": "Privat: Nur du siehst es",
+    "🛠 Amministrazione": "🛠 Verwaltung",
+    "Amministrazione": "Verwaltung",
+    "Stato del database": "Datenbankstatus",
+    "↻ Aggiorna": "↻ Aktualisieren",
+    "Utenti": "Benutzer",
+    "Cerca per nome o email…": "Nach Name oder E-Mail suchen…",
+    "Gli amministratori vedono tutti gli utenti e lo stato del server, ma non possono rendere pubblici o privati i progetti altrui: la visibilità di un progetto la sceglie solo il suo proprietario.": "Administratoren sehen alle Benutzer und den Serverstatus, können aber fremde Projekte nicht öffentlich oder privat machen: Die Sichtbarkeit eines Projekts wählt nur sein Eigentümer.",
+    "Questa funzione è riservata agli amministratori.": "Diese Funktion ist Administratoren vorbehalten.",
+    "Verifica in corso…": "Wird geprüft…",
+    "Connesso": "Verbunden",
+    "Non connesso": "Nicht verbunden",
+    "Nessun database: file JSON": "Keine Datenbank: JSON-Dateien",
+    "Database in uso": "Verwendete Datenbank",
+    "File JSON": "JSON-Dateien",
+    "Configurato": "Konfiguriert",
+    "Versione": "Version",
+    "File": "Datei",
+    "Server": "Server",
+    "letture e scritture contemporanee": "gleichzeitiges Lesen und Schreiben",
+    "Migrazione dai file JSON": "Migration aus JSON-Dateien",
+    "Copie di sicurezza": "Sicherungskopien",
+    "{n} (ultima: {d})": "{n} (letzte: {d})",
+    "nessuna ancora": "noch keine",
+    "Progetti": "Projekte",
+    "{n} ({pub} pubblici, {priv} privati, {gen} generici)": "{n} ({pub} öffentlich, {priv} privat, {gen} allgemein)",
+    "Cartelle": "Ordner",
+    "Il server non risponde.": "Der Server antwortet nicht.",
+    "Impossibile leggere l'elenco degli utenti.": "Die Benutzerliste konnte nicht gelesen werden.",
+    "Utente": "Benutzer",
+    "Registrato": "Registriert",
+    "Ultimo accesso": "Letzte Anmeldung",
+    "Ultimo salvataggio": "Letzte Speicherung",
+    "Pubblici": "Öffentlich",
+    "Privati": "Privat",
+    "tu": "du",
+    "{n} utenti trovati su {t}.": "{n} von {t} Benutzern gefunden.",
+    "{n} utenti registrati.": "{n} registrierte Benutzer.",
+    "Progetti con proprietario: {p}; progetti generici (sempre pubblici): {g}.": "Projekte mit Eigentümer: {p}; allgemeine Projekte (immer öffentlich): {g}.",
+    "Il backend è configurato per usare i file JSON (nessun database).": "Das Backend ist für JSON-Dateien konfiguriert (keine Datenbank).",
   },
   es: {
     "1 cm": "1 cm",
@@ -3226,7 +3342,7 @@ const I18N = {
     "Eliminare il punto {n}? I due tratti collegati diventeranno un unico tratto.": "¿Eliminar el punto {n}? Los dos tramos conectados se convertirán en uno solo.",
     "Eliminare la cartella \"{name}\"? Il suo contenuto (sottocartelle e progetti) verrà spostato nella cartella superiore, non verrà cancellato.": "¿Eliminar la carpeta \"{name}\"? Su contenido (subcarpetas y proyectos) se moverá a la carpeta superior, no se eliminará.",
     "Ellisse": "Elipse",
-    "Email": "Correo electrónico",
+    "Email": "Email",
     "Errore durante la generazione del PDF multi-pagina: ": "Error al generar el PDF multipágina: ",
     "Errore durante la generazione del PDF.": "Error al generar el PDF.",
     "Errore imprevisto nel doppio clic: ": "Error inesperado en el doble clic: ",
@@ -4026,6 +4142,45 @@ const I18N = {
     "generico": "genérico",
     "Pubblico: lo vedono tutti gli utenti": "Público: lo ven todos los usuarios",
     "Privato: lo vedi solo tu": "Privado: solo lo ves tú",
+    "🛠 Amministrazione": "🛠 Administración",
+    "Amministrazione": "Administración",
+    "Stato del database": "Estado de la base de datos",
+    "↻ Aggiorna": "↻ Actualizar",
+    "Utenti": "Usuarios",
+    "Cerca per nome o email…": "Buscar por nombre o email…",
+    "Gli amministratori vedono tutti gli utenti e lo stato del server, ma non possono rendere pubblici o privati i progetti altrui: la visibilità di un progetto la sceglie solo il suo proprietario.": "Los administradores ven todos los usuarios y el estado del servidor, pero no pueden hacer públicos o privados los proyectos ajenos: la visibilidad de un proyecto la elige solo su propietario.",
+    "Questa funzione è riservata agli amministratori.": "Esta función está reservada a los administradores.",
+    "Verifica in corso…": "Comprobando…",
+    "Connesso": "Conectado",
+    "Non connesso": "No conectado",
+    "Nessun database: file JSON": "Sin base de datos: archivos JSON",
+    "Database in uso": "Base de datos en uso",
+    "File JSON": "Archivos JSON",
+    "Configurato": "Configurado",
+    "Versione": "Versión",
+    "File": "Archivo",
+    "Server": "Servidor",
+    "letture e scritture contemporanee": "lecturas y escrituras simultáneas",
+    "Migrazione dai file JSON": "Migración desde archivos JSON",
+    "Copie di sicurezza": "Copias de seguridad",
+    "{n} (ultima: {d})": "{n} (última: {d})",
+    "nessuna ancora": "ninguna todavía",
+    "Progetti": "Proyectos",
+    "{n} ({pub} pubblici, {priv} privati, {gen} generici)": "{n} ({pub} públicos, {priv} privados, {gen} genéricos)",
+    "Cartelle": "Carpetas",
+    "Il server non risponde.": "El servidor no responde.",
+    "Impossibile leggere l'elenco degli utenti.": "No se pudo leer la lista de usuarios.",
+    "Utente": "Usuario",
+    "Registrato": "Registrado",
+    "Ultimo accesso": "Último acceso",
+    "Ultimo salvataggio": "Último guardado",
+    "Pubblici": "Públicos",
+    "Privati": "Privados",
+    "tu": "tú",
+    "{n} utenti trovati su {t}.": "{n} usuarios encontrados de {t}.",
+    "{n} utenti registrati.": "{n} usuarios registrados.",
+    "Progetti con proprietario: {p}; progetti generici (sempre pubblici): {g}.": "Proyectos con propietario: {p}; proyectos genéricos (siempre públicos): {g}.",
+    "Il backend è configurato per usare i file JSON (nessun database).": "El backend está configurado para usar archivos JSON (sin base de datos).",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -4103,7 +4258,7 @@ const I18N = {
     "Eliminare il punto {n}? I due tratti collegati diventeranno un unico tratto.": "删除点 {n}？相连的两段将合并为一段。",
     "Eliminare la cartella \"{name}\"? Il suo contenuto (sottocartelle e progetti) verrà spostato nella cartella superiore, non verrà cancellato.": "删除文件夹 \"{name}\"？其内容（子文件夹和项目）将移动到上一级文件夹，不会被删除。",
     "Ellisse": "椭圆",
-    "Email": "电子邮箱",
+    "Email": "邮箱",
     "Errore durante la generazione del PDF multi-pagina: ": "生成多页 PDF 时出错：",
     "Errore durante la generazione del PDF.": "生成 PDF 时出错。",
     "Errore imprevisto nel doppio clic: ": "双击时发生意外错误：",
@@ -4903,6 +5058,45 @@ const I18N = {
     "generico": "通用",
     "Pubblico: lo vedono tutti gli utenti": "公开：所有用户可见",
     "Privato: lo vedi solo tu": "私有：只有你能看到",
+    "🛠 Amministrazione": "🛠 管理",
+    "Amministrazione": "管理",
+    "Stato del database": "数据库状态",
+    "↻ Aggiorna": "↻ 刷新",
+    "Utenti": "用户",
+    "Cerca per nome o email…": "按名称或邮箱搜索…",
+    "Gli amministratori vedono tutti gli utenti e lo stato del server, ma non possono rendere pubblici o privati i progetti altrui: la visibilità di un progetto la sceglie solo il suo proprietario.": "管理员可以看到所有用户和服务器状态，但不能将他人的项目设为公开或私有：项目的可见性只能由其所有者决定。",
+    "Questa funzione è riservata agli amministratori.": "此功能仅限管理员使用。",
+    "Verifica in corso…": "正在检查…",
+    "Connesso": "已连接",
+    "Non connesso": "未连接",
+    "Nessun database: file JSON": "无数据库：JSON 文件",
+    "Database in uso": "正在使用的数据库",
+    "File JSON": "JSON 文件",
+    "Configurato": "已配置",
+    "Versione": "版本",
+    "File": "文件",
+    "Server": "服务器",
+    "letture e scritture contemporanee": "读写可同时进行",
+    "Migrazione dai file JSON": "从 JSON 文件迁移",
+    "Copie di sicurezza": "备份",
+    "{n} (ultima: {d})": "{n}（最近：{d}）",
+    "nessuna ancora": "暂无",
+    "Progetti": "项目",
+    "{n} ({pub} pubblici, {priv} privati, {gen} generici)": "{n}（{pub} 公开，{priv} 私有，{gen} 通用）",
+    "Cartelle": "文件夹",
+    "Il server non risponde.": "服务器无响应。",
+    "Impossibile leggere l'elenco degli utenti.": "无法读取用户列表。",
+    "Utente": "用户",
+    "Registrato": "注册时间",
+    "Ultimo accesso": "最后登录",
+    "Ultimo salvataggio": "最后保存",
+    "Pubblici": "公开",
+    "Privati": "私有",
+    "tu": "你",
+    "{n} utenti trovati su {t}.": "在 {t} 个用户中找到 {n} 个。",
+    "{n} utenti registrati.": "已注册用户 {n} 个。",
+    "Progetti con proprietario: {p}; progetti generici (sempre pubblici): {g}.": "有所有者的项目：{p}；通用项目（始终公开）：{g}。",
+    "Il backend è configurato per usare i file JSON (nessun database).": "后端配置为使用 JSON 文件（无数据库）。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -5780,6 +5974,45 @@ const I18N = {
     "generico": "générique",
     "Pubblico: lo vedono tutti gli utenti": "Public : tous les utilisateurs le voient",
     "Privato: lo vedi solo tu": "Privé : toi seul le vois",
+    "🛠 Amministrazione": "🛠 Administration",
+    "Amministrazione": "Administration",
+    "Stato del database": "État de la base de données",
+    "↻ Aggiorna": "↻ Actualiser",
+    "Utenti": "Utilisateurs",
+    "Cerca per nome o email…": "Chercher par nom ou e-mail…",
+    "Gli amministratori vedono tutti gli utenti e lo stato del server, ma non possono rendere pubblici o privati i progetti altrui: la visibilità di un progetto la sceglie solo il suo proprietario.": "Les administrateurs voient tous les utilisateurs et l’état du serveur, mais ne peuvent pas rendre publics ou privés les projets des autres : seul le propriétaire d’un projet choisit sa visibilité.",
+    "Questa funzione è riservata agli amministratori.": "Cette fonction est réservée aux administrateurs.",
+    "Verifica in corso…": "Vérification en cours…",
+    "Connesso": "Connecté",
+    "Non connesso": "Non connecté",
+    "Nessun database: file JSON": "Pas de base de données : fichiers JSON",
+    "Database in uso": "Base de données utilisée",
+    "File JSON": "Fichiers JSON",
+    "Configurato": "Configuré",
+    "Versione": "Version",
+    "File": "Fichier",
+    "Server": "Serveur",
+    "letture e scritture contemporanee": "lectures et écritures simultanées",
+    "Migrazione dai file JSON": "Migration depuis les fichiers JSON",
+    "Copie di sicurezza": "Copies de sécurité",
+    "{n} (ultima: {d})": "{n} (dernière : {d})",
+    "nessuna ancora": "aucune pour l’instant",
+    "Progetti": "Projets",
+    "{n} ({pub} pubblici, {priv} privati, {gen} generici)": "{n} ({pub} publics, {priv} privés, {gen} génériques)",
+    "Cartelle": "Dossiers",
+    "Il server non risponde.": "Le serveur ne répond pas.",
+    "Impossibile leggere l'elenco degli utenti.": "Impossible de lire la liste des utilisateurs.",
+    "Utente": "Utilisateur",
+    "Registrato": "Inscrit",
+    "Ultimo accesso": "Dernière connexion",
+    "Ultimo salvataggio": "Dernier enregistrement",
+    "Pubblici": "Publics",
+    "Privati": "Privés",
+    "tu": "toi",
+    "{n} utenti trovati su {t}.": "{n} utilisateurs trouvés sur {t}.",
+    "{n} utenti registrati.": "{n} utilisateurs inscrits.",
+    "Progetti con proprietario: {p}; progetti generici (sempre pubblici): {g}.": "Projets avec propriétaire : {p} ; projets génériques (toujours publics) : {g}.",
+    "Il backend è configurato per usare i file JSON (nessun database).": "Le backend est configuré pour utiliser des fichiers JSON (pas de base de données).",
   },
 };
 let currentLang = 'it';
@@ -8541,7 +8774,7 @@ function closeJoinDialog(){
    ridurre nella barra in basso, modificare il disegno e poi riprenderle
    esattamente come le si era lasciate.
 ============================================================ */
-const MINIMIZABLE_MODALS = ['pdfImportModal','silModal','seqModal','symModal','joinModal','fold3dModal','boxGenModal','historyModal','versionsModal','libraryModal','saveLibraryModal',
+const MINIMIZABLE_MODALS = ['adminModal','pdfImportModal','silModal','seqModal','symModal','joinModal','fold3dModal','boxGenModal','historyModal','versionsModal','libraryModal','saveLibraryModal',
   'pageSizeModal','fontModal','scaleModal','tilePrintModal','printProofModal','cutPreviewModal','weldModal','helpModal'];
 const MODAL_HOOKS = {
   fold3dModal: { onMinimize: ()=>{ stopFold3D(); if(!state.foldCheck) runFoldCheckOverlay(true); }, onRestore: ()=>{ if(state.foldCheck) endFoldCheckOverlay(); refreshFold3D(); } },
@@ -9454,7 +9687,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.32.0';
+const GUIDE_VERSION = '2.33.0';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -9738,6 +9971,12 @@ html:`<ul><li><b>Account</b>: registrazione, accesso (anche "ricordami"), recupe
 <li><b>Privato o pubblico</b>: accanto al nome di ogni progetto c'è la sua visibilità: <b>🔒</b> privato (lo vedi solo tu), <b>🌐</b> pubblico (lo vedono tutti gli utenti), <b>🌐 generico</b>. I tuoi progetti si rendono pubblici o privati in qualsiasi momento col tasto destro nella libreria ("🌐 Rendi pubblico" / "🔒 Rendi privato"), senza doverli risalvare; la scelta si fa anche al primo salvataggio. I progetti <b>generici</b>, cioè senza proprietario, sono <b>sempre pubblici</b>: tutti li vedono e li aprono, nessuno può renderli privati, modificarli o eliminarli. I progetti pubblici compaiono anche tra i <a data-topic="componenti">componenti</a>; aprendo un progetto altrui (o generico) e salvandolo si crea una copia tua.</li>
 <li><b>Versioni</b>: ogni salvataggio conserva il precedente (fino a 30); puoi aprire una versione in una scheda o ripristinarla.</li></ul>` },
 
+{ id:'amministrazione', cat:'Salvare ed esportare', title:'Amministrazione (stato del database e utenti)', keys:'amministratore admin database connesso stato utenti elenco sqlite mysql server copia sicurezza',
+html:`<p>Gli <b>amministratori</b> trovano nella finestra dell'account (👤) il pulsante <b>🛠 Amministrazione</b>. Chi è amministratore si decide nel file <code>api/config.php</code> (<code>ADMIN_USERS</code>); se l'elenco è vuoto, è amministratore il primo utente registrato.</p>
+<ul><li><b>Stato del database</b>: un indicatore verde "Connesso" (o rosso "Non connesso") con il database in uso (SQLite o MySQL), la versione, il file e la sua dimensione, la modalità, la data della migrazione dai vecchi file, le copie di sicurezza giornaliere e quanti utenti, progetti (pubblici, privati, generici) e cartelle contiene. Se il database configurato non è disponibile e il server sta usando i file JSON, compare un avviso arancione.</li>
+<li><b>Utenti</b>: tutti gli utenti registrati con email, data di registrazione, ultimo accesso, ultimo salvataggio e numero di progetti (pubblici e privati) e cartelle. Si cerca per nome o email e si ordina cliccando sull'intestazione delle colonne.</li></ul>
+<p>Gli amministratori <b>non</b> possono rendere pubblici o privati i progetti degli altri: la visibilità di un progetto la sceglie solo il suo proprietario, quando è collegato (vedi <a data-topic="libreria">Libreria</a>). All'uscita dall'account la finestra si chiude e i dati vengono cancellati dal browser.</p>` },
+
 { id:'esporta', cat:'Salvare ed esportare', title:'Esportare e stampare', keys:'esportare svg pdf multipagina stampa di prova formato a4 a3 scala reale',
 html:`<p>Dal menu <b>Stampa</b>:</p>
 <ul><li><b>Esporta SVG</b> (Ctrl+S): pronto per taglio e stampa, raggruppato per ruolo.</li>
@@ -9781,6 +10020,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.33</b> — Finestra <a data-topic="amministrazione">Amministrazione</a>: stato del database ed elenco di tutti gli utenti.</li>
 <li><b>2.32</b> — Libreria su database (SQLite, pronta per MySQL); progetti pubblici o privati modificabili in qualsiasi momento; i progetti generici sono sempre pubblici.</li>
 <li><b>2.31.2</b> — Libreria online più sicura: i salvataggi contemporanei di più utenti non possono più far sparire progetti o account dall'elenco.</li>
 <li><b>2.31.1</b> — Il menu ⋯ e le tendine compaiono sopra il pannello laterale aperto; pulsanti con scritta su una sola riga.</li>
@@ -10013,6 +10253,70 @@ function renderGroupFrames(){
     t.textContent = whole ? tpl('Gruppo · {n} oggetti', {n:mem.length}) : translate('Elemento di un gruppo');
     layerOverlay.appendChild(t);
   });
+}
+
+
+/* ============================================================
+   AMMINISTRAZIONE (solo amministratori): stato del database e utenti
+============================================================ */
+const adminState = { users:[], sort:'created', dir:1 };
+function fmtDateTime(iso){ if(!iso) return '—'; const d = new Date(iso); if(isNaN(d)) return '—'; return d.toLocaleDateString(currentLang==='zh'?'zh-CN':currentLang, {day:'2-digit', month:'2-digit', year:'numeric'}) + ' ' + d.toLocaleTimeString(currentLang==='zh'?'zh-CN':currentLang, {hour:'2-digit', minute:'2-digit'}); }
+function fmtBytes(n){ if(n==null) return '—'; if(n < 1024) return n + ' B'; if(n < 1048576) return (n/1024).toFixed(1).replace('.', ',') + ' KB'; return (n/1048576).toFixed(1).replace('.', ',') + ' MB'; }
+async function openAdmin(){
+  if(!currentUser || !currentUser.isAdmin){ showToast('Questa funzione è riservata agli amministratori.', true); return; }
+  closeAccountModal();
+  openModal('adminModal');
+  await refreshAdmin();
+}
+async function refreshAdmin(){
+  const badge = document.getElementById('adminDbBadge'), info = document.getElementById('adminDbInfo');
+  badge.className = 'admin-badge'; badge.textContent = translate('Verifica in corso…'); info.innerHTML = '';
+  try{
+    const data = await apiFetch('admin_status.php', {method:'GET'});
+    const s = data.status, cnt = s.counts || {};
+    if(s.connected){ badge.className = 'admin-badge ok'; badge.textContent = '● ' + translate('Connesso'); }
+    else { badge.className = 'admin-badge warn'; badge.textContent = '● ' + translate('Nessun database: file JSON'); }
+    const cell = (k, v)=> `<div><span class="k">${escapeHTML(translate(k))}</span><span class="v">${escapeHTML(String(v))}</span></div>`;
+    let html = cell('Database in uso', s.active==='sqlite' ? 'SQLite' : (s.active==='mysql' ? 'MySQL' : translate('File JSON')))
+      + (s.configured !== s.active ? cell('Configurato', s.configured) : '')
+      + (s.version ? cell('Versione', s.version) : '')
+      + (s.file ? cell('File', s.file + ' · ' + fmtBytes(s.sizeBytes)) : '')
+      + (s.server ? cell('Server', s.server) : '')
+      + (s.journal ? cell('Modalità', s.journal==='wal' ? 'WAL (' + translate('letture e scritture contemporanee') + ')' : s.journal) : '')
+      + (s.migratedAt ? cell('Migrazione dai file JSON', fmtDateTime(s.migratedAt)) : '')
+      + (s.active==='sqlite' ? cell('Copie di sicurezza', s.backups ? tpl('{n} (ultima: {d})', {n:s.backups, d:fmtDateTime(s.lastBackup)}) : translate('nessuna ancora')) : '')
+      + cell('Utenti', cnt.users) + cell('Progetti', tpl('{n} ({pub} pubblici, {priv} privati, {gen} generici)', {n:cnt.projects, pub:cnt.public, priv:cnt.private, gen:cnt.generic}))
+      + cell('Cartelle', cnt.folders);
+    if(s.warning) html = `<div style="grid-column:1/-1;border-color:#f0c36d;background:rgba(255,159,10,.12);">⚠️ ${escapeHTML(translate(s.warning))}</div>` + html;
+    info.innerHTML = html;
+  }catch(err){
+    badge.className = 'admin-badge ko'; badge.textContent = '● ' + translate('Non connesso');
+    info.innerHTML = `<div style="grid-column:1/-1;">${escapeHTML(err.message || translate('Il server non risponde.'))}</div>`;
+  }
+  try{
+    const data = await apiFetch('admin_users.php', {method:'GET'});
+    adminState.users = data.users || []; adminState.generic = data.genericProjects || 0;
+    renderAdminUsers();
+  }catch(err){
+    document.getElementById('adminUsersTable').innerHTML = '';
+    document.getElementById('adminUsersSummary').textContent = err.message || translate('Impossibile leggere l\'elenco degli utenti.');
+  }
+}
+function renderAdminUsers(){
+  const q = (document.getElementById('adminUserSearch').value || '').toLowerCase().trim();
+  const cols = [['username','Utente'],['email','Email'],['created','Registrato'],['lastLogin','Ultimo accesso'],['lastSave','Ultimo salvataggio'],['projects','Progetti'],['public','Pubblici'],['private','Privati'],['folders','Cartelle']];
+  let rows = adminState.users.filter(u=> !q || (u.username||'').toLowerCase().includes(q) || (u.email||'').toLowerCase().includes(q));
+  const k = adminState.sort, d = adminState.dir;
+  rows.sort((a,b)=>{ const x = a[k] ?? '', y = b[k] ?? ''; return (typeof x==='number' && typeof y==='number' ? x-y : String(x).localeCompare(String(y))) * d; });
+  const t = document.getElementById('adminUsersTable');
+  t.innerHTML = '<thead><tr>' + cols.map(([key,l])=>`<th data-k="${key}">${escapeHTML(translate(l))}${k===key ? (d>0 ? ' ▲' : ' ▼') : ''}</th>`).join('') + '</tr></thead><tbody>'
+    + rows.map(u=>`<tr><td>${escapeHTML(u.username)}${u.isAdmin ? ' <span class="admin-badge ok" style="font-size:10px;padding:0 6px;">admin</span>' : ''}${currentUser && u.id===currentUser.id ? ' <span style="color:var(--ink-dim);">(' + escapeHTML(translate('tu')) + ')</span>' : ''}</td>`
+      + `<td>${escapeHTML(u.email)}</td><td>${fmtDateTime(u.created)}</td><td>${fmtDateTime(u.lastLogin)}</td><td>${fmtDateTime(u.lastSave)}</td>`
+      + `<td class="num">${u.projects}</td><td class="num">${u.public}</td><td class="num">${u.private}</td><td class="num">${u.folders}</td></tr>`).join('') + '</tbody>';
+  t.querySelectorAll('th').forEach(th=> th.onclick = ()=>{ const key = th.dataset.k; if(adminState.sort===key) adminState.dir = -adminState.dir; else { adminState.sort = key; adminState.dir = 1; } renderAdminUsers(); });
+  const tot = adminState.users.reduce((s,u)=>s+u.projects,0);
+  document.getElementById('adminUsersSummary').textContent = (q ? tpl('{n} utenti trovati su {t}.', {n:rows.length, t:adminState.users.length}) : tpl('{n} utenti registrati.', {n:adminState.users.length}))
+    + ' ' + tpl('Progetti con proprietario: {p}; progetti generici (sempre pubblici): {g}.', {p:tot, g:adminState.generic});
 }
 
 /* ============================================================
@@ -12427,6 +12731,12 @@ document.addEventListener('dblclick', e=>{ // doppio clic sull'intestazione: la 
   box.style.position = ''; box.style.left = ''; box.style.top = ''; box.style.margin = '';
 }, true);
 
+document.getElementById('btnAdminOpen').onclick = openAdmin;
+document.getElementById('adminModalClose').onclick = ()=> document.getElementById('adminModal').classList.remove('open');
+setupOverlayClickClose(document.getElementById('adminModal'), ()=> document.getElementById('adminModal').classList.remove('open'));
+document.getElementById('adminRefresh').onclick = refreshAdmin;
+document.getElementById('adminUserSearch').addEventListener('input', renderAdminUsers);
+document.getElementById('adminUserSearch').addEventListener('keydown', e=> e.stopPropagation());
 function closeFold3D(){ stopFold3D(); if(state.foldCheck) endFoldCheckOverlay(); document.getElementById('fold3dModal').classList.remove('open'); }
 document.getElementById('fold3dClose').onclick = closeFold3D;
 setupOverlayClickClose(document.getElementById('fold3dModal'), closeFold3D);
@@ -12563,12 +12873,13 @@ async function restoreSpecificVersion(id, file){
 ============================================================ */
 let currentUser = null;
 // Finestre che mostrano dati privati della libreria (nomi di progetti e cartelle, versioni)
-const PRIVATE_MODALS = ['libraryModal','versionsModal','saveLibraryModal','saveConflictModal'];
+const PRIVATE_MODALS = ['libraryModal','versionsModal','saveLibraryModal','saveConflictModal','adminModal'];
 // Cancella dal browser tutto ciò che è stato scaricato dalla libreria dell'utente e chiude le finestre
 // che lo mostrano (anche se ridotte a icona): va fatto all'uscita, allo scadere dell'accesso e al cambio utente.
 function clearPrivateLibraryData(){
   libCacheItems = []; libCacheFolders = []; libCurrentFolderId = null; libSearchQuery = ''; libClipboard = null;
-  ['libList','libTree','libBreadcrumb','libOpenAllWrap','versionsList','sharedComponentsList'].forEach(id=>{ const e = document.getElementById(id); if(e) e.innerHTML = ''; });
+  ['libList','libTree','libBreadcrumb','libOpenAllWrap','versionsList','sharedComponentsList','adminDbInfo','adminUsersTable','adminUsersSummary'].forEach(id=>{ const e = document.getElementById(id); if(e) e.innerHTML = ''; });
+  if(typeof adminState !== 'undefined') adminState.users = [];
   const ls = document.getElementById('libSearch'); if(ls) ls.value = '';
   const sf = document.getElementById('saveLibFolder'); if(sf) sf.innerHTML = '';
   const sn = document.getElementById('saveLibName'); if(sn) sn.value = '';
@@ -12583,6 +12894,7 @@ function updateAccountUI(){
   if(document.querySelector('.tabtrig[data-tab="components"]').classList.contains('active')) loadSharedComponents();
 }
 function updateAccountUIInner(){
+  const adm = document.getElementById('btnAdminOpen'); if(adm) adm.style.display = currentUser && currentUser.isAdmin ? '' : 'none';
   const btn = document.getElementById('btnAccount');
   btn.textContent = currentUser ? ('👤 ' + currentUser.username) : '👤 Accedi';
   const libBtn = document.getElementById('btnSaveLibraryTop');

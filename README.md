@@ -551,6 +551,24 @@ renderli privati, modificarli o eliminarli (aprendoli e salvando si crea una
 copia propria). La regola è in `project_is_public()` / `project_is_generic()`
 di `common.php`.
 
+### Amministrazione (dalla 2.33)
+Gli amministratori vedono nella finestra dell'account (👤) il pulsante
+**🛠 Amministrazione**, con:
+- **stato del database** (`api/admin_status.php`): indicatore "Connesso",
+  database in uso (SQLite/MySQL, oppure avviso se si stanno usando i file
+  JSON), versione, file e dimensione, modalità WAL, data della migrazione,
+  copie di sicurezza, conteggi di utenti, progetti (pubblici, privati,
+  generici) e cartelle;
+- **elenco di tutti gli utenti** (`api/admin_users.php`): email,
+  registrazione, ultimo accesso, ultimo salvataggio, numero di progetti
+  pubblici/privati e cartelle, con ricerca e ordinamento. Mai password o token.
+Chi è amministratore si decide in `api/config.php` con `ADMIN_USERS`
+(es. `['filippo']`); se l'elenco è vuoto è amministratore il primo utente
+registrato. Gli amministratori NON possono cambiare la visibilità dei progetti
+altrui: pubblico/privato lo sceglie solo il proprietario collegato
+(`set_shared.php` lo rifiuta con "Solo il proprietario può cambiare la
+visibilità di un progetto"). L'ultimo accesso viene registrato da `login.php`.
+
 ### Protezione dei dati del server (dalla 2.31.2)
 `library/index.json`, `library/folders.json` e `users/index.json` contengono i
 dati di tutti gli utenti e vengono riscritti per intero a ogni modifica. Prima
