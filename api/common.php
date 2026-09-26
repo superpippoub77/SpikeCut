@@ -47,17 +47,66 @@ function ensure_library_dir() {
     }
 }
 
+// ---------------------------------------------------------------------------
+// PROTEZIONE DEI DATI CONDIVISI
+// index.json, folders.json e users/index.json contengono i dati di TUTTI gli
+// utenti e vengono riletti e riscritti per intero a ogni modifica. Senza
+// protezioni, due richieste quasi contemporanee potevano leggere un file a metà
+// scrittura, trattarlo come vuoto e cancellare l'elenco di tutti. Quindi:
+//  - una sola richiesta per volta può modificare i dati (blocco su file);
+//  - ogni file viene scritto su un temporaneo e poi sostituito in un colpo solo;
+//  - un file illeggibile non viene MAI trattato come vuoto: si usa l'ultima
+//    copia buona (.bak) oppure la richiesta si ferma senza salvare nulla.
+// ---------------------------------------------------------------------------
+function atomic_write($path, $data) {
+    $tmp = $path . '.tmp-' . bin2hex(random_bytes(4));
+    if (@file_put_contents($tmp, $data) === false) { @unlink($tmp); return false; }
+    if (!@rename($tmp, $path)) {                    // filesystem che non sostituiscono con rename
+        $ok = @copy($tmp, $path); @unlink($tmp);
+        return $ok ? strlen($data) : false;
+    }
+    return strlen($data);
+}
+function read_json_list($file) {
+    if (!file_exists($file)) return [];
+    $raw = @file_get_contents($file);
+    $data = ($raw === false || $raw === '') ? null : json_decode($raw, true);
+    if (is_array($data)) return $data;
+    $bak = $file . '.bak';                           // file illeggibile: ultima copia buona
+    if (file_exists($bak)) {
+        $b = json_decode((string)@file_get_contents($bak), true);
+        if (is_array($b)) { error_log('SpikeCut: ' . basename($file) . ' illeggibile, uso la copia .bak'); return $b; }
+    }
+    json_error('Archivio dei dati temporaneamente illeggibile: nessuna modifica è stata salvata. Riprova tra poco; se il problema continua, contatta l\'amministratore.', 503);
+}
+function write_json_list($file, $items) {
+    $json = json_encode(array_values($items), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    if ($json === false) json_error('Errore interno nella preparazione dei dati da salvare.', 500);
+    if (file_exists($file)) @copy($file, $file . '.bak');   // copia di sicurezza dell'ultima versione buona
+    if (atomic_write($file, $json) === false) json_error('Impossibile salvare i dati sul server.', 500);
+}
+function acquire_data_lock() {
+    if (!empty($GLOBALS['__spikecut_lock'])) return;
+    ensure_library_dir();
+    $h = @fopen(LIBRARY_DIR . '/.data.lock', 'c');
+    if (!$h) return;                                  // blocco non disponibile: si prosegue come prima
+    $t0 = microtime(true);
+    while (!flock($h, LOCK_EX | LOCK_NB)) {
+        if (microtime(true) - $t0 > 10) { fclose($h); json_error('Il server è occupato: riprova tra qualche secondo.', 503); }
+        usleep(40000);
+    }
+    $GLOBALS['__spikecut_lock'] = $h;
+    register_shutdown_function(function () { $h = $GLOBALS['__spikecut_lock']; if ($h) { flock($h, LOCK_UN); fclose($h); } });
+}
+
 function read_index() {
     ensure_library_dir();
-    if (!file_exists(INDEX_FILE)) return [];
-    $raw = @file_get_contents(INDEX_FILE);
-    $data = json_decode($raw, true);
-    return is_array($data) ? $data : [];
+    return read_json_list(INDEX_FILE);
 }
 
 function write_index($items) {
     ensure_library_dir();
-    file_put_contents(INDEX_FILE, json_encode(array_values($items), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    write_json_list(INDEX_FILE, $items);
 }
 
 // Accetta solo id generati dal server (esadecimali): evita path traversal
@@ -79,14 +128,12 @@ function project_path($id) {
 
 function read_folders() {
     ensure_library_dir();
-    if (!file_exists(FOLDERS_FILE)) return [];
-    $data = json_decode(@file_get_contents(FOLDERS_FILE), true);
-    return is_array($data) ? $data : [];
+    return read_json_list(FOLDERS_FILE);
 }
 
 function write_folders($folders) {
     ensure_library_dir();
-    file_put_contents(FOLDERS_FILE, json_encode(array_values($folders), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    write_json_list(FOLDERS_FILE, $folders);
 }
 
 // null (radice) è sempre valido; altrimenti l'id deve avere il formato giusto.
@@ -146,7 +193,7 @@ function ensure_versions_dir($id) {
 function snapshot_version($id, $projectData) {
     ensure_versions_dir($id);
     $fname = ((int) round(microtime(true) * 1000)) . '_' . bin2hex(random_bytes(2)) . '.json';
-    file_put_contents(versions_dir($id) . '/' . $fname, json_encode($projectData, JSON_UNESCAPED_UNICODE));
+    atomic_write(versions_dir($id) . '/' . $fname, json_encode($projectData, JSON_UNESCAPED_UNICODE));
 
     $files = glob(versions_dir($id) . '/*.json');
     if ($files === false) return $fname;
@@ -196,15 +243,12 @@ function ensure_users_dir() {
 
 function read_users() {
     ensure_users_dir();
-    if (!file_exists(USERS_INDEX_FILE)) return [];
-    $raw = @file_get_contents(USERS_INDEX_FILE);
-    $data = json_decode($raw, true);
-    return is_array($data) ? $data : [];
+    return read_json_list(USERS_INDEX_FILE);
 }
 
 function write_users($users) {
     ensure_users_dir();
-    file_put_contents(USERS_INDEX_FILE, json_encode(array_values($users), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    write_json_list(USERS_INDEX_FILE, $users);
 }
 
 function find_user_by_username($users, $username) {
@@ -256,7 +300,7 @@ function jwt_secret() {
         if ($existing !== '') { $cached = $existing; return $cached; }
     }
     $cached = bin2hex(random_bytes(32));
-    file_put_contents(JWT_SECRET_FILE, $cached);
+    atomic_write(JWT_SECRET_FILE, $cached);
     @chmod(JWT_SECRET_FILE, 0600);
     return $cached;
 }
@@ -373,4 +417,11 @@ function site_base_url() {
     // questo file sta in api/, la root del progetto è una cartella sopra
     $dir = rtrim(dirname(dirname($_SERVER['SCRIPT_NAME'])), '/');
     return $scheme . '://' . $host . $dir;
+}
+
+// Le richieste che modificano dati passano una alla volta; quelle di sola lettura
+// non aspettano (grazie alla scrittura atomica non leggono mai un file a metà).
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'OPTIONS'
+    && !in_array(basename($_SERVER['SCRIPT_NAME'] ?? ''), ['list.php', 'load.php', 'load_version.php', 'versions.php', 'me.php'], true)) {
+    acquire_data_lock();
 }

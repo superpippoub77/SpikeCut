@@ -57,7 +57,7 @@ $restored = [
     'updated'       => $now,
 ];
 
-if (file_put_contents($path, json_encode($restored, JSON_UNESCAPED_UNICODE)) === false) {
+if (atomic_write($path, json_encode($restored, JSON_UNESCAPED_UNICODE)) === false) {
     json_error('Impossibile scrivere il progetto sul server.', 500);
 }
 

@@ -520,6 +520,30 @@ memoria; un logout esplicito resta comunque efficace da subito, anche
 prima della scadenza naturale del token (vedi LEGGIMI.txt per i dettagli
 e l'avviso importante sull'header "Authorization" su hosting Apache).
 
+### Protezione dei dati del server (dalla 2.31.2)
+`library/index.json`, `library/folders.json` e `users/index.json` contengono i
+dati di tutti gli utenti e vengono riscritti per intero a ogni modifica. Prima
+della 2.31.2 non c'erano protezioni: in una prova con 40 salvataggi
+contemporanei, tutti confermati come riusciti, in libreria ne comparivano solo
+19–21 (gli altri file restavano sul disco ma sparivano dall'elenco). Ora:
+- le richieste che modificano dati passano una alla volta (blocco su
+  `library/.data.lock`, attesa massima 10 s poi errore 503 "server occupato");
+  le letture (list, load, versions, load_version, me) non aspettano;
+- ogni file (indici, progetti, versioni) viene scritto su un temporaneo e poi
+  sostituito con `rename` (`atomic_write`), quindi non si legge mai un file a metà;
+- un file illeggibile non viene mai trattato come vuoto: si usa l'ultima copia
+  buona `*.bak` (creata a ogni modifica), altrimenti la richiesta si ferma con
+  errore 503 senza scrivere nulla.
+Stessa prova dopo la correzione: 40 su 40, sempre.
+
+### Verifica dei database (`api/diagnostica.php`)
+Pagina da aprire nel browser (`https://tuo-sito/api/diagnostica.php`) per
+sapere cosa offre l'hosting: versione PHP, driver PDO, prova reale di SQLite
+(scrittura/lettura, modalità WAL), prova dei blocchi sui file e prova di
+connessione a MySQL con i dati del pannello (non salvati). Mostra una
+conclusione con la scelta consigliata. **Dopo l'uso va cancellata** (oppure
+impostare `$ABILITATA = false` in cima al file).
+
 ### Privacy nel browser
 All'uscita dall'account, allo scadere dell'accesso (il server risponde 401) e
 al cambio di utente, `clearPrivateLibraryData()` cancella dal browser elenco

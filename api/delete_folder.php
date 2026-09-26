@@ -53,7 +53,7 @@ foreach ($index as &$e) {
             $projData = $proj !== false ? json_decode($proj, true) : null;
             if (is_array($projData)) {
                 $projData['folderId'] = $parentOfDeleted;
-                file_put_contents($ppath, json_encode($projData, JSON_UNESCAPED_UNICODE));
+                atomic_write($ppath, json_encode($projData, JSON_UNESCAPED_UNICODE));
             }
         }
     }

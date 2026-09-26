@@ -34,7 +34,7 @@ if (($projectData['ownerId'] ?? null) !== $user['id']) {
 }
 
 $projectData['folderId'] = $folderId;
-file_put_contents($path, json_encode($projectData, JSON_UNESCAPED_UNICODE));
+atomic_write($path, json_encode($projectData, JSON_UNESCAPED_UNICODE));
 
 $index = read_index();
 foreach ($index as &$e) {

@@ -76,7 +76,7 @@ $project = [
     'updated'       => $now,
 ];
 
-$bytesWritten = file_put_contents(project_path($id), json_encode($project, JSON_UNESCAPED_UNICODE));
+$bytesWritten = atomic_write(project_path($id), json_encode($project, JSON_UNESCAPED_UNICODE));
 if ($bytesWritten === false) {
     json_error('Impossibile scrivere il progetto sul server.', 500);
 }

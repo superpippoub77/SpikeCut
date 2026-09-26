@@ -29,7 +29,7 @@ if (($project['ownerId'] ?? null) !== $user['id']) {
 }
 
 $project['name'] = $name;
-if (file_put_contents($path, json_encode($project, JSON_UNESCAPED_UNICODE)) === false) {
+if (atomic_write($path, json_encode($project, JSON_UNESCAPED_UNICODE)) === false) {
     json_error('Impossibile scrivere il progetto sul server.', 500);
 }
 
