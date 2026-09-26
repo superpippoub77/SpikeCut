@@ -760,7 +760,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.33.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.34.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -904,7 +904,14 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
       </div>
       <div style="overflow-x:auto;"><table class="admin-table" id="adminUsersTable"></table></div>
       <div id="adminUsersSummary" class="hint" style="margin-top:8px;"></div>
-      <div class="hint" style="margin-top:10px;">Gli amministratori vedono tutti gli utenti e lo stato del server, ma non possono rendere pubblici o privati i progetti altrui: la visibilità di un progetto la sceglie solo il suo proprietario.</div>
+      <div style="display:flex;align-items:center;gap:10px;margin:18px 0 8px;flex-wrap:wrap;">
+        <h4 style="margin:0;font-size:14px;">Progetti</h4>
+        <input type="search" id="adminProjSearch" placeholder="Cerca per nome, proprietario o cartella…" autocomplete="off" style="flex:1;min-width:160px;margin:0;">
+        <label style="display:flex;align-items:center;gap:5px;font-size:12px;white-space:nowrap;cursor:pointer;"><input type="checkbox" id="adminProjOnlyPrivate" style="width:auto;"><span>Solo privati</span></label>
+      </div>
+      <div style="overflow-x:auto;"><table class="admin-table" id="adminProjectsTable"></table></div>
+      <div id="adminProjectsSummary" class="hint" style="margin-top:8px;"></div>
+      <div class="hint" style="margin-top:10px;">Da amministratore puoi rendere pubblico o privato qualunque progetto con un proprietario; il proprietario viene indicato e resta traccia di chi ha fatto l'ultimo cambio. I progetti generici (senza proprietario) sono sempre pubblici. Un clic su un utente nella tabella qui sopra mostra solo i suoi progetti.</div>
     </div>
   </div>
 </div>
@@ -2349,6 +2356,28 @@ const I18N = {
     "{n} utenti registrati.": "{n} registered users.",
     "Progetti con proprietario: {p}; progetti generici (sempre pubblici): {g}.": "Projects with an owner: {p}; generic projects (always public): {g}.",
     "Il backend è configurato per usare i file JSON (nessun database).": "The backend is configured to use JSON files (no database).",
+    "Cerca per nome, proprietario o cartella…": "Search by name, owner or folder…",
+    "Solo privati": "Private only",
+    "Da amministratore puoi rendere pubblico o privato qualunque progetto con un proprietario; il proprietario viene indicato e resta traccia di chi ha fatto l'ultimo cambio. I progetti generici (senza proprietario) sono sempre pubblici. Un clic su un utente nella tabella qui sopra mostra solo i suoi progetti.": "As an administrator you can make any project with an owner public or private; the owner is shown and a record is kept of who made the last change. Generic projects (without an owner) are always public. Clicking a user in the table above shows only their projects.",
+    "Impossibile leggere l'elenco dei progetti.": "Could not read the list of projects.",
+    "Progetto": "Project",
+    "Proprietario": "Owner",
+    "Visibilità": "Visibility",
+    "pubblico": "public",
+    "privato": "private",
+    "cambiato da {u} il {d}": "changed by {u} on {d}",
+    "amministratore": "administrator",
+    "sempre pubblico": "always public",
+    "{n} progetti mostrati su {t} ({pub} pubblici, {priv} privati).": "{n} projects shown out of {t} ({pub} public, {priv} private).",
+    "Rendere pubblico il progetto «{name}» di {owner}? Lo vedranno e potranno aprirlo tutti gli utenti.": "Make the project \"{name}\" by {owner} public? All users will be able to see and open it.",
+    "Rendere privato il progetto «{name}» di {owner}? Lo vedrà solo il suo proprietario.": "Make the project \"{name}\" by {owner} private? Only its owner will see it.",
+    "Rendi pubblico": "Make public",
+    "Rendi privato": "Make private",
+    "«{name}» ora è pubblico.": "\"{name}\" is now public.",
+    "«{name}» ora è privato.": "\"{name}\" is now private.",
+    "Mostra i progetti di questo utente": "Show this user’s projects",
+    "🔒 Rendi privato (amministratore)": "🔒 Make private (administrator)",
+    "🌐 Rendi pubblico (amministratore)": "🌐 Make public (administrator)",
   },
   de: {
     "1 cm": "1 cm",
@@ -3265,6 +3294,28 @@ const I18N = {
     "{n} utenti registrati.": "{n} registrierte Benutzer.",
     "Progetti con proprietario: {p}; progetti generici (sempre pubblici): {g}.": "Projekte mit Eigentümer: {p}; allgemeine Projekte (immer öffentlich): {g}.",
     "Il backend è configurato per usare i file JSON (nessun database).": "Das Backend ist für JSON-Dateien konfiguriert (keine Datenbank).",
+    "Cerca per nome, proprietario o cartella…": "Nach Name, Eigentümer oder Ordner suchen…",
+    "Solo privati": "Nur private",
+    "Da amministratore puoi rendere pubblico o privato qualunque progetto con un proprietario; il proprietario viene indicato e resta traccia di chi ha fatto l'ultimo cambio. I progetti generici (senza proprietario) sono sempre pubblici. Un clic su un utente nella tabella qui sopra mostra solo i suoi progetti.": "Als Administrator kannst du jedes Projekt mit Eigentümer öffentlich oder privat machen; der Eigentümer wird angezeigt und die letzte Änderung wird protokolliert. Allgemeine Projekte (ohne Eigentümer) sind immer öffentlich. Ein Klick auf einen Benutzer in der Tabelle oben zeigt nur seine Projekte.",
+    "Impossibile leggere l'elenco dei progetti.": "Die Projektliste konnte nicht gelesen werden.",
+    "Progetto": "Projekt",
+    "Proprietario": "Eigentümer",
+    "Visibilità": "Sichtbarkeit",
+    "pubblico": "öffentlich",
+    "privato": "privat",
+    "cambiato da {u} il {d}": "geändert von {u} am {d}",
+    "amministratore": "Administrator",
+    "sempre pubblico": "immer öffentlich",
+    "{n} progetti mostrati su {t} ({pub} pubblici, {priv} privati).": "{n} von {t} Projekten angezeigt ({pub} öffentlich, {priv} privat).",
+    "Rendere pubblico il progetto «{name}» di {owner}? Lo vedranno e potranno aprirlo tutti gli utenti.": "Das Projekt „{name}“ von {owner} öffentlich machen? Alle Benutzer können es sehen und öffnen.",
+    "Rendere privato il progetto «{name}» di {owner}? Lo vedrà solo il suo proprietario.": "Das Projekt „{name}“ von {owner} privat machen? Nur sein Eigentümer sieht es.",
+    "Rendi pubblico": "Öffentlich machen",
+    "Rendi privato": "Privat machen",
+    "«{name}» ora è pubblico.": "„{name}“ ist jetzt öffentlich.",
+    "«{name}» ora è privato.": "„{name}“ ist jetzt privat.",
+    "Mostra i progetti di questo utente": "Projekte dieses Benutzers anzeigen",
+    "🔒 Rendi privato (amministratore)": "🔒 Privat machen (Administrator)",
+    "🌐 Rendi pubblico (amministratore)": "🌐 Öffentlich machen (Administrator)",
   },
   es: {
     "1 cm": "1 cm",
@@ -4181,6 +4232,28 @@ const I18N = {
     "{n} utenti registrati.": "{n} usuarios registrados.",
     "Progetti con proprietario: {p}; progetti generici (sempre pubblici): {g}.": "Proyectos con propietario: {p}; proyectos genéricos (siempre públicos): {g}.",
     "Il backend è configurato per usare i file JSON (nessun database).": "El backend está configurado para usar archivos JSON (sin base de datos).",
+    "Cerca per nome, proprietario o cartella…": "Buscar por nombre, propietario o carpeta…",
+    "Solo privati": "Solo privados",
+    "Da amministratore puoi rendere pubblico o privato qualunque progetto con un proprietario; il proprietario viene indicato e resta traccia di chi ha fatto l'ultimo cambio. I progetti generici (senza proprietario) sono sempre pubblici. Un clic su un utente nella tabella qui sopra mostra solo i suoi progetti.": "Como administrador puedes hacer público o privado cualquier proyecto con propietario; se indica el propietario y queda constancia de quién hizo el último cambio. Los proyectos genéricos (sin propietario) son siempre públicos. Un clic en un usuario de la tabla de arriba muestra solo sus proyectos.",
+    "Impossibile leggere l'elenco dei progetti.": "No se pudo leer la lista de proyectos.",
+    "Progetto": "Proyecto",
+    "Proprietario": "Propietario",
+    "Visibilità": "Visibilidad",
+    "pubblico": "público",
+    "privato": "privado",
+    "cambiato da {u} il {d}": "cambiado por {u} el {d}",
+    "amministratore": "administrador",
+    "sempre pubblico": "siempre público",
+    "{n} progetti mostrati su {t} ({pub} pubblici, {priv} privati).": "{n} proyectos mostrados de {t} ({pub} públicos, {priv} privados).",
+    "Rendere pubblico il progetto «{name}» di {owner}? Lo vedranno e potranno aprirlo tutti gli utenti.": "¿Hacer público el proyecto «{name}» de {owner}? Todos los usuarios podrán verlo y abrirlo.",
+    "Rendere privato il progetto «{name}» di {owner}? Lo vedrà solo il suo proprietario.": "¿Hacer privado el proyecto «{name}» de {owner}? Solo lo verá su propietario.",
+    "Rendi pubblico": "Hacer público",
+    "Rendi privato": "Hacer privado",
+    "«{name}» ora è pubblico.": "«{name}» ahora es público.",
+    "«{name}» ora è privato.": "«{name}» ahora es privado.",
+    "Mostra i progetti di questo utente": "Mostrar los proyectos de este usuario",
+    "🔒 Rendi privato (amministratore)": "🔒 Hacer privado (administrador)",
+    "🌐 Rendi pubblico (amministratore)": "🌐 Hacer público (administrador)",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -5097,6 +5170,28 @@ const I18N = {
     "{n} utenti registrati.": "已注册用户 {n} 个。",
     "Progetti con proprietario: {p}; progetti generici (sempre pubblici): {g}.": "有所有者的项目：{p}；通用项目（始终公开）：{g}。",
     "Il backend è configurato per usare i file JSON (nessun database).": "后端配置为使用 JSON 文件（无数据库）。",
+    "Cerca per nome, proprietario o cartella…": "按名称、所有者或文件夹搜索…",
+    "Solo privati": "仅私有",
+    "Da amministratore puoi rendere pubblico o privato qualunque progetto con un proprietario; il proprietario viene indicato e resta traccia di chi ha fatto l'ultimo cambio. I progetti generici (senza proprietario) sono sempre pubblici. Un clic su un utente nella tabella qui sopra mostra solo i suoi progetti.": "作为管理员，你可以将任何有所有者的项目设为公开或私有；会显示所有者，并记录最后一次更改者。通用项目（无所有者）始终公开。在上方表格中点击某个用户，只显示其项目。",
+    "Impossibile leggere l'elenco dei progetti.": "无法读取项目列表。",
+    "Progetto": "项目",
+    "Proprietario": "所有者",
+    "Visibilità": "可见性",
+    "pubblico": "公开",
+    "privato": "私有",
+    "cambiato da {u} il {d}": "由 {u} 于 {d} 更改",
+    "amministratore": "管理员",
+    "sempre pubblico": "始终公开",
+    "{n} progetti mostrati su {t} ({pub} pubblici, {priv} privati).": "显示 {t} 个项目中的 {n} 个（{pub} 公开，{priv} 私有）。",
+    "Rendere pubblico il progetto «{name}» di {owner}? Lo vedranno e potranno aprirlo tutti gli utenti.": "将 {owner} 的项目\"{name}\"设为公开？所有用户都能看到并打开它。",
+    "Rendere privato il progetto «{name}» di {owner}? Lo vedrà solo il suo proprietario.": "将 {owner} 的项目\"{name}\"设为私有？只有其所有者能看到。",
+    "Rendi pubblico": "设为公开",
+    "Rendi privato": "设为私有",
+    "«{name}» ora è pubblico.": "\"{name}\" 现已公开。",
+    "«{name}» ora è privato.": "\"{name}\" 现已设为私有。",
+    "Mostra i progetti di questo utente": "显示该用户的项目",
+    "🔒 Rendi privato (amministratore)": "🔒 设为私有（管理员）",
+    "🌐 Rendi pubblico (amministratore)": "🌐 设为公开（管理员）",
   },
   fr: {
     "1 cm": "1 cm",
@@ -6013,6 +6108,28 @@ const I18N = {
     "{n} utenti registrati.": "{n} utilisateurs inscrits.",
     "Progetti con proprietario: {p}; progetti generici (sempre pubblici): {g}.": "Projets avec propriétaire : {p} ; projets génériques (toujours publics) : {g}.",
     "Il backend è configurato per usare i file JSON (nessun database).": "Le backend est configuré pour utiliser des fichiers JSON (pas de base de données).",
+    "Cerca per nome, proprietario o cartella…": "Chercher par nom, propriétaire ou dossier…",
+    "Solo privati": "Privés uniquement",
+    "Da amministratore puoi rendere pubblico o privato qualunque progetto con un proprietario; il proprietario viene indicato e resta traccia di chi ha fatto l'ultimo cambio. I progetti generici (senza proprietario) sono sempre pubblici. Un clic su un utente nella tabella qui sopra mostra solo i suoi progetti.": "En tant qu’administrateur, tu peux rendre public ou privé tout projet ayant un propriétaire ; le propriétaire est indiqué et le dernier changement est tracé. Les projets génériques (sans propriétaire) sont toujours publics. Un clic sur un utilisateur dans le tableau ci-dessus n’affiche que ses projets.",
+    "Impossibile leggere l'elenco dei progetti.": "Impossible de lire la liste des projets.",
+    "Progetto": "Projet",
+    "Proprietario": "Propriétaire",
+    "Visibilità": "Visibilité",
+    "pubblico": "public",
+    "privato": "privé",
+    "cambiato da {u} il {d}": "modifié par {u} le {d}",
+    "amministratore": "administrateur",
+    "sempre pubblico": "toujours public",
+    "{n} progetti mostrati su {t} ({pub} pubblici, {priv} privati).": "{n} projets affichés sur {t} ({pub} publics, {priv} privés).",
+    "Rendere pubblico il progetto «{name}» di {owner}? Lo vedranno e potranno aprirlo tutti gli utenti.": "Rendre public le projet « {name} » de {owner} ? Tous les utilisateurs pourront le voir et l’ouvrir.",
+    "Rendere privato il progetto «{name}» di {owner}? Lo vedrà solo il suo proprietario.": "Rendre privé le projet « {name} » de {owner} ? Seul son propriétaire le verra.",
+    "Rendi pubblico": "Rendre public",
+    "Rendi privato": "Rendre privé",
+    "«{name}» ora è pubblico.": "« {name} » est maintenant public.",
+    "«{name}» ora è privato.": "« {name} » est maintenant privé.",
+    "Mostra i progetti di questo utente": "Afficher les projets de cet utilisateur",
+    "🔒 Rendi privato (amministratore)": "🔒 Rendre privé (administrateur)",
+    "🌐 Rendi pubblico (amministratore)": "🌐 Rendre public (administrateur)",
   },
 };
 let currentLang = 'it';
@@ -9687,7 +9804,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.33.0';
+const GUIDE_VERSION = '2.34.0';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -9968,14 +10085,15 @@ html:`<ul><li><b>Account</b>: registrazione, accesso (anche "ricordami"), recupe
 <li><b>☁ Libreria</b>: se il progetto è già collegato alla libreria, un clic lo sovrascrive subito; la prima volta chiede nome, cartella e condivisione. File → "Salva in libreria (server)" riapre sempre la finestra completa (per salvare con un altro nome).</li>
 <li><b>Libreria progetti</b> in stile Esplora risorse: cartelle annidate, trascinamento, tasto destro con copia, taglia, incolla, rinomina, elimina.</li>
 <li><b>🔍 Ricerca</b>: la casella in alto nella finestra della libreria cerca in <b>tutte le cartelle</b> insieme, anche nella libreria comune, senza sapere dove si trova il file. Cerca nel nome del progetto, nei nomi delle cartelle e nell'autore dei progetti condivisi; ignora maiuscole e accenti e trova i progetti che contengono tutte le parole scritte (anche solo una parte: "scatol" trova "scatola" e "scatole"). Sotto ogni risultato c'è il suo percorso: un clic porta nella cartella. Esc o "✕ Annulla ricerca" tornano all'elenco normale.</li>
-<li><b>Privato o pubblico</b>: accanto al nome di ogni progetto c'è la sua visibilità: <b>🔒</b> privato (lo vedi solo tu), <b>🌐</b> pubblico (lo vedono tutti gli utenti), <b>🌐 generico</b>. I tuoi progetti si rendono pubblici o privati in qualsiasi momento col tasto destro nella libreria ("🌐 Rendi pubblico" / "🔒 Rendi privato"), senza doverli risalvare; la scelta si fa anche al primo salvataggio. I progetti <b>generici</b>, cioè senza proprietario, sono <b>sempre pubblici</b>: tutti li vedono e li aprono, nessuno può renderli privati, modificarli o eliminarli. I progetti pubblici compaiono anche tra i <a data-topic="componenti">componenti</a>; aprendo un progetto altrui (o generico) e salvandolo si crea una copia tua.</li>
+<li><b>Privato o pubblico</b>: accanto al nome di ogni progetto c'è la sua visibilità: <b>🔒</b> privato (lo vedi solo tu), <b>🌐</b> pubblico (lo vedono tutti gli utenti), <b>🌐 generico</b>. I tuoi progetti si rendono pubblici o privati in qualsiasi momento col tasto destro nella libreria ("🌐 Rendi pubblico" / "🔒 Rendi privato"), senza doverli risalvare; la scelta si fa anche al primo salvataggio. I progetti degli altri non puoi cambiarli, salvo che tu sia <a data-topic="amministrazione">amministratore</a>. I progetti <b>generici</b>, cioè senza proprietario, sono <b>sempre pubblici</b>: tutti li vedono e li aprono, nessuno può renderli privati, modificarli o eliminarli. I progetti pubblici compaiono anche tra i <a data-topic="componenti">componenti</a>; aprendo un progetto altrui (o generico) e salvandolo si crea una copia tua.</li>
 <li><b>Versioni</b>: ogni salvataggio conserva il precedente (fino a 30); puoi aprire una versione in una scheda o ripristinarla.</li></ul>` },
 
 { id:'amministrazione', cat:'Salvare ed esportare', title:'Amministrazione (stato del database e utenti)', keys:'amministratore admin database connesso stato utenti elenco sqlite mysql server copia sicurezza',
 html:`<p>Gli <b>amministratori</b> trovano nella finestra dell'account (👤) il pulsante <b>🛠 Amministrazione</b>. Chi è amministratore si decide nel file <code>api/config.php</code> (<code>ADMIN_USERS</code>); se l'elenco è vuoto, è amministratore il primo utente registrato.</p>
 <ul><li><b>Stato del database</b>: un indicatore verde "Connesso" (o rosso "Non connesso") con il database in uso (SQLite o MySQL), la versione, il file e la sua dimensione, la modalità, la data della migrazione dai vecchi file, le copie di sicurezza giornaliere e quanti utenti, progetti (pubblici, privati, generici) e cartelle contiene. Se il database configurato non è disponibile e il server sta usando i file JSON, compare un avviso arancione.</li>
 <li><b>Utenti</b>: tutti gli utenti registrati con email, data di registrazione, ultimo accesso, ultimo salvataggio e numero di progetti (pubblici e privati) e cartelle. Si cerca per nome o email e si ordina cliccando sull'intestazione delle colonne.</li></ul>
-<p>Gli amministratori <b>non</b> possono rendere pubblici o privati i progetti degli altri: la visibilità di un progetto la sceglie solo il suo proprietario, quando è collegato (vedi <a data-topic="libreria">Libreria</a>). All'uscita dall'account la finestra si chiude e i dati vengono cancellati dal browser.</p>` },
+<ul><li><b>Progetti</b>: tutti i progetti di tutti gli utenti, <b>privati compresi</b>, con proprietario, cartella, visibilità e data di modifica; si cercano per nome, proprietario o cartella, si filtrano con "Solo privati" e un clic su un utente nella tabella degli utenti mostra solo i suoi. Il pulsante di ogni riga rende il progetto <b>pubblico</b> o <b>privato</b> (per i progetti di altri chiede conferma). Resta traccia di chi ha fatto l'ultimo cambio e quando ("cambiato da … (amministratore)"). I progetti generici restano sempre pubblici.</li></ul>
+<p>Anche nella libreria, col tasto destro su un progetto pubblico di un altro utente, l'amministratore trova "Rendi privato (amministratore)". Gli utenti normali, invece, cambiano la visibilità solo dei propri progetti (vedi <a data-topic="libreria">Libreria</a>). All'uscita dall'account la finestra si chiude e i dati vengono cancellati dal browser.</p>` },
 
 { id:'esporta', cat:'Salvare ed esportare', title:'Esportare e stampare', keys:'esportare svg pdf multipagina stampa di prova formato a4 a3 scala reale',
 html:`<p>Dal menu <b>Stampa</b>:</p>
@@ -10020,6 +10138,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.34</b> — L'<a data-topic="amministrazione">amministratore</a> può rendere pubblico o privato qualunque progetto, dalla nuova sezione Progetti della finestra Amministrazione.</li>
 <li><b>2.33</b> — Finestra <a data-topic="amministrazione">Amministrazione</a>: stato del database ed elenco di tutti gli utenti.</li>
 <li><b>2.32</b> — Libreria su database (SQLite, pronta per MySQL); progetti pubblici o privati modificabili in qualsiasi momento; i progetti generici sono sempre pubblici.</li>
 <li><b>2.31.2</b> — Libreria online più sicura: i salvataggi contemporanei di più utenti non possono più far sparire progetti o account dall'elenco.</li>
@@ -10297,11 +10416,64 @@ async function refreshAdmin(){
     const data = await apiFetch('admin_users.php', {method:'GET'});
     adminState.users = data.users || []; adminState.generic = data.genericProjects || 0;
     renderAdminUsers();
+    await loadAdminProjects();
   }catch(err){
     document.getElementById('adminUsersTable').innerHTML = '';
     document.getElementById('adminUsersSummary').textContent = err.message || translate('Impossibile leggere l\'elenco degli utenti.');
   }
 }
+
+/* progetti di tutti gli utenti (amministratore): visibilità */
+const adminProj = { list:[], sort:'updated', dir:-1 };
+async function loadAdminProjects(){
+  try{
+    const data = await apiFetch('admin_projects.php', {method:'GET'});
+    adminProj.list = data.projects || [];
+    renderAdminProjects();
+  }catch(err){
+    document.getElementById('adminProjectsTable').innerHTML = '';
+    document.getElementById('adminProjectsSummary').textContent = err.message || translate('Impossibile leggere l\'elenco dei progetti.');
+  }
+}
+function renderAdminProjects(){
+  const q = (document.getElementById('adminProjSearch').value || '').toLowerCase().trim();
+  const onlyPriv = document.getElementById('adminProjOnlyPrivate').checked;
+  let rows = adminProj.list.filter(p=> (!onlyPriv || !p.shared) && (!q || (p.name||'').toLowerCase().includes(q) || (p.ownerName||'').toLowerCase().includes(q) || (p.folder||'').toLowerCase().includes(q)));
+  const k = adminProj.sort, d = adminProj.dir;
+  rows.sort((a,b)=>{ const x = k==='vis' ? (a.generic?2:(a.shared?1:0)) : (a[k] ?? ''), y = k==='vis' ? (b.generic?2:(b.shared?1:0)) : (b[k] ?? ''); return (typeof x==='number' && typeof y==='number' ? x-y : String(x).localeCompare(String(y))) * d; });
+  const cols = [['name','Progetto'],['ownerName','Proprietario'],['vis','Visibilità'],['updated','Ultima modifica'],['','']];
+  const t = document.getElementById('adminProjectsTable');
+  t.innerHTML = '<thead><tr>' + cols.map(([key,l])=>`<th data-k="${key}">${escapeHTML(translate(l))}${key && k===key ? (d>0 ? ' ▲' : ' ▼') : ''}</th>`).join('') + '</tr></thead><tbody>'
+    + rows.map(p=>{
+        const vis = p.generic ? '🌐 ' + translate('generico') : (p.shared ? '🌐 ' + translate('pubblico') : '🔒 ' + translate('privato'));
+        const who = p.changedBy ? `<div class="hint" style="margin:0;font-size:10.5px;">${escapeHTML(tpl('cambiato da {u} il {d}', {u:p.changedBy, d:fmtDateTime(p.changedAt)}))}${p.changedByAdmin ? ' (' + escapeHTML(translate('amministratore')) + ')' : ''}</div>` : '';
+        const act = p.generic ? `<span class="hint" style="margin:0;">${escapeHTML(translate('sempre pubblico'))}</span>`
+          : `<button class="btn" data-id="${escapeHTML(p.id)}" data-shared="${p.shared?'0':'1'}" style="width:auto;margin:0;padding:3px 9px;font-size:11.5px;">${escapeHTML(translate(p.shared ? '🔒 Rendi privato' : '🌐 Rendi pubblico'))}</button>`;
+        return `<tr><td>${escapeHTML(p.name)}${p.folder ? `<div class="hint" style="margin:0;font-size:10.5px;">📁 ${escapeHTML(p.folder)}</div>` : ''}</td>`
+          + `<td>${p.generic ? '—' : escapeHTML(p.ownerName||'?')}${currentUser && p.ownerId===currentUser.id ? ' <span style="color:var(--ink-dim);">(' + escapeHTML(translate('tu')) + ')</span>' : ''}</td>`
+          + `<td>${vis}${who}</td><td>${fmtDateTime(p.updated)}</td><td>${act}</td></tr>`;
+      }).join('') + '</tbody>';
+  t.querySelectorAll('th[data-k]').forEach(th=>{ if(!th.dataset.k) return; th.onclick = ()=>{ const key = th.dataset.k; if(adminProj.sort===key) adminProj.dir = -adminProj.dir; else { adminProj.sort = key; adminProj.dir = 1; } renderAdminProjects(); }; });
+  t.querySelectorAll('button[data-id]').forEach(b=> b.onclick = ()=> adminSetShared(adminProj.list.find(p=>p.id===b.dataset.id), b.dataset.shared==='1'));
+  const pub = adminProj.list.filter(p=>p.shared).length;
+  document.getElementById('adminProjectsSummary').textContent = tpl('{n} progetti mostrati su {t} ({pub} pubblici, {priv} privati).', {n:rows.length, t:adminProj.list.length, pub, priv:adminProj.list.length-pub});
+}
+async function adminSetShared(p, shared){
+  if(!p) return;
+  const mine = currentUser && p.ownerId===currentUser.id;
+  if(!mine){
+    const msg = shared
+      ? tpl('Rendere pubblico il progetto «{name}» di {owner}? Lo vedranno e potranno aprirlo tutti gli utenti.', {name:p.name, owner:p.ownerName})
+      : tpl('Rendere privato il progetto «{name}» di {owner}? Lo vedrà solo il suo proprietario.', {name:p.name, owner:p.ownerName});
+    if(!(await showConfirm(msg, shared ? 'Rendi pubblico' : 'Rendi privato'))) return;
+  }
+  try{
+    await apiFetch('set_shared.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, shared})});
+    showToast(shared ? tpl('«{name}» ora è pubblico.', {name:p.name}) : tpl('«{name}» ora è privato.', {name:p.name}), false);
+    await refreshAdmin();
+  }catch(err){ showToast(err.message || 'Impossibile cambiare la visibilità del progetto.', true); }
+}
+
 function renderAdminUsers(){
   const q = (document.getElementById('adminUserSearch').value || '').toLowerCase().trim();
   const cols = [['username','Utente'],['email','Email'],['created','Registrato'],['lastLogin','Ultimo accesso'],['lastSave','Ultimo salvataggio'],['projects','Progetti'],['public','Pubblici'],['private','Privati'],['folders','Cartelle']];
@@ -10310,10 +10482,11 @@ function renderAdminUsers(){
   rows.sort((a,b)=>{ const x = a[k] ?? '', y = b[k] ?? ''; return (typeof x==='number' && typeof y==='number' ? x-y : String(x).localeCompare(String(y))) * d; });
   const t = document.getElementById('adminUsersTable');
   t.innerHTML = '<thead><tr>' + cols.map(([key,l])=>`<th data-k="${key}">${escapeHTML(translate(l))}${k===key ? (d>0 ? ' ▲' : ' ▼') : ''}</th>`).join('') + '</tr></thead><tbody>'
-    + rows.map(u=>`<tr><td>${escapeHTML(u.username)}${u.isAdmin ? ' <span class="admin-badge ok" style="font-size:10px;padding:0 6px;">admin</span>' : ''}${currentUser && u.id===currentUser.id ? ' <span style="color:var(--ink-dim);">(' + escapeHTML(translate('tu')) + ')</span>' : ''}</td>`
+    + rows.map(u=>`<tr data-user="${escapeHTML(u.username)}" style="cursor:pointer;" title="${escapeHTML(translate('Mostra i progetti di questo utente'))}"><td>${escapeHTML(u.username)}${u.isAdmin ? ' <span class="admin-badge ok" style="font-size:10px;padding:0 6px;">admin</span>' : ''}${currentUser && u.id===currentUser.id ? ' <span style="color:var(--ink-dim);">(' + escapeHTML(translate('tu')) + ')</span>' : ''}</td>`
       + `<td>${escapeHTML(u.email)}</td><td>${fmtDateTime(u.created)}</td><td>${fmtDateTime(u.lastLogin)}</td><td>${fmtDateTime(u.lastSave)}</td>`
       + `<td class="num">${u.projects}</td><td class="num">${u.public}</td><td class="num">${u.private}</td><td class="num">${u.folders}</td></tr>`).join('') + '</tbody>';
   t.querySelectorAll('th').forEach(th=> th.onclick = ()=>{ const key = th.dataset.k; if(adminState.sort===key) adminState.dir = -adminState.dir; else { adminState.sort = key; adminState.dir = 1; } renderAdminUsers(); });
+  t.querySelectorAll('tr[data-user]').forEach(tr=> tr.onclick = ()=>{ const s = document.getElementById('adminProjSearch'); s.value = tr.dataset.user; renderAdminProjects(); s.scrollIntoView && s.scrollIntoView({block:'center'}); });
   const tot = adminState.users.reduce((s,u)=>s+u.projects,0);
   document.getElementById('adminUsersSummary').textContent = (q ? tpl('{n} utenti trovati su {t}.', {n:rows.length, t:adminState.users.length}) : tpl('{n} utenti registrati.', {n:adminState.users.length}))
     + ' ' + tpl('Progetti con proprietario: {p}; progetti generici (sempre pubblici): {g}.', {p:tot, g:adminState.generic});
@@ -12568,10 +12741,19 @@ function libProjectContextItems(it){
     );
   } else if(it.generic){
     items.push('sep', {label: translate('🌐 Progetto generico: sempre pubblico'), disabled:true, action:()=>{}});
+  } else if(currentUser && currentUser.isAdmin){
+    items.push('sep', it.shared ? {label: translate('🔒 Rendi privato (amministratore)'), action:()=> adminSetSharedFromLibrary(it, false)}
+                                : {label: translate('🌐 Rendi pubblico (amministratore)'), action:()=> adminSetSharedFromLibrary(it, true)});
   }
   return items;
 }
-// Pubblico/privato senza risalvare il progetto (solo il proprietario)
+async function adminSetSharedFromLibrary(it, shared){
+  const msg = shared ? tpl('Rendere pubblico il progetto «{name}» di {owner}? Lo vedranno e potranno aprirlo tutti gli utenti.', {name:it.name, owner:it.ownerName||'?'})
+                     : tpl('Rendere privato il progetto «{name}» di {owner}? Lo vedrà solo il suo proprietario.', {name:it.name, owner:it.ownerName||'?'});
+  if(!(await showConfirm(msg, shared ? 'Rendi pubblico' : 'Rendi privato'))) return;
+  await setProjectShared(it, shared);
+}
+// Pubblico/privato senza risalvare il progetto (il proprietario, o un amministratore)
 async function setProjectShared(it, shared){
   try{
     await apiFetch('set_shared.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:it.id, shared})});
@@ -12736,6 +12918,9 @@ document.getElementById('adminModalClose').onclick = ()=> document.getElementByI
 setupOverlayClickClose(document.getElementById('adminModal'), ()=> document.getElementById('adminModal').classList.remove('open'));
 document.getElementById('adminRefresh').onclick = refreshAdmin;
 document.getElementById('adminUserSearch').addEventListener('input', renderAdminUsers);
+document.getElementById('adminProjSearch').addEventListener('input', renderAdminProjects);
+document.getElementById('adminProjSearch').addEventListener('keydown', e=> e.stopPropagation());
+document.getElementById('adminProjOnlyPrivate').onchange = renderAdminProjects;
 document.getElementById('adminUserSearch').addEventListener('keydown', e=> e.stopPropagation());
 function closeFold3D(){ stopFold3D(); if(state.foldCheck) endFoldCheckOverlay(); document.getElementById('fold3dModal').classList.remove('open'); }
 document.getElementById('fold3dClose').onclick = closeFold3D;
@@ -12878,8 +13063,9 @@ const PRIVATE_MODALS = ['libraryModal','versionsModal','saveLibraryModal','saveC
 // che lo mostrano (anche se ridotte a icona): va fatto all'uscita, allo scadere dell'accesso e al cambio utente.
 function clearPrivateLibraryData(){
   libCacheItems = []; libCacheFolders = []; libCurrentFolderId = null; libSearchQuery = ''; libClipboard = null;
-  ['libList','libTree','libBreadcrumb','libOpenAllWrap','versionsList','sharedComponentsList','adminDbInfo','adminUsersTable','adminUsersSummary'].forEach(id=>{ const e = document.getElementById(id); if(e) e.innerHTML = ''; });
+  ['libList','libTree','libBreadcrumb','libOpenAllWrap','versionsList','sharedComponentsList','adminDbInfo','adminUsersTable','adminUsersSummary','adminProjectsTable','adminProjectsSummary'].forEach(id=>{ const e = document.getElementById(id); if(e) e.innerHTML = ''; });
   if(typeof adminState !== 'undefined') adminState.users = [];
+  if(typeof adminProj !== 'undefined') adminProj.list = [];
   const ls = document.getElementById('libSearch'); if(ls) ls.value = '';
   const sf = document.getElementById('saveLibFolder'); if(sf) sf.innerHTML = '';
   const sn = document.getElementById('saveLibName'); if(sn) sn.value = '';

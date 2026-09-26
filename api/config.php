@@ -45,8 +45,9 @@ define('MAX_PAYLOAD_BYTES', 15 * 1024 * 1024); // 15 MB
  * Nomi utente che possono aprire la finestra "Amministrazione" dell'app (stato
  * del database, elenco di tutti gli utenti). Esempio: ['filippo'].
  * Se l'elenco è vuoto, è amministratore il PRIMO utente registrato.
- * Gli amministratori NON possono cambiare la visibilità dei progetti altrui:
- * pubblico/privato resta una scelta del solo proprietario.
+ * Gli amministratori possono anche rendere pubblico o privato qualunque
+ * progetto con proprietario (dalla finestra Amministrazione); i progetti
+ * generici restano sempre pubblici.
  */
 define('ADMIN_USERS', []);
 define('STORAGE', 'sqlite');
