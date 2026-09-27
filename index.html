@@ -377,7 +377,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   padding:9px 10px;border-radius:5px;font-size:12.5px;cursor:pointer;
 }
 .dropdown-menu button:hover{background:var(--bg-1);}
-.dropdown-menu .menu-sep{height:1px;background:var(--line-soft);margin:5px 2px;}
+.dropdown-menu .menu-sep{height:1px;background:var(--line);margin:6px 4px;opacity:.9;}
 
 /* menu contestuale (tasto destro) — stesso aspetto del menu a tendina, ma
    posizionato liberamente alle coordinate del clic invece che ancorato */
@@ -404,6 +404,10 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   align-items:center; justify-content:center; z-index:200;
 }
 .modal-overlay.open{display:flex;}
+#btnQuickSave.sync-ok{ color:#3fbf72; }
+#btnQuickSave.sync-lib{ color:#8ecbff; }
+#btnQuickSave.sync-warn{ color:#ffb340; }
+#btnQuickSave.sync-err{ color:#ff6a60; font-weight:700; }
 .libvis{ font-size:11px; opacity:.85; }
 .admin-badge{ font-size:12px; font-weight:700; padding:2px 10px; border-radius:10px; background:rgba(128,128,128,.2); }
 .admin-badge.ok{ background:rgba(47,158,90,.2); color:#3fbf72; }
@@ -583,7 +587,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
     <input id="filename" type="text" value="disegno" title="Nome file">
   </div>
   <div class="grp">
-    <button class="iconbtn" id="btnQuickSave" title="Salva subito una copia locale nel browser">💾 Salva</button>
+    <button class="iconbtn" id="btnQuickSave" title="Il disegno viene salvato automaticamente nel browser a ogni modifica.">✓ Salvato</button>
   </div>
   <div class="grp">
     <button class="iconbtn" id="btnSaveLibraryTop" disabled title="Accedi al tuo account per salvare in libreria (server)">☁ Libreria</button>
@@ -650,11 +654,11 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
     <div class="dropdown-menu" id="fileMenu">
       <button data-action="generate-box">📦 Genera scatola…</button>
       <div class="menu-sep"></div>
-      <button data-action="save-project">Salva progetto (.json)</button>
-      <button data-action="open-project">Apri progetto (.json)</button>
-      <div class="menu-sep"></div>
       <button data-action="save-library">Salva in libreria (server)</button>
       <button data-action="open-library">Apri dalla libreria (server)</button>
+      <div class="menu-sep"></div>
+      <button data-action="save-project" title="Scarica sul tuo computer una copia completa del progetto: per archiviarla, passarla a qualcuno o riaprirla su un altro computer senza account">⬇ Scarica una copia del progetto (.json)</button>
+      <button data-action="open-project" title="Apri un progetto salvato in precedenza come file .json">📂 Apri un progetto da file (.json)</button>
       <button data-action="open-drive">Apri da Google Drive</button>
     </div>
   </div>
@@ -662,9 +666,11 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
     <button class="btn primary" style="width:auto;margin:0;padding:7px 14px;" id="btnPrintMenu">Stampa ▾</button>
     <div class="dropdown-menu" id="printMenu">
       <button data-action="export-svg">Esporta SVG (taglio/stampa)</button>
-      <button data-action="export-silhouette">✂ Esporta per Silhouette Cameo (DXF)…</button>
       <button data-action="export-pdf">Esporta PDF</button>
       <button data-action="export-pdf-tiled">Esporta PDF multi-pagina (disegno grande)…</button>
+      <div class="menu-sep"></div>
+      <button data-action="export-silhouette">✂ Esporta per Silhouette Cameo (DXF)…</button>
+      <div class="menu-sep"></div>
       <button data-action="print-proof">Stampa di prova (A3/A4/A5)…</button>
     </div>
   </div>
@@ -673,15 +679,17 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
     <div class="dropdown-menu" id="toolsMenu">
       <button data-action="check-closures">Verifica chiusure percorsi</button>
       <button data-action="check-overlaps">Verifica sovrapposizioni e duplicati</button>
-      <button data-action="cut-preview">Anteprima taglio (fustella)</button>
-      <button data-action="fold-3d">🧊 Anteprima 3D piegata</button>
-      <button data-action="symmetry">⇅ Simmetria…</button>
-      <button data-action="fold-sequence">📋 Sequenza di piegatura…</button>
       <div class="menu-sep"></div>
       <button data-action="weld-points">Salda punti vicini…</button>
       <button data-action="close-all-paths">Chiudi tutti i percorsi aperti</button>
       <div class="menu-sep"></div>
+      <button data-action="cut-preview">Anteprima taglio (fustella)</button>
+      <button data-action="fold-3d">🧊 Anteprima 3D piegata</button>
+      <button data-action="fold-sequence">📋 Sequenza di piegatura…</button>
+      <div class="menu-sep"></div>
+      <button data-action="symmetry">⇅ Simmetria…</button>
       <button data-action="scale-drawing">Scala / Proporziona disegno…</button>
+      <div class="menu-sep"></div>
       <button data-action="manage-fonts">Gestisci font personalizzati…</button>
     </div>
   </div>
@@ -760,7 +768,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.34.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.35.1</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2378,6 +2386,30 @@ const I18N = {
     "Mostra i progetti di questo utente": "Show this user’s projects",
     "🔒 Rendi privato (amministratore)": "🔒 Make private (administrator)",
     "🌐 Rendi pubblico (amministratore)": "🌐 Make public (administrator)",
+    "spazio del browser esaurito o salvataggio non consentito (navigazione privata?)": "browser storage full or saving not allowed (private browsing?)",
+    "salvato": "saved",
+    "⚠ Non salvato": "⚠ Not saved",
+    "La copia nel browser non è stata salvata: {e}. Salva il progetto in libreria o come file per non perderlo.": "The browser copy was not saved: {e}. Save the project to the library or as a file so you don’t lose it.",
+    "● Da salvare in libreria": "● Not yet in library",
+    "Salvato nel browser alle {t}.": "Saved in the browser at {t}.",
+    "Le ultime modifiche non sono ancora in libreria: clic per salvarle.": "The latest changes are not in the library yet: click to save them.",
+    "☁ Allineato": "☁ In sync",
+    "Salvato nel browser e in libreria: le due copie coincidono.": "Saved in the browser and in the library: both copies match.",
+    "Versione della libreria del {d}.": "Library version of {d}.",
+    "… Salvataggio": "… Saving",
+    "✓ Salvato": "✓ Saved",
+    "Salvato automaticamente nel browser alle {t}.": "Saved automatically in the browser at {t}.",
+    "Il disegno viene salvato automaticamente nel browser a ogni modifica.": "The drawing is saved automatically in the browser at every change.",
+    "Per averlo anche su altri computer salvalo in libreria.": "To have it on other computers too, save it to the library.",
+    "«{name}» non è più nella tua libreria: la scheda resta come disegno locale.": "\"{name}\" is no longer in your library: the tab stays as a local drawing.",
+    "«{name}»: in libreria c'è una versione più recente (salvata il {d}), ma in questo browser ci sono modifiche non ancora salvate in libreria. Carico la versione della libreria? Le modifiche locali non si perdono: restano in una nuova scheda «{name} (copia locale)».": "\"{name}\": the library has a newer version (saved on {d}), but this browser has changes not yet saved to the library. Load the library version? Local changes are not lost: they stay in a new tab \"{name} (copia locale)\".",
+    "Versione più recente in libreria": "Newer version in the library",
+    "{name} (copia locale)": "{name} (local copy)",
+    "Aggiornati all'ultima versione della libreria: {names}.": "Updated to the latest library version: {names}.",
+    "⬇ Scarica una copia del progetto (.json)": "⬇ Download a copy of the project (.json)",
+    "📂 Apri un progetto da file (.json)": "📂 Open a project from file (.json)",
+    "Scarica sul tuo computer una copia completa del progetto: per archiviarla, passarla a qualcuno o riaprirla su un altro computer senza account": "Download a full copy of the project to your computer: to archive it, pass it to someone or reopen it on another computer without an account",
+    "Apri un progetto salvato in precedenza come file .json": "Open a project previously saved as a .json file",
   },
   de: {
     "1 cm": "1 cm",
@@ -3316,6 +3348,30 @@ const I18N = {
     "Mostra i progetti di questo utente": "Projekte dieses Benutzers anzeigen",
     "🔒 Rendi privato (amministratore)": "🔒 Privat machen (Administrator)",
     "🌐 Rendi pubblico (amministratore)": "🌐 Öffentlich machen (Administrator)",
+    "spazio del browser esaurito o salvataggio non consentito (navigazione privata?)": "Browserspeicher voll oder Speichern nicht erlaubt (privates Surfen?)",
+    "salvato": "gespeichert",
+    "⚠ Non salvato": "⚠ Nicht gespeichert",
+    "La copia nel browser non è stata salvata: {e}. Salva il progetto in libreria o come file per non perderlo.": "Die Kopie im Browser wurde nicht gespeichert: {e}. Speichere das Projekt in der Bibliothek oder als Datei, um es nicht zu verlieren.",
+    "● Da salvare in libreria": "● Noch nicht in der Bibliothek",
+    "Salvato nel browser alle {t}.": "Im Browser gespeichert um {t}.",
+    "Le ultime modifiche non sono ancora in libreria: clic per salvarle.": "Die letzten Änderungen sind noch nicht in der Bibliothek: Klicken zum Speichern.",
+    "☁ Allineato": "☁ Synchron",
+    "Salvato nel browser e in libreria: le due copie coincidono.": "Im Browser und in der Bibliothek gespeichert: Beide Kopien stimmen überein.",
+    "Versione della libreria del {d}.": "Bibliotheksversion vom {d}.",
+    "… Salvataggio": "… Speichern",
+    "✓ Salvato": "✓ Gespeichert",
+    "Salvato automaticamente nel browser alle {t}.": "Automatisch im Browser gespeichert um {t}.",
+    "Il disegno viene salvato automaticamente nel browser a ogni modifica.": "Die Zeichnung wird bei jeder Änderung automatisch im Browser gespeichert.",
+    "Per averlo anche su altri computer salvalo in libreria.": "Um sie auch auf anderen Computern zu haben, speichere sie in der Bibliothek.",
+    "«{name}» non è più nella tua libreria: la scheda resta come disegno locale.": "„{name}“ ist nicht mehr in deiner Bibliothek: Der Tab bleibt als lokale Zeichnung.",
+    "«{name}»: in libreria c'è una versione più recente (salvata il {d}), ma in questo browser ci sono modifiche non ancora salvate in libreria. Carico la versione della libreria? Le modifiche locali non si perdono: restano in una nuova scheda «{name} (copia locale)».": "„{name}“: In der Bibliothek gibt es eine neuere Version (gespeichert am {d}), aber in diesem Browser gibt es noch nicht gespeicherte Änderungen. Die Bibliotheksversion laden? Die lokalen Änderungen gehen nicht verloren: Sie bleiben in einem neuen Tab „{name} (copia locale)“.",
+    "Versione più recente in libreria": "Neuere Version in der Bibliothek",
+    "{name} (copia locale)": "{name} (lokale Kopie)",
+    "Aggiornati all'ultima versione della libreria: {names}.": "Auf die neueste Bibliotheksversion aktualisiert: {names}.",
+    "⬇ Scarica una copia del progetto (.json)": "⬇ Kopie des Projekts herunterladen (.json)",
+    "📂 Apri un progetto da file (.json)": "📂 Projekt aus Datei öffnen (.json)",
+    "Scarica sul tuo computer una copia completa del progetto: per archiviarla, passarla a qualcuno o riaprirla su un altro computer senza account": "Lade eine vollständige Kopie des Projekts auf deinen Computer: zum Archivieren, Weitergeben oder Öffnen auf einem anderen Computer ohne Konto",
+    "Apri un progetto salvato in precedenza come file .json": "Ein zuvor als .json-Datei gespeichertes Projekt öffnen",
   },
   es: {
     "1 cm": "1 cm",
@@ -4254,6 +4310,30 @@ const I18N = {
     "Mostra i progetti di questo utente": "Mostrar los proyectos de este usuario",
     "🔒 Rendi privato (amministratore)": "🔒 Hacer privado (administrador)",
     "🌐 Rendi pubblico (amministratore)": "🌐 Hacer público (administrador)",
+    "spazio del browser esaurito o salvataggio non consentito (navigazione privata?)": "espacio del navegador agotado o guardado no permitido (navegación privada?)",
+    "salvato": "guardado",
+    "⚠ Non salvato": "⚠ No guardado",
+    "La copia nel browser non è stata salvata: {e}. Salva il progetto in libreria o come file per non perderlo.": "La copia en el navegador no se ha guardado: {e}. Guarda el proyecto en la biblioteca o como archivo para no perderlo.",
+    "● Da salvare in libreria": "● Pendiente en biblioteca",
+    "Salvato nel browser alle {t}.": "Guardado en el navegador a las {t}.",
+    "Le ultime modifiche non sono ancora in libreria: clic per salvarle.": "Los últimos cambios aún no están en la biblioteca: haz clic para guardarlos.",
+    "☁ Allineato": "☁ Sincronizado",
+    "Salvato nel browser e in libreria: le due copie coincidono.": "Guardado en el navegador y en la biblioteca: ambas copias coinciden.",
+    "Versione della libreria del {d}.": "Versión de la biblioteca del {d}.",
+    "… Salvataggio": "… Guardando",
+    "✓ Salvato": "✓ Guardado",
+    "Salvato automaticamente nel browser alle {t}.": "Guardado automáticamente en el navegador a las {t}.",
+    "Il disegno viene salvato automaticamente nel browser a ogni modifica.": "El dibujo se guarda automáticamente en el navegador con cada cambio.",
+    "Per averlo anche su altri computer salvalo in libreria.": "Para tenerlo también en otros ordenadores, guárdalo en la biblioteca.",
+    "«{name}» non è più nella tua libreria: la scheda resta come disegno locale.": "«{name}» ya no está en tu biblioteca: la pestaña queda como dibujo local.",
+    "«{name}»: in libreria c'è una versione più recente (salvata il {d}), ma in questo browser ci sono modifiche non ancora salvate in libreria. Carico la versione della libreria? Le modifiche locali non si perdono: restano in una nuova scheda «{name} (copia locale)».": "«{name}»: en la biblioteca hay una versión más reciente (guardada el {d}), pero en este navegador hay cambios aún no guardados en la biblioteca. ¿Cargo la versión de la biblioteca? Los cambios locales no se pierden: quedan en una pestaña nueva «{name} (copia locale)».",
+    "Versione più recente in libreria": "Versión más reciente en la biblioteca",
+    "{name} (copia locale)": "{name} (copia local)",
+    "Aggiornati all'ultima versione della libreria: {names}.": "Actualizados a la última versión de la biblioteca: {names}.",
+    "⬇ Scarica una copia del progetto (.json)": "⬇ Descargar una copia del proyecto (.json)",
+    "📂 Apri un progetto da file (.json)": "📂 Abrir un proyecto desde archivo (.json)",
+    "Scarica sul tuo computer una copia completa del progetto: per archiviarla, passarla a qualcuno o riaprirla su un altro computer senza account": "Descarga en tu ordenador una copia completa del proyecto: para archivarla, pasarla a alguien o abrirla en otro ordenador sin cuenta",
+    "Apri un progetto salvato in precedenza come file .json": "Abrir un proyecto guardado previamente como archivo .json",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -5192,6 +5272,30 @@ const I18N = {
     "Mostra i progetti di questo utente": "显示该用户的项目",
     "🔒 Rendi privato (amministratore)": "🔒 设为私有（管理员）",
     "🌐 Rendi pubblico (amministratore)": "🌐 设为公开（管理员）",
+    "spazio del browser esaurito o salvataggio non consentito (navigazione privata?)": "浏览器存储已满或不允许保存（隐私浏览？）",
+    "salvato": "已保存",
+    "⚠ Non salvato": "⚠ 未保存",
+    "La copia nel browser non è stata salvata: {e}. Salva il progetto in libreria o come file per non perderlo.": "浏览器中的副本未保存：{e}。请将项目保存到库或另存为文件，以免丢失。",
+    "● Da salvare in libreria": "● 尚未保存到库",
+    "Salvato nel browser alle {t}.": "已于 {t} 保存在浏览器中。",
+    "Le ultime modifiche non sono ancora in libreria: clic per salvarle.": "最新更改尚未保存到库：点击保存。",
+    "☁ Allineato": "☁ 已同步",
+    "Salvato nel browser e in libreria: le due copie coincidono.": "已保存在浏览器和库中：两份副本一致。",
+    "Versione della libreria del {d}.": "库版本：{d}。",
+    "… Salvataggio": "… 正在保存",
+    "✓ Salvato": "✓ 已保存",
+    "Salvato automaticamente nel browser alle {t}.": "已于 {t} 自动保存在浏览器中。",
+    "Il disegno viene salvato automaticamente nel browser a ogni modifica.": "每次修改后图纸都会自动保存在浏览器中。",
+    "Per averlo anche su altri computer salvalo in libreria.": "要在其他电脑上使用，请保存到库。",
+    "«{name}» non è più nella tua libreria: la scheda resta come disegno locale.": "\"{name}\" 已不在你的库中：该标签页保留为本地图纸。",
+    "«{name}»: in libreria c'è una versione più recente (salvata il {d}), ma in questo browser ci sono modifiche non ancora salvate in libreria. Carico la versione della libreria? Le modifiche locali non si perdono: restano in una nuova scheda «{name} (copia locale)».": "\"{name}\"：库中有更新的版本（保存于 {d}），但此浏览器中有尚未保存到库的更改。要加载库中的版本吗？本地更改不会丢失：它们会保留在新标签页\"{name} (copia locale)\"中。",
+    "Versione più recente in libreria": "库中有更新版本",
+    "{name} (copia locale)": "{name}（本地副本）",
+    "Aggiornati all'ultima versione della libreria: {names}.": "已更新为库中的最新版本：{names}。",
+    "⬇ Scarica una copia del progetto (.json)": "⬇ 下载项目副本（.json）",
+    "📂 Apri un progetto da file (.json)": "📂 从文件打开项目（.json）",
+    "Scarica sul tuo computer una copia completa del progetto: per archiviarla, passarla a qualcuno o riaprirla su un altro computer senza account": "将项目的完整副本下载到你的电脑：用于归档、分享给他人，或在另一台电脑上无需账户打开",
+    "Apri un progetto salvato in precedenza come file .json": "打开之前保存为 .json 文件的项目",
   },
   fr: {
     "1 cm": "1 cm",
@@ -6130,6 +6234,30 @@ const I18N = {
     "Mostra i progetti di questo utente": "Afficher les projets de cet utilisateur",
     "🔒 Rendi privato (amministratore)": "🔒 Rendre privé (administrateur)",
     "🌐 Rendi pubblico (amministratore)": "🌐 Rendre public (administrateur)",
+    "spazio del browser esaurito o salvataggio non consentito (navigazione privata?)": "espace du navigateur saturé ou enregistrement non autorisé (navigation privée ?)",
+    "salvato": "enregistré",
+    "⚠ Non salvato": "⚠ Non enregistré",
+    "La copia nel browser non è stata salvata: {e}. Salva il progetto in libreria o come file per non perderlo.": "La copie dans le navigateur n’a pas été enregistrée : {e}. Enregistre le projet dans la bibliothèque ou en fichier pour ne pas le perdre.",
+    "● Da salvare in libreria": "● À enregistrer dans la bibliothèque",
+    "Salvato nel browser alle {t}.": "Enregistré dans le navigateur à {t}.",
+    "Le ultime modifiche non sono ancora in libreria: clic per salvarle.": "Les dernières modifications ne sont pas encore dans la bibliothèque : clique pour les enregistrer.",
+    "☁ Allineato": "☁ Synchronisé",
+    "Salvato nel browser e in libreria: le due copie coincidono.": "Enregistré dans le navigateur et dans la bibliothèque : les deux copies correspondent.",
+    "Versione della libreria del {d}.": "Version de la bibliothèque du {d}.",
+    "… Salvataggio": "… Enregistrement",
+    "✓ Salvato": "✓ Enregistré",
+    "Salvato automaticamente nel browser alle {t}.": "Enregistré automatiquement dans le navigateur à {t}.",
+    "Il disegno viene salvato automaticamente nel browser a ogni modifica.": "Le dessin est enregistré automatiquement dans le navigateur à chaque modification.",
+    "Per averlo anche su altri computer salvalo in libreria.": "Pour l’avoir aussi sur d’autres ordinateurs, enregistre-le dans la bibliothèque.",
+    "«{name}» non è più nella tua libreria: la scheda resta come disegno locale.": "« {name} » n’est plus dans ta bibliothèque : l’onglet reste un dessin local.",
+    "«{name}»: in libreria c'è una versione più recente (salvata il {d}), ma in questo browser ci sono modifiche non ancora salvate in libreria. Carico la versione della libreria? Le modifiche locali non si perdono: restano in una nuova scheda «{name} (copia locale)».": "« {name} » : la bibliothèque contient une version plus récente (enregistrée le {d}), mais ce navigateur a des modifications pas encore enregistrées dans la bibliothèque. Charger la version de la bibliothèque ? Les modifications locales ne sont pas perdues : elles restent dans un nouvel onglet « {name} (copia locale) ».",
+    "Versione più recente in libreria": "Version plus récente dans la bibliothèque",
+    "{name} (copia locale)": "{name} (copie locale)",
+    "Aggiornati all'ultima versione della libreria: {names}.": "Mis à jour avec la dernière version de la bibliothèque : {names}.",
+    "⬇ Scarica una copia del progetto (.json)": "⬇ Télécharger une copie du projet (.json)",
+    "📂 Apri un progetto da file (.json)": "📂 Ouvrir un projet depuis un fichier (.json)",
+    "Scarica sul tuo computer una copia completa del progetto: per archiviarla, passarla a qualcuno o riaprirla su un altro computer senza account": "Télécharge sur ton ordinateur une copie complète du projet : pour l’archiver, la transmettre à quelqu’un ou la rouvrir sur un autre ordinateur sans compte",
+    "Apri un progetto salvato in precedenza come file .json": "Ouvrir un projet enregistré auparavant en fichier .json",
   },
 };
 let currentLang = 'it';
@@ -6594,6 +6722,19 @@ function updateSnapBadge(){ snapBadge.classList.toggle('show', lastSnapped); }
 ============================================================ */
 const LINK_EPS = 0.05; // mm — tolleranza per considerare due punti "collegati"
 function pointsEqual(a,b){ return Math.abs(a[0]-b[0])<LINK_EPS && Math.abs(a[1]-b[1])<LINK_EPS; }
+// Indice spaziale: i punti in una griglia di celle minuscole; i punti coincidenti con p stanno nella sua
+// cella o nelle 8 vicine. Evita di confrontare ogni punto con tutti gli altri (su disegni con decine di
+// migliaia di punti erano centinaia di milioni di confronti a ogni ridisegno).
+function buildPointGrid(items, getPt){
+  const cell = LINK_EPS * 2, map = new Map();
+  items.forEach((it, i)=>{ const q = getPt(it); if(!q) return; const k = Math.floor(q[0]/cell) + '_' + Math.floor(q[1]/cell); let a = map.get(k); if(!a){ a = []; map.set(k, a); } a.push(i); });
+  return { cell, map };
+}
+function gridNear(grid, q){
+  const cx = Math.floor(q[0]/grid.cell), cy = Math.floor(q[1]/grid.cell), out = [];
+  for(let dx=-1; dx<=1; dx++) for(let dy=-1; dy<=1; dy++){ const a = grid.map.get((cx+dx) + '_' + (cy+dy)); if(a) for(const i of a) out.push(i); }
+  return out;
+}
 
 // Estrae inizio/fine (e se è chiuso) di un 'd' di path, nel suo sistema di coordinate locale.
 function getPathDEndpoints(d){
@@ -6638,7 +6779,8 @@ function shiftDetachedIndices(s, at, delta){
 function isVertexLinked(s, idx, all){
   if(isPtDetached(s, idx)) return false;
   const p = s.points[idx];
-  return all.some(o=> !(o.shapeId===s.id && o.kind==='vertex' && o.idx===idx) && !o.det && pointsEqual(o.pt, p));
+  if(!all._grid) all._grid = buildPointGrid(all, o=>o.pt); // costruito una volta per elenco, poi ricerche immediate
+  return gridNear(all._grid, p).some(i=>{ const o = all[i]; return !(o.shapeId===s.id && o.kind==='vertex' && o.idx===idx) && !o.det && pointsEqual(o.pt, p); });
 }
 function collectConnectionPoints(){
   const pts = [];
@@ -6704,12 +6846,14 @@ function moveShapesBy(ids, dx, dy){
   const stretchedArcs = new Set();
   if(movingPts.length){
     const moved = new Set();
+    const mgrid = buildPointGrid(movingPts, q=>q);
     for(const other of state.shapes){
       if(idSet.has(other.id) || other.locked || !other.points) continue;
       other.points.forEach((p, idx)=>{
         const key = other.id+'#'+idx;
         if(moved.has(key) || isPtDetached(other, idx)) return;
-        for(const mp of movingPts){
+        for(const mi of gridNear(mgrid, p)){
+          const mp = movingPts[mi];
           if(pointsEqual(p, mp)){
             other.points[idx] = [p[0]+dx, p[1]+dy];
             moved.add(key);
@@ -6742,6 +6886,7 @@ function pushHistory(){
   state.historyTimes.push(Date.now());
   if(state.history.length>300){ state.history.shift(); state.historyTimes.shift(); }
   state.histIndex = state.history.length-1;
+  if(state.libraryId && !state._loadingFromLibrary) state.libraryDirty = true; // da salvare in libreria
   updateUndoRedoButtons();
   scheduleAutosave();
 }
@@ -7454,12 +7599,13 @@ function renderCornerAngles(){
     }
   });
   const used = new Array(rays.length).fill(false);
+  const grid = buildPointGrid(rays, r=>r.pos);
   for(let i=0;i<rays.length;i++){
     if(used[i]) continue;
     const group = [rays[i]];
     used[i] = true;
-    for(let j=i+1;j<rays.length;j++){
-      if(used[j]) continue;
+    const cand = gridNear(grid, rays[i].pos).filter(j=> j>i && !used[j]).sort((a,b)=>a-b); // stesso ordine di prima
+    for(const j of cand){
       if(pointsEqual(rays[j].pos, rays[i].pos)){ group.push(rays[j]); used[j] = true; }
     }
     if(group.length !== 2) continue; // niente angolo se non convergono esattamente 2 tratti
@@ -9804,7 +9950,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.34.0';
+const GUIDE_VERSION = '2.35.1';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -10074,10 +10220,11 @@ html:`<p>Scheda <b>Livelli</b> del pannello laterale. Ogni forma appartiene a un
 <p>Uso tipico: un livello per taglio e pieghe, uno sopra per la grafica.</p>` },
 
 /* ---------------- SALVARE ED ESPORTARE ---------------- */
-{ id:'salvataggio', cat:'Salvare ed esportare', title:'Salvataggio', keys:'salvare salvataggio automatico locale json aprire file progetto dischetto',
-html:`<ul><li><b>Salvataggio automatico</b> nel browser a ogni modifica: riaprendo la pagina ritrovi il lavoro. Resta solo su quel browser.</li>
-<li><b>💾 Salva</b>: salva subito una copia locale.</li>
-<li><b>File → Salva / Apri progetto (.json)</b>: un file da scaricare e riaprire quando vuoi. Da File si può anche aprire un SVG o un progetto da <b>Google Drive</b> (se configurato).</li>
+{ id:'salvataggio', cat:'Salvare ed esportare', title:'Salvataggio', keys:'salvare salvataggio automatico locale browser json aprire file progetto allineato aggiornare ricaricare pagina versione recente',
+html:`<ul><li><b>Salvataggio automatico nel browser</b>: a ogni modifica, dopo circa mezzo secondo (e subito quando chiudi o ricarichi la pagina), nello spazio del browser pensato per molti dati. Riaprendo la pagina ritrovi il lavoro, con gli ultimi 30 passi di annulla/ripeti. Resta solo su quel browser.</li>
+<li><b>Indicatore</b> in alto (dove prima c'era "💾 Salva", ora inutile): <b>✓ Salvato</b> = salvato nel browser; <b>☁ Allineato</b> = il disegno viene dalla libreria e le due copie coincidono; <b>● Da salvare in libreria</b> = ci sono modifiche non ancora in libreria (un clic le salva); <b>⚠ Non salvato</b> = il browser non ha potuto salvare (per esempio spazio esaurito o navigazione privata): salva in libreria o come file. Passando col mouse vedi l'ora dell'ultimo salvataggio.</li>
+<li><b>All'avvio, allineamento con la libreria</b>: per le schede aperte dalla <a data-topic="libreria">libreria</a>, se sul server c'è una versione più recente (salvata da un altro computer, da un'altra scheda o da un altro utente) e tu non hai modifiche da salvare, la scheda si aggiorna da sola e un messaggio te lo dice. Se invece hai anche modifiche locali non salvate in libreria, ti viene chiesto cosa fare: caricando la versione della libreria, le tue modifiche restano in una nuova scheda "(copia locale)". Se il progetto è stato eliminato dalla libreria, la scheda resta come disegno locale. Il controllo si ripete anche quando accedi al tuo account.</li>
+<li><b>File → Scarica una copia del progetto (.json)</b> e <b>Apri un progetto da file (.json)</b>: il salvataggio vero è automatico (nel browser e in libreria); il file serve per avere una copia tua fuori da browser e server, per archiviarla, per passarla a qualcuno senza account o per riaprirla su un altro computer. Da File si può anche aprire un SVG o un progetto da <b>Google Drive</b> (se configurato).</li>
 <li><b>☁ Libreria</b>: salvataggio sul server, vedi <a data-topic="libreria">Libreria</a>.</li></ul>` },
 
 { id:'libreria', cat:'Salvare ed esportare', title:'Account e libreria online', keys:'account accesso registrazione libreria server cartelle condividere privato versioni nuvola password cercare ricerca trovare file progetto',
@@ -10138,6 +10285,8 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.35.1</b> — Menu File, Stampa e Strumenti riordinati per argomento e divisi da linee; "Scarica una copia del progetto" e "Apri un progetto da file" al posto di Salva/Apri progetto.</li>
+<li><b>2.35</b> — Al ricaricamento le schede della libreria si aggiornano all'ultima versione del server; <a data-topic="salvataggio">salvataggio nel browser</a> più affidabile e quasi immediato, con indicatore di stato al posto di "Salva"; disegni grandi molto più veloci (punti e angoli).</li>
 <li><b>2.34</b> — L'<a data-topic="amministrazione">amministratore</a> può rendere pubblico o privato qualunque progetto, dalla nuova sezione Progetti della finestra Amministrazione.</li>
 <li><b>2.33</b> — Finestra <a data-topic="amministrazione">Amministrazione</a>: stato del database ed elenco di tutti gli utenti.</li>
 <li><b>2.32</b> — Libreria su database (SQLite, pronta per MySQL); progetti pubblici o privati modificabili in qualsiasi momento; i progetti generici sono sempre pubblici.</li>
@@ -12179,7 +12328,9 @@ async function quickSaveToLibrary(){
     const payload = { id: state.libraryId, name, shared: !!state.librarySharedLast, folderId: state.libraryFolderId,
       page: state.page, shapes: state.shapes, refImage: state.refImage, layers: state.layers,
       activeLayerId: state.activeLayerId, customFonts: state.customFonts, projectInfo: state.projectInfo };
-    await apiFetch('save.php', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    const saved = await apiFetch('save.php', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    state.libraryUpdated = saved.updated || new Date().toISOString(); state.libraryDirty = false;
+    snapshotActiveDocument(); scheduleAutosave(); updateSyncChip();
     showToast('Salvato in libreria.', false);
   }catch(err){ showToast('Errore nel salvataggio in libreria: ' + err.message, true); }
 }
@@ -12263,7 +12414,9 @@ document.getElementById('saveLibSubmit').onclick = async ()=>{
     state.libraryId = data.id;
     state.libraryFolderId = folderId;
     state.librarySharedLast = shared;
+    state.libraryUpdated = data.updated || new Date().toISOString(); state.libraryDirty = false;
     renameActiveTab(name);
+    snapshotActiveDocument(); scheduleAutosave(); updateSyncChip();
     closeSaveLibraryModal();
     showToast(shared ? 'Salvato in libreria e condiviso con tutti gli utenti.' : 'Salvato nella tua libreria personale.', false);
   }catch(err){ errEl.textContent = err.message; errEl.style.display=''; }
@@ -12815,7 +12968,7 @@ async function openFolderAsTabs(items){
   const failNote = failed>0 ? tpl(' ({failed} non aperti per un errore)', {failed}) : '';
   showToast(tpl('Aperti {opened} progetti in altrettante schede{failNote}.', {opened, failNote}), failed>0);
 }
-async function loadFromLibrary(id){
+async function loadFromLibrary(id, opts){
   try{
     const data = await apiFetch('load.php?id=' + encodeURIComponent(id), {method:'GET'});
     const proj = data.project || {};
@@ -12829,11 +12982,14 @@ async function loadFromLibrary(id){
     state.libraryId = data.mine ? id : null; // un progetto altrui condiviso, se modificato, va salvato come copia propria
     state.libraryFolderId = data.mine ? (proj.folderId || null) : null;
     state.librarySharedLast = !!proj.shared;
+    state.libraryUpdated = data.mine ? (proj.updated || null) : null;
     if(proj.name) renameActiveTab(proj.name);
     syncPageSizeSelect();
-    pushHistory(); renderAll(); refreshImageTabPreview();
-    closeLibraryModal();
-    if(!data.mine) showToast('Progetto condiviso caricato: salvandolo verrà creata una tua copia personale.', false);
+    state._loadingFromLibrary = true; pushHistory(); state._loadingFromLibrary = false;
+    state.libraryDirty = false; updateSyncChip();
+    renderAll(); refreshImageTabPreview();
+    if(!(opts && opts.silent)) closeLibraryModal();
+    if(!data.mine && !(opts && opts.silent)) showToast('Progetto condiviso caricato: salvandolo verrà creata una tua copia personale.', false);
   }catch(err){ showToast('Errore nel caricamento dalla libreria: ' + err.message, true); }
 }
 async function deleteFromLibrary(id){
@@ -13146,6 +13302,7 @@ document.getElementById('loginSubmit').onclick = async ()=>{
     setAuthToken(data.token);
     clearPrivateLibraryData(); // nessun dato di un utente precedente deve restare visibile
     currentUser = data.user; updateAccountUI(); closeAccountModal();
+    checkLibraryFreshness();
     showToast('Accesso effettuato, ciao ' + currentUser.username + '!', false);
   }catch(err){ errEl.textContent = err.message; errEl.style.display=''; }
 };
@@ -13174,6 +13331,7 @@ document.getElementById('registerSubmit').onclick = async ()=>{
     setAuthToken(data.token);
     clearPrivateLibraryData(); // nessun dato di un utente precedente deve restare visibile
     currentUser = data.user; updateAccountUI(); closeAccountModal();
+    checkLibraryFreshness();
     showToast('Account creato, benvenuto ' + currentUser.username + '!', false);
   }catch(err){ errEl.textContent = err.message; errEl.style.display=''; }
 };
@@ -16753,60 +16911,192 @@ setupOverlayClickClose(document.getElementById('promptModal'), ()=> resolvePromp
    resta solo su QUESTO browser/computer.
 ============================================================ */
 const AUTOSAVE_KEY = 'spikecut-project';
+const AUTOSAVE_HISTORY = 30;   // passi di annulla/ripeti conservati per scheda nella copia locale
+// La copia locale sta in IndexedDB (spazio ampio, di solito centinaia di MB); localStorage (circa 5 MB)
+// resta solo come riserva. Prima si salvava tutta la cronologia (fino a 300 copie di ogni disegno) in
+// localStorage: esaurito lo spazio, ogni salvataggio falliva in silenzio e al ricaricamento tornava
+// una copia vecchia.
+const IDB_NAME = 'spikecut', IDB_STORE = 'autosave';
+function idbOpen(){
+  return new Promise((resolve, reject)=>{
+    if(!window.indexedDB) return reject(new Error('IndexedDB non disponibile'));
+    const r = indexedDB.open(IDB_NAME, 1);
+    r.onupgradeneeded = ()=> r.result.createObjectStore(IDB_STORE);
+    r.onsuccess = ()=> resolve(r.result);
+    r.onerror = ()=> reject(r.error);
+  });
+}
+async function idbPut(key, val){
+  const db = await idbOpen();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(IDB_STORE, 'readwrite');
+    tx.objectStore(IDB_STORE).put(val, key);
+    tx.oncomplete = ()=>{ db.close(); resolve(); };
+    tx.onerror = tx.onabort = ()=>{ db.close(); reject(tx.error || new Error('scrittura non riuscita')); };
+  });
+}
+async function idbGet(key){
+  const db = await idbOpen();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(IDB_STORE, 'readonly');
+    const rq = tx.objectStore(IDB_STORE).get(key);
+    rq.onsuccess = ()=>{ db.close(); resolve(rq.result); };
+    rq.onerror = ()=>{ db.close(); reject(rq.error); };
+  });
+}
+const localSave = { at:0, error:null, pending:false };
 function scheduleAutosave(){
   clearTimeout(state.autosaveTimer);
-  state.autosaveTimer = setTimeout(doAutosave, 900);
+  localSave.pending = true;
+  state.autosaveTimer = setTimeout(doAutosave, 450);
+  updateSyncChip();
 }
-function doAutosave(){
+function trimmedDocForAutosave(d){
+  const h = d.history || [], len = h.length, idx = d.histIndex!=null ? d.histIndex : len-1;
+  const start = Math.max(0, Math.min(idx, len - AUTOSAVE_HISTORY)), end = Math.min(len, start + AUTOSAVE_HISTORY);
+  return Object.assign({}, d, { history: h.slice(start, end), historyTimes: (d.historyTimes||[]).slice(start, end), histIndex: Math.max(0, idx - start) });
+}
+function autosavePayload(){
+  snapshotActiveDocument();
+  return JSON.stringify({ documents: documents.map(trimmedDocForAutosave), activeDocId, customFonts: state.customFonts, savedAt: Date.now() });
+}
+async function doAutosave(){
+  clearTimeout(state.autosaveTimer);
+  let payload;
+  try{ payload = autosavePayload(); }catch(err){ localSave.error = err.message; localSave.pending = false; updateSyncChip(); return; }
   try{
-    snapshotActiveDocument();
-    const payload = JSON.stringify({documents, activeDocId, customFonts:state.customFonts});
-    localStorage.setItem(AUTOSAVE_KEY, payload);
-    flashSaveInfo('salvato');
-  }catch(err){ /* best-effort: es. quota localStorage esaurita, o modalità privata del browser */ }
+    await idbPut(AUTOSAVE_KEY, payload);
+    try{ localStorage.removeItem(AUTOSAVE_KEY); }catch(e){} // la vecchia copia sarebbe solo più vecchia
+    localSave.error = null;
+  }catch(err){
+    try{ localStorage.setItem(AUTOSAVE_KEY, payload); localSave.error = null; }   // riserva
+    catch(err2){ localSave.error = translate('spazio del browser esaurito o salvataggio non consentito (navigazione privata?)'); }
+  }
+  localSave.at = Date.now(); localSave.pending = false;
+  if(!localSave.error) flashSaveInfo(translate('salvato'));
+  updateSyncChip();
 }
+// quando la pagina si chiude o si aggiorna, salva subito (senza aspettare la pausa)
+function flushAutosaveNow(){
+  if(!localSave.pending) return;
+  try{ const payload = autosavePayload(); idbPut(AUTOSAVE_KEY, payload).catch(()=>{ try{ localStorage.setItem(AUTOSAVE_KEY, payload); }catch(e){} }); }catch(e){}
+}
+window.addEventListener('pagehide', flushAutosaveNow);
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden') flushAutosaveNow(); });
 function flashSaveInfo(text){
   const el = document.getElementById('saveInfo');
   el.textContent = text;
   clearTimeout(flashSaveInfo._t);
   flashSaveInfo._t = setTimeout(()=>{ if(el.textContent===text) el.textContent=''; }, 1500);
 }
+// Indicatore di stato al posto del vecchio pulsante "Salva": il salvataggio nel browser è automatico
+function updateSyncChip(){
+  const b = document.getElementById('btnQuickSave'); if(!b) return;
+  const t = localSave.at ? new Date(localSave.at).toLocaleTimeString(currentLang==='zh'?'zh-CN':currentLang) : '';
+  b.classList.remove('sync-ok','sync-warn','sync-err','sync-lib');
+  if(localSave.error){
+    b.textContent = translate('⚠ Non salvato'); b.classList.add('sync-err');
+    b.title = tpl('La copia nel browser non è stata salvata: {e}. Salva il progetto in libreria o come file per non perderlo.', {e: localSave.error});
+  } else if(state.libraryId && state.libraryDirty){
+    b.textContent = translate('● Da salvare in libreria'); b.classList.add('sync-warn');
+    b.title = (t ? tpl('Salvato nel browser alle {t}.', {t}) + ' ' : '') + translate('Le ultime modifiche non sono ancora in libreria: clic per salvarle.');
+  } else if(state.libraryId){
+    b.textContent = translate('☁ Allineato'); b.classList.add('sync-lib');
+    b.title = translate('Salvato nel browser e in libreria: le due copie coincidono.') + (state.libraryUpdated ? ' ' + tpl('Versione della libreria del {d}.', {d: new Date(state.libraryUpdated).toLocaleString(currentLang==='zh'?'zh-CN':currentLang)}) : '');
+  } else {
+    b.textContent = localSave.pending ? translate('… Salvataggio') : translate('✓ Salvato'); b.classList.add('sync-ok');
+    b.title = (t ? tpl('Salvato automaticamente nel browser alle {t}.', {t}) : translate('Il disegno viene salvato automaticamente nel browser a ogni modifica.')) + ' ' + translate('Per averlo anche su altri computer salvalo in libreria.');
+  }
+  if(b.textContent !== updateSyncChip._last){ updateSyncChip._last = b.textContent; if(typeof layoutBars==='function') layoutBars(); } // la larghezza cambia solo col testo
+}
 document.getElementById('btnQuickSave').onclick = ()=>{
-  clearTimeout(state.autosaveTimer);
+  if(state.libraryId && state.libraryDirty && currentUser){ quickSaveToLibrary(); return; }
   doAutosave();
 };
 document.getElementById('btnSaveLibraryTop').onclick = quickSaveToLibrary;
 document.getElementById('btnOpenLibraryTop').onclick = openLibraryModal;
-async function tryRestore(){
-  try{
-    const raw = localStorage.getItem(AUTOSAVE_KEY);
-    if(!raw) return false;
-    const data = JSON.parse(raw);
-    if(Array.isArray(data.documents) && data.documents.length){
-      documents = data.documents;
-      documents.forEach(doc=>{
-        if(!doc.layers || !doc.layers.length){
-          const dl = {id:uid(), name:translate('Livello ')+'1', visible:true, locked:false};
-          doc.layers = [dl]; doc.activeLayerId = dl.id;
-          (doc.shapes||[]).forEach(s=>{ if(!s.layerId) s.layerId = dl.id; });
-        }
-      });
-      activeDocId = data.activeDocId && documents.some(d=>d.id===data.activeDocId) ? data.activeDocId : documents[0].id;
-      state.customFonts = data.customFonts || [];
-      state.customFonts.forEach(injectFontFace);
-      return true;
-    }
-    // formato precedente (una sola bozza salvata, senza schede)
-    if(data.shapes && data.shapes.length){
-      const doc = makeNewDocument('Disegno');
-      doc.shapes = data.shapes; doc.page = data.page || doc.page; doc.refImage = data.refImage || null;
-      doc.shapes.forEach(s=>{ if(!s.layerId) s.layerId = doc.activeLayerId; });
-      doc.history = [JSON.stringify({shapes:doc.shapes, layers:doc.layers})]; doc.historyTimes = [Date.now()]; doc.histIndex = 0;
-      documents = [doc]; activeDocId = doc.id;
-      return true;
-    }
-  }catch(err){ /* no previous project, ignore */ }
+function restoreFromPayload(raw){
+  const data = JSON.parse(raw);
+  if(Array.isArray(data.documents) && data.documents.length){
+    documents = data.documents;
+    documents.forEach(doc=>{
+      if(!doc.layers || !doc.layers.length){
+        const dl = {id:uid(), name:translate('Livello ')+'1', visible:true, locked:false};
+        doc.layers = [dl]; doc.activeLayerId = dl.id;
+        (doc.shapes||[]).forEach(s=>{ if(!s.layerId) s.layerId = dl.id; });
+      }
+    });
+    activeDocId = data.activeDocId && documents.some(d=>d.id===data.activeDocId) ? data.activeDocId : documents[0].id;
+    state.customFonts = data.customFonts || [];
+    state.customFonts.forEach(injectFontFace);
+    localSave.at = data.savedAt || 0;
+    return true;
+  }
+  if(data.shapes && data.shapes.length){ // formato precedente (una sola bozza salvata, senza schede)
+    const doc = makeNewDocument('Disegno');
+    doc.shapes = data.shapes; doc.page = data.page || doc.page; doc.refImage = data.refImage || null;
+    doc.shapes.forEach(s=>{ if(!s.layerId) s.layerId = doc.activeLayerId; });
+    doc.history = [JSON.stringify({shapes:doc.shapes, layers:doc.layers})]; doc.historyTimes = [Date.now()]; doc.histIndex = 0;
+    documents = [doc]; activeDocId = doc.id;
+    return true;
+  }
   return false;
+}
+async function tryRestore(){
+  // la copia più recente tra IndexedDB e l'eventuale vecchia copia in localStorage
+  let fromIdb = null, fromLs = null;
+  try{ fromIdb = await idbGet(AUTOSAVE_KEY); }catch(err){}
+  try{ fromLs = localStorage.getItem(AUTOSAVE_KEY); }catch(err){}
+  const savedAt = raw=>{ try{ return JSON.parse(raw).savedAt || 0; }catch(e){ return -1; } };
+  const cands = [fromIdb, fromLs].filter(Boolean).sort((a,b)=> savedAt(b) - savedAt(a));
+  for(const raw of cands){ try{ if(restoreFromPayload(raw)) return true; }catch(err){} }
+  return false;
+}
+
+
+/* ============================================================
+   ALLINEAMENTO CON LA LIBRERIA — all'avvio (e dopo l'accesso) le schede
+   aperte dalla libreria vengono confrontate con la versione sul server.
+============================================================ */
+async function checkLibraryFreshness(){
+  if(!currentUser) return;
+  snapshotActiveDocument();
+  const linked = documents.filter(d=>d.libraryId);
+  if(!linked.length) return;
+  let items;
+  try{ items = (await apiFetch('list.php', {method:'GET'})).items || []; }catch(err){ return; }
+  const byId = new Map(items.map(it=>[it.id, it]));
+  const startActive = activeDocId, updatedNames = [];
+  for(const doc of linked){
+    const it = byId.get(doc.libraryId);
+    if(!it || !it.mine){ // non c'è più (o non è più tuo): la scheda resta come disegno locale
+      doc.libraryId = null; doc.libraryDirty = false;
+      showToast(tpl('«{name}» non è più nella tua libreria: la scheda resta come disegno locale.', {name: doc.name}), false);
+      continue;
+    }
+    // confronto come date (server e browser le scrivono in formati diversi); 1 s di tolleranza
+    const serverNewer = !doc.libraryUpdated || (it.updated && Date.parse(it.updated) > Date.parse(doc.libraryUpdated) + 1000);
+    if(!serverNewer) continue;
+    let reload = true, keepLocalCopy = false;
+    if(doc.libraryDirty || !doc.libraryUpdated){
+      const when = it.updated ? new Date(it.updated).toLocaleString(currentLang==='zh'?'zh-CN':currentLang) : '?';
+      reload = await showConfirm(tpl('«{name}»: in libreria c\'è una versione più recente (salvata il {d}), ma in questo browser ci sono modifiche non ancora salvate in libreria. Carico la versione della libreria? Le modifiche locali non si perdono: restano in una nuova scheda «{name} (copia locale)».', {name: doc.name, d: when}), 'Versione più recente in libreria');
+      keepLocalCopy = reload;
+    }
+    if(!reload) continue;
+    if(keepLocalCopy){ // le modifiche locali in una scheda a parte, non collegata alla libreria
+      const copy = JSON.parse(JSON.stringify(doc));
+      copy.id = uid(); copy.name = tpl('{name} (copia locale)', {name: doc.name}); copy.libraryId = null; copy.libraryDirty = false; copy.libraryUpdated = null;
+      documents.splice(documents.indexOf(doc)+1, 0, copy);
+    }
+    switchToDocument(doc.id);
+    await loadFromLibrary(doc.libraryId, {silent:true});
+    snapshotActiveDocument();
+    updatedNames.push(doc.name);
+  }
+  if(documents.some(d=>d.id===startActive)) switchToDocument(startActive);
+  renderTabBar(); scheduleAutosave(); updateSyncChip();
+  if(updatedNames.length) showToast(tpl('Aggiornati all\'ultima versione della libreria: {names}.', {names: updatedNames.map(n=>'«'+n+'»').join(', ')}), false);
 }
 
 /* ============================================================
@@ -16823,6 +17113,7 @@ function makeNewDocument(name){
     shapes: [], page: {w:210,h:297,bg:'#ffffff'}, refImage: null,
     layers: [defaultLayer], activeLayerId: defaultLayer.id,
     history: [JSON.stringify({shapes:[], layers:[defaultLayer]})], historyTimes: [Date.now()], histIndex: 0, libraryId: null, libraryFolderId: null,
+    libraryUpdated: null, libraryDirty: false, librarySharedLast: false,
     projectInfo: { boxType:'', material:'', printNotes:'', assemblySteps:[] }
   };
 }
@@ -16839,6 +17130,9 @@ function snapshotActiveDocument(){
   doc.histIndex = state.histIndex;
   doc.libraryId = state.libraryId;
   doc.libraryFolderId = state.libraryFolderId;
+  doc.libraryUpdated = state.libraryUpdated || null;   // versione della libreria da cui deriva la scheda
+  doc.libraryDirty = !!state.libraryDirty;             // modifiche non ancora salvate in libreria
+  doc.librarySharedLast = !!state.librarySharedLast;
   doc.projectInfo = state.projectInfo;
 }
 function loadDocumentIntoState(doc){
@@ -16853,6 +17147,10 @@ function loadDocumentIntoState(doc){
   state.histIndex = doc.histIndex;
   state.libraryId = doc.libraryId;
   state.libraryFolderId = doc.libraryFolderId!=null ? doc.libraryFolderId : null;
+  state.libraryUpdated = doc.libraryUpdated || null;
+  state.libraryDirty = !!doc.libraryDirty;
+  state.librarySharedLast = !!doc.librarySharedLast;
+  try{ updateSyncChip(); }catch(e){ /* all'avvio l'indicatore non è ancora pronto: si aggiorna subito dopo */ }
   state.projectInfo = doc.projectInfo || { boxType:'', material:'', printNotes:'', assemblySteps:[] }; // compatibilità con progetti salvati prima di questa funzione
   state.selection = new Set();
   state.gapMarkers = [];
@@ -16974,7 +17272,7 @@ async function init(){
       document.getElementById('langSelect').value = savedLang;
     }
   }catch(err){ /* best-effort */ }
-  checkAuthStatus();
+  const authReady = checkAuthStatus();
   checkPasswordResetURLParam();
   const restored = await tryRestore();
   if(!restored){
@@ -16984,6 +17282,8 @@ async function init(){
   loadDocumentIntoState(documents.find(d=>d.id===activeDocId));
   renderTabBar();
   applyI18n(document.body); // traduce anche l'interfaccia statica (topbar, finestre) in base alla lingua ripristinata
+  updateSyncChip();
+  authReady.then(()=> checkLibraryFreshness()); // le schede della libreria sono aggiornate?
 }
 init();
 

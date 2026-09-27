@@ -600,6 +600,28 @@ connessione a MySQL con i dati del pannello (non salvati). Mostra una
 conclusione con la scelta consigliata. **Dopo l'uso va cancellata** (oppure
 impostare `$ABILITATA = false` in cima al file).
 
+### Salvataggio nel browser e allineamento con la libreria (dalla 2.35)
+- La copia locale sta in **IndexedDB** (localStorage solo come riserva) e si
+  salva circa 450 ms dopo ogni modifica, più subito a `pagehide` /
+  `visibilitychange`. Si conservano gli ultimi 30 passi di annulla/ripeti per
+  scheda (prima fino a 300, in localStorage da circa 5 MB: con disegni molto
+  pesanti ogni salvataggio poteva fallire in silenzio).
+- Ogni scheda ricorda `libraryUpdated` (versione della libreria da cui
+  deriva) e `libraryDirty` (modifiche non ancora salvate in libreria).
+  All'avvio e dopo l'accesso, `checkLibraryFreshness()` confronta le schede
+  collegate con `list.php`: versione più recente sul server e nessuna modifica
+  locale → la scheda si ricarica da sola; con modifiche locali → conferma, e
+  accettando le modifiche restano in una scheda "(copia locale)"; progetto
+  eliminato → la scheda resta locale.
+- Il vecchio pulsante "💾 Salva" è diventato un indicatore di stato
+  (✓ Salvato / ☁ Allineato / ● Da salvare in libreria / ⚠ Non salvato); con
+  modifiche non in libreria, un clic salva in libreria.
+- Prestazioni: punti collegati, angoli tra i tratti e spostamento delle forme
+  usano un indice spaziale (`buildPointGrid` / `gridNear`) invece di
+  confrontare ogni punto con tutti gli altri: su un disegno da 21.000 punti
+  l'apertura è passata da 6,2 a 0,4 s e uno spostamento da circa 26 a 0,6 s,
+  con risultati identici.
+
 ### Privacy nel browser
 All'uscita dall'account, allo scadere dell'accesso (il server risponde 401) e
 al cambio di utente, `clearPrivateLibraryData()` cancella dal browser elenco
