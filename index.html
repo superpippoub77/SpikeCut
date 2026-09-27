@@ -408,6 +408,11 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 #btnQuickSave.sync-lib{ color:#8ecbff; }
 #btnQuickSave.sync-warn{ color:#ffb340; }
 #btnQuickSave.sync-err{ color:#ff6a60; font-weight:700; }
+.seg3{ display:flex; border:1px solid var(--line); border-radius:7px; overflow:hidden; }
+.seg3 button{ flex:1; padding:5px 6px; background:transparent; border:0; border-right:1px solid var(--line); color:var(--ink-dim); cursor:pointer; font-size:12px; }
+.seg3 button:last-child{ border-right:0; }
+.seg3 button:hover{ color:var(--ink); background:rgba(128,128,128,.12); }
+.seg3 button.active{ background:var(--brass); color:#1a1300; font-weight:700; }
 .libvis{ font-size:11px; opacity:.85; }
 .admin-badge{ font-size:12px; font-weight:700; padding:2px 10px; border-radius:10px; background:rgba(128,128,128,.2); }
 .admin-badge.ok{ background:rgba(47,158,90,.2); color:#3fbf72; }
@@ -768,7 +773,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.35.1</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.36.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2410,6 +2415,10 @@ const I18N = {
     "📂 Apri un progetto da file (.json)": "📂 Open a project from file (.json)",
     "Scarica sul tuo computer una copia completa del progetto: per archiviarla, passarla a qualcuno o riaprirla su un altro computer senza account": "Download a full copy of the project to your computer: to archive it, pass it to someone or reopen it on another computer without an account",
     "Apri un progetto salvato in precedenza come file .json": "Open a project previously saved as a .json file",
+    "Mostra": "Show",
+    "Punti": "Points",
+    "Lunghezze": "Lengths",
+    "Entrambi": "Both",
   },
   de: {
     "1 cm": "1 cm",
@@ -3372,6 +3381,10 @@ const I18N = {
     "📂 Apri un progetto da file (.json)": "📂 Projekt aus Datei öffnen (.json)",
     "Scarica sul tuo computer una copia completa del progetto: per archiviarla, passarla a qualcuno o riaprirla su un altro computer senza account": "Lade eine vollständige Kopie des Projekts auf deinen Computer: zum Archivieren, Weitergeben oder Öffnen auf einem anderen Computer ohne Konto",
     "Apri un progetto salvato in precedenza come file .json": "Ein zuvor als .json-Datei gespeichertes Projekt öffnen",
+    "Mostra": "Anzeigen",
+    "Punti": "Punkte",
+    "Lunghezze": "Längen",
+    "Entrambi": "Beides",
   },
   es: {
     "1 cm": "1 cm",
@@ -4334,6 +4347,10 @@ const I18N = {
     "📂 Apri un progetto da file (.json)": "📂 Abrir un proyecto desde archivo (.json)",
     "Scarica sul tuo computer una copia completa del progetto: per archiviarla, passarla a qualcuno o riaprirla su un altro computer senza account": "Descarga en tu ordenador una copia completa del proyecto: para archivarla, pasarla a alguien o abrirla en otro ordenador sin cuenta",
     "Apri un progetto salvato in precedenza come file .json": "Abrir un proyecto guardado previamente como archivo .json",
+    "Mostra": "Mostrar",
+    "Punti": "Puntos",
+    "Lunghezze": "Longitudes",
+    "Entrambi": "Ambos",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -5296,6 +5313,10 @@ const I18N = {
     "📂 Apri un progetto da file (.json)": "📂 从文件打开项目（.json）",
     "Scarica sul tuo computer una copia completa del progetto: per archiviarla, passarla a qualcuno o riaprirla su un altro computer senza account": "将项目的完整副本下载到你的电脑：用于归档、分享给他人，或在另一台电脑上无需账户打开",
     "Apri un progetto salvato in precedenza come file .json": "打开之前保存为 .json 文件的项目",
+    "Mostra": "显示",
+    "Punti": "点",
+    "Lunghezze": "长度",
+    "Entrambi": "全部",
   },
   fr: {
     "1 cm": "1 cm",
@@ -6258,6 +6279,10 @@ const I18N = {
     "📂 Apri un progetto da file (.json)": "📂 Ouvrir un projet depuis un fichier (.json)",
     "Scarica sul tuo computer una copia completa del progetto: per archiviarla, passarla a qualcuno o riaprirla su un altro computer senza account": "Télécharge sur ton ordinateur une copie complète du projet : pour l’archiver, la transmettre à quelqu’un ou la rouvrir sur un autre ordinateur sans compte",
     "Apri un progetto salvato in precedenza come file .json": "Ouvrir un projet enregistré auparavant en fichier .json",
+    "Mostra": "Afficher",
+    "Punti": "Points",
+    "Lunghezze": "Longueurs",
+    "Entrambi": "Les deux",
   },
 };
 let currentLang = 'it';
@@ -7742,6 +7767,7 @@ function renderCanvasOnly(){
   renderGapMarkers();
   renderFoldIndicators();
   renderSmartGuides();
+  renderPropFocus();
   renderGroupFrames();
   renderVertexBar();
   if(state.arcEditLabel && dragMode==='arc-bulge'){
@@ -9950,7 +9976,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.35.1';
+const GUIDE_VERSION = '2.36.0';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -10068,7 +10094,7 @@ html:`<p>Trascina una forma (o una selezione) per spostarla; con le <b>frecce</b
 
 { id:'punti', cat:'Modificare', title:'Modificare i punti', keys:'punto vertice maniglia coordinate curvatura aggiungere eliminare doppio clic tratto',
 html:`<ul><li>Selezionata una forma, trascina le <b>maniglie</b> dei suoi punti.</li>
-<li>Nel pannello Proprietà trovi le <b>coordinate</b> di ogni punto, la <b>lunghezza</b> di ogni tratto e la <b>curvatura</b> dei vertici (0 = angolo vivo).</li>
+<li>Nel pannello Proprietà trovi le <b>coordinate</b> di ogni punto, la <b>lunghezza</b> di ogni tratto e la <b>curvatura</b> dei vertici (0 = angolo vivo). Il selettore <b>Mostra: Punti · Lunghezze · Entrambi</b> sopra l'elenco sceglie cosa vedere (solo coordinate e curvature, solo lunghezze, o tutto) e viene ricordato. Mentre scrivi in un campo, sul disegno il punto, il tratto o la forma corrispondente è evidenziato in <b>giallo tenue</b>.</li>
 <li><b>Doppio clic su un tratto</b> apre un piccolo editor sul posto: lunghezza, curvatura e "+ vertice qui".</li>
 <li>La ✕ accanto a un punto lo elimina (almeno 2 punti per linea).</li>
 <li>"Chiudi percorso" unisce le due estremità di una linea aperta.</li></ul>` },
@@ -10285,6 +10311,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.36</b> — Nel pannello Proprietà <a data-topic="punti">Mostra: Punti · Lunghezze · Entrambi</a>; evidenziazione gialla sul disegno di ciò che si sta modificando.</li>
 <li><b>2.35.1</b> — Menu File, Stampa e Strumenti riordinati per argomento e divisi da linee; "Scarica una copia del progetto" e "Apri un progetto da file" al posto di Salva/Apri progetto.</li>
 <li><b>2.35</b> — Al ricaricamento le schede della libreria si aggiornano all'ultima versione del server; <a data-topic="salvataggio">salvataggio nel browser</a> più affidabile e quasi immediato, con indicatore di stato al posto di "Salva"; disegni grandi molto più veloci (punti e angoli).</li>
 <li><b>2.34</b> — L'<a data-topic="amministrazione">amministratore</a> può rendere pubblico o privato qualunque progetto, dalla nuova sezione Progetti della finestra Amministrazione.</li>
@@ -10639,6 +10666,27 @@ function renderAdminUsers(){
   const tot = adminState.users.reduce((s,u)=>s+u.projects,0);
   document.getElementById('adminUsersSummary').textContent = (q ? tpl('{n} utenti trovati su {t}.', {n:rows.length, t:adminState.users.length}) : tpl('{n} utenti registrati.', {n:adminState.users.length}))
     + ' ' + tpl('Progetti con proprietario: {p}; progetti generici (sempre pubblici): {g}.', {p:tot, g:adminState.generic});
+}
+
+
+/* ---------- evidenziazione gialla di ciò che si sta modificando nel pannello ---------- */
+function renderPropFocus(){
+  const f = state.propFocus; if(!f) return;
+  const s = state.shapes.find(x=>x.id===f.shapeId); if(!s) return;
+  const sc = state.scale, fill = 'rgba(255,214,64,0.30)', stroke = 'rgba(255,196,0,0.85)';
+  const g = el('g', {'pointer-events':'none'});
+  if(f.kind==='point' && s.points && s.points[f.idx]){
+    const q = s.points[f.idx];
+    g.appendChild(el('circle', {cx:q[0]*sc, cy:q[1]*sc, r:13, fill, stroke, 'stroke-width':2}));
+  } else if(f.kind==='segment' && s.points && s.points.length>1){
+    const a = s.points[f.idx], b = s.points[(f.idx+1) % s.points.length]; if(!a || !b) return;
+    g.appendChild(el('line', {x1:a[0]*sc, y1:a[1]*sc, x2:b[0]*sc, y2:b[1]*sc, stroke:'rgba(255,214,64,0.45)', 'stroke-width':14, 'stroke-linecap':'round'}));
+    g.appendChild(el('line', {x1:a[0]*sc, y1:a[1]*sc, x2:b[0]*sc, y2:b[1]*sc, stroke, 'stroke-width':2}));
+  } else if(f.kind==='shape'){
+    const b = shapeBBox(s); if(!b) return;
+    g.appendChild(el('rect', {x:b.x*sc-4, y:b.y*sc-4, width:b.w*sc+8, height:b.h*sc+8, rx:4, fill, stroke, 'stroke-width':2}));
+  }
+  layerOverlay.appendChild(g);
 }
 
 /* ============================================================
@@ -14309,11 +14357,20 @@ function renderGeometrySection(host, s){
     const nx = mkNum(labelX, x); bindLive(nx.input, onX); row.appendChild(nx.field);
     const ny = mkNum(labelY, y); bindLive(ny.input, onY); row.appendChild(ny.field);
     target.appendChild(row);
+    return [nx.input, ny.input];
   }
   function lengthField(label, lenMM, onLenMM, target){
     target = target || host;
     const n = mkNum(label, lenMM); bindLive(n.input, onLenMM);
     target.appendChild(n.field);
+    return [n.input];
+  }
+  // mentre si scrive in un campo, il punto / tratto / forma corrispondente è evidenziato in giallo tenue sul disegno
+  function focusHL(inputs, desc){
+    inputs.forEach(inp=>{
+      inp.addEventListener('focus', ()=>{ state.propFocus = desc; renderCanvasOnly(); });
+      inp.addEventListener('blur', ()=>{ if(state.propFocus===desc){ state.propFocus = null; renderCanvasOnly(); } });
+    });
   }
 
   if(s.points){
@@ -14371,18 +14428,31 @@ function renderGeometrySection(host, s){
       ends.forEach(([ix, lbl])=>{
         const b = document.createElement('div'); b.className='ptblock';
         host.appendChild(b);
-        coordRow(lbl+' X', s.points[ix][0], v=>{ moveConnectedVertex(s, ix, [v, s.points[ix][1]]); }, lbl+' Y', s.points[ix][1], v=>{ moveConnectedVertex(s, ix, [s.points[ix][0], v]); }, b);
+        focusHL(coordRow(lbl+' X', s.points[ix][0], v=>{ moveConnectedVertex(s, ix, [v, s.points[ix][1]]); }, lbl+' Y', s.points[ix][1], v=>{ moveConnectedVertex(s, ix, [s.points[ix][0], v]); }, b), {shapeId:s.id, kind:'point', idx:ix});
       });
     } else if(n <= 20){
+      if(!state.ptView){ try{ state.ptView = localStorage.getItem('spikecut-ptview') || 'both'; }catch(e){ state.ptView = 'both'; } }
+      const view = state.ptView, showPts = view!=='lengths', showLens = view!=='points';
+      const vf = document.createElement('div'); vf.className='field ptview-field';
+      const vl = document.createElement('label'); vl.textContent = translate('Mostra'); vf.appendChild(vl);
+      const seg = document.createElement('div'); seg.className='seg3';
+      [['points','Punti'],['lengths','Lunghezze'],['both','Entrambi']].forEach(([v,l])=>{
+        const b = document.createElement('button'); b.type='button'; b.textContent = translate(l); b.dataset.view = v;
+        if(v===view) b.classList.add('active');
+        b.onclick = ()=>{ state.ptView = v; try{ localStorage.setItem('spikecut-ptview', v); }catch(e){} renderPropPanel(); };
+        seg.appendChild(b);
+      });
+      vf.appendChild(seg); host.appendChild(vf);
       s.points.forEach((p, i)=>{
-        if(i>0) host.appendChild(document.createElement('hr')).className='sep';
+        if(!showPts && i===n-1 && !s.closed) return;          // solo lunghezze: l'ultimo punto di una linea aperta non ha un tratto dopo
+        if(i>0 && showPts) host.appendChild(document.createElement('hr')).className='sep';
         const block = document.createElement('div'); block.className='ptblock';
         block.addEventListener('mouseenter', ()=>{ state.hoverSegment = {shapeId:s.id, idx:i}; renderSelectionHandles(); });
         block.addEventListener('mouseleave', ()=>{ state.hoverSegment = null; renderSelectionHandles(); });
         host.appendChild(block);
         const label = (i===0 && !s.closed) ? tpl('Punto {n} (inizio)', {n:i+1}) : ((i===n-1 && !s.closed) ? tpl('Punto {n} (fine)', {n:i+1}) : tpl('Punto {n}', {n:i+1}));
         const lab = document.createElement('div');
-        lab.style.cssText = 'margin:0 0 2px;display:flex;align-items:center;justify-content:space-between;gap:6px;';
+        lab.style.cssText = 'margin:0 0 2px;display:' + (showPts ? 'flex' : 'none') + ';align-items:center;justify-content:space-between;gap:6px;'; // nascosto se si vedono solo le lunghezze
         const labText = document.createElement('span'); labText.className='hint'; labText.textContent = label;
         lab.appendChild(labText);
         if(n>2){
@@ -14400,32 +14470,35 @@ function renderGeometrySection(host, s){
           lab.insertBefore(lk, lab.children[1] || null);
         }
         block.appendChild(lab);
-        coordRow('X', p[0], v=>moveConnectedVertex(s, i, [v, s.points[i][1]]),
-                  'Y', p[1], v=>moveConnectedVertex(s, i, [s.points[i][0], v]), block);
-        if(s.closed || (i>0 && i<n-1)){
-          lengthField(tpl('Curvatura ({unit}) — 0 = angolo vivo', {unit: unitLabel()}), s.smooth[i]||0, v=>{
-            s.smooth[i] = Math.max(0, v);
-          }, block);
+        const ptDesc = {shapeId:s.id, kind:'point', idx:i}, segDesc = {shapeId:s.id, kind:'segment', idx:i};
+        if(showPts){
+          focusHL(coordRow('X', p[0], v=>moveConnectedVertex(s, i, [v, s.points[i][1]]),
+                    'Y', p[1], v=>moveConnectedVertex(s, i, [s.points[i][0], v]), block), ptDesc);
+          if(s.closed || (i>0 && i<n-1)){
+            focusHL(lengthField(tpl('Curvatura ({unit}) — 0 = angolo vivo', {unit: unitLabel()}), s.smooth[i]||0, v=>{
+              s.smooth[i] = Math.max(0, v);
+            }, block), ptDesc);
+          }
         }
-        if(i < n-1){
-          lengthField(tpl('Lunghezza tratto {a}→{b} ({unit})', {a:i+1, b:i+2, unit: unitLabel()}), dist(s.points[i], s.points[i+1]), v=>{
+        if(i < n-1 && showLens){
+          focusHL(lengthField(tpl('Lunghezza tratto {a}→{b} ({unit})', {a:i+1, b:i+2, unit: unitLabel()}), dist(s.points[i], s.points[i+1]), v=>{
             const a = s.points[i];
             const ang = Math.atan2(s.points[i+1][1]-a[1], s.points[i+1][0]-a[0]);
             moveConnectedVertex(s, i+1, [a[0]+Math.cos(ang)*v, a[1]+Math.sin(ang)*v]);
-          }, block);
+          }, block), segDesc);
         }
       });
-      if(s.closed && n>2){
-        host.appendChild(document.createElement('hr')).className='sep';
+      if(s.closed && n>2 && showLens){
+        if(showPts) host.appendChild(document.createElement('hr')).className='sep';
         const lastBlock = document.createElement('div'); lastBlock.className='ptblock';
         lastBlock.addEventListener('mouseenter', ()=>{ state.hoverSegment = {shapeId:s.id, idx:n-1}; renderSelectionHandles(); });
         lastBlock.addEventListener('mouseleave', ()=>{ state.hoverSegment = null; renderSelectionHandles(); });
         host.appendChild(lastBlock);
-        lengthField(tpl('Lunghezza tratto {n}→1 ({unit})', {n, unit: unitLabel()}), dist(s.points[n-1], s.points[0]), v=>{
+        focusHL(lengthField(tpl('Lunghezza tratto {n}→1 ({unit})', {n, unit: unitLabel()}), dist(s.points[n-1], s.points[0]), v=>{
           const a = s.points[n-1];
           const ang = Math.atan2(s.points[0][1]-a[1], s.points[0][0]-a[0]);
           moveConnectedVertex(s, 0, [a[0]+Math.cos(ang)*v, a[1]+Math.sin(ang)*v]);
-        }, lastBlock);
+        }, lastBlock), {shapeId:s.id, kind:'segment', idx:n-1});
       }
     } else {
       let total=0; for(let i=0;i<n-1;i++) total+=dist(s.points[i], s.points[i+1]);
@@ -14435,10 +14508,11 @@ function renderGeometrySection(host, s){
       host.appendChild(info);
     }
   } else if(s.x!=null && s.w!=null){
-    coordRow('X', s.x, v=>{ s.x=v; }, 'Y', s.y, v=>{ s.y=v; });
-    coordRow('Larghezza', s.w, v=>{ s.w=Math.max(0.1,v); }, 'Altezza', s.h, v=>{ s.h=Math.max(0.1,v); });
+    const shDesc = {shapeId:s.id, kind:'shape'};
+    focusHL(coordRow('X', s.x, v=>{ s.x=v; }, 'Y', s.y, v=>{ s.y=v; }), shDesc);
+    focusHL(coordRow('Larghezza', s.w, v=>{ s.w=Math.max(0.1,v); }, 'Altezza', s.h, v=>{ s.h=Math.max(0.1,v); }), shDesc);
   } else if(s.type==='text'){
-    coordRow('X', s.x, v=>{ s.x=v; }, 'Y', s.y, v=>{ s.y=v; });
+    focusHL(coordRow('X', s.x, v=>{ s.x=v; }, 'Y', s.y, v=>{ s.y=v; }), {shapeId:s.id, kind:'shape'});
   }
 }
 function allSelectedHaveRole(ids, role){

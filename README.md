@@ -327,6 +327,11 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   stesso ruolo e livello vengono fuse in un unico percorso, e una linea che
   si richiude su se stessa diventa un percorso chiuso. Le catene (un punto
   sia di partenza sia di arrivo) vengono segnalate e bloccate.
+- **Pannello dei punti**: il selettore "Mostra: Punti · Lunghezze · Entrambi"
+  (ricordato in `localStorage`, chiave `spikecut-ptview`) sceglie se vedere
+  coordinate e curvature, solo le lunghezze dei tratti, o tutto. Mentre si
+  scrive in un campo, il punto / tratto / forma corrispondente è evidenziato in
+  giallo tenue sul disegno (`state.propFocus`, `renderPropFocus()`).
 - **Gruppi**: Ctrl+G raggruppa la selezione, Ctrl+Shift+G separa (anche dal
   pannello Proprietà e dal tasto destro). Un clic su un membro seleziona tutto
   il gruppo, Ctrl+clic un solo elemento; rettangolo e lazo prendono i gruppi
