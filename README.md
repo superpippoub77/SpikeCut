@@ -327,6 +327,14 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   stesso ruolo e livello vengono fuse in un unico percorso, e una linea che
   si richiude su se stessa diventa un percorso chiuso. Le catene (un punto
   sia di partenza sia di arrivo) vengono segnalate e bloccate.
+- **Sposta di…** (Invio con una selezione, menu Strumenti, tasto destro o
+  pannello Proprietà): spostamento preciso come orizzontale/verticale oppure
+  distanza/angolo (0° = destra, 90° = su), 8 pulsanti di direzione, anteprima
+  tratteggiata, opzione "Crea copie" con numero di copie in serie. Gli
+  originali si spostano con `moveShapesBy` (le linee collegate seguono); le
+  copie sono indipendenti. Ultimi valori in `localStorage` (`spikecut-move`).
+  Frecce della tastiera: 1 mm, Shift 10 mm, Alt 0,1 mm; una serie di
+  pressioni è un solo passo di annulla.
 - **Pannello dei punti**: il selettore "Mostra: Punti · Lunghezze · Entrambi"
   (ricordato in `localStorage`, chiave `spikecut-ptview`) sceglie se vedere
   coordinate e curvature, solo le lunghezze dei tratti, o tutto. Mentre si

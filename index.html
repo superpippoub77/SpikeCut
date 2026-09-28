@@ -408,6 +408,10 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 #btnQuickSave.sync-lib{ color:#8ecbff; }
 #btnQuickSave.sync-warn{ color:#ffb340; }
 #btnQuickSave.sync-err{ color:#ff6a60; font-weight:700; }
+.move-compass{ display:grid; grid-template-columns:repeat(3,30px); grid-template-rows:repeat(3,30px); gap:3px; margin-top:16px; }
+.move-compass button{ border:1px solid var(--line); background:rgba(128,128,128,.08); color:var(--ink); border-radius:6px; cursor:pointer; font-size:14px; padding:0; }
+.move-compass button:hover{ border-color:var(--brass); }
+.move-compass button.active{ background:var(--brass); color:#1a1300; border-color:var(--brass); }
 .seg3{ display:flex; border:1px solid var(--line); border-radius:7px; overflow:hidden; }
 .seg3 button{ flex:1; padding:5px 6px; background:transparent; border:0; border-right:1px solid var(--line); color:var(--ink-dim); cursor:pointer; font-size:12px; }
 .seg3 button:last-child{ border-right:0; }
@@ -693,6 +697,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
       <button data-action="fold-sequence">📋 Sequenza di piegatura…</button>
       <div class="menu-sep"></div>
       <button data-action="symmetry">⇅ Simmetria…</button>
+      <button data-action="move-by">↔ Sposta di… (Invio)</button>
       <button data-action="scale-drawing">Scala / Proporziona disegno…</button>
       <div class="menu-sep"></div>
       <button data-action="manage-fonts">Gestisci font personalizzati…</button>
@@ -773,7 +778,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.36.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.37.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -897,6 +902,47 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
 
 <div id="modalDock"></div>
 <div id="foldCheckBanner" style="display:none;"></div>
+
+<div id="moveModal" class="modal-overlay">
+  <div class="modal-box" style="width:min(430px,96vw);">
+    <div class="modal-head">
+      <h3>Sposta di…</h3>
+      <button class="iconbtn" id="moveModalClose" title="Chiudi">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="field"><label id="moveDxLabel">Orizzontale</label><input type="number" id="moveDx" step="0.1"></div>
+        <div class="field"><label id="moveDyLabel">Verticale</label><input type="number" id="moveDy" step="0.1"></div>
+      </div>
+      <div class="hint" style="margin:-2px 0 10px;">Orizzontale: positivo = verso destra. Verticale: positivo = verso il basso.</div>
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="flex:1;">
+          <div class="row">
+            <div class="field"><label id="moveDistLabel">Distanza</label><input type="number" id="moveDist" step="0.1" min="0"></div>
+            <div class="field"><label>Angolo (°)</label><input type="number" id="moveAng" step="1"></div>
+          </div>
+          <div class="hint" style="margin-top:-2px;">Angolo: 0° = destra, 90° = su, 180° = sinistra, 270° = giù.</div>
+        </div>
+        <div class="move-compass" id="moveCompass" title="Direzione">
+          <button type="button" data-ang="135">↖</button><button type="button" data-ang="90">↑</button><button type="button" data-ang="45">↗</button>
+          <button type="button" data-ang="180">←</button><span></span><button type="button" data-ang="0">→</button>
+          <button type="button" data-ang="225">↙</button><button type="button" data-ang="270">↓</button><button type="button" data-ang="315">↘</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:6px;font-size:12.5px;cursor:pointer;"><input type="checkbox" id="moveCopy" style="width:auto;"><span>Crea copie invece di spostare</span></label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:12.5px;">
+          <span>Numero di copie</span><input type="number" id="moveCount" min="1" max="200" step="1" value="1" style="width:64px;margin:0;">
+        </label>
+      </div>
+      <div class="hint" id="moveSummary" style="margin-top:10px;font-weight:600;"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;">
+        <button class="btn" id="moveCancel" style="width:auto;margin:0;">Annulla</button>
+        <button class="btn primary" id="moveApply" style="width:auto;margin:0;">Applica</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div id="adminModal" class="modal-overlay">
   <div class="modal-box" style="width:min(980px,96vw);">
@@ -1645,7 +1691,7 @@ const I18N = {
     "Oppure incolla il link diretto a un file font": "Or paste the direct link to a font file",
     "Opzioni di importazione": "Import options",
     "Orientamento": "Orientation",
-    "Orizzontale": "Landscape",
+    "Orizzontale": "Horizontal",
     "PDF multi-pagina generato: {total} fogli.": "Multi-page PDF generated: {total} sheets.",
     "Passo della griglia": "Grid step",
     "Password": "Password",
@@ -1715,7 +1761,7 @@ const I18N = {
     "Versione precedente caricata: salvandola in libreria creerai un progetto separato, senza toccare quello originale.": "Previous version loaded: saving it to the library will create a separate project, without touching the original.",
     "Versione ripristinata in libreria.": "Version restored in the library.",
     "Versioni": "Versions",
-    "Verticale": "Portrait",
+    "Verticale": "Vertical",
     "Vettorizzazione in corso…": "Vectorizing…",
     "Vuoto.": "Empty.",
     "cm": "cm",
@@ -2419,6 +2465,40 @@ const I18N = {
     "Punti": "Points",
     "Lunghezze": "Lengths",
     "Entrambi": "Both",
+    "Sposta di…": "Move by…",
+    "Distanza": "Distance",
+    "Angolo (°)": "Angle (°)",
+    "Orizzontale ({unit})": "Horizontal ({unit})",
+    "Verticale ({unit})": "Vertical ({unit})",
+    "Distanza ({unit})": "Distance ({unit})",
+    "Orizzontale: positivo = verso destra. Verticale: positivo = verso il basso.": "Horizontal: positive = to the right. Vertical: positive = downwards.",
+    "Angolo: 0° = destra, 90° = su, 180° = sinistra, 270° = giù.": "Angle: 0° = right, 90° = up, 180° = left, 270° = down.",
+    "Direzione": "Direction",
+    "Crea copie invece di spostare": "Create copies instead of moving",
+    "Numero di copie": "Number of copies",
+    "Seleziona prima gli oggetti da spostare (quelli bloccati non si spostano).": "First select the objects to move (locked ones do not move).",
+    "nessuno spostamento": "no movement",
+    "verso destra": "to the right",
+    "in alto a destra": "up and to the right",
+    "verso l'alto": "upwards",
+    "in alto a sinistra": "up and to the left",
+    "verso sinistra": "to the left",
+    "in basso a sinistra": "down and to the left",
+    "verso il basso": "downwards",
+    "in basso a destra": "down and to the right",
+    "Indica di quanto spostare.": "Enter how far to move.",
+    "Crea 1 copia dell'oggetto, {dist} {dir}.": "Create 1 copy of the object, {dist} {dir}.",
+    "Crea 1 copia dei {n} oggetti, {dist} {dir}.": "Create 1 copy of the {n} objects, {dist} {dir}.",
+    "Crea {c} copie dell'oggetto, ognuna {dist} {dir} rispetto alla precedente (fino a {tot}).": "Create {c} copies of the object, each {dist} {dir} from the previous one (up to {tot}).",
+    "Crea {c} copie dei {n} oggetti, ognuna {dist} {dir} rispetto alla precedente (fino a {tot}).": "Create {c} copies of the {n} objects, each {dist} {dir} from the previous one (up to {tot}).",
+    "Sposta l'oggetto di {dist} {dir}.": "Move the object {dist} {dir}.",
+    "Sposta {n} oggetti di {dist} {dir}.": "Move {n} objects {dist} {dir}.",
+    "Copia creata, {dist} {dir}.": "Copy created, {dist} {dir}.",
+    "{c} copie create, ognuna {dist} {dir} rispetto alla precedente.": "{c} copies created, each {dist} {dir} from the previous one.",
+    "Oggetto spostato di {dist} {dir}.": "Object moved {dist} {dir}.",
+    "{n} oggetti spostati di {dist} {dir}.": "{n} objects moved {dist} {dir}.",
+    "↔ Sposta di… (Invio)": "↔ Move by… (Enter)",
+    "Sposta la selezione di una distanza precisa in qualsiasi direzione, o crea copie in serie. Frecce: 1 mm, Shift 10 mm, Alt 0,1 mm.": "Move the selection by a precise distance in any direction, or create a series of copies. Arrows: 1 mm, Shift 10 mm, Alt 0.1 mm.",
   },
   de: {
     "1 cm": "1 cm",
@@ -2611,7 +2691,7 @@ const I18N = {
     "Oppure incolla il link diretto a un file font": "Oder füge den direkten Link zu einer Schriftdatei ein",
     "Opzioni di importazione": "Importoptionen",
     "Orientamento": "Ausrichtung",
-    "Orizzontale": "Querformat",
+    "Orizzontale": "Horizontal",
     "PDF multi-pagina generato: {total} fogli.": "Mehrseitiges PDF erstellt: {total} Blätter.",
     "Passo della griglia": "Rasterschritt",
     "Password": "Passwort",
@@ -2681,7 +2761,7 @@ const I18N = {
     "Versione precedente caricata: salvandola in libreria creerai un progetto separato, senza toccare quello originale.": "Vorherige Version geladen: Beim Speichern in der Bibliothek wird ein separates Projekt erstellt, ohne das Original zu verändern.",
     "Versione ripristinata in libreria.": "Version in der Bibliothek wiederhergestellt.",
     "Versioni": "Versionen",
-    "Verticale": "Hochformat",
+    "Verticale": "Vertikal",
     "Vettorizzazione in corso…": "Vektorisierung läuft…",
     "Vuoto.": "Leer.",
     "cm": "cm",
@@ -3385,6 +3465,40 @@ const I18N = {
     "Punti": "Punkte",
     "Lunghezze": "Längen",
     "Entrambi": "Beides",
+    "Sposta di…": "Verschieben um…",
+    "Distanza": "Abstand",
+    "Angolo (°)": "Winkel (°)",
+    "Orizzontale ({unit})": "Horizontal ({unit})",
+    "Verticale ({unit})": "Vertikal ({unit})",
+    "Distanza ({unit})": "Abstand ({unit})",
+    "Orizzontale: positivo = verso destra. Verticale: positivo = verso il basso.": "Horizontal: positiv = nach rechts. Vertikal: positiv = nach unten.",
+    "Angolo: 0° = destra, 90° = su, 180° = sinistra, 270° = giù.": "Winkel: 0° = rechts, 90° = oben, 180° = links, 270° = unten.",
+    "Direzione": "Richtung",
+    "Crea copie invece di spostare": "Kopien erstellen statt verschieben",
+    "Numero di copie": "Anzahl der Kopien",
+    "Seleziona prima gli oggetti da spostare (quelli bloccati non si spostano).": "Wähle zuerst die zu verschiebenden Objekte aus (gesperrte werden nicht verschoben).",
+    "nessuno spostamento": "keine Verschiebung",
+    "verso destra": "nach rechts",
+    "in alto a destra": "nach rechts oben",
+    "verso l'alto": "nach oben",
+    "in alto a sinistra": "nach links oben",
+    "verso sinistra": "nach links",
+    "in basso a sinistra": "nach links unten",
+    "verso il basso": "nach unten",
+    "in basso a destra": "nach rechts unten",
+    "Indica di quanto spostare.": "Gib an, wie weit verschoben werden soll.",
+    "Crea 1 copia dell'oggetto, {dist} {dir}.": "1 Kopie des Objekts erstellen, {dist} {dir}.",
+    "Crea 1 copia dei {n} oggetti, {dist} {dir}.": "1 Kopie der {n} Objekte erstellen, {dist} {dir}.",
+    "Crea {c} copie dell'oggetto, ognuna {dist} {dir} rispetto alla precedente (fino a {tot}).": "{c} Kopien des Objekts erstellen, jede {dist} {dir} von der vorherigen (bis {tot}).",
+    "Crea {c} copie dei {n} oggetti, ognuna {dist} {dir} rispetto alla precedente (fino a {tot}).": "{c} Kopien der {n} Objekte erstellen, jede {dist} {dir} von der vorherigen (bis {tot}).",
+    "Sposta l'oggetto di {dist} {dir}.": "Objekt um {dist} {dir} verschieben.",
+    "Sposta {n} oggetti di {dist} {dir}.": "{n} Objekte um {dist} {dir} verschieben.",
+    "Copia creata, {dist} {dir}.": "Kopie erstellt, {dist} {dir}.",
+    "{c} copie create, ognuna {dist} {dir} rispetto alla precedente.": "{c} Kopien erstellt, jede {dist} {dir} von der vorherigen.",
+    "Oggetto spostato di {dist} {dir}.": "Objekt um {dist} {dir} verschoben.",
+    "{n} oggetti spostati di {dist} {dir}.": "{n} Objekte um {dist} {dir} verschoben.",
+    "↔ Sposta di… (Invio)": "↔ Verschieben um… (Eingabe)",
+    "Sposta la selezione di una distanza precisa in qualsiasi direzione, o crea copie in serie. Frecce: 1 mm, Shift 10 mm, Alt 0,1 mm.": "Auswahl um einen genauen Abstand in jede Richtung verschieben oder Kopienreihen erstellen. Pfeile: 1 mm, Umschalt 10 mm, Alt 0,1 mm.",
   },
   es: {
     "1 cm": "1 cm",
@@ -4351,6 +4465,40 @@ const I18N = {
     "Punti": "Puntos",
     "Lunghezze": "Longitudes",
     "Entrambi": "Ambos",
+    "Sposta di…": "Mover…",
+    "Distanza": "Distancia",
+    "Angolo (°)": "Ángulo (°)",
+    "Orizzontale ({unit})": "Horizontal ({unit})",
+    "Verticale ({unit})": "Vertical ({unit})",
+    "Distanza ({unit})": "Distancia ({unit})",
+    "Orizzontale: positivo = verso destra. Verticale: positivo = verso il basso.": "Horizontal: positivo = hacia la derecha. Vertical: positivo = hacia abajo.",
+    "Angolo: 0° = destra, 90° = su, 180° = sinistra, 270° = giù.": "Ángulo: 0° = derecha, 90° = arriba, 180° = izquierda, 270° = abajo.",
+    "Direzione": "Dirección",
+    "Crea copie invece di spostare": "Crear copias en lugar de mover",
+    "Numero di copie": "Número de copias",
+    "Seleziona prima gli oggetti da spostare (quelli bloccati non si spostano).": "Selecciona primero los objetos que quieres mover (los bloqueados no se mueven).",
+    "nessuno spostamento": "ningún movimiento",
+    "verso destra": "hacia la derecha",
+    "in alto a destra": "hacia arriba a la derecha",
+    "verso l'alto": "hacia arriba",
+    "in alto a sinistra": "hacia arriba a la izquierda",
+    "verso sinistra": "hacia la izquierda",
+    "in basso a sinistra": "hacia abajo a la izquierda",
+    "verso il basso": "hacia abajo",
+    "in basso a destra": "hacia abajo a la derecha",
+    "Indica di quanto spostare.": "Indica cuánto mover.",
+    "Crea 1 copia dell'oggetto, {dist} {dir}.": "Crear 1 copia del objeto, {dist} {dir}.",
+    "Crea 1 copia dei {n} oggetti, {dist} {dir}.": "Crear 1 copia de los {n} objetos, {dist} {dir}.",
+    "Crea {c} copie dell'oggetto, ognuna {dist} {dir} rispetto alla precedente (fino a {tot}).": "Crear {c} copias del objeto, cada una {dist} {dir} respecto a la anterior (hasta {tot}).",
+    "Crea {c} copie dei {n} oggetti, ognuna {dist} {dir} rispetto alla precedente (fino a {tot}).": "Crear {c} copias de los {n} objetos, cada una {dist} {dir} respecto a la anterior (hasta {tot}).",
+    "Sposta l'oggetto di {dist} {dir}.": "Mover el objeto {dist} {dir}.",
+    "Sposta {n} oggetti di {dist} {dir}.": "Mover {n} objetos {dist} {dir}.",
+    "Copia creata, {dist} {dir}.": "Copia creada, {dist} {dir}.",
+    "{c} copie create, ognuna {dist} {dir} rispetto alla precedente.": "{c} copias creadas, cada una {dist} {dir} respecto a la anterior.",
+    "Oggetto spostato di {dist} {dir}.": "Objeto movido {dist} {dir}.",
+    "{n} oggetti spostati di {dist} {dir}.": "{n} objetos movidos {dist} {dir}.",
+    "↔ Sposta di… (Invio)": "↔ Mover… (Intro)",
+    "Sposta la selezione di una distanza precisa in qualsiasi direzione, o crea copie in serie. Frecce: 1 mm, Shift 10 mm, Alt 0,1 mm.": "Mueve la selección una distancia precisa en cualquier dirección, o crea copias en serie. Flechas: 1 mm, Mayús 10 mm, Alt 0,1 mm.",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -4543,7 +4691,7 @@ const I18N = {
     "Oppure incolla il link diretto a un file font": "或粘贴字体文件的直接链接",
     "Opzioni di importazione": "导入选项",
     "Orientamento": "方向",
-    "Orizzontale": "横向",
+    "Orizzontale": "水平",
     "PDF multi-pagina generato: {total} fogli.": "已生成多页 PDF：共 {total} 页。",
     "Passo della griglia": "网格间距",
     "Password": "密码",
@@ -4613,7 +4761,7 @@ const I18N = {
     "Versione precedente caricata: salvandola in libreria creerai un progetto separato, senza toccare quello originale.": "已加载旧版本：保存到资料库将创建一个单独的项目，不会影响原项目。",
     "Versione ripristinata in libreria.": "已在资料库中恢复该版本。",
     "Versioni": "版本",
-    "Verticale": "纵向",
+    "Verticale": "垂直",
     "Vettorizzazione in corso…": "矢量化处理中…",
     "Vuoto.": "空。",
     "cm": "厘米",
@@ -5317,6 +5465,40 @@ const I18N = {
     "Punti": "点",
     "Lunghezze": "长度",
     "Entrambi": "全部",
+    "Sposta di…": "移动…",
+    "Distanza": "距离",
+    "Angolo (°)": "角度（°）",
+    "Orizzontale ({unit})": "水平（{unit}）",
+    "Verticale ({unit})": "垂直（{unit}）",
+    "Distanza ({unit})": "距离（{unit}）",
+    "Orizzontale: positivo = verso destra. Verticale: positivo = verso il basso.": "水平：正值 = 向右。垂直：正值 = 向下。",
+    "Angolo: 0° = destra, 90° = su, 180° = sinistra, 270° = giù.": "角度：0° = 右，90° = 上，180° = 左，270° = 下。",
+    "Direzione": "方向",
+    "Crea copie invece di spostare": "创建副本而不是移动",
+    "Numero di copie": "副本数量",
+    "Seleziona prima gli oggetti da spostare (quelli bloccati non si spostano).": "请先选择要移动的对象（已锁定的对象不会移动）。",
+    "nessuno spostamento": "无移动",
+    "verso destra": "向右",
+    "in alto a destra": "向右上",
+    "verso l'alto": "向上",
+    "in alto a sinistra": "向左上",
+    "verso sinistra": "向左",
+    "in basso a sinistra": "向左下",
+    "verso il basso": "向下",
+    "in basso a destra": "向右下",
+    "Indica di quanto spostare.": "请输入移动距离。",
+    "Crea 1 copia dell'oggetto, {dist} {dir}.": "创建该对象的 1 个副本，{dir} {dist}。",
+    "Crea 1 copia dei {n} oggetti, {dist} {dir}.": "创建这 {n} 个对象的 1 个副本，{dir} {dist}。",
+    "Crea {c} copie dell'oggetto, ognuna {dist} {dir} rispetto alla precedente (fino a {tot}).": "创建该对象的 {c} 个副本，每个相对前一个{dir} {dist}（总计 {tot}）。",
+    "Crea {c} copie dei {n} oggetti, ognuna {dist} {dir} rispetto alla precedente (fino a {tot}).": "创建这 {n} 个对象的 {c} 个副本，每个相对前一个{dir} {dist}（总计 {tot}）。",
+    "Sposta l'oggetto di {dist} {dir}.": "将对象{dir}移动 {dist}。",
+    "Sposta {n} oggetti di {dist} {dir}.": "将 {n} 个对象{dir}移动 {dist}。",
+    "Copia creata, {dist} {dir}.": "已创建副本，{dir} {dist}。",
+    "{c} copie create, ognuna {dist} {dir} rispetto alla precedente.": "已创建 {c} 个副本，每个相对前一个{dir} {dist}。",
+    "Oggetto spostato di {dist} {dir}.": "对象已{dir}移动 {dist}。",
+    "{n} oggetti spostati di {dist} {dir}.": "{n} 个对象已{dir}移动 {dist}。",
+    "↔ Sposta di… (Invio)": "↔ 移动…（回车）",
+    "Sposta la selezione di una distanza precisa in qualsiasi direzione, o crea copie in serie. Frecce: 1 mm, Shift 10 mm, Alt 0,1 mm.": "将所选内容按精确距离向任意方向移动，或创建一系列副本。方向键：1 mm，Shift 10 mm，Alt 0.1 mm。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -5509,7 +5691,7 @@ const I18N = {
     "Oppure incolla il link diretto a un file font": "Ou colle le lien direct vers un fichier de police",
     "Opzioni di importazione": "Options d'importation",
     "Orientamento": "Orientation",
-    "Orizzontale": "Paysage",
+    "Orizzontale": "Horizontal",
     "PDF multi-pagina generato: {total} fogli.": "PDF multi-page généré : {total} feuilles.",
     "Passo della griglia": "Pas de la grille",
     "Password": "Mot de passe",
@@ -5579,7 +5761,7 @@ const I18N = {
     "Versione precedente caricata: salvandola in libreria creerai un progetto separato, senza toccare quello originale.": "Version précédente chargée : l’enregistrer dans la bibliothèque créera un projet séparé, sans toucher à l’original.",
     "Versione ripristinata in libreria.": "Version restaurée dans la bibliothèque.",
     "Versioni": "Versions",
-    "Verticale": "Portrait",
+    "Verticale": "Vertical",
     "Vettorizzazione in corso…": "Vectorisation en cours…",
     "Vuoto.": "Vide.",
     "cm": "cm",
@@ -6283,6 +6465,40 @@ const I18N = {
     "Punti": "Points",
     "Lunghezze": "Longueurs",
     "Entrambi": "Les deux",
+    "Sposta di…": "Déplacer de…",
+    "Distanza": "Distance",
+    "Angolo (°)": "Angle (°)",
+    "Orizzontale ({unit})": "Horizontal ({unit})",
+    "Verticale ({unit})": "Vertical ({unit})",
+    "Distanza ({unit})": "Distance ({unit})",
+    "Orizzontale: positivo = verso destra. Verticale: positivo = verso il basso.": "Horizontal : positif = vers la droite. Vertical : positif = vers le bas.",
+    "Angolo: 0° = destra, 90° = su, 180° = sinistra, 270° = giù.": "Angle : 0° = droite, 90° = haut, 180° = gauche, 270° = bas.",
+    "Direzione": "Direction",
+    "Crea copie invece di spostare": "Créer des copies au lieu de déplacer",
+    "Numero di copie": "Nombre de copies",
+    "Seleziona prima gli oggetti da spostare (quelli bloccati non si spostano).": "Sélectionne d’abord les objets à déplacer (ceux qui sont verrouillés ne bougent pas).",
+    "nessuno spostamento": "aucun déplacement",
+    "verso destra": "vers la droite",
+    "in alto a destra": "en haut à droite",
+    "verso l'alto": "vers le haut",
+    "in alto a sinistra": "en haut à gauche",
+    "verso sinistra": "vers la gauche",
+    "in basso a sinistra": "en bas à gauche",
+    "verso il basso": "vers le bas",
+    "in basso a destra": "en bas à droite",
+    "Indica di quanto spostare.": "Indique de combien déplacer.",
+    "Crea 1 copia dell'oggetto, {dist} {dir}.": "Créer 1 copie de l’objet, {dist} {dir}.",
+    "Crea 1 copia dei {n} oggetti, {dist} {dir}.": "Créer 1 copie des {n} objets, {dist} {dir}.",
+    "Crea {c} copie dell'oggetto, ognuna {dist} {dir} rispetto alla precedente (fino a {tot}).": "Créer {c} copies de l’objet, chacune {dist} {dir} par rapport à la précédente (jusqu’à {tot}).",
+    "Crea {c} copie dei {n} oggetti, ognuna {dist} {dir} rispetto alla precedente (fino a {tot}).": "Créer {c} copies des {n} objets, chacune {dist} {dir} par rapport à la précédente (jusqu’à {tot}).",
+    "Sposta l'oggetto di {dist} {dir}.": "Déplacer l’objet de {dist} {dir}.",
+    "Sposta {n} oggetti di {dist} {dir}.": "Déplacer {n} objets de {dist} {dir}.",
+    "Copia creata, {dist} {dir}.": "Copie créée, {dist} {dir}.",
+    "{c} copie create, ognuna {dist} {dir} rispetto alla precedente.": "{c} copies créées, chacune {dist} {dir} par rapport à la précédente.",
+    "Oggetto spostato di {dist} {dir}.": "Objet déplacé de {dist} {dir}.",
+    "{n} oggetti spostati di {dist} {dir}.": "{n} objets déplacés de {dist} {dir}.",
+    "↔ Sposta di… (Invio)": "↔ Déplacer de… (Entrée)",
+    "Sposta la selezione di una distanza precisa in qualsiasi direzione, o crea copie in serie. Frecce: 1 mm, Shift 10 mm, Alt 0,1 mm.": "Déplace la sélection d’une distance précise dans n’importe quelle direction, ou crée des copies en série. Flèches : 1 mm, Maj 10 mm, Alt 0,1 mm.",
   },
 };
 let currentLang = 'it';
@@ -7768,6 +7984,7 @@ function renderCanvasOnly(){
   renderFoldIndicators();
   renderSmartGuides();
   renderPropFocus();
+  renderMovePreview();
   renderGroupFrames();
   renderVertexBar();
   if(state.arcEditLabel && dragMode==='arc-bulge'){
@@ -9063,7 +9280,7 @@ function closeJoinDialog(){
    ridurre nella barra in basso, modificare il disegno e poi riprenderle
    esattamente come le si era lasciate.
 ============================================================ */
-const MINIMIZABLE_MODALS = ['adminModal','pdfImportModal','silModal','seqModal','symModal','joinModal','fold3dModal','boxGenModal','historyModal','versionsModal','libraryModal','saveLibraryModal',
+const MINIMIZABLE_MODALS = ['moveModal','adminModal','pdfImportModal','silModal','seqModal','symModal','joinModal','fold3dModal','boxGenModal','historyModal','versionsModal','libraryModal','saveLibraryModal',
   'pageSizeModal','fontModal','scaleModal','tilePrintModal','printProofModal','cutPreviewModal','weldModal','helpModal'];
 const MODAL_HOOKS = {
   fold3dModal: { onMinimize: ()=>{ stopFold3D(); if(!state.foldCheck) runFoldCheckOverlay(true); }, onRestore: ()=>{ if(state.foldCheck) endFoldCheckOverlay(); refreshFold3D(); } },
@@ -9976,7 +10193,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.36.0';
+const GUIDE_VERSION = '2.37.0';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -10146,6 +10363,14 @@ html:`<p>I punti che coincidono sono uniti: spostandone uno si trascina l'altro.
 <li><b>tutti i vertici</b> di una forma o della selezione: "⛓ Scollega tutti i vertici" nel pannello Proprietà o col tasto destro.</li></ul>
 <p>I punti scollegati hanno la maniglia <b>viola tratteggiata</b> e contano come punti liberi. Si ricollegano con "🔗 Ricollega", o unendoli con <a data-topic="unisci">Unisci punti</a>.</p>` },
 
+{ id:'sposta', cat:'Modificare', title:'Spostare di una distanza precisa', keys:'spostare sposta distanza precisa mm cm direzione angolo frecce tastiera copie serie ripeti passo invio nudge',
+html:`<p><b>Sposta di…</b>: seleziona uno o più oggetti e premi <b>Invio</b> (oppure menu Strumenti, tasto destro sull'oggetto o il pulsante nel pannello Proprietà). Nella finestra indichi lo spostamento in uno dei due modi, che si aggiornano a vicenda:</p>
+<ul><li><b>Orizzontale / Verticale</b> nell'unità di misura scelta (positivo = verso destra / verso il basso);</li>
+<li><b>Distanza e Angolo</b> (0° = destra, 90° = su, 180° = sinistra, 270° = giù), oppure i pulsanti delle <b>8 direzioni</b>.</li></ul>
+<p>Sul disegno un'<b>anteprima tratteggiata</b> mostra dove finiranno gli oggetti. Con <b>Crea copie invece di spostare</b> gli originali restano dove sono e vengono create una o più copie in serie, ognuna spostata rispetto alla precedente (per esempio 5 copie ogni 30 mm). Invio applica, Esc annulla; i valori usati vengono ricordati.</p>
+<p>Spostando gli originali, le linee collegate ai loro punti li seguono, come trascinando col mouse; le copie invece sono indipendenti. Gli oggetti bloccati non si spostano.</p>
+<p><b>Frecce della tastiera</b>: con lo strumento di selezione spostano la selezione di <b>1 mm</b>, <b>10 mm</b> con Shift, <b>0,1 mm</b> con Alt. Una serie di pressioni si annulla con un solo Ctrl+Z.</p>` },
+
 { id:'gruppi', cat:'Modificare', title:'Raggruppare e separare', keys:'gruppo raggruppa raggruppare separa separare sciogliere ctrl+g unire oggetti insieme',
 html:`<ul><li><b>Raggruppa</b>: seleziona due o più oggetti e premi <b>Ctrl+G</b>, oppure "⧉ Raggruppa" nel pannello Proprietà o nel tasto destro. Un clic su uno qualsiasi degli oggetti seleziona tutto il gruppo, che si sposta, ruota, copia ed elimina insieme. Intorno al gruppo selezionato compare un riquadro viola tratteggiato con la scritta "Gruppo".</li>
 <li><b>Un solo elemento</b>: <b>Ctrl+clic</b> su un oggetto del gruppo seleziona solo quello, per modificarlo senza sciogliere il gruppo (il riquadro diventa puntinato: "Elemento di un gruppo").</li>
@@ -10294,7 +10519,7 @@ html:`<table class="guide-table">
 <tr><th colspan="2">Durante il disegno</th></tr>
 <tr><td>Invio</td><td>termina la linea della penna, conferma una lunghezza digitata</td></tr><tr><td>C</td><td>chiude il percorso della penna</td></tr><tr><td>Esc</td><td>annulla</td></tr><tr><td>numeri</td><td>lunghezza esatta della linea</td></tr>
 <tr><th colspan="2">Modifica</th></tr>
-<tr><td>Canc / Backspace</td><td>elimina la selezione</td></tr><tr><td>Frecce</td><td>sposta di 1 mm (Shift = 5 mm)</td></tr><tr><td>Alt + trascina</td><td>sposta senza agganci; sull'area vuota: lazo</td></tr><tr><td>Ctrl+A</td><td>seleziona tutto</td></tr><tr><td>Ctrl+G / Ctrl+Shift+G</td><td>raggruppa / separa gruppo</td></tr><tr><td>Ctrl+clic</td><td>un solo elemento di un gruppo</td></tr><tr><td>Ctrl+C / X / V</td><td>copia / taglia / incolla</td></tr><tr><td>Ctrl+] / Ctrl+[</td><td>avanti / indietro di una posizione</td></tr><tr><td>Ctrl+Shift+] / [</td><td>primo / secondo piano</td></tr>
+<tr><td>Canc / Backspace</td><td>elimina la selezione</td></tr><tr><td>Frecce</td><td>sposta di 1 mm (Shift = 5 mm)</td></tr><tr><td>Alt + trascina</td><td>sposta senza agganci; sull'area vuota: lazo</td></tr><tr><td>Ctrl+A</td><td>seleziona tutto</td></tr><tr><td>Ctrl+G / Ctrl+Shift+G</td><td>raggruppa / separa gruppo</td></tr><tr><td>Invio (selezione)</td><td>Sposta di…</td></tr><tr><td>Frecce</td><td>sposta la selezione di 1 mm (Shift 10 mm, Alt 0,1 mm)</td></tr><tr><td>Ctrl+clic</td><td>un solo elemento di un gruppo</td></tr><tr><td>Ctrl+C / X / V</td><td>copia / taglia / incolla</td></tr><tr><td>Ctrl+] / Ctrl+[</td><td>avanti / indietro di una posizione</td></tr><tr><td>Ctrl+Shift+] / [</td><td>primo / secondo piano</td></tr>
 <tr><th colspan="2">Generali</th></tr>
 <tr><td>Ctrl+Z / Ctrl+Shift+Z</td><td>annulla / ripeti</td></tr><tr><td>Ctrl+S</td><td>esporta SVG</td></tr><tr><td>G / M</td><td>griglia / calamita</td></tr><tr><td>Ctrl + rotella, + / − / 0</td><td>zoom</td></tr><tr><td>F1</td><td>questa guida</td></tr></table>` },
 
@@ -10311,6 +10536,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.37</b> — <a data-topic="sposta">Sposta di…</a> (Invio): distanza precisa in qualsiasi direzione, anche con copie in serie; frecce della tastiera per spostare la selezione.</li>
 <li><b>2.36</b> — Nel pannello Proprietà <a data-topic="punti">Mostra: Punti · Lunghezze · Entrambi</a>; evidenziazione gialla sul disegno di ciò che si sta modificando.</li>
 <li><b>2.35.1</b> — Menu File, Stampa e Strumenti riordinati per argomento e divisi da linee; "Scarica una copia del progetto" e "Apri un progetto da file" al posto di Salva/Apri progetto.</li>
 <li><b>2.35</b> — Al ricaricamento le schede della libreria si aggiornano all'ultima versione del server; <a data-topic="salvataggio">salvataggio nel browser</a> più affidabile e quasi immediato, con indicatore di stato al posto di "Salva"; disegni grandi molto più veloci (punti e angoli).</li>
@@ -10687,6 +10913,135 @@ function renderPropFocus(){
     g.appendChild(el('rect', {x:b.x*sc-4, y:b.y*sc-4, width:b.w*sc+8, height:b.h*sc+8, rx:4, fill, stroke, 'stroke-width':2}));
   }
   layerOverlay.appendChild(g);
+}
+
+
+/* ============================================================
+   SPOSTA DI… — spostamento preciso (o copie in serie) in qualsiasi direzione.
+   Orizzontale/verticale e distanza/angolo sono lo stesso spostamento visto in due
+   modi: si aggiornano a vicenda. Angolo matematico: 0° = destra, 90° = su.
+   Frecce della tastiera: 1 mm (Shift 10 mm, Alt 0,1 mm).
+============================================================ */
+const moveDlg = { dx:10, dy:0, copy:false, count:1 };
+try{ Object.assign(moveDlg, JSON.parse(localStorage.getItem('spikecut-move') || '{}')); }catch(e){}
+function moveTargets(){ return [...state.selection].map(id=>state.shapes.find(x=>x.id===id)).filter(s=>s && !s.locked); }
+function openMoveModal(){
+  if(!moveTargets().length){ showToast('Seleziona prima gli oggetti da spostare (quelli bloccati non si spostano).', true); return; }
+  const u = unitLabel();
+  document.getElementById('moveDxLabel').textContent = tpl('Orizzontale ({unit})', {unit:u});
+  document.getElementById('moveDyLabel').textContent = tpl('Verticale ({unit})', {unit:u});
+  document.getElementById('moveDistLabel').textContent = tpl('Distanza ({unit})', {unit:u});
+  document.getElementById('moveCopy').checked = !!moveDlg.copy;
+  document.getElementById('moveCount').value = moveDlg.count || 1;
+  moveFillFromXY();
+  openModal('moveModal');
+  setTimeout(()=>{ const i = document.getElementById('moveDx'); i.focus(); i.select(); }, 30);
+}
+const r4 = v=> Math.round(v*10000)/10000;
+function moveFillFromXY(){ // dx, dy (mm) → tutti i campi
+  const d = Math.hypot(moveDlg.dx, moveDlg.dy);
+  let ang = d ? Math.atan2(-moveDlg.dy, moveDlg.dx) * 180/Math.PI : 0; if(ang < 0) ang += 360;
+  document.getElementById('moveDx').value = r4(mmToUnit(moveDlg.dx));
+  document.getElementById('moveDy').value = r4(mmToUnit(moveDlg.dy));
+  document.getElementById('moveDist').value = r4(mmToUnit(d));
+  document.getElementById('moveAng').value = Math.round(ang*100)/100;
+  moveRefresh();
+}
+function moveReadXY(){
+  moveDlg.dx = unitToMm(parseFloat(document.getElementById('moveDx').value) || 0);
+  moveDlg.dy = unitToMm(parseFloat(document.getElementById('moveDy').value) || 0);
+  const d = Math.hypot(moveDlg.dx, moveDlg.dy);
+  let ang = d ? Math.atan2(-moveDlg.dy, moveDlg.dx) * 180/Math.PI : 0; if(ang < 0) ang += 360;
+  document.getElementById('moveDist').value = r4(mmToUnit(d));
+  document.getElementById('moveAng').value = Math.round(ang*100)/100;
+  moveRefresh();
+}
+function moveReadPolar(){
+  const d = unitToMm(Math.max(0, parseFloat(document.getElementById('moveDist').value) || 0));
+  const a = (parseFloat(document.getElementById('moveAng').value) || 0) * Math.PI/180;
+  moveDlg.dx = r4(d*Math.cos(a)); moveDlg.dy = r4(-d*Math.sin(a));
+  document.getElementById('moveDx').value = r4(mmToUnit(moveDlg.dx));
+  document.getElementById('moveDy').value = r4(mmToUnit(moveDlg.dy));
+  moveRefresh();
+}
+function moveDirWord(dx, dy){
+  const d = Math.hypot(dx, dy); if(d < 1e-9) return translate('nessuno spostamento');
+  let a = Math.atan2(-dy, dx)*180/Math.PI; if(a < 0) a += 360;
+  const names = ['verso destra','in alto a destra','verso l\'alto','in alto a sinistra','verso sinistra','in basso a sinistra','verso il basso','in basso a destra'];
+  const i = Math.round(a/45) % 8, exact = Math.abs(a - Math.round(a/45)*45) < 0.01;
+  return translate(names[i]) + (exact ? '' : ' (' + Math.round(a*10)/10 + '°)');
+}
+function moveRefresh(){
+  moveDlg.copy = document.getElementById('moveCopy').checked;
+  moveDlg.count = Math.max(1, Math.min(200, parseInt(document.getElementById('moveCount').value, 10) || 1));
+  document.getElementById('moveCount').disabled = !moveDlg.copy;
+  const n = moveTargets().length, d = Math.hypot(moveDlg.dx, moveDlg.dy);
+  let a = Math.atan2(-moveDlg.dy, moveDlg.dx)*180/Math.PI; if(a < 0) a += 360;
+  document.querySelectorAll('#moveCompass button').forEach(b=> b.classList.toggle('active', d > 1e-9 && Math.abs(((+b.dataset.ang - a) % 360 + 360) % 360) < 0.01));
+  document.getElementById('moveSummary').textContent = d < 1e-9 ? translate('Indica di quanto spostare.')
+    : moveDlg.copy
+      ? tpl(moveDlg.count===1 ? (n===1 ? 'Crea 1 copia dell\'oggetto, {dist} {dir}.' : 'Crea 1 copia dei {n} oggetti, {dist} {dir}.')
+                               : (n===1 ? 'Crea {c} copie dell\'oggetto, ognuna {dist} {dir} rispetto alla precedente (fino a {tot}).' : 'Crea {c} copie dei {n} oggetti, ognuna {dist} {dir} rispetto alla precedente (fino a {tot}).'),
+            {c:moveDlg.count, n, dist:fmtUnit(d), dir:moveDirWord(moveDlg.dx, moveDlg.dy), tot:fmtUnit(d*moveDlg.count)})
+      : tpl(n===1 ? 'Sposta l\'oggetto di {dist} {dir}.' : 'Sposta {n} oggetti di {dist} {dir}.', {n, dist:fmtUnit(d), dir:moveDirWord(moveDlg.dx, moveDlg.dy)});
+  state.movePreview = d < 1e-9 ? null : {dx:moveDlg.dx, dy:moveDlg.dy, count: moveDlg.copy ? moveDlg.count : 1};
+  renderCanvasOnly();
+}
+function closeMoveModal(){ document.getElementById('moveModal').classList.remove('open'); state.movePreview = null; renderCanvasOnly(); }
+function translateShapeCopy(s, dx, dy){
+  if(s.points) s.points = s.points.map(p=>[p[0]+dx, p[1]+dy]);
+  else if(s.x!=null){ s.x += dx; s.y += dy; }
+}
+function applyMove(){
+  const sel = moveTargets(), dx = moveDlg.dx, dy = moveDlg.dy;
+  if(!sel.length || Math.hypot(dx, dy) < 1e-9){ closeMoveModal(); return; }
+  try{ localStorage.setItem('spikecut-move', JSON.stringify(moveDlg)); }catch(e){}
+  const dist = fmtUnit(Math.hypot(dx, dy)), dir = moveDirWord(dx, dy);
+  if(moveDlg.copy){
+    const made = [];
+    for(let k=1; k<=moveDlg.count; k++){
+      const copies = sel.map(s=>{ const cp = JSON.parse(JSON.stringify(s)); cp.id = uid(); translateShapeCopy(cp, dx*k, dy*k); return cp; });
+      remapGroupIds(copies); // ogni serie di copie di un gruppo è un gruppo nuovo
+      copies.forEach(cp=>{ state.shapes.push(cp); made.push(cp.id); });
+    }
+    state.selection = new Set(made);
+    closeMoveModal(); pushHistory(); renderAll();
+    showToast(tpl(moveDlg.count===1 ? 'Copia creata, {dist} {dir}.' : '{c} copie create, ognuna {dist} {dir} rispetto alla precedente.', {c:moveDlg.count, dist, dir}), false);
+  } else {
+    moveShapesBy(sel.map(s=>s.id), dx, dy); // le linee collegate seguono, come trascinando col mouse
+    closeMoveModal(); pushHistory(); renderAll();
+    showToast(tpl(sel.length===1 ? 'Oggetto spostato di {dist} {dir}.' : '{n} oggetti spostati di {dist} {dir}.', {n:sel.length, dist, dir}), false);
+  }
+}
+// anteprima tratteggiata della posizione finale (e di ogni copia)
+function renderMovePreview(){
+  const mp = state.movePreview; if(!mp) return;
+  const sel = moveTargets(); if(!sel.length) return;
+  const sc = state.scale, bb = sel.map(shapeBBox).filter(Boolean); if(!bb.length) return;
+  const x0 = Math.min(...bb.map(b=>b.x)), y0 = Math.min(...bb.map(b=>b.y)), x1 = Math.max(...bb.map(b=>b.x+b.w)), y1 = Math.max(...bb.map(b=>b.y+b.h));
+  const g = el('g', {'pointer-events':'none'});
+  const shown = Math.min(mp.count, 40);
+  for(let k=1; k<=shown; k++){
+    const ox = mp.dx*k, oy = mp.dy*k;
+    sel.forEach(s=>{
+      if(s.points && s.points.length > 1){
+        const d = 'M ' + s.points.map(q=>((q[0]+ox)*sc).toFixed(1) + ' ' + ((q[1]+oy)*sc).toFixed(1)).join(' L ') + (s.closed ? ' Z' : '');
+        g.appendChild(el('path', {d, fill:'none', stroke:'#c9973f', 'stroke-width':1.3, 'stroke-dasharray':'5,4', opacity: k===shown ? 0.95 : 0.55}));
+      } else { const b = shapeBBox(s); if(b) g.appendChild(el('rect', {x:(b.x+ox)*sc, y:(b.y+oy)*sc, width:b.w*sc, height:b.h*sc, fill:'none', stroke:'#c9973f', 'stroke-width':1.3, 'stroke-dasharray':'5,4'})); }
+    });
+  }
+  const cx = (x0+x1)/2, cy = (y0+y1)/2, ex = cx + mp.dx*shown, ey = cy + mp.dy*shown;
+  g.appendChild(el('line', {x1:cx*sc, y1:cy*sc, x2:ex*sc, y2:ey*sc, stroke:'#c9973f', 'stroke-width':1.5}));
+  g.appendChild(el('circle', {cx:ex*sc, cy:ey*sc, r:3.5, fill:'#c9973f'}));
+  layerOverlay.appendChild(g);
+}
+let nudgeHistTimer = null;
+function nudgeSelection(key, stepMM){
+  const ids = moveTargets().map(s=>s.id); if(!ids.length) return;
+  const d = {ArrowLeft:[-1,0], ArrowRight:[1,0], ArrowUp:[0,-1], ArrowDown:[0,1]}[key]; if(!d) return;
+  moveShapesBy(ids, d[0]*stepMM, d[1]*stepMM);
+  renderAll();
+  clearTimeout(nudgeHistTimer); nudgeHistTimer = setTimeout(()=> pushHistory(), 350); // una serie di pressioni = un solo passo di annulla
 }
 
 /* ============================================================
@@ -11133,6 +11488,7 @@ function shapeContextItems(s){
     {label:'Seleziona stesso colore', action:()=> selectSameColor(s)},
     {label:'Seleziona stesso ruolo', action:()=> selectSameRole(s)},
     {label:'✂ Dividi in segmenti', action:()=>{ if(!state.selection.has(s.id)) state.selection = new Set([s.id]); explodeSelectionToSegments(); }},
+    {label:'↔ Sposta di… (Invio)', action:()=>{ if(!state.selection.has(s.id)){ state.selection = new Set([s.id]); expandGroupOf(s); renderAll(); } openMoveModal(); }},
     ...(state.selection.size>1 ? [{label:'⧉ Raggruppa (Ctrl+G)', action:()=> groupSelection()}] : []),
     ...(s.groupId ? [{label:'⧈ Separa gruppo (Ctrl+Shift+G)', action:()=>{ if(!state.selection.has(s.id)) { state.selection = new Set([s.id]); expandGroupOf(s); } ungroupSelection(); }}] : []),
     'sep',
@@ -11955,6 +12311,10 @@ window.addEventListener('keydown', (e)=>{
   }
 
   const k = e.key.toLowerCase();
+  if(/^Arrow(Left|Right|Up|Down)$/.test(e.key) && !e.ctrlKey && !e.metaKey && state.tool==='select' && state.selection.size){
+    e.preventDefault(); nudgeSelection(e.key, e.shiftKey ? 10 : (e.altKey ? 0.1 : 1)); return; // frecce: 1 mm, Shift 10 mm, Alt 0,1 mm
+  }
+  if(k==='enter' && !e.ctrlKey && !e.metaKey && state.tool==='select' && state.selection.size){ e.preventDefault(); openMoveModal(); return; } // Invio: Sposta di…
   if((e.ctrlKey||e.metaKey) && k==='z' && !e.shiftKey){ e.preventDefault(); undo(); return; }
   if((e.ctrlKey||e.metaKey) && (k==='y' || (k==='z'&&e.shiftKey))){ e.preventDefault(); redo(); return; }
   if((e.ctrlKey||e.metaKey) && k==='s'){ e.preventDefault(); exportSVG(); return; }
@@ -12321,6 +12681,7 @@ function handleMenuAction(e){
   else if(action==='generate-box') openModal('boxGenModal');
   else if(action==='fold-3d') openFold3D();
   else if(action==='symmetry') openSymmetry();
+  else if(action==='move-by') openMoveModal();
   else if(action==='fold-sequence') openFoldSequence();
   else if(action==='cut-preview') openCutPreview();
   else if(action==='weld-points') openWeldModal();
@@ -13126,6 +13487,24 @@ document.getElementById('adminProjSearch').addEventListener('input', renderAdmin
 document.getElementById('adminProjSearch').addEventListener('keydown', e=> e.stopPropagation());
 document.getElementById('adminProjOnlyPrivate').onchange = renderAdminProjects;
 document.getElementById('adminUserSearch').addEventListener('keydown', e=> e.stopPropagation());
+document.getElementById('moveModalClose').onclick = closeMoveModal;
+document.getElementById('moveCancel').onclick = closeMoveModal;
+document.getElementById('moveApply').onclick = applyMove;
+setupOverlayClickClose(document.getElementById('moveModal'), closeMoveModal);
+['moveDx','moveDy'].forEach(id=> document.getElementById(id).addEventListener('input', moveReadXY));
+['moveDist','moveAng'].forEach(id=> document.getElementById(id).addEventListener('input', moveReadPolar));
+['moveCopy','moveCount'].forEach(id=> document.getElementById(id).addEventListener('input', moveRefresh));
+document.getElementById('moveCopy').addEventListener('change', moveRefresh);
+document.querySelectorAll('#moveCompass button').forEach(b=> b.onclick = ()=>{
+  const dEl = document.getElementById('moveDist');
+  if(!(parseFloat(dEl.value) > 0)) dEl.value = r4(mmToUnit(10));
+  document.getElementById('moveAng').value = b.dataset.ang; moveReadPolar();
+});
+document.getElementById('moveModal').addEventListener('keydown', e=>{
+  if(e.key==='Enter'){ e.preventDefault(); e.stopPropagation(); applyMove(); }
+  else if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); closeMoveModal(); }
+  else e.stopPropagation(); // i tasti scritti nei campi non comandano il disegno
+});
 function closeFold3D(){ stopFold3D(); if(state.foldCheck) endFoldCheckOverlay(); document.getElementById('fold3dModal').classList.remove('open'); }
 document.getElementById('fold3dClose').onclick = closeFold3D;
 setupOverlayClickClose(document.getElementById('fold3dModal'), closeFold3D);
@@ -13912,6 +14291,13 @@ function renderPropPanelInner(){
     const foldHint = document.createElement('div'); foldHint.className='hint'; foldHint.style.marginTop='6px';
     foldHint.textContent = 'La freccia e l\'angolo compaiono sul disegno solo se scegli un verso di piegatura. 90° = angolo retto (parete di scatola), 180° = piega completa su se stessa. Verso e angolo sono usati anche dall\'anteprima 3D.';
     host.appendChild(foldHint);
+  }
+  { // spostamento preciso
+    const mf = document.createElement('div'); mf.className='field';
+    const mb = document.createElement('button'); mb.className='btn'; mb.style.margin='0';
+    mb.textContent = translate('↔ Sposta di… (Invio)');
+    mb.title = translate('Sposta la selezione di una distanza precisa in qualsiasi direzione, o crea copie in serie. Frecce: 1 mm, Shift 10 mm, Alt 0,1 mm.');
+    mb.onclick = openMoveModal; mf.appendChild(mb); host.appendChild(mf);
   }
   renderGroupSection(host, ids);
   if(ids.length>1) renderAlignSection(host, ids);
