@@ -327,7 +327,16 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   stesso ruolo e livello vengono fuse in un unico percorso, e una linea che
   si richiude su se stessa diventa un percorso chiuso. Le catene (un punto
   sia di partenza sia di arrivo) vengono segnalate e bloccate.
-- **Galleria di forme** (scheda Componenti): 58 forme in 6 categorie
+- **Barra di sinistra (dalla 2.39)**: tutto ciò che crea, in sezioni con
+  titolo — Seleziona, Disegna, Forme pronte, Modifica (Sposta di…, Dividi in
+  segmenti, Elimina), Controlla (anteprima 3D, verifica chiusure, chiudi
+  percorsi aperti) e, in fondo, Cancella tutto. Con i nomi accanto alle icone
+  (predefinito) o solo icone (`localStorage` `spikecut-rail-expanded`); sotto
+  820 px sempre compatta. `buildRail()` / `railButton()` / `railSection()`.
+  Il pannello a destra resta per modificare: Proprietà, Livelli, Immagine,
+  Condivisi (progetti pubblici della community).
+- **Galleria di forme** (Forme pronte nella barra di sinistra, tasto F; si apre
+  accanto alla barra, `#shapesFlyout`): 58 forme in 6 categorie
   (`SHAPE_LIBRARY`), con anteprima, ricerca e dimensione; si trascinano sul
   foglio (inserite nel punto di rilascio) o si inseriscono al centro con un
   clic. Usano il ruolo linea attivo; cerchi ed ellissi sono ellissi vere; le

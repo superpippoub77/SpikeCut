@@ -137,6 +137,38 @@ button{font-family:inherit;}
   font-size:8px;color:inherit;opacity:.6;
 }
 .rail-sep{width:28px;height:1px;background:var(--line-soft);margin:5px 0;flex-basis:100%;}
+.tool .tlabel{ display:none; }
+#rail:not(.expanded) .kbd-long{ display:none; } /* barra compatta: "Invio", "Canc" solo nel suggerimento */
+.rail-title{ display:none; }
+.rail-spacer{ flex:1 1 auto; flex-basis:100%; min-height:6px; }
+.tool.danger:hover{ color:var(--cut); background:rgba(209,64,44,.12); }
+.tool.open{ background:rgba(201,151,63,.16); color:var(--brass); border-color:rgba(201,151,63,.4); }
+/* barra con i nomi: una colonna, icona + nome + tasto, sezioni con titolo */
+#rail.expanded{ width:188px !important; flex-direction:column; flex-wrap:nowrap; padding:4px 8px 8px; gap:1px; }
+#rail.expanded .tool{ width:100%; height:32px; flex:none; justify-content:flex-start; gap:10px; padding:0 8px; }
+#rail.expanded .tool svg{ flex:none; }
+#rail.expanded .tool .tlabel{ display:block; flex:1; min-width:0; text-align:left; font-size:12.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#rail.expanded .tool .kbd{ position:static; font-size:10px; opacity:.55; flex:none; }
+#rail.expanded .rail-title{ display:block; font-size:10px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-dim); margin:10px 6px 3px; opacity:.85; }
+#rail.expanded .rail-sep{ display:none; }
+#rail.expanded .rail-sep:last-of-type{ display:block; width:100%; height:1px; flex:none; margin:6px 0; }
+#rail.expanded .rail-spacer{ flex:1 1 auto; min-height:8px; }
+#rail.expanded .rail-mode{ color:var(--ink-dim); }
+@media (max-width:820px){ /* schermi piccoli: sempre solo icone */
+  #rail.expanded{ width:52px !important; flex-direction:row; flex-wrap:wrap; padding:8px 0 8px 7px; gap:3px; }
+  #rail.expanded .tool{ width:38px; height:38px; padding:0; justify-content:center; }
+  #rail.expanded .tool .tlabel, #rail.expanded .rail-title, #railExpand{ display:none !important; }
+  #rail.expanded .tool .kbd{ position:absolute; font-size:8px; }
+  #rail.expanded .kbd-long{ display:none; }
+  #rail.expanded .rail-sep{ display:block; }
+}
+/* galleria delle forme pronte, accanto alla barra */
+.shapes-flyout{ position:absolute; left:0; top:0; bottom:0; width:min(318px, 92vw); background:var(--bg-1); border-right:1px solid var(--line);
+  box-shadow:10px 0 26px rgba(0,0,0,.4); z-index:45; display:none; flex-direction:column; }
+.shapes-flyout.open{ display:flex; }
+.shapes-flyout .sf-head{ display:flex; align-items:center; gap:8px; padding:10px 12px 6px; }
+.shapes-flyout .sf-head h3{ margin:0; font-size:14px; flex:1; }
+.shapes-flyout .sf-body{ flex:1; overflow-y:auto; padding:2px 12px 14px; }
 
 /* canvas area */
 #stage-wrap{flex:1;position:relative;overflow:hidden;background:
@@ -196,7 +228,7 @@ svg#stage{
 .field label{display:block;font-size:11px;color:var(--ink-dim);margin-bottom:5px;}
 .row{display:flex;gap:8px;}
 .row .field{flex:1;}
-input[type=number], select, input[type=text], input[type=password], input[type=email]{
+input[type=number], select, input[type=text], input[type=password], input[type=email], input[type=search]{
   width:100%;background:var(--bg-2);border:1px solid var(--line);color:var(--ink);
   border-radius:5px;padding:6px 7px;font-size:12.5px;font-family:var(--mono);
 }
@@ -409,12 +441,12 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 #btnQuickSave.sync-warn{ color:#ffb340; }
 #btnQuickSave.sync-err{ color:#ff6a60; font-weight:700; }
 .shapelib-cat{ font-size:11.5px; font-weight:700; color:var(--ink-dim); text-transform:uppercase; letter-spacing:.04em; margin:10px 0 5px; }
-.shapelib-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(66px, 1fr)); gap:6px; }
+.shapelib-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(84px, 1fr)); gap:6px; }
 .shapelib-tile{ display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 3px 5px; border:1px solid var(--line); border-radius:8px; background:rgba(128,128,128,.06); color:var(--ink); cursor:grab; }
 .shapelib-tile:hover{ border-color:var(--brass); background:rgba(201,151,63,.12); }
 .shapelib-tile:active{ cursor:grabbing; }
 .shapelib-tile svg{ width:38px; height:38px; }
-.shapelib-tile span{ font-size:10px; line-height:1.15; text-align:center; color:var(--ink-dim); word-break:break-word; }
+.shapelib-tile span{ font-size:10.5px; line-height:1.2; text-align:center; color:var(--ink-dim); hyphens:auto; overflow-wrap:normal; }
 .move-compass{ display:grid; grid-template-columns:repeat(3,30px); grid-template-rows:repeat(3,30px); gap:3px; margin-top:16px; }
 .move-compass button{ border:1px solid var(--line); background:rgba(128,128,128,.08); color:var(--ink); border-radius:6px; cursor:pointer; font-size:14px; padding:0; }
 .move-compass button:hover{ border-color:var(--brass); }
@@ -723,6 +755,11 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
 
   <div id="stage-wrap">
     <button class="sidetoggle left" id="railToggle" title="Mostra/nascondi strumenti">‹</button>
+    <div id="shapesFlyout" class="shapes-flyout">
+      <div class="sf-head"><h3>Forme pronte</h3><button class="iconbtn" id="shapesFlyoutClose" title="Chiudi (Esc)">✕</button></div>
+      <div class="hint" style="margin:0 12px 8px;">Trascina una forma sul foglio per inserirla in quel punto, oppure fai clic per metterla al centro. Usa il ruolo linea scelto (Taglio, Piega…).</div>
+      <div class="sf-body" id="shapesFlyoutBody"></div>
+    </div>
     <button class="sidetoggle right" id="panelToggle" title="Mostra/nascondi pannello">›</button>
     <div id="rulerCorner"></div>
     <div id="rulerH"><canvas id="rulerHCanvas"></canvas></div>
@@ -760,7 +797,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
       <button class="tabtrig active" data-tab="prop">Proprietà</button>
       <button class="tabtrig" data-tab="layers">Livelli</button>
       <button class="tabtrig" data-tab="image">Immagine</button>
-      <button class="tabtrig" data-tab="components">Componenti</button>
+      <button class="tabtrig" data-tab="components">Condivisi</button>
       <button class="panel-close-small" id="panelCloseSmall" title="Chiudi il pannello">✕</button>
     </div>
 
@@ -785,7 +822,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.38.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.39.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1556,7 +1593,7 @@ const I18N = {
     "Cartella": "Folder",
     "Chiudere la scheda \"{name}\"? Le modifiche non salvate andranno perse.": "Close the tab \"{name}\"? Unsaved changes will be lost.",
     "Chiudi": "Close",
-    "Chiudi automaticamente tutti i percorsi aperti (esclude le linee marcate come escluse)": "Automatically close all open paths (excludes lines marked as excluded)",
+    "Chiudi automaticamente tutti i percorsi aperti (esclude le linee marcate come escluse)": "Automatically close all open paths (excluding lines marked as excluded)",
     "Chiudi scheda": "Close tab",
     "Chiudi tutti i percorsi aperti": "Close all open paths",
     "Clic per impostarlo come livello attivo (dove vanno le nuove forme)": "Click to set it as the active layer (where new shapes go)",
@@ -1915,7 +1952,7 @@ const I18N = {
     "Punti di percorsi diversi più vicini di questa distanza vengono uniti in un unico punto: include anche l'aggancio agli estremi di curve/archi e la creazione di un vertice dove una linea ne attraversa un'altra senza toccarne un estremo. Utile dopo l'importazione di un SVG i cui punti non combaciano perfettamente.": "Points from different paths closer than this distance are merged into a single point: this also includes snapping to the endpoints of curves/arcs and creating a vertex where a line crosses another without touching one of its endpoints. Useful after importing an SVG whose points don't line up perfectly.",
     "Strumenti": "Tools",
     "Durante il disegno con la Penna": "While drawing with the Pen",
-    "Modifica": "Editing",
+    "Modifica": "Edit",
     "Generali": "General",
     "calamita": "snap",
     "Lingua dell'interfaccia": "Interface language",
@@ -2571,6 +2608,34 @@ const I18N = {
     "Nessuna forma trovata.": "No shapes found.",
     "«{name}» inserito ({w} × {h}): spostalo e adattalo come preferisci.": "\"{name}\" inserted ({w} × {h}): move and adjust it as you like.",
     "Trascina una forma sul foglio per inserirla in quel punto, oppure fai clic per metterla al centro. Viene aggiunta con il ruolo linea scelto (Taglio, Piega…) come una normale forma modificabile, da spostare, ridimensionare e rifinire.": "Drag a shape onto the sheet to insert it at that point, or click to place it in the centre. It is added with the chosen line role (Cut, Fold…) as a normal editable shape, to move, resize and adjust like any other.",
+    "Seleziona": "Select",
+    "Disegna": "Draw",
+    "Forme pronte": "Ready-made shapes",
+    "Controlla": "Check",
+    "Lazo": "Lasso",
+    "Curva / arco": "Curve / arc",
+    "Forme pronte…": "Ready-made shapes…",
+    "Galleria di forme pronte (triangoli, poligoni, curve, stelle, simboli, fori e pezzi di packaging) da trascinare sul foglio": "Gallery of ready-made shapes (triangles, polygons, curves, stars, symbols, holes and packaging parts) to drag onto the sheet",
+    "Invio": "Enter",
+    "Canc": "Del",
+    "Sposta la selezione di una distanza precisa in qualsiasi direzione, o crea copie in serie": "Move the selection by a precise distance in any direction, or create a series of copies",
+    "Dividi in segmenti": "Split into segments",
+    "Elimina la selezione": "Delete the selection",
+    "Anteprima 3D": "3D preview",
+    "Verifica chiusure": "Check closures",
+    "Chiudi percorsi aperti": "Close open paths",
+    "Cancella tutto": "Clear all",
+    "Solo icone": "Icons only",
+    "Mostra i nomi": "Show names",
+    "Barra compatta: solo icone (i nomi restano nei suggerimenti)": "Compact bar: icons only (names stay in the tooltips)",
+    "Mostra i nomi accanto alle icone": "Show names next to the icons",
+    "Chiudi (Esc)": "Close (Esc)",
+    "Trascina una forma sul foglio per inserirla in quel punto, oppure fai clic per metterla al centro. Usa il ruolo linea scelto (Taglio, Piega…).": "Drag a shape onto the sheet to insert it at that point, or click to place it in the centre. It uses the chosen line role (Cut, Fold…).",
+    "Condivisi": "Shared",
+    "Ogni progetto pubblico della libreria compare qui e si inserisce nel disegno come un pezzo pronto.": "Every public project in the library appears here and can be inserted into the drawing as a ready-made part.",
+    "Cerchi triangoli, poligoni, stelle o fori? Sono nelle forme pronte, nella barra a sinistra.": "Looking for triangles, polygons, stars or holes? They are in the ready-made shapes, in the left bar.",
+    "Apri le forme pronte (F)": "Open ready-made shapes (F)",
+    "Penna": "Pen",
   },
   de: {
     "1 cm": "1 cm",
@@ -2621,7 +2686,7 @@ const I18N = {
     "Cartella": "Ordner",
     "Chiudere la scheda \"{name}\"? Le modifiche non salvate andranno perse.": "Tab \"{name}\" schließen? Nicht gespeicherte Änderungen gehen verloren.",
     "Chiudi": "Schließen",
-    "Chiudi automaticamente tutti i percorsi aperti (esclude le linee marcate come escluse)": "Schließt automatisch alle offenen Pfade (ausgeschlossene Linien werden nicht berücksichtigt)",
+    "Chiudi automaticamente tutti i percorsi aperti (esclude le linee marcate come escluse)": "Alle offenen Pfade automatisch schließen (ausgenommen als ausgeschlossen markierte Linien)",
     "Chiudi scheda": "Tab schließen",
     "Chiudi tutti i percorsi aperti": "Alle offenen Pfade schließen",
     "Clic per impostarlo come livello attivo (dove vanno le nuove forme)": "Klicken, um sie als aktive Ebene festzulegen (dort landen neue Formen)",
@@ -2829,7 +2894,7 @@ const I18N = {
     "Tutto il disegno": "Die gesamte Zeichnung",
     "Unità di misura visualizzata": "Angezeigte Maßeinheit",
     "Verifica chiusure percorsi": "Pfadschlüsse prüfen",
-    "Verifica chiusure: trova percorsi aperti o punti scollegati": "Schlüsse prüfen: offene Pfade oder getrennte Punkte finden",
+    "Verifica chiusure: trova percorsi aperti o punti scollegati": "Schließungen prüfen: offene Pfade oder getrennte Punkte finden",
     "Versione precedente caricata: salvandola in libreria creerai un progetto separato, senza toccare quello originale.": "Vorherige Version geladen: Beim Speichern in der Bibliothek wird ein separates Projekt erstellt, ohne das Original zu verändern.",
     "Versione ripristinata in libreria.": "Version in der Bibliothek wiederhergestellt.",
     "Versioni": "Versionen",
@@ -3636,6 +3701,34 @@ const I18N = {
     "Nessuna forma trovata.": "Keine Form gefunden.",
     "«{name}» inserito ({w} × {h}): spostalo e adattalo come preferisci.": "„{name}“ eingefügt ({w} × {h}): verschiebe und passe es nach Belieben an.",
     "Trascina una forma sul foglio per inserirla in quel punto, oppure fai clic per metterla al centro. Viene aggiunta con il ruolo linea scelto (Taglio, Piega…) come una normale forma modificabile, da spostare, ridimensionare e rifinire.": "Ziehe eine Form auf das Blatt, um sie an dieser Stelle einzufügen, oder klicke, um sie in die Mitte zu setzen. Sie wird mit der gewählten Linienrolle (Schnitt, Falz…) als normale bearbeitbare Form hinzugefügt.",
+    "Seleziona": "Auswählen",
+    "Disegna": "Zeichnen",
+    "Forme pronte": "Fertige Formen",
+    "Controlla": "Prüfen",
+    "Lazo": "Lasso",
+    "Curva / arco": "Kurve / Bogen",
+    "Forme pronte…": "Fertige Formen…",
+    "Galleria di forme pronte (triangoli, poligoni, curve, stelle, simboli, fori e pezzi di packaging) da trascinare sul foglio": "Galerie fertiger Formen (Dreiecke, Vielecke, Kurven, Sterne, Symbole, Löcher und Verpackungsteile) zum Ziehen auf das Blatt",
+    "Invio": "Eingabe",
+    "Canc": "Entf",
+    "Sposta la selezione di una distanza precisa in qualsiasi direzione, o crea copie in serie": "Auswahl um einen genauen Abstand in jede Richtung verschieben oder Kopienreihen erstellen",
+    "Dividi in segmenti": "In Segmente teilen",
+    "Elimina la selezione": "Auswahl löschen",
+    "Anteprima 3D": "3D-Vorschau",
+    "Verifica chiusure": "Schließungen prüfen",
+    "Chiudi percorsi aperti": "Offene Pfade schließen",
+    "Cancella tutto": "Alles löschen",
+    "Solo icone": "Nur Symbole",
+    "Mostra i nomi": "Namen anzeigen",
+    "Barra compatta: solo icone (i nomi restano nei suggerimenti)": "Kompakte Leiste: nur Symbole (Namen bleiben in den Tooltips)",
+    "Mostra i nomi accanto alle icone": "Namen neben den Symbolen anzeigen",
+    "Chiudi (Esc)": "Schließen (Esc)",
+    "Trascina una forma sul foglio per inserirla in quel punto, oppure fai clic per metterla al centro. Usa il ruolo linea scelto (Taglio, Piega…).": "Ziehe eine Form auf das Blatt, um sie dort einzufügen, oder klicke, um sie in die Mitte zu setzen. Sie verwendet die gewählte Linienrolle (Schnitt, Falz…).",
+    "Condivisi": "Geteilt",
+    "Ogni progetto pubblico della libreria compare qui e si inserisce nel disegno come un pezzo pronto.": "Jedes öffentliche Projekt der Bibliothek erscheint hier und kann als fertiges Teil in die Zeichnung eingefügt werden.",
+    "Cerchi triangoli, poligoni, stelle o fori? Sono nelle forme pronte, nella barra a sinistra.": "Suchst du Dreiecke, Vielecke, Sterne oder Löcher? Sie sind bei den fertigen Formen in der linken Leiste.",
+    "Apri le forme pronte (F)": "Fertige Formen öffnen (F)",
+    "Penna": "Stift",
   },
   es: {
     "1 cm": "1 cm",
@@ -3686,7 +3779,7 @@ const I18N = {
     "Cartella": "Carpeta",
     "Chiudere la scheda \"{name}\"? Le modifiche non salvate andranno perse.": "¿Cerrar la pestaña \"{name}\"? Los cambios no guardados se perderán.",
     "Chiudi": "Cerrar",
-    "Chiudi automaticamente tutti i percorsi aperti (esclude le linee marcate come escluse)": "Cierra automáticamente todos los trazados abiertos (excluye las líneas marcadas como excluidas)",
+    "Chiudi automaticamente tutti i percorsi aperti (esclude le linee marcate come escluse)": "Cerrar automáticamente todos los trazados abiertos (excepto las líneas marcadas como excluidas)",
     "Chiudi scheda": "Cerrar pestaña",
     "Chiudi tutti i percorsi aperti": "Cerrar todos los trazados abiertos",
     "Clic per impostarlo come livello attivo (dove vanno le nuove forme)": "Haz clic para ponerla como capa activa (donde irán las nuevas formas)",
@@ -3894,7 +3987,7 @@ const I18N = {
     "Tutto il disegno": "Todo el dibujo",
     "Unità di misura visualizzata": "Unidad de medida mostrada",
     "Verifica chiusure percorsi": "Verificar cierres de trazados",
-    "Verifica chiusure: trova percorsi aperti o punti scollegati": "Verificar cierres: encontrar trazados abiertos o puntos desconectados",
+    "Verifica chiusure: trova percorsi aperti o punti scollegati": "Comprobar cierres: encuentra trazados abiertos o puntos desconectados",
     "Versione precedente caricata: salvandola in libreria creerai un progetto separato, senza toccare quello originale.": "Versión anterior cargada: al guardarla en la biblioteca crearás un proyecto aparte, sin tocar el original.",
     "Versione ripristinata in libreria.": "Versión restaurada en la biblioteca.",
     "Versioni": "Versiones",
@@ -4045,7 +4138,7 @@ const I18N = {
     "Punti di percorsi diversi più vicini di questa distanza vengono uniti in un unico punto: include anche l'aggancio agli estremi di curve/archi e la creazione di un vertice dove una linea ne attraversa un'altra senza toccarne un estremo. Utile dopo l'importazione di un SVG i cui punti non combaciano perfettamente.": "Los puntos de trazados distintos más cercanos que esta distancia se unen en un solo punto: esto incluye también el ajuste a los extremos de curvas/arcos y la creación de un vértice donde una línea cruza otra sin tocar uno de sus extremos. Útil tras importar un SVG cuyos puntos no coinciden perfectamente.",
     "Strumenti": "Herramientas",
     "Durante il disegno con la Penna": "Mientras dibujas con la Pluma",
-    "Modifica": "Edición",
+    "Modifica": "Editar",
     "Generali": "General",
     "calamita": "imán",
     "Lingua dell'interfaccia": "Idioma de la interfaz",
@@ -4701,6 +4794,34 @@ const I18N = {
     "Nessuna forma trovata.": "No se encontró ninguna forma.",
     "«{name}» inserito ({w} × {h}): spostalo e adattalo come preferisci.": "«{name}» insertado ({w} × {h}): muévelo y ajústalo como quieras.",
     "Trascina una forma sul foglio per inserirla in quel punto, oppure fai clic per metterla al centro. Viene aggiunta con il ruolo linea scelto (Taglio, Piega…) come una normale forma modificabile, da spostare, ridimensionare e rifinire.": "Arrastra una forma a la hoja para insertarla en ese punto, o haz clic para ponerla en el centro. Se añade con el rol de línea elegido (Corte, Pliegue…) como una forma normal editable.",
+    "Seleziona": "Seleccionar",
+    "Disegna": "Dibujar",
+    "Forme pronte": "Formas listas",
+    "Controlla": "Comprobar",
+    "Lazo": "Lazo",
+    "Curva / arco": "Curva / arco",
+    "Forme pronte…": "Formas listas…",
+    "Galleria di forme pronte (triangoli, poligoni, curve, stelle, simboli, fori e pezzi di packaging) da trascinare sul foglio": "Galería de formas listas (triángulos, polígonos, curvas, estrellas, símbolos, agujeros y piezas de packaging) para arrastrar a la hoja",
+    "Invio": "Intro",
+    "Canc": "Supr",
+    "Sposta la selezione di una distanza precisa in qualsiasi direzione, o crea copie in serie": "Mueve la selección una distancia precisa en cualquier dirección, o crea copias en serie",
+    "Dividi in segmenti": "Dividir en segmentos",
+    "Elimina la selezione": "Eliminar la selección",
+    "Anteprima 3D": "Vista previa 3D",
+    "Verifica chiusure": "Comprobar cierres",
+    "Chiudi percorsi aperti": "Cerrar trazados abiertos",
+    "Cancella tutto": "Borrar todo",
+    "Solo icone": "Solo iconos",
+    "Mostra i nomi": "Mostrar nombres",
+    "Barra compatta: solo icone (i nomi restano nei suggerimenti)": "Barra compacta: solo iconos (los nombres quedan en las sugerencias)",
+    "Mostra i nomi accanto alle icone": "Mostrar los nombres junto a los iconos",
+    "Chiudi (Esc)": "Cerrar (Esc)",
+    "Trascina una forma sul foglio per inserirla in quel punto, oppure fai clic per metterla al centro. Usa il ruolo linea scelto (Taglio, Piega…).": "Arrastra una forma a la hoja para insertarla en ese punto, o haz clic para ponerla en el centro. Usa el rol de línea elegido (Corte, Pliegue…).",
+    "Condivisi": "Compartidos",
+    "Ogni progetto pubblico della libreria compare qui e si inserisce nel disegno come un pezzo pronto.": "Cada proyecto público de la biblioteca aparece aquí y se inserta en el dibujo como una pieza lista.",
+    "Cerchi triangoli, poligoni, stelle o fori? Sono nelle forme pronte, nella barra a sinistra.": "¿Buscas triángulos, polígonos, estrellas o agujeros? Están en las formas listas, en la barra de la izquierda.",
+    "Apri le forme pronte (F)": "Abrir formas listas (F)",
+    "Penna": "Pluma",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -4751,7 +4872,7 @@ const I18N = {
     "Cartella": "文件夹",
     "Chiudere la scheda \"{name}\"? Le modifiche non salvate andranno perse.": "关闭标签页 \"{name}\"？未保存的更改将丢失。",
     "Chiudi": "关闭",
-    "Chiudi automaticamente tutti i percorsi aperti (esclude le linee marcate come escluse)": "自动闭合所有开放路径（不包括标记为排除的线条）",
+    "Chiudi automaticamente tutti i percorsi aperti (esclude le linee marcate come escluse)": "自动闭合所有开放路径（标记为排除的线条除外）",
     "Chiudi scheda": "关闭标签页",
     "Chiudi tutti i percorsi aperti": "闭合所有开放路径",
     "Clic per impostarlo come livello attivo (dove vanno le nuove forme)": "点击将其设为活动图层（新形状将放在这里）",
@@ -4959,7 +5080,7 @@ const I18N = {
     "Tutto il disegno": "整个图纸",
     "Unità di misura visualizzata": "显示的度量单位",
     "Verifica chiusure percorsi": "检查路径闭合情况",
-    "Verifica chiusure: trova percorsi aperti o punti scollegati": "检查闭合情况：查找开放路径或未连接的点",
+    "Verifica chiusure: trova percorsi aperti o punti scollegati": "检查闭合：查找未闭合路径或未连接的点",
     "Versione precedente caricata: salvandola in libreria creerai un progetto separato, senza toccare quello originale.": "已加载旧版本：保存到资料库将创建一个单独的项目，不会影响原项目。",
     "Versione ripristinata in libreria.": "已在资料库中恢复该版本。",
     "Versioni": "版本",
@@ -5766,6 +5887,34 @@ const I18N = {
     "Nessuna forma trovata.": "未找到形状。",
     "«{name}» inserito ({w} × {h}): spostalo e adattalo come preferisci.": "已插入\"{name}\"（{w} × {h}）：可随意移动和调整。",
     "Trascina una forma sul foglio per inserirla in quel punto, oppure fai clic per metterla al centro. Viene aggiunta con il ruolo linea scelto (Taglio, Piega…) come una normale forma modificabile, da spostare, ridimensionare e rifinire.": "将形状拖到画布上即可插入到该位置，或点击将其放在中央。它会以所选的线条角色（切割、折叠…）作为普通可编辑形状添加。",
+    "Seleziona": "选择",
+    "Disegna": "绘制",
+    "Forme pronte": "现成形状",
+    "Controlla": "检查",
+    "Lazo": "套索",
+    "Curva / arco": "曲线 / 圆弧",
+    "Forme pronte…": "现成形状…",
+    "Galleria di forme pronte (triangoli, poligoni, curve, stelle, simboli, fori e pezzi di packaging) da trascinare sul foglio": "现成形状库（三角形、多边形、曲线、星形、符号、孔和包装部件），可拖到画布上",
+    "Invio": "回车",
+    "Canc": "Del",
+    "Sposta la selezione di una distanza precisa in qualsiasi direzione, o crea copie in serie": "将所选内容按精确距离向任意方向移动，或创建一系列副本",
+    "Dividi in segmenti": "拆分为线段",
+    "Elimina la selezione": "删除所选内容",
+    "Anteprima 3D": "3D预览",
+    "Verifica chiusure": "检查闭合",
+    "Chiudi percorsi aperti": "闭合开放路径",
+    "Cancella tutto": "全部清除",
+    "Solo icone": "仅图标",
+    "Mostra i nomi": "显示名称",
+    "Barra compatta: solo icone (i nomi restano nei suggerimenti)": "紧凑工具栏：仅图标（名称保留在提示中）",
+    "Mostra i nomi accanto alle icone": "在图标旁显示名称",
+    "Chiudi (Esc)": "关闭（Esc）",
+    "Trascina una forma sul foglio per inserirla in quel punto, oppure fai clic per metterla al centro. Usa il ruolo linea scelto (Taglio, Piega…).": "将形状拖到画布上即可插入到该位置，或点击将其放在中央。使用所选的线条角色（切割、折叠…）。",
+    "Condivisi": "共享",
+    "Ogni progetto pubblico della libreria compare qui e si inserisce nel disegno come un pezzo pronto.": "库中的每个公开项目都会显示在这里，可作为现成部件插入图纸。",
+    "Cerchi triangoli, poligoni, stelle o fori? Sono nelle forme pronte, nella barra a sinistra.": "在找三角形、多边形、星形或孔？它们在左侧工具栏的现成形状中。",
+    "Apri le forme pronte (F)": "打开现成形状（F）",
+    "Penna": "钢笔",
   },
   fr: {
     "1 cm": "1 cm",
@@ -5816,7 +5965,7 @@ const I18N = {
     "Cartella": "Dossier",
     "Chiudere la scheda \"{name}\"? Le modifiche non salvate andranno perse.": "Fermer l’onglet « {name} » ? Les modifications non enregistrées seront perdues.",
     "Chiudi": "Fermer",
-    "Chiudi automaticamente tutti i percorsi aperti (esclude le linee marcate come escluse)": "Ferme automatiquement tous les tracés ouverts (exclut les lignes marquées comme exclues)",
+    "Chiudi automaticamente tutti i percorsi aperti (esclude le linee marcate come escluse)": "Fermer automatiquement tous les tracés ouverts (sauf les lignes marquées comme exclues)",
     "Chiudi scheda": "Fermer l’onglet",
     "Chiudi tutti i percorsi aperti": "Fermer tous les tracés ouverts",
     "Clic per impostarlo come livello attivo (dove vanno le nuove forme)": "Cliquer pour en faire le calque actif (les nouvelles formes y seront placées)",
@@ -6024,7 +6173,7 @@ const I18N = {
     "Tutto il disegno": "Tout le dessin",
     "Unità di misura visualizzata": "Unité de mesure affichée",
     "Verifica chiusure percorsi": "Vérifier la fermeture des tracés",
-    "Verifica chiusure: trova percorsi aperti o punti scollegati": "Vérifier les fermetures : trouver les tracés ouverts ou les points déconnectés",
+    "Verifica chiusure: trova percorsi aperti o punti scollegati": "Vérifier les fermetures : trouve les tracés ouverts ou les points non reliés",
     "Versione precedente caricata: salvandola in libreria creerai un progetto separato, senza toccare quello originale.": "Version précédente chargée : l’enregistrer dans la bibliothèque créera un projet séparé, sans toucher à l’original.",
     "Versione ripristinata in libreria.": "Version restaurée dans la bibliothèque.",
     "Versioni": "Versions",
@@ -6175,7 +6324,7 @@ const I18N = {
     "Punti di percorsi diversi più vicini di questa distanza vengono uniti in un unico punto: include anche l'aggancio agli estremi di curve/archi e la creazione di un vertice dove una linea ne attraversa un'altra senza toccarne un estremo. Utile dopo l'importazione di un SVG i cui punti non combaciano perfettamente.": "Les points de tracés différents plus proches que cette distance sont fusionnés en un seul point : cela inclut aussi l'accroche aux extrémités des courbes/arcs et la création d'un sommet là où une ligne en traverse une autre sans toucher l'une de ses extrémités. Utile après l'import d'un SVG dont les points ne coïncident pas parfaitement.",
     "Strumenti": "Outils",
     "Durante il disegno con la Penna": "Pendant le dessin avec la Plume",
-    "Modifica": "Édition",
+    "Modifica": "Modifier",
     "Generali": "Général",
     "calamita": "aimant",
     "Lingua dell'interfaccia": "Langue de l'interface",
@@ -6831,6 +6980,34 @@ const I18N = {
     "Nessuna forma trovata.": "Aucune forme trouvée.",
     "«{name}» inserito ({w} × {h}): spostalo e adattalo come preferisci.": "« {name} » inséré ({w} × {h}) : déplace-le et ajuste-le comme tu veux.",
     "Trascina una forma sul foglio per inserirla in quel punto, oppure fai clic per metterla al centro. Viene aggiunta con il ruolo linea scelto (Taglio, Piega…) come una normale forma modificabile, da spostare, ridimensionare e rifinire.": "Fais glisser une forme sur la feuille pour l’insérer à cet endroit, ou clique pour la placer au centre. Elle est ajoutée avec le rôle de ligne choisi (Découpe, Pli…) comme une forme normale modifiable.",
+    "Seleziona": "Sélection",
+    "Disegna": "Dessin",
+    "Forme pronte": "Formes prêtes",
+    "Controlla": "Vérifier",
+    "Lazo": "Lasso",
+    "Curva / arco": "Courbe / arc",
+    "Forme pronte…": "Formes prêtes…",
+    "Galleria di forme pronte (triangoli, poligoni, curve, stelle, simboli, fori e pezzi di packaging) da trascinare sul foglio": "Galerie de formes prêtes (triangles, polygones, courbes, étoiles, symboles, trous et pièces d’emballage) à faire glisser sur la feuille",
+    "Invio": "Entrée",
+    "Canc": "Suppr",
+    "Sposta la selezione di una distanza precisa in qualsiasi direzione, o crea copie in serie": "Déplace la sélection d’une distance précise dans n’importe quelle direction, ou crée des copies en série",
+    "Dividi in segmenti": "Diviser en segments",
+    "Elimina la selezione": "Supprimer la sélection",
+    "Anteprima 3D": "Aperçu 3D",
+    "Verifica chiusure": "Vérifier les fermetures",
+    "Chiudi percorsi aperti": "Fermer les tracés ouverts",
+    "Cancella tutto": "Tout effacer",
+    "Solo icone": "Icônes seules",
+    "Mostra i nomi": "Afficher les noms",
+    "Barra compatta: solo icone (i nomi restano nei suggerimenti)": "Barre compacte : icônes seules (les noms restent dans les info-bulles)",
+    "Mostra i nomi accanto alle icone": "Afficher les noms à côté des icônes",
+    "Chiudi (Esc)": "Fermer (Échap)",
+    "Trascina una forma sul foglio per inserirla in quel punto, oppure fai clic per metterla al centro. Usa il ruolo linea scelto (Taglio, Piega…).": "Fais glisser une forme sur la feuille pour l’insérer à cet endroit, ou clique pour la placer au centre. Elle utilise le rôle de ligne choisi (Découpe, Pli…).",
+    "Condivisi": "Partagés",
+    "Ogni progetto pubblico della libreria compare qui e si inserisce nel disegno come un pezzo pronto.": "Chaque projet public de la bibliothèque apparaît ici et s’insère dans le dessin comme une pièce prête.",
+    "Cerchi triangoli, poligoni, stelle o fori? Sono nelle forme pronte, nella barra a sinistra.": "Tu cherches des triangles, polygones, étoiles ou trous ? Ils sont dans les formes prêtes, dans la barre de gauche.",
+    "Apri le forme pronte (F)": "Ouvrir les formes prêtes (F)",
+    "Penna": "Plume",
   },
 };
 let currentLang = 'it';
@@ -8341,15 +8518,15 @@ function renderAll(){
    TOOLS DEFINITION
 ============================================================ */
 const TOOLS = [
-  {id:'select', key:'v', label:'Selezione', icon:'M4 3l6 15 2-6 6-2z'},
-  {id:'lasso', key:'q', label:'Selezione a lazo (trascina intorno alle forme)', icon:'M11 3.5c4.7 0 8 2.4 8 5.4s-3.3 5.4-8 5.4c-1.4 0-2.7-.2-3.8-.6M5.2 12.3C3.8 11.4 3 10.2 3 8.9 3 5.9 6.3 3.5 11 3.5M7.2 13.7c-1.3.9-1.7 2.2-1 3.3.8 1.2 2.6 1.3 3.6.3'},
-  {id:'pen', key:'p', label:'Penna (punti / poligono)', icon:'M4 16l0-3 9-9 3 3-9 9zM17 5l2 2'},
-  {id:'line', key:'l', label:'Linea', icon:'M4 18L18 4'},
-  {id:'rect', key:'r', label:'Rettangolo', icon:'M4 5h14v12H4z'},
-  {id:'ellipse', key:'o', label:'Ellisse', icon:'M4 11a7 4 0 1014 0 7 4 0 10-14 0z'},
-  {id:'arc', key:'a', label:'Curva / Arco (3 clic: inizio, fine, curvatura)', icon:'M4 18C4 9 9 4 18 4'},
-  {id:'freehand', key:'b', label:'Matita libera', icon:'M4 17c3-8 5-3 8-9 2 4 4-1 6 2'},
-  {id:'text', key:'t', label:'Testo', icon:'M5 4h12M11 4v14'},
+  {id:'select', key:'v', short:'Selezione', label:'Selezione', icon:'M4 3l6 15 2-6 6-2z'},
+  {id:'lasso', key:'q', short:'Lazo', label:'Selezione a lazo (trascina intorno alle forme)', icon:'M11 3.5c4.7 0 8 2.4 8 5.4s-3.3 5.4-8 5.4c-1.4 0-2.7-.2-3.8-.6M5.2 12.3C3.8 11.4 3 10.2 3 8.9 3 5.9 6.3 3.5 11 3.5M7.2 13.7c-1.3.9-1.7 2.2-1 3.3.8 1.2 2.6 1.3 3.6.3'},
+  {id:'pen', key:'p', short:'Penna', label:'Penna (punti / poligono)', icon:'M4 16l0-3 9-9 3 3-9 9zM17 5l2 2'},
+  {id:'line', key:'l', short:'Linea', label:'Linea', icon:'M4 18L18 4'},
+  {id:'rect', key:'r', short:'Rettangolo', label:'Rettangolo', icon:'M4 5h14v12H4z'},
+  {id:'ellipse', key:'o', short:'Ellisse', label:'Ellisse', icon:'M4 11a7 4 0 1014 0 7 4 0 10-14 0z'},
+  {id:'arc', key:'a', short:'Curva / arco', label:'Curva / Arco (3 clic: inizio, fine, curvatura)', icon:'M4 18C4 9 9 4 18 4'},
+  {id:'freehand', key:'b', short:'Matita libera', label:'Matita libera', icon:'M4 17c3-8 5-3 8-9 2 4 4-1 6 2'},
+  {id:'text', key:'t', short:'Testo', label:'Testo', icon:'M5 4h12M11 4v14'},
 ];
 /* ============================================================
    ANTEPRIMA 3D PIEGATA — motore geometrico.
@@ -10525,7 +10702,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.38.0';
+const GUIDE_VERSION = '2.39.0';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -10585,7 +10762,7 @@ html:`<table class="guide-table"><tr><th>Tasto</th><th>Strumento</th><th>Come si
 <tr><td>A</td><td>Arco</td><td>Tre clic: inizio, fine, un punto di passaggio. Vedi <a data-topic="archi">Archi</a>.</td></tr>
 <tr><td>B</td><td>Matita</td><td>Disegno a mano libera.</td></tr>
 <tr><td>T</td><td>Testo</td><td>Clic nel punto, scrivi e premi Invio. Vedi <a data-topic="testo">Testo e font</a>.</td></tr></table>
-<p>Sotto gli strumenti ci sono i pulsanti d'azione: il <b>cestino</b> (elimina la selezione), <b>Dividi in segmenti</b> (vedi <a data-topic="dividi">Dividere in segmenti</a>) e il <b>cubo</b>, che apre l'<a data-topic="anteprima-3d">anteprima 3D piegata</a>.</p>
+<p>La <b>barra a sinistra</b> contiene tutto ciò che serve per creare, diviso in sezioni: <b>Seleziona</b> (selezione, lazo), <b>Disegna</b> (penna, linea, curva/arco, matita, rettangolo, ellisse, testo), <b>Forme pronte</b> (la <a data-topic="componenti">galleria di forme</a>), <b>Modifica</b> (<a data-topic="sposta">Sposta di…</a>, <a data-topic="dividi">Dividi in segmenti</a>, Elimina) e <b>Controlla</b> (<a data-topic="anteprima-3d">anteprima 3D</a>, verifica chiusure, chiudi percorsi aperti); in fondo, separato, <b>Cancella tutto</b>. Accanto a ogni icona ci sono il nome e il tasto rapido; il pulsante <b>Solo icone</b> in fondo la rende compatta (e <b>Mostra i nomi</b> la riapre), scelta che viene ricordata. Sugli schermi piccoli è sempre compatta. Il pannello a destra è invece per modificare ciò che è selezionato: Proprietà, Livelli, Immagine e Condivisi.</p>
 <p>Il <a data-topic="ruoli">ruolo</a> scelto nel pannello Proprietà senza selezione vale per le forme che disegnerai.</p>` },
 
 { id:'input-numerico', cat:'Disegnare', title:'Misure esatte (input numerico)', keys:'lunghezza esatta digitare numero invio misura precisa coordinate',
@@ -10748,14 +10925,13 @@ html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profo
 <li><b>Astuccio con coperchio a incastro</b>: alette antipolvere, aletta posteriore e linguetta di chiusura.</li></ul>
 <p>Le pieghe sono già impostate a monte, 90°, con un <a data-topic="ordine">ordine di piegatura</a> sensato, e la zona di incollaggio è un poligono <a data-topic="incollaggio">tratteggiato</a>. L'aletta di incollaggio si può impostare o lasciare automatica. Gli spigoli delle alette sono semplificati: verifica le misure prima della produzione.</p>` },
 
-{ id:'componenti', cat:'Disegnare', title:'Forme pronte e componenti', keys:'forme pronte galleria componenti trascinare triangolo quadrato esagono pentagono ottagono poligono stella cerchio ellisse cuore freccia croce ingranaggio asola foro europeo maniglia linguetta gancio finestra sombrero',
-html:`<p>La scheda <b>Componenti</b> del pannello laterale è una <b>galleria di forme</b> con anteprima, divisa per categorie: triangoli e quadrilateri, poligoni regolari (dal pentagono al dodecagono), curve (cerchio, ellisse, semicerchio, spicchio, corona, cuore, mezzaluna…), stelle, frecce e simboli (croce, fumetto, cartellino, ingranaggio…) e pezzi di <b>packaging</b> (aletta, foro europeo, maniglia, linguetta, gancio, foro tondo, asola, finestra, foro a sombrero, tacca a V).</p>
-<ul><li><b>Trascina</b> una forma sul foglio per inserirla in quel punto, oppure <b>fai clic</b> per metterla al centro (sui tablet si usa il clic).</li>
+{ id:'componenti', cat:'Disegnare', title:'Forme pronte e componenti condivisi', keys:'forme pronte galleria componenti condivisi community trascinare triangolo quadrato esagono pentagono ottagono poligono stella cerchio ellisse cuore freccia croce ingranaggio asola foro europeo maniglia linguetta gancio finestra sombrero tasto f',
+html:`<p><b>Forme pronte</b>: nella barra a sinistra, sezione <b>Forme pronte</b> (o tasto <b>F</b>), si apre accanto alla barra una galleria con anteprima, divisa per categorie: triangoli e quadrilateri, poligoni regolari (dal pentagono al dodecagono), curve (cerchio, ellisse, semicerchio, spicchio, corona, cuore, mezzaluna…), stelle, frecce e simboli (croce, fumetto, cartellino, ingranaggio…) e pezzi di <b>packaging</b> (aletta, foro europeo, maniglia, linguetta, gancio, foro tondo, asola, finestra, foro a sombrero, tacca a V).</p>
+<ul><li><b>Trascina</b> una forma sul foglio per inserirla in quel punto, oppure <b>fai clic</b> per metterla al centro (sui tablet si usa il clic). La galleria resta aperta per inserirne altre; si chiude con ✕, Esc o di nuovo con F.</li>
 <li>La casella <b>Dimensione</b> indica il lato del quadrato in cui sta la forma; i pezzi di packaging hanno invece <b>misure reali fisse</b>.</li>
 <li>La forma usa il <b>ruolo linea</b> scelto (Taglio, Piega…), come gli strumenti di disegno; cerchi ed ellissi sono ellissi vere. Le forme in più parti (corona, cartellino, ingranaggio) sono inserite già <a data-topic="gruppi">raggruppate</a>.</li>
-<li>La casella <b>Cerca</b> filtra per nome o categoria (es. "stella", "poligoni").</li>
-<li>Una volta inserita è una forma normale: si sposta, si ridimensiona, si modificano i punti e le lunghezze.</li></ul>
-<p>Sotto la galleria ci sono i <b>componenti condivisi</b>: ogni progetto pubblico della libreria si può inserire come un pezzo.</p>` },
+<li>La casella <b>Cerca</b> filtra per nome o categoria (es. "stella", "poligoni").</li></ul>
+<p><b>Componenti condivisi</b>: nel pannello a destra, scheda <b>Condivisi</b>, ogni progetto pubblico della libreria si inserisce nel disegno come un pezzo pronto.</p>` },
 { id:'incollaggio', cat:'Fustella e scatole', title:'Zone di incollaggio', keys:'incollaggio colla tratteggio zona aletta stampa',
 html:`<p>Una forma <b>chiusa</b> con ruolo Incollaggio e senza colore di riempimento viene mostrata a schermo con un <b>tratteggio diagonale</b>. Il tratteggio serve solo sul disegno: esportazioni SVG e PDF, stampa di prova e anteprima di taglio non lo contengono (resta solo il contorno).</p>
 <p>Le scatole generate hanno già la zona di incollaggio sull'aletta, rientrata di 1,5 mm dai bordi.</p>` },
@@ -10872,6 +11048,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.39</b> — Barra a sinistra riorganizzata: sezioni con titolo, nomi accanto alle icone (o solo icone), forme pronte in una galleria accanto alla barra (tasto F). A destra la scheda Condivisi.</li>
 <li><b>2.38</b> — <a data-topic="componenti">Galleria di forme</a> da trascinare sul foglio: 58 forme (poligoni, curve, stelle, simboli, packaging) con dimensione e ricerca. Corretti foro europeo, maniglia e gancio, che erano disegnati male.</li>
 <li><b>2.37</b> — <a data-topic="sposta">Sposta di…</a> (Invio): distanza precisa in qualsiasi direzione, anche con copie in serie; frecce della tastiera per spostare la selezione.</li>
 <li><b>2.36</b> — Nel pannello Proprietà <a data-topic="punti">Mostra: Punti · Lunghezze · Entrambi</a>; evidenziazione gialla sul disegno di ciò che si sta modificando.</li>
@@ -11670,7 +11847,7 @@ function buildShapeGallery(host){
   const sf = document.createElement('div'); sf.className='field'; sf.style.cssText='flex:1;margin:0;';
   sf.innerHTML = `<label>${escapeHTML(translate('Cerca una forma'))}</label>`;
   const search = document.createElement('input'); search.type='search'; search.id='shapeLibSearch'; search.placeholder = translate('es. esagono, stella, freccia…'); search.autocomplete='off';
-  search.addEventListener('keydown', e=> e.stopPropagation());
+  search.addEventListener('keydown', e=>{ e.stopPropagation(); if(e.key==='Escape' && shapesFlyoutOpen()) toggleShapesFlyout(false); });
   sf.appendChild(search);
   const zf = document.createElement('div'); zf.className='field'; zf.style.cssText='width:96px;margin:0;';
   zf.innerHTML = `<label>${escapeHTML(tpl('Dimensione ({unit})', {unit: unitLabel()}))}</label>`;
@@ -11721,20 +11898,23 @@ function buildShapeGallery(host){
 function buildComponentsTab(){
   const host = document.getElementById('tab-components');
   host.innerHTML = '';
+  const title = document.createElement('div'); title.className='hint'; title.style.cssText='font-weight:700;margin:2px 0 4px;color:var(--ink);';
+  title.textContent = 'Condivisi dalla community';
+  host.appendChild(title);
   const intro = document.createElement('div'); intro.className='hint'; intro.style.marginBottom='10px';
-  intro.textContent = 'Trascina una forma sul foglio per inserirla in quel punto, oppure fai clic per metterla al centro. Viene aggiunta con il ruolo linea scelto (Taglio, Piega…) come una normale forma modificabile, da spostare, ridimensionare e rifinire.';
+  intro.textContent = 'Ogni progetto pubblico della libreria compare qui e si inserisce nel disegno come un pezzo pronto.';
   host.appendChild(intro);
-  buildShapeGallery(host); // galleria di forme (trascina sul foglio o clic per il centro)
-  host.appendChild(document.createElement('hr')).className='sep';
-  const sharedTitle = document.createElement('div'); sharedTitle.className='hint'; sharedTitle.style.cssText='font-weight:600;margin:4px 0 6px;';
-  sharedTitle.textContent = 'Condivisi dalla community';
-  host.appendChild(sharedTitle);
-  const sharedHint = document.createElement('div'); sharedHint.className='hint'; sharedHint.style.marginBottom='8px';
-  sharedHint.textContent = 'Qualunque progetto salvato come condiviso (libreria comune) compare qui, pronto da inserire come un pezzo qualsiasi — nessun passaggio in più da fare.';
-  host.appendChild(sharedHint);
   const sharedList = document.createElement('div'); sharedList.id = 'sharedComponentsList';
   sharedList.innerHTML = `<div class="hint">${currentUser ? 'Caricamento…' : 'Accedi al tuo account per vedere anche i componenti condivisi dalla community.'}</div>`;
   host.appendChild(sharedList);
+  host.appendChild(document.createElement('hr')).className='sep';
+  const more = document.createElement('div'); more.className='hint'; more.style.marginBottom='6px';
+  more.textContent = 'Cerchi triangoli, poligoni, stelle o fori? Sono nelle forme pronte, nella barra a sinistra.';
+  host.appendChild(more);
+  const toShapes = document.createElement('button'); toShapes.className = 'btn';
+  toShapes.textContent = 'Apri le forme pronte (F)';
+  toShapes.onclick = ()=> toggleShapesFlyout(true);
+  host.appendChild(toShapes);
   applyI18n(host);
   if(currentUser) loadSharedComponents();
 }
@@ -11797,51 +11977,72 @@ async function insertSharedComponent(id, name){
     showToast('Errore nel caricamento del componente: ' + err.message, true);
   }
 }
+// Barra di sinistra: tutto ciò che CREA (strumenti, forme pronte) e le azioni più usate,
+// divisi in sezioni con titolo. Due modalità: con i nomi (predefinita) o solo icone.
+const RAIL_ICONS = {
+  shapes: `<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M6 3.5l4 7H2z"/><circle cx="16" cy="7" r="3.5"/><rect x="3" y="13.5" width="6.5" height="6"/><path d="M16 12.5l1.3 2.7 3 .4-2.2 2 .6 3-2.7-1.5-2.7 1.5.6-3-2.2-2 3-.4z"/></svg>`, move: `<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3v16M3 11h16M11 3l-2.5 2.5M11 3l2.5 2.5M11 19l-2.5-2.5M11 19l2.5-2.5M3 11l2.5-2.5M3 11l2.5 2.5M19 11l-2.5-2.5M19 11l-2.5 2.5"/></svg>`, explode: `<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 16L8.5 6.5M11 4.5L17 8M18 11L14.5 17.5M11.5 18.5L6 17"/><circle cx="4.5" cy="17" r="1.3" fill="currentColor"/><circle cx="9.5" cy="4.8" r="1.3" fill="currentColor"/><circle cx="18" cy="9.2" r="1.3" fill="currentColor"/><circle cx="13" cy="18.6" r="1.3" fill="currentColor"/></svg>`, del: `<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 6h12M9 6V4h4v2M6 6l1 13h8l1-13"/></svg>`, fold3d: `<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M11 3L18.5 7V15L11 19L3.5 15V7Z"/><path d="M3.5 7L11 11L18.5 7M11 11V19"/></svg>`,
+  check: `<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l4.5 4.5"/></svg>`, closeall: `<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v10a4 4 0 0 0 4 4h10"/><path d="M14 14l4 4l-4 4" transform="translate(0,-4)"/></svg>`, clearall: `<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l14 14M18 4L4 18"/></svg>`, expand: `<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v14M8 11h10M14 7l4 4-4 4"/></svg>`, collapse: `<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 4v14M14 11H4M8 7l-4 4 4 4"/></svg>`
+};
+function railButton(o){
+  const b = document.createElement('button');
+  b.className = 'tool' + (o.cls ? ' ' + o.cls : '');
+  if(o.id) b.id = o.id;
+  if(o.tool) b.dataset.tool = o.tool;
+  b.title = translate(o.title) + (o.key ? ' (' + o.key + ')' : '');
+  b.innerHTML = o.icon + `<span class="tlabel">${escapeHTML(translate(o.label))}</span>` + (o.key ? `<span class="kbd${o.key.length>1 ? ' kbd-long' : ''}">${escapeHTML(translate(o.key))}</span>` : '');
+  b.onclick = o.onclick;
+  return b;
+}
+function railSection(rail, title){
+  const t = document.createElement('div'); t.className = 'rail-title'; t.textContent = translate(title); rail.appendChild(t);
+  const sep = document.createElement('div'); sep.className = 'rail-sep'; rail.appendChild(sep);
+}
 function buildRail(){
   const rail = document.getElementById('rail');
-  TOOLS.forEach(t=>{
-    const b = document.createElement('button');
-    b.className='tool'+(t.id===state.tool?' active':'');
-    b.title = translate(t.label)+' ('+t.key.toUpperCase()+')';
-    b.dataset.tool = t.id;
-    b.innerHTML = `<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="${t.icon}"/></svg><span class="kbd">${t.key.toUpperCase()}</span>`;
-    b.onclick = ()=> setTool(t.id);
-    rail.appendChild(b);
-  });
-  const sep = document.createElement('div'); sep.className='rail-sep'; rail.appendChild(sep);
-  const del = document.createElement('button');
-  del.className='tool'; del.title='Elimina selezione (Canc)';
-  del.innerHTML = `<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 6h12M9 6V4h4v2M6 6l1 13h8l1-13"/></svg>`;
-  del.onclick = deleteSelection;
-  rail.appendChild(del);
-  // dividi in segmenti: ogni lato del poligono diventa una linea a sé, unita alle altre nei punti
-  const expl = document.createElement('button');
-  expl.className='tool'; expl.id='railExplode'; expl.title='Dividi in segmenti: ogni lato della forma selezionata diventa una linea a sé, unita alle altre nei punti';
-  expl.innerHTML = `<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 16L8.5 6.5M11 4.5L17 8M18 11L14.5 17.5M11.5 18.5L6 17"/><circle cx="4.5" cy="17" r="1.3" fill="currentColor"/><circle cx="9.5" cy="4.8" r="1.3" fill="currentColor"/><circle cx="18" cy="9.2" r="1.3" fill="currentColor"/><circle cx="13" cy="18.6" r="1.3" fill="currentColor"/></svg>`;
-  expl.onclick = explodeSelectionToSegments;
-  rail.appendChild(expl);
-  // anteprima 3D piegata: crea il modello 3D della fustella e simula la piegatura
-  const f3 = document.createElement('button');
-  f3.className='tool'; f3.id='railFold3D'; f3.title='Anteprima 3D piegata: crea il modello 3D della fustella e simula la piegatura';
-  f3.innerHTML = `<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M11 3L18.5 7V15L11 19L3.5 15V7Z"/><path d="M3.5 7L11 11L18.5 7M11 11V19"/></svg>`;
-  f3.onclick = openFold3D;
-  rail.appendChild(f3);
-  const sep2 = document.createElement('div'); sep2.className='rail-sep'; rail.appendChild(sep2);
-  const clearAllBtn = document.createElement('button');
-  clearAllBtn.className='tool'; clearAllBtn.title='Cancella tutto il disegno';
-  clearAllBtn.innerHTML = `<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l14 14M18 4L4 18"/></svg>`;
-  clearAllBtn.onclick = clearAll;
-  rail.appendChild(clearAllBtn);
-  const checkBtn = document.createElement('button');
-  checkBtn.className='tool'; checkBtn.title='Verifica chiusure: trova percorsi aperti o punti scollegati';
-  checkBtn.innerHTML = `<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l4.5 4.5"/></svg>`;
-  checkBtn.onclick = checkClosures;
-  rail.appendChild(checkBtn);
-  const closeAllBtn = document.createElement('button');
-  closeAllBtn.className='tool'; closeAllBtn.title='Chiudi automaticamente tutti i percorsi aperti (esclude le linee marcate come escluse)';
-  closeAllBtn.innerHTML = `<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v10a4 4 0 0 0 4 4h10"/><path d="M14 14l4 4l-4 4" transform="translate(0,-4)"/></svg>`;
-  closeAllBtn.onclick = closeAllOpenPaths;
-  rail.appendChild(closeAllBtn);
+  rail.innerHTML = '';
+  let expanded = true; try{ const v = localStorage.getItem('spikecut-rail-expanded'); if(v!==null) expanded = v==='1'; }catch(e){}
+  rail.classList.toggle('expanded', expanded);
+  const T = id=> TOOLS.find(t=>t.id===id);
+  const toolBtn = id=>{ const t = T(id); const b = railButton({tool:t.id, title:t.label, label:t.short||t.label, key:t.key.toUpperCase(), onclick:()=> setTool(t.id),
+    icon:`<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="${t.icon}"/></svg>`});
+    if(t.id===state.tool) b.classList.add('active'); return b; };
+  railSection(rail, 'Seleziona');
+  ['select','lasso'].forEach(id=> rail.appendChild(toolBtn(id)));
+  railSection(rail, 'Disegna');
+  ['pen','line','arc','freehand','rect','ellipse','text'].forEach(id=> rail.appendChild(toolBtn(id)));
+  railSection(rail, 'Forme pronte');
+  rail.appendChild(railButton({id:'railShapes', label:'Forme pronte…', key:'F', icon:RAIL_ICONS.shapes, onclick:()=> toggleShapesFlyout(),
+    title:'Galleria di forme pronte (triangoli, poligoni, curve, stelle, simboli, fori e pezzi di packaging) da trascinare sul foglio'}));
+  railSection(rail, 'Modifica');
+  rail.appendChild(railButton({id:'railMove', label:'Sposta di…', key:'Invio', icon:RAIL_ICONS.move, onclick:()=> openMoveModal(),
+    title:'Sposta la selezione di una distanza precisa in qualsiasi direzione, o crea copie in serie'}));
+  rail.appendChild(railButton({id:'railExplode', label:'Dividi in segmenti', icon:RAIL_ICONS.explode, onclick:explodeSelectionToSegments,
+    title:'Dividi in segmenti: ogni lato della forma selezionata diventa una linea a sé, unita alle altre nei punti'}));
+  rail.appendChild(railButton({id:'railDelete', label:'Elimina', key:'Canc', icon:RAIL_ICONS.del, onclick:deleteSelection, title:'Elimina la selezione'}));
+  railSection(rail, 'Controlla');
+  rail.appendChild(railButton({id:'railFold3D', label:'Anteprima 3D', icon:RAIL_ICONS.fold3d, onclick:openFold3D,
+    title:'Anteprima 3D piegata: crea il modello 3D della fustella e simula la piegatura'}));
+  rail.appendChild(railButton({id:'railCheck', label:'Verifica chiusure', icon:RAIL_ICONS.check, onclick:checkClosures,
+    title:'Verifica chiusure: trova percorsi aperti o punti scollegati'}));
+  rail.appendChild(railButton({id:'railCloseAll', label:'Chiudi percorsi aperti', icon:RAIL_ICONS.closeall, onclick:closeAllOpenPaths,
+    title:'Chiudi automaticamente tutti i percorsi aperti (esclude le linee marcate come escluse)'}));
+  const spacer = document.createElement('div'); spacer.className = 'rail-spacer'; rail.appendChild(spacer);
+  const sepEnd = document.createElement('div'); sepEnd.className = 'rail-sep'; rail.appendChild(sepEnd);
+  rail.appendChild(railButton({id:'railClearAll', cls:'danger', label:'Cancella tutto', icon:RAIL_ICONS.clearall, onclick:clearAll, title:'Cancella tutto il disegno'}));
+  rail.appendChild(railButton({id:'railExpand', cls:'rail-mode', label: expanded ? 'Solo icone' : 'Mostra i nomi', icon: expanded ? RAIL_ICONS.collapse : RAIL_ICONS.expand,
+    title: expanded ? 'Barra compatta: solo icone (i nomi restano nei suggerimenti)' : 'Mostra i nomi accanto alle icone',
+    onclick:()=>{ try{ localStorage.setItem('spikecut-rail-expanded', expanded ? '0' : '1'); }catch(e){} rail.style.width = ''; buildRail(); applyI18n(rail); }}));
+  if(shapesFlyoutOpen()) document.getElementById('railShapes').classList.add('open');
+}
+/* galleria delle forme pronte, a scomparsa accanto alla barra di sinistra */
+function shapesFlyoutOpen(){ const f = document.getElementById('shapesFlyout'); return !!(f && f.classList.contains('open')); }
+function toggleShapesFlyout(force){
+  const f = document.getElementById('shapesFlyout');
+  const open = force!=null ? force : !f.classList.contains('open');
+  if(open && !f.dataset.built){ buildShapeGallery(document.getElementById('shapesFlyoutBody')); f.dataset.built = '1'; applyI18n(f); }
+  f.classList.toggle('open', open);
+  const b = document.getElementById('railShapes'); if(b) b.classList.toggle('open', open);
+  if(open) setTimeout(()=>{ const s = document.getElementById('shapeLibSearch'); if(s) s.focus(); }, 30);
 }
 function setTool(id){
   // il lazo è una variante della Selezione: tutto funziona come con la freccia, ma trascinando
@@ -11852,7 +12053,7 @@ function setTool(id){
   state.draft = null;
   state.refImageSelected = false;
   const activeBtn = state.lassoMode ? 'lasso' : id;
-  document.querySelectorAll('.tool').forEach(b=>b.classList.toggle('active', b.dataset.tool===activeBtn));
+  document.querySelectorAll('.tool[data-tool]').forEach(b=>b.classList.toggle('active', b.dataset.tool===activeBtn));
   stage.style.cursor = id==='select' ? 'default' : 'crosshair';
   renderAll();
 }
@@ -12815,6 +13016,8 @@ window.addEventListener('keydown', (e)=>{
   }
 
   const k = e.key.toLowerCase();
+  if(e.key==='Escape' && shapesFlyoutOpen()){ toggleShapesFlyout(false); return; }
+  if(k==='f' && !e.ctrlKey && !e.metaKey && !e.altKey){ e.preventDefault(); toggleShapesFlyout(); return; } // F: forme pronte
   if(/^Arrow(Left|Right|Up|Down)$/.test(e.key) && !e.ctrlKey && !e.metaKey && state.tool==='select' && state.selection.size){
     e.preventDefault(); nudgeSelection(e.key, e.shiftKey ? 10 : (e.altKey ? 0.1 : 1)); return; // frecce: 1 mm, Shift 10 mm, Alt 0,1 mm
   }
@@ -14009,6 +14212,7 @@ document.getElementById('moveModal').addEventListener('keydown', e=>{
   else if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); closeMoveModal(); }
   else e.stopPropagation(); // i tasti scritti nei campi non comandano il disegno
 });
+document.getElementById('shapesFlyoutClose').onclick = ()=> toggleShapesFlyout(false);
 function closeFold3D(){ stopFold3D(); if(state.foldCheck) endFoldCheckOverlay(); document.getElementById('fold3dModal').classList.remove('open'); }
 document.getElementById('fold3dClose').onclick = closeFold3D;
 setupOverlayClickClose(document.getElementById('fold3dModal'), closeFold3D);
