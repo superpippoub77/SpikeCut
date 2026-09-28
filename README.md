@@ -327,6 +327,14 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   stesso ruolo e livello vengono fuse in un unico percorso, e una linea che
   si richiude su se stessa diventa un percorso chiuso. Le catene (un punto
   sia di partenza sia di arrivo) vengono segnalate e bloccate.
+- **Galleria di forme** (scheda Componenti): 58 forme in 6 categorie
+  (`SHAPE_LIBRARY`), con anteprima, ricerca e dimensione; si trascinano sul
+  foglio (inserite nel punto di rilascio) o si inseriscono al centro con un
+  clic. Usano il ruolo linea attivo; cerchi ed ellissi sono ellissi vere; le
+  forme in più parti sono raggruppate; i pezzi di packaging hanno misure reali.
+  Corretti `makeCapsulePoints` (foro europeo, maniglia, asole: i semicerchi
+  erano rivolti dalla parte sbagliata) e `makeHookPoints` (il gancio si
+  incrociava).
 - **Sposta di…** (Invio con una selezione, menu Strumenti, tasto destro o
   pannello Proprietà): spostamento preciso come orizzontale/verticale oppure
   distanza/angolo (0° = destra, 90° = su), 8 pulsanti di direzione, anteprima

@@ -408,6 +408,13 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 #btnQuickSave.sync-lib{ color:#8ecbff; }
 #btnQuickSave.sync-warn{ color:#ffb340; }
 #btnQuickSave.sync-err{ color:#ff6a60; font-weight:700; }
+.shapelib-cat{ font-size:11.5px; font-weight:700; color:var(--ink-dim); text-transform:uppercase; letter-spacing:.04em; margin:10px 0 5px; }
+.shapelib-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(66px, 1fr)); gap:6px; }
+.shapelib-tile{ display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 3px 5px; border:1px solid var(--line); border-radius:8px; background:rgba(128,128,128,.06); color:var(--ink); cursor:grab; }
+.shapelib-tile:hover{ border-color:var(--brass); background:rgba(201,151,63,.12); }
+.shapelib-tile:active{ cursor:grabbing; }
+.shapelib-tile svg{ width:38px; height:38px; }
+.shapelib-tile span{ font-size:10px; line-height:1.15; text-align:center; color:var(--ink-dim); word-break:break-word; }
 .move-compass{ display:grid; grid-template-columns:repeat(3,30px); grid-template-rows:repeat(3,30px); gap:3px; margin-top:16px; }
 .move-compass button{ border:1px solid var(--line); background:rgba(128,128,128,.08); color:var(--ink); border-radius:6px; cursor:pointer; font-size:14px; padding:0; }
 .move-compass button:hover{ border-color:var(--brass); }
@@ -778,7 +785,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.37.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.38.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2499,6 +2506,71 @@ const I18N = {
     "{n} oggetti spostati di {dist} {dir}.": "{n} objects moved {dist} {dir}.",
     "↔ Sposta di… (Invio)": "↔ Move by… (Enter)",
     "Sposta la selezione di una distanza precisa in qualsiasi direzione, o crea copie in serie. Frecce: 1 mm, Shift 10 mm, Alt 0,1 mm.": "Move the selection by a precise distance in any direction, or create a series of copies. Arrows: 1 mm, Shift 10 mm, Alt 0.1 mm.",
+    "Triangoli e quadrilateri": "Triangles and quadrilaterals",
+    "Poligoni regolari": "Regular polygons",
+    "Curve": "Curves",
+    "Stelle": "Stars",
+    "Frecce e simboli": "Arrows and symbols",
+    "Packaging": "Packaging",
+    "Triangolo equilatero": "Equilateral triangle",
+    "Triangolo isoscele": "Isosceles triangle",
+    "Triangolo rettangolo": "Right triangle",
+    "Triangolo scaleno": "Scalene triangle",
+    "Quadrato": "Square",
+    "Rettangolo arrotondato": "Rounded rectangle",
+    "Rombo": "Rhombus",
+    "Parallelogramma": "Parallelogram",
+    "Trapezio isoscele": "Isosceles trapezoid",
+    "Trapezio rettangolo": "Right trapezoid",
+    "Aquilone": "Kite",
+    "Pentagono": "Pentagon",
+    "Esagono": "Hexagon",
+    "Ettagono": "Heptagon",
+    "Ottagono": "Octagon",
+    "Ennagono": "Nonagon",
+    "Decagono": "Decagon",
+    "Dodecagono": "Dodecagon",
+    "Cerchio": "Circle",
+    "Semicerchio": "Semicircle",
+    "Quarto di cerchio": "Quarter circle",
+    "Spicchio": "Sector",
+    "Corona circolare": "Ring",
+    "Asola lunga": "Long slot",
+    "Arco a tutto sesto": "Round arch",
+    "Goccia": "Drop",
+    "Cuore": "Heart",
+    "Mezzaluna": "Crescent",
+    "Stella a 3 punte": "3-point star",
+    "Stella a 4 punte": "4-point star",
+    "Stella a 5 punte": "5-point star",
+    "Stella a 6 punte": "6-point star",
+    "Stella a 8 punte": "8-point star",
+    "Stella a 12 punte": "12-point star",
+    "Esplosione": "Burst",
+    "Sigillo": "Seal",
+    "Croce": "Cross",
+    "Freccia": "Arrow",
+    "Freccia doppia": "Double arrow",
+    "Chevron": "Chevron",
+    "Fumetto": "Speech bubble",
+    "Cartellino": "Tag",
+    "Nastro": "Ribbon",
+    "Scudo": "Shield",
+    "Ingranaggio": "Gear",
+    "Fiore": "Flower",
+    "Foro tondo Ø 6 mm": "Round hole Ø 6 mm",
+    "Asola 3 × 25 mm": "Slot 3 × 25 mm",
+    "Finestra 60 × 40 mm": "Window 60 × 40 mm",
+    "Foro a sombrero": "Sombrero hang hole",
+    "Tacca a V": "V notch",
+    "Cerca una forma": "Search for a shape",
+    "es. esagono, stella, freccia…": "e.g. hexagon, star, arrow…",
+    "Dimensione ({unit})": "Size ({unit})",
+    "Lato del quadrato in cui sta la forma (le forme di packaging hanno misure reali fisse)": "Side of the square the shape fits in (packaging shapes have fixed real sizes)",
+    "trascinala sul foglio, oppure clic per metterla al centro": "drag it onto the sheet, or click to place it in the centre",
+    "Nessuna forma trovata.": "No shapes found.",
+    "«{name}» inserito ({w} × {h}): spostalo e adattalo come preferisci.": "\"{name}\" inserted ({w} × {h}): move and adjust it as you like.",
+    "Trascina una forma sul foglio per inserirla in quel punto, oppure fai clic per metterla al centro. Viene aggiunta con il ruolo linea scelto (Taglio, Piega…) come una normale forma modificabile, da spostare, ridimensionare e rifinire.": "Drag a shape onto the sheet to insert it at that point, or click to place it in the centre. It is added with the chosen line role (Cut, Fold…) as a normal editable shape, to move, resize and adjust like any other.",
   },
   de: {
     "1 cm": "1 cm",
@@ -3499,6 +3571,71 @@ const I18N = {
     "{n} oggetti spostati di {dist} {dir}.": "{n} Objekte um {dist} {dir} verschoben.",
     "↔ Sposta di… (Invio)": "↔ Verschieben um… (Eingabe)",
     "Sposta la selezione di una distanza precisa in qualsiasi direzione, o crea copie in serie. Frecce: 1 mm, Shift 10 mm, Alt 0,1 mm.": "Auswahl um einen genauen Abstand in jede Richtung verschieben oder Kopienreihen erstellen. Pfeile: 1 mm, Umschalt 10 mm, Alt 0,1 mm.",
+    "Triangoli e quadrilateri": "Dreiecke und Vierecke",
+    "Poligoni regolari": "Regelmäßige Vielecke",
+    "Curve": "Kurven",
+    "Stelle": "Sterne",
+    "Frecce e simboli": "Pfeile und Symbole",
+    "Packaging": "Verpackung",
+    "Triangolo equilatero": "Gleichseitiges Dreieck",
+    "Triangolo isoscele": "Gleichschenkliges Dreieck",
+    "Triangolo rettangolo": "Rechtwinkliges Dreieck",
+    "Triangolo scaleno": "Ungleichseitiges Dreieck",
+    "Quadrato": "Quadrat",
+    "Rettangolo arrotondato": "Abgerundetes Rechteck",
+    "Rombo": "Raute",
+    "Parallelogramma": "Parallelogramm",
+    "Trapezio isoscele": "Gleichschenkliges Trapez",
+    "Trapezio rettangolo": "Rechtwinkliges Trapez",
+    "Aquilone": "Drachenviereck",
+    "Pentagono": "Fünfeck",
+    "Esagono": "Sechseck",
+    "Ettagono": "Siebeneck",
+    "Ottagono": "Achteck",
+    "Ennagono": "Neuneck",
+    "Decagono": "Zehneck",
+    "Dodecagono": "Zwölfeck",
+    "Cerchio": "Kreis",
+    "Semicerchio": "Halbkreis",
+    "Quarto di cerchio": "Viertelkreis",
+    "Spicchio": "Kreissektor",
+    "Corona circolare": "Kreisring",
+    "Asola lunga": "Langloch",
+    "Arco a tutto sesto": "Rundbogen",
+    "Goccia": "Tropfen",
+    "Cuore": "Herz",
+    "Mezzaluna": "Mondsichel",
+    "Stella a 3 punte": "3-zackiger Stern",
+    "Stella a 4 punte": "4-zackiger Stern",
+    "Stella a 5 punte": "5-zackiger Stern",
+    "Stella a 6 punte": "6-zackiger Stern",
+    "Stella a 8 punte": "8-zackiger Stern",
+    "Stella a 12 punte": "12-zackiger Stern",
+    "Esplosione": "Explosion",
+    "Sigillo": "Siegel",
+    "Croce": "Kreuz",
+    "Freccia": "Pfeil",
+    "Freccia doppia": "Doppelpfeil",
+    "Chevron": "Chevron",
+    "Fumetto": "Sprechblase",
+    "Cartellino": "Anhänger",
+    "Nastro": "Band",
+    "Scudo": "Schild",
+    "Ingranaggio": "Zahnrad",
+    "Fiore": "Blume",
+    "Foro tondo Ø 6 mm": "Rundloch Ø 6 mm",
+    "Asola 3 × 25 mm": "Schlitz 3 × 25 mm",
+    "Finestra 60 × 40 mm": "Fenster 60 × 40 mm",
+    "Foro a sombrero": "Sombrero-Aufhängeloch",
+    "Tacca a V": "V-Kerbe",
+    "Cerca una forma": "Form suchen",
+    "es. esagono, stella, freccia…": "z. B. Sechseck, Stern, Pfeil…",
+    "Dimensione ({unit})": "Größe ({unit})",
+    "Lato del quadrato in cui sta la forma (le forme di packaging hanno misure reali fisse)": "Seite des Quadrats, in das die Form passt (Verpackungsformen haben feste reale Maße)",
+    "trascinala sul foglio, oppure clic per metterla al centro": "auf das Blatt ziehen oder klicken, um sie in die Mitte zu setzen",
+    "Nessuna forma trovata.": "Keine Form gefunden.",
+    "«{name}» inserito ({w} × {h}): spostalo e adattalo come preferisci.": "„{name}“ eingefügt ({w} × {h}): verschiebe und passe es nach Belieben an.",
+    "Trascina una forma sul foglio per inserirla in quel punto, oppure fai clic per metterla al centro. Viene aggiunta con il ruolo linea scelto (Taglio, Piega…) come una normale forma modificabile, da spostare, ridimensionare e rifinire.": "Ziehe eine Form auf das Blatt, um sie an dieser Stelle einzufügen, oder klicke, um sie in die Mitte zu setzen. Sie wird mit der gewählten Linienrolle (Schnitt, Falz…) als normale bearbeitbare Form hinzugefügt.",
   },
   es: {
     "1 cm": "1 cm",
@@ -4499,6 +4636,71 @@ const I18N = {
     "{n} oggetti spostati di {dist} {dir}.": "{n} objetos movidos {dist} {dir}.",
     "↔ Sposta di… (Invio)": "↔ Mover… (Intro)",
     "Sposta la selezione di una distanza precisa in qualsiasi direzione, o crea copie in serie. Frecce: 1 mm, Shift 10 mm, Alt 0,1 mm.": "Mueve la selección una distancia precisa en cualquier dirección, o crea copias en serie. Flechas: 1 mm, Mayús 10 mm, Alt 0,1 mm.",
+    "Triangoli e quadrilateri": "Triángulos y cuadriláteros",
+    "Poligoni regolari": "Polígonos regulares",
+    "Curve": "Curvas",
+    "Stelle": "Estrellas",
+    "Frecce e simboli": "Flechas y símbolos",
+    "Packaging": "Packaging",
+    "Triangolo equilatero": "Triángulo equilátero",
+    "Triangolo isoscele": "Triángulo isósceles",
+    "Triangolo rettangolo": "Triángulo rectángulo",
+    "Triangolo scaleno": "Triángulo escaleno",
+    "Quadrato": "Cuadrado",
+    "Rettangolo arrotondato": "Rectángulo redondeado",
+    "Rombo": "Rombo",
+    "Parallelogramma": "Paralelogramo",
+    "Trapezio isoscele": "Trapecio isósceles",
+    "Trapezio rettangolo": "Trapecio rectángulo",
+    "Aquilone": "Deltoide",
+    "Pentagono": "Pentágono",
+    "Esagono": "Hexágono",
+    "Ettagono": "Heptágono",
+    "Ottagono": "Octógono",
+    "Ennagono": "Eneágono",
+    "Decagono": "Decágono",
+    "Dodecagono": "Dodecágono",
+    "Cerchio": "Círculo",
+    "Semicerchio": "Semicírculo",
+    "Quarto di cerchio": "Cuarto de círculo",
+    "Spicchio": "Sector",
+    "Corona circolare": "Corona circular",
+    "Asola lunga": "Ranura larga",
+    "Arco a tutto sesto": "Arco de medio punto",
+    "Goccia": "Gota",
+    "Cuore": "Corazón",
+    "Mezzaluna": "Media luna",
+    "Stella a 3 punte": "Estrella de 3 puntas",
+    "Stella a 4 punte": "Estrella de 4 puntas",
+    "Stella a 5 punte": "Estrella de 5 puntas",
+    "Stella a 6 punte": "Estrella de 6 puntas",
+    "Stella a 8 punte": "Estrella de 8 puntas",
+    "Stella a 12 punte": "Estrella de 12 puntas",
+    "Esplosione": "Explosión",
+    "Sigillo": "Sello",
+    "Croce": "Cruz",
+    "Freccia": "Flecha",
+    "Freccia doppia": "Flecha doble",
+    "Chevron": "Chevrón",
+    "Fumetto": "Bocadillo",
+    "Cartellino": "Etiqueta colgante",
+    "Nastro": "Cinta",
+    "Scudo": "Escudo",
+    "Ingranaggio": "Engranaje",
+    "Fiore": "Flor",
+    "Foro tondo Ø 6 mm": "Agujero redondo Ø 6 mm",
+    "Asola 3 × 25 mm": "Ranura 3 × 25 mm",
+    "Finestra 60 × 40 mm": "Ventana 60 × 40 mm",
+    "Foro a sombrero": "Agujero sombrero",
+    "Tacca a V": "Muesca en V",
+    "Cerca una forma": "Buscar una forma",
+    "es. esagono, stella, freccia…": "p. ej. hexágono, estrella, flecha…",
+    "Dimensione ({unit})": "Tamaño ({unit})",
+    "Lato del quadrato in cui sta la forma (le forme di packaging hanno misure reali fisse)": "Lado del cuadrado en el que cabe la forma (las formas de packaging tienen medidas reales fijas)",
+    "trascinala sul foglio, oppure clic per metterla al centro": "arrástrala a la hoja o haz clic para ponerla en el centro",
+    "Nessuna forma trovata.": "No se encontró ninguna forma.",
+    "«{name}» inserito ({w} × {h}): spostalo e adattalo come preferisci.": "«{name}» insertado ({w} × {h}): muévelo y ajústalo como quieras.",
+    "Trascina una forma sul foglio per inserirla in quel punto, oppure fai clic per metterla al centro. Viene aggiunta con il ruolo linea scelto (Taglio, Piega…) come una normale forma modificabile, da spostare, ridimensionare e rifinire.": "Arrastra una forma a la hoja para insertarla en ese punto, o haz clic para ponerla en el centro. Se añade con el rol de línea elegido (Corte, Pliegue…) como una forma normal editable.",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -5499,6 +5701,71 @@ const I18N = {
     "{n} oggetti spostati di {dist} {dir}.": "{n} 个对象已{dir}移动 {dist}。",
     "↔ Sposta di… (Invio)": "↔ 移动…（回车）",
     "Sposta la selezione di una distanza precisa in qualsiasi direzione, o crea copie in serie. Frecce: 1 mm, Shift 10 mm, Alt 0,1 mm.": "将所选内容按精确距离向任意方向移动，或创建一系列副本。方向键：1 mm，Shift 10 mm，Alt 0.1 mm。",
+    "Triangoli e quadrilateri": "三角形和四边形",
+    "Poligoni regolari": "正多边形",
+    "Curve": "曲线",
+    "Stelle": "星形",
+    "Frecce e simboli": "箭头和符号",
+    "Packaging": "包装",
+    "Triangolo equilatero": "等边三角形",
+    "Triangolo isoscele": "等腰三角形",
+    "Triangolo rettangolo": "直角三角形",
+    "Triangolo scaleno": "不等边三角形",
+    "Quadrato": "正方形",
+    "Rettangolo arrotondato": "圆角矩形",
+    "Rombo": "菱形",
+    "Parallelogramma": "平行四边形",
+    "Trapezio isoscele": "等腰梯形",
+    "Trapezio rettangolo": "直角梯形",
+    "Aquilone": "筝形",
+    "Pentagono": "五边形",
+    "Esagono": "六边形",
+    "Ettagono": "七边形",
+    "Ottagono": "八边形",
+    "Ennagono": "九边形",
+    "Decagono": "十边形",
+    "Dodecagono": "十二边形",
+    "Cerchio": "圆形",
+    "Semicerchio": "半圆",
+    "Quarto di cerchio": "四分之一圆",
+    "Spicchio": "扇形",
+    "Corona circolare": "圆环",
+    "Asola lunga": "长槽",
+    "Arco a tutto sesto": "半圆拱",
+    "Goccia": "水滴",
+    "Cuore": "心形",
+    "Mezzaluna": "新月",
+    "Stella a 3 punte": "三角星",
+    "Stella a 4 punte": "四角星",
+    "Stella a 5 punte": "五角星",
+    "Stella a 6 punte": "六角星",
+    "Stella a 8 punte": "八角星",
+    "Stella a 12 punte": "十二角星",
+    "Esplosione": "爆炸星",
+    "Sigillo": "印章",
+    "Croce": "十字",
+    "Freccia": "箭头",
+    "Freccia doppia": "双向箭头",
+    "Chevron": "V形箭头",
+    "Fumetto": "对话框",
+    "Cartellino": "吊牌",
+    "Nastro": "丝带",
+    "Scudo": "盾形",
+    "Ingranaggio": "齿轮",
+    "Fiore": "花形",
+    "Foro tondo Ø 6 mm": "圆孔 Ø 6 mm",
+    "Asola 3 × 25 mm": "槽孔 3 × 25 mm",
+    "Finestra 60 × 40 mm": "开窗 60 × 40 mm",
+    "Foro a sombrero": "草帽形挂孔",
+    "Tacca a V": "V形缺口",
+    "Cerca una forma": "搜索形状",
+    "es. esagono, stella, freccia…": "例如：六边形、星形、箭头…",
+    "Dimensione ({unit})": "尺寸（{unit}）",
+    "Lato del quadrato in cui sta la forma (le forme di packaging hanno misure reali fisse)": "形状所在正方形的边长（包装形状为固定的实际尺寸）",
+    "trascinala sul foglio, oppure clic per metterla al centro": "拖到画布上，或点击放在中央",
+    "Nessuna forma trovata.": "未找到形状。",
+    "«{name}» inserito ({w} × {h}): spostalo e adattalo come preferisci.": "已插入\"{name}\"（{w} × {h}）：可随意移动和调整。",
+    "Trascina una forma sul foglio per inserirla in quel punto, oppure fai clic per metterla al centro. Viene aggiunta con il ruolo linea scelto (Taglio, Piega…) come una normale forma modificabile, da spostare, ridimensionare e rifinire.": "将形状拖到画布上即可插入到该位置，或点击将其放在中央。它会以所选的线条角色（切割、折叠…）作为普通可编辑形状添加。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -6499,6 +6766,71 @@ const I18N = {
     "{n} oggetti spostati di {dist} {dir}.": "{n} objets déplacés de {dist} {dir}.",
     "↔ Sposta di… (Invio)": "↔ Déplacer de… (Entrée)",
     "Sposta la selezione di una distanza precisa in qualsiasi direzione, o crea copie in serie. Frecce: 1 mm, Shift 10 mm, Alt 0,1 mm.": "Déplace la sélection d’une distance précise dans n’importe quelle direction, ou crée des copies en série. Flèches : 1 mm, Maj 10 mm, Alt 0,1 mm.",
+    "Triangoli e quadrilateri": "Triangles et quadrilatères",
+    "Poligoni regolari": "Polygones réguliers",
+    "Curve": "Courbes",
+    "Stelle": "Étoiles",
+    "Frecce e simboli": "Flèches et symboles",
+    "Packaging": "Emballage",
+    "Triangolo equilatero": "Triangle équilatéral",
+    "Triangolo isoscele": "Triangle isocèle",
+    "Triangolo rettangolo": "Triangle rectangle",
+    "Triangolo scaleno": "Triangle scalène",
+    "Quadrato": "Carré",
+    "Rettangolo arrotondato": "Rectangle arrondi",
+    "Rombo": "Losange",
+    "Parallelogramma": "Parallélogramme",
+    "Trapezio isoscele": "Trapèze isocèle",
+    "Trapezio rettangolo": "Trapèze rectangle",
+    "Aquilone": "Cerf-volant",
+    "Pentagono": "Pentagone",
+    "Esagono": "Hexagone",
+    "Ettagono": "Heptagone",
+    "Ottagono": "Octogone",
+    "Ennagono": "Ennéagone",
+    "Decagono": "Décagone",
+    "Dodecagono": "Dodécagone",
+    "Cerchio": "Cercle",
+    "Semicerchio": "Demi-cercle",
+    "Quarto di cerchio": "Quart de cercle",
+    "Spicchio": "Secteur",
+    "Corona circolare": "Couronne",
+    "Asola lunga": "Fente longue",
+    "Arco a tutto sesto": "Arc en plein cintre",
+    "Goccia": "Goutte",
+    "Cuore": "Cœur",
+    "Mezzaluna": "Croissant",
+    "Stella a 3 punte": "Étoile à 3 branches",
+    "Stella a 4 punte": "Étoile à 4 branches",
+    "Stella a 5 punte": "Étoile à 5 branches",
+    "Stella a 6 punte": "Étoile à 6 branches",
+    "Stella a 8 punte": "Étoile à 8 branches",
+    "Stella a 12 punte": "Étoile à 12 branches",
+    "Esplosione": "Explosion",
+    "Sigillo": "Sceau",
+    "Croce": "Croix",
+    "Freccia": "Flèche",
+    "Freccia doppia": "Double flèche",
+    "Chevron": "Chevron",
+    "Fumetto": "Bulle",
+    "Cartellino": "Étiquette",
+    "Nastro": "Ruban",
+    "Scudo": "Écusson",
+    "Ingranaggio": "Engrenage",
+    "Fiore": "Fleur",
+    "Foro tondo Ø 6 mm": "Trou rond Ø 6 mm",
+    "Asola 3 × 25 mm": "Fente 3 × 25 mm",
+    "Finestra 60 × 40 mm": "Fenêtre 60 × 40 mm",
+    "Foro a sombrero": "Trou sombrero",
+    "Tacca a V": "Encoche en V",
+    "Cerca una forma": "Chercher une forme",
+    "es. esagono, stella, freccia…": "ex. hexagone, étoile, flèche…",
+    "Dimensione ({unit})": "Taille ({unit})",
+    "Lato del quadrato in cui sta la forma (le forme di packaging hanno misure reali fisse)": "Côté du carré dans lequel tient la forme (les formes d’emballage ont des mesures réelles fixes)",
+    "trascinala sul foglio, oppure clic per metterla al centro": "fais-la glisser sur la feuille, ou clique pour la placer au centre",
+    "Nessuna forma trovata.": "Aucune forme trouvée.",
+    "«{name}» inserito ({w} × {h}): spostalo e adattalo come preferisci.": "« {name} » inséré ({w} × {h}) : déplace-le et ajuste-le comme tu veux.",
+    "Trascina una forma sul foglio per inserirla in quel punto, oppure fai clic per metterla al centro. Viene aggiunta con il ruolo linea scelto (Taglio, Piega…) come una normale forma modificabile, da spostare, ridimensionare e rifinire.": "Fais glisser une forme sur la feuille pour l’insérer à cet endroit, ou clique pour la placer au centre. Elle est ajoutée avec le rôle de ligne choisi (Découpe, Pli…) comme une forme normale modifiable.",
   },
 };
 let currentLang = 'it';
@@ -10193,7 +10525,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.37.0';
+const GUIDE_VERSION = '2.38.0';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -10416,10 +10748,14 @@ html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profo
 <li><b>Astuccio con coperchio a incastro</b>: alette antipolvere, aletta posteriore e linguetta di chiusura.</li></ul>
 <p>Le pieghe sono già impostate a monte, 90°, con un <a data-topic="ordine">ordine di piegatura</a> sensato, e la zona di incollaggio è un poligono <a data-topic="incollaggio">tratteggiato</a>. L'aletta di incollaggio si può impostare o lasciare automatica. Gli spigoli delle alette sono semplificati: verifica le misure prima della produzione.</p>` },
 
-{ id:'componenti', cat:'Fustella e scatole', title:'Libreria componenti', keys:'componenti pezzi pronti aletta foro europeo maniglia linguetta gancio condivisi community',
-html:`<p>Scheda <b>Componenti</b> del pannello laterale: pezzi pronti da inserire con un clic al centro del foglio (aletta standard, foro europeo, maniglia, linguetta, gancio), modificabili come qualunque forma.</p>
-<p>Sotto ai predefiniti compaiono i progetti salvati come <b>condivisi</b> nella <a data-topic="libreria">libreria</a> (serve l'accesso): si inseriscono allo stesso modo.</p>` },
-
+{ id:'componenti', cat:'Disegnare', title:'Forme pronte e componenti', keys:'forme pronte galleria componenti trascinare triangolo quadrato esagono pentagono ottagono poligono stella cerchio ellisse cuore freccia croce ingranaggio asola foro europeo maniglia linguetta gancio finestra sombrero',
+html:`<p>La scheda <b>Componenti</b> del pannello laterale è una <b>galleria di forme</b> con anteprima, divisa per categorie: triangoli e quadrilateri, poligoni regolari (dal pentagono al dodecagono), curve (cerchio, ellisse, semicerchio, spicchio, corona, cuore, mezzaluna…), stelle, frecce e simboli (croce, fumetto, cartellino, ingranaggio…) e pezzi di <b>packaging</b> (aletta, foro europeo, maniglia, linguetta, gancio, foro tondo, asola, finestra, foro a sombrero, tacca a V).</p>
+<ul><li><b>Trascina</b> una forma sul foglio per inserirla in quel punto, oppure <b>fai clic</b> per metterla al centro (sui tablet si usa il clic).</li>
+<li>La casella <b>Dimensione</b> indica il lato del quadrato in cui sta la forma; i pezzi di packaging hanno invece <b>misure reali fisse</b>.</li>
+<li>La forma usa il <b>ruolo linea</b> scelto (Taglio, Piega…), come gli strumenti di disegno; cerchi ed ellissi sono ellissi vere. Le forme in più parti (corona, cartellino, ingranaggio) sono inserite già <a data-topic="gruppi">raggruppate</a>.</li>
+<li>La casella <b>Cerca</b> filtra per nome o categoria (es. "stella", "poligoni").</li>
+<li>Una volta inserita è una forma normale: si sposta, si ridimensiona, si modificano i punti e le lunghezze.</li></ul>
+<p>Sotto la galleria ci sono i <b>componenti condivisi</b>: ogni progetto pubblico della libreria si può inserire come un pezzo.</p>` },
 { id:'incollaggio', cat:'Fustella e scatole', title:'Zone di incollaggio', keys:'incollaggio colla tratteggio zona aletta stampa',
 html:`<p>Una forma <b>chiusa</b> con ruolo Incollaggio e senza colore di riempimento viene mostrata a schermo con un <b>tratteggio diagonale</b>. Il tratteggio serve solo sul disegno: esportazioni SVG e PDF, stampa di prova e anteprima di taglio non lo contengono (resta solo il contorno).</p>
 <p>Le scatole generate hanno già la zona di incollaggio sull'aletta, rientrata di 1,5 mm dai bordi.</p>` },
@@ -10536,6 +10872,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.38</b> — <a data-topic="componenti">Galleria di forme</a> da trascinare sul foglio: 58 forme (poligoni, curve, stelle, simboli, packaging) con dimensione e ricerca. Corretti foro europeo, maniglia e gancio, che erano disegnati male.</li>
 <li><b>2.37</b> — <a data-topic="sposta">Sposta di…</a> (Invio): distanza precisa in qualsiasi direzione, anche con copie in serie; frecce della tastiera per spostare la selezione.</li>
 <li><b>2.36</b> — Nel pannello Proprietà <a data-topic="punti">Mostra: Punti · Lunghezze · Entrambi</a>; evidenziazione gialla sul disegno di ciò che si sta modificando.</li>
 <li><b>2.35.1</b> — Menu File, Stampa e Strumenti riordinati per argomento e divisi da linee; "Scarica una copia del progetto" e "Apri un progetto da file" al posto di Salva/Apri progetto.</li>
@@ -11050,35 +11387,21 @@ function nudgeSelection(key, stepMM){
    qualunque altra forma.
 ============================================================ */
 function makeCapsulePoints(width, height, sides){
+  // asola verticale larga "width" e alta "height": semicerchio in alto e in basso, rivolti verso l'esterno
+  // (prima i due semicerchi erano rivolti dalla parte sbagliata e il contorno si incrociava)
   sides = sides || 16;
-  const r = width/2;
-  const straightLen = Math.max(0, height - width);
-  const pts = [];
-  for(let i=0;i<=sides;i++){
-    const a = -Math.PI/2 + (i/sides)*Math.PI;
-    pts.push([r*Math.cos(a), -straightLen/2 - r*Math.sin(a)]);
-  }
-  for(let i=0;i<=sides;i++){
-    const a = Math.PI/2 + (i/sides)*Math.PI;
-    pts.push([r*Math.cos(a), straightLen/2 - r*Math.sin(a)]);
-  }
+  const r = width/2, L = Math.max(0, height - width), pts = [];
+  for(let i=0;i<=sides;i++){ const a = Math.PI + (i/sides)*Math.PI; pts.push([r*Math.cos(a), -L/2 + r*Math.sin(a)]); } // sopra: da sinistra a destra
+  for(let i=0;i<=sides;i++){ const a = (i/sides)*Math.PI; pts.push([r*Math.cos(a), L/2 + r*Math.sin(a)]); }            // sotto: da destra a sinistra
   return pts;
 }
 function makeHookPoints(){
-  const stemW = 5, stemH = 18, hookOuterR = 12, hookInnerR = hookOuterR-stemW;
-  const cx = 0, cy = -stemH, sides = 16;
-  const pts = [[-stemW/2, 0], [-stemW/2, cy]];
-  for(let i=0;i<=sides;i++){
-    const a = Math.PI - (i/sides)*Math.PI*1.3;
-    pts.push([cx+hookOuterR*Math.cos(a), cy+hookOuterR*Math.sin(a)]);
-  }
-  const aEnd = Math.PI - 1.3*Math.PI;
-  pts.push([cx+hookInnerR*Math.cos(aEnd), cy+hookInnerR*Math.sin(aEnd)]);
-  for(let i=sides;i>=0;i--){
-    const a = Math.PI - (i/sides)*Math.PI*1.3;
-    pts.push([cx+hookInnerR*Math.cos(a), cy+hookInnerR*Math.sin(a)]);
-  }
-  pts.push([stemW/2, cy], [stemW/2, 0]);
+  // gancio: gambo verticale largo w che prosegue in un uncino (fascia della stessa larghezza curvata di 220°)
+  const w = 5, L = 18, Rc = 9, Ro = Rc + w/2, Ri = Rc - w/2, sweep = 220, sides = 28;
+  const pts = [[-w/2, 0], [-w/2, -L]];
+  for(let i=0;i<=sides;i++){ const a = (180 + sweep*i/sides)*Math.PI/180; pts.push([Rc + Ro*Math.cos(a), -L + Ro*Math.sin(a)]); }
+  for(let i=sides;i>=0;i--){ const a = (180 + sweep*i/sides)*Math.PI/180; pts.push([Rc + Ri*Math.cos(a), -L + Ri*Math.sin(a)]); }
+  pts.push([w/2, 0]);
   return pts;
 }
 /* ============================================================
@@ -11206,21 +11529,202 @@ function insertComponent(key){
   document.querySelector('.tabtrig[data-tab="prop"]').click();
   showToast(tpl('"{name}" inserita al centro del foglio: spostala e adattala come preferisci.', {name: translate(def.label)}), false);
 }
+
+/* ============================================================
+   GALLERIA DI FORME — da trascinare sul foglio (o clic = al centro).
+   Ogni forma è generata in coordinate locali e poi centrata dove viene lasciata.
+   make(S) riceve la dimensione S (mm) scelta nella galleria; le forme "fixed"
+   (packaging) hanno misure reali e ignorano S. Una forma può avere più parti
+   (vengono inserite raggruppate).
+============================================================ */
+const SL = {
+  poly: (pts, extra)=> Object.assign({points:pts, closed:true}, extra||{}),
+  reg: (n, S, rot)=>{ const r = S/2, a0 = (rot==null ? -90 : rot)*Math.PI/180; return Array.from({length:n}, (_,i)=>[r*Math.cos(a0 + i*2*Math.PI/n), r*Math.sin(a0 + i*2*Math.PI/n)]); },
+  star: (n, S, inner)=>{ const R = S/2, r = R*inner, out = []; for(let i=0;i<2*n;i++){ const a = -Math.PI/2 + i*Math.PI/n, q = i%2 ? r : R; out.push([q*Math.cos(a), q*Math.sin(a)]); } return out; },
+  arcPts: (cx, cy, r, a0, a1, seg)=>{ seg = seg || 48; const out = []; for(let i=0;i<=seg;i++){ const a = (a0 + (a1-a0)*i/seg)*Math.PI/180; out.push([cx + r*Math.cos(a), cy + r*Math.sin(a)]); } return out; },
+  ell: (w, h)=>({ellipse:{w, h}}),
+};
+const SHAPE_LIBRARY = [
+  // --- Triangoli e quadrilateri
+  {key:'tri_eq', cat:'Triangoli e quadrilateri', label:'Triangolo equilatero', make:S=>SL.poly([[0,0],[S/2,-S*Math.sqrt(3)/2],[S,0]])},
+  {key:'tri_iso', cat:'Triangoli e quadrilateri', label:'Triangolo isoscele', make:S=>SL.poly([[0,S],[S*0.35,0],[S*0.7,S]])},
+  {key:'tri_rect', cat:'Triangoli e quadrilateri', label:'Triangolo rettangolo', make:S=>SL.poly([[0,0],[0,S],[S,S]])},
+  {key:'tri_scal', cat:'Triangoli e quadrilateri', label:'Triangolo scaleno', make:S=>SL.poly([[0,S*0.75],[S*0.3,0],[S,S*0.75]])},
+  {key:'square', cat:'Triangoli e quadrilateri', label:'Quadrato', make:S=>SL.poly([[0,0],[S,0],[S,S],[0,S]])},
+  {key:'rect', cat:'Triangoli e quadrilateri', label:'Rettangolo', make:S=>SL.poly([[0,0],[S,0],[S,S*0.6],[0,S*0.6]])},
+  {key:'rect_round', cat:'Triangoli e quadrilateri', label:'Rettangolo arrotondato', make:S=>SL.poly([[0,0],[S,0],[S,S*0.6],[0,S*0.6]], {smooth:[S*0.12,S*0.12,S*0.12,S*0.12]})},
+  {key:'rhombus', cat:'Triangoli e quadrilateri', label:'Rombo', make:S=>SL.poly([[S/2,0],[S,S*0.35],[S/2,S*0.7],[0,S*0.35]])},
+  {key:'parallelogram', cat:'Triangoli e quadrilateri', label:'Parallelogramma', make:S=>SL.poly([[S*0.25,0],[S,0],[S*0.75,S*0.55],[0,S*0.55]])},
+  {key:'trap_iso', cat:'Triangoli e quadrilateri', label:'Trapezio isoscele', make:S=>SL.poly([[S*0.2,0],[S*0.8,0],[S,S*0.55],[0,S*0.55]])},
+  {key:'trap_rect', cat:'Triangoli e quadrilateri', label:'Trapezio rettangolo', make:S=>SL.poly([[0,0],[S*0.6,0],[S,S*0.55],[0,S*0.55]])},
+  {key:'kite', cat:'Triangoli e quadrilateri', label:'Aquilone', make:S=>SL.poly([[S*0.35,0],[S*0.7,S*0.35],[S*0.35,S],[0,S*0.35]])},
+  // --- Poligoni regolari
+  {key:'pentagon', cat:'Poligoni regolari', label:'Pentagono', make:S=>SL.poly(SL.reg(5,S))},
+  {key:'hexagon', cat:'Poligoni regolari', label:'Esagono', make:S=>SL.poly(SL.reg(6,S,0))},
+  {key:'heptagon', cat:'Poligoni regolari', label:'Ettagono', make:S=>SL.poly(SL.reg(7,S))},
+  {key:'octagon', cat:'Poligoni regolari', label:'Ottagono', make:S=>SL.poly(SL.reg(8,S,22.5))},
+  {key:'nonagon', cat:'Poligoni regolari', label:'Ennagono', make:S=>SL.poly(SL.reg(9,S))},
+  {key:'decagon', cat:'Poligoni regolari', label:'Decagono', make:S=>SL.poly(SL.reg(10,S))},
+  {key:'dodecagon', cat:'Poligoni regolari', label:'Dodecagono', make:S=>SL.poly(SL.reg(12,S,15))},
+  // --- Curve
+  {key:'circle', cat:'Curve', label:'Cerchio', make:S=>SL.ell(S,S)},
+  {key:'ellipse', cat:'Curve', label:'Ellisse', make:S=>SL.ell(S,S*0.6)},
+  {key:'semicircle', cat:'Curve', label:'Semicerchio', make:S=>SL.poly(SL.arcPts(0,0,S/2,180,360,48))},
+  {key:'quarter', cat:'Curve', label:'Quarto di cerchio', make:S=>SL.poly([[0,0]].concat(SL.arcPts(0,0,S,-90,0,32)))},
+  {key:'sector60', cat:'Curve', label:'Spicchio', make:S=>SL.poly([[0,0]].concat(SL.arcPts(0,0,S,-120,-60,20)))},
+  {key:'ring', cat:'Curve', label:'Corona circolare', make:S=>[SL.ell(S,S), SL.ell(S*0.55,S*0.55)]},
+  {key:'capsule', cat:'Curve', label:'Asola lunga', make:S=>SL.poly(makeCapsulePoints(S*0.35, S, 20).map(q=>[q[1],q[0]]))},
+  {key:'archwin', cat:'Curve', label:'Arco a tutto sesto', make:S=>SL.poly([[S*0.35,S*0.9],[-S*0.35,S*0.9]].concat(SL.arcPts(0,S*0.35,S*0.35,180,360,36).slice(0)))},
+  {key:'drop', cat:'Curve', label:'Goccia', make:S=>{ const r = S*0.32, cy = S*0.62, t = Math.asin(r/(cy)); const a0 = -90 + t*180/Math.PI + 90, a1 = 270 - t*180/Math.PI - 90 + 360; return SL.poly([[0,0]].concat(SL.arcPts(0,cy,r, -Math.acos(r/cy)*180/Math.PI+0, 180+Math.acos(r/cy)*180/Math.PI, 40).map(q=>q)).map(q=>[q[0],q[1]])); }},
+  {key:'heart', cat:'Curve', label:'Cuore', make:S=>{ const pts = []; for(let i=0;i<72;i++){ const t = i/72*2*Math.PI; pts.push([16*Math.pow(Math.sin(t),3), -(13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t))]); } const k = S/34; return SL.poly(pts.map(q=>[q[0]*k, q[1]*k])); }},
+  {key:'crescent', cat:'Curve', label:'Mezzaluna', make:S=>{ // due cerchi uguali sfalsati: si tiene la parte del primo che il secondo non copre
+    const R = S/2, d = R*0.55, h = Math.sqrt(R*R - d*d/4), deg = x=>x*180/Math.PI;
+    const ao = deg(Math.atan2(-h, d/2)), bo = deg(Math.atan2(h, d/2)), ai = deg(Math.atan2(-h, -d/2)), bi = deg(Math.atan2(h, -d/2));
+    return SL.poly(SL.arcPts(0,0,R, ao, bo-360, 56).concat(SL.arcPts(d,0,R, bi, ai+360, 40).slice(1,-1))); }},
+  // --- Stelle
+  {key:'star3', cat:'Stelle', label:'Stella a 3 punte', make:S=>SL.poly(SL.star(3,S,0.3))},
+  {key:'star4', cat:'Stelle', label:'Stella a 4 punte', make:S=>SL.poly(SL.star(4,S,0.38))},
+  {key:'star5', cat:'Stelle', label:'Stella a 5 punte', make:S=>SL.poly(SL.star(5,S,0.382))},
+  {key:'star6', cat:'Stelle', label:'Stella a 6 punte', make:S=>SL.poly(SL.star(6,S,0.577))},
+  {key:'star8', cat:'Stelle', label:'Stella a 8 punte', make:S=>SL.poly(SL.star(8,S,0.55))},
+  {key:'star12', cat:'Stelle', label:'Stella a 12 punte', make:S=>SL.poly(SL.star(12,S,0.72))},
+  {key:'burst', cat:'Stelle', label:'Esplosione', make:S=>SL.poly(SL.star(16,S,0.78))},
+  {key:'seal', cat:'Stelle', label:'Sigillo', make:S=>SL.poly(SL.star(28,S,0.9))},
+  // --- Frecce e simboli
+  {key:'cross', cat:'Frecce e simboli', label:'Croce', make:S=>{ const a = S/3; return SL.poly([[a,0],[2*a,0],[2*a,a],[S,a],[S,2*a],[2*a,2*a],[2*a,S],[a,S],[a,2*a],[0,2*a],[0,a],[a,a]]); }},
+  {key:'arrow', cat:'Frecce e simboli', label:'Freccia', make:S=>SL.poly([[0,S*0.15],[S*0.6,S*0.15],[S*0.6,0],[S,S*0.3],[S*0.6,S*0.6],[S*0.6,S*0.45],[0,S*0.45]])},
+  {key:'arrow2', cat:'Frecce e simboli', label:'Freccia doppia', make:S=>SL.poly([[0,S*0.25],[S*0.25,0],[S*0.25,S*0.14],[S*0.75,S*0.14],[S*0.75,0],[S,S*0.25],[S*0.75,S*0.5],[S*0.75,S*0.36],[S*0.25,S*0.36],[S*0.25,S*0.5]])},
+  {key:'chevron', cat:'Frecce e simboli', label:'Chevron', make:S=>SL.poly([[0,0],[S*0.65,0],[S,S*0.3],[S*0.65,S*0.6],[0,S*0.6],[S*0.35,S*0.3]])},
+  {key:'bubble', cat:'Frecce e simboli', label:'Fumetto', make:S=>SL.poly([[0,0],[S,0],[S,S*0.55],[S*0.45,S*0.55],[S*0.2,S*0.78],[S*0.25,S*0.55],[0,S*0.55]], {smooth:[S*0.06,S*0.06,S*0.06,0,0,0,S*0.06]})},
+  {key:'tag', cat:'Frecce e simboli', label:'Cartellino', make:S=>[SL.poly([[S*0.25,0],[S,0],[S,S*0.5],[S*0.25,S*0.5],[0,S*0.25]]), SL.ell(S*0.09,S*0.09)].map((p,i)=> i ? Object.assign(p, {at:[S*0.2,S*0.25]}) : p)},
+  {key:'ribbon', cat:'Frecce e simboli', label:'Nastro', make:S=>SL.poly([[0,0],[S,0],[S*0.9,S*0.15],[S,S*0.3],[0,S*0.3],[S*0.1,S*0.15]])},
+  {key:'shield', cat:'Frecce e simboli', label:'Scudo', make:S=>SL.poly([[0,0],[S*0.8,0],[S*0.8,S*0.45]].concat(SL.arcPts(S*0.4,S*0.45,S*0.4,0,90,16).slice(1), SL.arcPts(S*0.4,S*0.45,S*0.4,90,180,16).slice(1)))},
+  {key:'gear', cat:'Frecce e simboli', label:'Ingranaggio', make:S=>{ const n = 12, R = S/2, r = R*0.8, pts = []; for(let i=0;i<n;i++){ const a = i*2*Math.PI/n, w = Math.PI/n*0.55; [[r,a-w*1.25],[R,a-w*0.7],[R,a+w*0.7],[r,a+w*1.25]].forEach(([q,b])=>pts.push([q*Math.cos(b), q*Math.sin(b)])); } return [SL.poly(pts), SL.ell(S*0.3,S*0.3)]; }},
+  {key:'flower', cat:'Frecce e simboli', label:'Fiore', make:S=>{ const pts = []; for(let i=0;i<120;i++){ const t = i/120*2*Math.PI, q = S/2*(0.72 + 0.28*Math.cos(6*t)); pts.push([q*Math.cos(t), q*Math.sin(t)]); } return SL.poly(pts); }},
+  // --- Packaging (misure reali, in mm)
+  {key:'flap', cat:'Packaging', label:'Aletta standard', fixed:true, make:()=>SL.poly([[-20,0],[20,0],[15,-15],[-15,-15]])},
+  {key:'eurohole', cat:'Packaging', label:'Foro europeo', fixed:true, make:()=>SL.poly(makeCapsulePoints(8,25))},
+  {key:'handle', cat:'Packaging', label:'Maniglia', fixed:true, make:()=>SL.poly(makeCapsulePoints(15,60).map(q=>[q[1],q[0]]))},
+  {key:'tab', cat:'Packaging', label:'Linguetta', fixed:true, make:()=>SL.poly([[-10,0],[10,0],[7,-8],[0,-11],[-7,-8]])},
+  {key:'hook', cat:'Packaging', label:'Gancio', fixed:true, make:()=>SL.poly(makeHookPoints())},
+  {key:'roundhole', cat:'Packaging', label:'Foro tondo Ø 6 mm', fixed:true, make:()=>SL.ell(6,6)},
+  {key:'slot', cat:'Packaging', label:'Asola 3 × 25 mm', fixed:true, make:()=>SL.poly(makeCapsulePoints(3,25,10).map(q=>[q[1],q[0]]))},
+  {key:'window', cat:'Packaging', label:'Finestra 60 × 40 mm', fixed:true, make:()=>SL.poly([[0,0],[60,0],[60,40],[0,40]], {smooth:[5,5,5,5]})},
+  {key:'hanger', cat:'Packaging', label:'Foro a sombrero', fixed:true, make:()=>{ // cupola Ø 14 sopra un'asola 30 × 5 mm
+    const pts = [].concat(SL.arcPts(-12.5,2.5,2.5,90,270,10), SL.arcPts(0,0,7,180,360,28), SL.arcPts(12.5,2.5,2.5,-90,90,10));
+    return SL.poly(pts); }},
+  {key:'vnotch', cat:'Packaging', label:'Tacca a V', fixed:true, make:()=>({points:[[-4,0],[0,5],[4,0]], closed:false})},
+];
+function shapeLibSize(){ return state.shapeLibSizeMM > 0 ? state.shapeLibSizeMM : 40; } // sempre in mm, qualunque sia l'unità mostrata
+// cambio di unità: il campo della dimensione mostra lo stesso valore nella nuova unità
+function refreshShapeLibUnit(){
+  const sz = document.getElementById('shapeLibSize'); if(!sz) return;
+  sz.value = Math.round(mmToUnit(shapeLibSize())*100)/100; sz.step = String(UNITS[state.unit].step);
+  const lab = sz.parentElement && sz.parentElement.querySelector('label');
+  if(lab) lab.textContent = tpl('Dimensione ({unit})', {unit: unitLabel()});
+}
+// parti della forma in coordinate locali: {pts, closed, smooth} oppure {ell:{cx,cy,w,h}}
+function shapeLibParts(def, S){
+  let parts = def.make(S); if(!Array.isArray(parts)) parts = [parts];
+  return parts.map(p=>{
+    const off = p.at || [0,0];
+    if(p.ellipse) return {ell:{cx:off[0], cy:off[1], w:p.ellipse.w, h:p.ellipse.h}};
+    return {pts: p.points.map(q=>[q[0]+off[0], q[1]+off[1]]), closed: p.closed!==false, smooth: p.smooth};
+  });
+}
+function shapeLibBBox(parts){
+  let x0=Infinity, y0=Infinity, x1=-Infinity, y1=-Infinity;
+  parts.forEach(p=>{
+    if(p.ell){ x0=Math.min(x0,p.ell.cx-p.ell.w/2); x1=Math.max(x1,p.ell.cx+p.ell.w/2); y0=Math.min(y0,p.ell.cy-p.ell.h/2); y1=Math.max(y1,p.ell.cy+p.ell.h/2); }
+    else p.pts.forEach(q=>{ x0=Math.min(x0,q[0]); x1=Math.max(x1,q[0]); y0=Math.min(y0,q[1]); y1=Math.max(y1,q[1]); });
+  });
+  return {x0, y0, x1, y1, w:x1-x0, h:y1-y0};
+}
+function insertLibraryShape(key, at){
+  const def = SHAPE_LIBRARY.find(d=>d.key===key); if(!def) return;
+  const parts = shapeLibParts(def, def.fixed ? 0 : shapeLibSize());
+  const bb = shapeLibBBox(parts);
+  const c = at || [state.page.w/2, state.page.h/2];
+  const dx = c[0] - (bb.x0 + bb.w/2), dy = c[1] - (bb.y0 + bb.h/2);
+  const made = parts.map(p=> p.ell
+    ? makeShape('ellipse', {x:p.ell.cx - p.ell.w/2 + dx, y:p.ell.cy - p.ell.h/2 + dy, w:p.ell.w, h:p.ell.h})
+    : makeShape('path', {points:p.pts.map(q=>[q[0]+dx, q[1]+dy]), closed:p.closed, smooth: p.smooth ? p.smooth.slice() : p.pts.map(()=>0)}));
+  if(made.length > 1){ const gid = 'g' + uid(); made.forEach(s=> s.groupId = gid); } // forma in più parti: resta unita
+  made.forEach(s=> state.shapes.push(s));
+  state.selection = new Set(made.map(s=>s.id));
+  pushHistory(); renderAll();
+  showToast(tpl('«{name}» inserito ({w} × {h}): spostalo e adattalo come preferisci.', {name: translate(def.label), w: fmtUnit(bb.w), h: fmtUnit(bb.h)}), false);
+}
+function shapeLibThumb(def){
+  const parts = shapeLibParts(def, def.fixed ? 0 : 40), bb = shapeLibBBox(parts);
+  const m = Math.max(bb.w, bb.h) * 0.08 || 1;
+  const vb = [bb.x0-m, bb.y0-m, bb.w+2*m, bb.h+2*m].map(v=>v.toFixed(2)).join(' ');
+  const sw = (Math.max(bb.w, bb.h) / 40 * 1.6).toFixed(2);
+  const body = parts.map(p=> p.ell
+    ? `<ellipse cx="${p.ell.cx}" cy="${p.ell.cy}" rx="${p.ell.w/2}" ry="${p.ell.h/2}"/>`
+    : `<path d="${buildSmoothPathD(p.pts, p.closed, p.smooth || p.pts.map(()=>0), 1)}"/>`).join('');
+  return `<svg viewBox="${vb}" preserveAspectRatio="xMidYMid meet" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linejoin="round">${body}</svg>`;
+}
+function buildShapeGallery(host){
+  const bar = document.createElement('div'); bar.style.cssText='display:flex;gap:6px;align-items:flex-end;margin-bottom:8px;';
+  const sf = document.createElement('div'); sf.className='field'; sf.style.cssText='flex:1;margin:0;';
+  sf.innerHTML = `<label>${escapeHTML(translate('Cerca una forma'))}</label>`;
+  const search = document.createElement('input'); search.type='search'; search.id='shapeLibSearch'; search.placeholder = translate('es. esagono, stella, freccia…'); search.autocomplete='off';
+  search.addEventListener('keydown', e=> e.stopPropagation());
+  sf.appendChild(search);
+  const zf = document.createElement('div'); zf.className='field'; zf.style.cssText='width:96px;margin:0;';
+  zf.innerHTML = `<label>${escapeHTML(tpl('Dimensione ({unit})', {unit: unitLabel()}))}</label>`;
+  const size = document.createElement('input'); size.type='number'; size.id='shapeLibSize'; size.min='0'; size.step = String(UNITS[state.unit].step);
+  size.value = Math.round(mmToUnit(state.shapeLibSizeMM || 40)*100)/100;
+  size.title = translate('Lato del quadrato in cui sta la forma (le forme di packaging hanno misure reali fisse)');
+  size.addEventListener('input', ()=>{ const v = parseFloat(size.value); if(v > 0) state.shapeLibSizeMM = unitToMm(v); });
+  size.addEventListener('keydown', e=> e.stopPropagation());
+  zf.appendChild(size);
+  bar.append(sf, zf); host.appendChild(bar);
+  const list = document.createElement('div'); host.appendChild(list);
+  const render = ()=>{
+    const q = search.value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+    list.innerHTML = '';
+    const cats = [...new Set(SHAPE_LIBRARY.map(d=>d.cat))];
+    let shown = 0;
+    cats.forEach(cat=>{
+      const defs = SHAPE_LIBRARY.filter(d=> d.cat===cat && (!q || (translate(d.label) + ' ' + d.label + ' ' + translate(cat)).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(q)));
+      if(!defs.length) return;
+      const h = document.createElement('div'); h.className='shapelib-cat'; h.textContent = translate(cat); list.appendChild(h);
+      const grid = document.createElement('div'); grid.className='shapelib-grid';
+      defs.forEach(def=>{
+        const t = document.createElement('button'); t.type='button'; t.className='shapelib-tile'; t.draggable = true; t.dataset.key = def.key;
+        t.title = translate(def.label) + ' — ' + translate('trascinala sul foglio, oppure clic per metterla al centro');
+        t.innerHTML = shapeLibThumb(def) + `<span>${escapeHTML(translate(def.label))}</span>`;
+        t.onclick = ()=> insertLibraryShape(def.key);
+        t.addEventListener('dragstart', e=>{ e.dataTransfer.setData('text/spikecut-shape', def.key); e.dataTransfer.effectAllowed = 'copy'; });
+        grid.appendChild(t); shown++;
+      });
+      list.appendChild(grid);
+    });
+    if(!shown){ const n = document.createElement('div'); n.className='hint'; n.textContent = translate('Nessuna forma trovata.'); list.appendChild(n); }
+  };
+  search.addEventListener('input', render);
+  render();
+}
+// il foglio accetta le forme trascinate dalla galleria
+(function(){
+  const sc = document.getElementById('stage-scroll');
+  sc.addEventListener('dragover', e=>{ if(e.dataTransfer && [...e.dataTransfer.types].includes('text/spikecut-shape')){ e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; } });
+  sc.addEventListener('drop', e=>{
+    const key = e.dataTransfer && e.dataTransfer.getData('text/spikecut-shape'); if(!key) return;
+    e.preventDefault();
+    insertLibraryShape(key, clientToMM(e.clientX, e.clientY));
+  });
+})();
+
 function buildComponentsTab(){
   const host = document.getElementById('tab-components');
   host.innerHTML = '';
   const intro = document.createElement('div'); intro.className='hint'; intro.style.marginBottom='10px';
-  intro.textContent = 'Pezzi pronti da inserire al centro del foglio con un clic: si aggiungono come una normale forma modificabile, da spostare, ridimensionare e rifinire.';
+  intro.textContent = 'Trascina una forma sul foglio per inserirla in quel punto, oppure fai clic per metterla al centro. Viene aggiunta con il ruolo linea scelto (Taglio, Piega…) come una normale forma modificabile, da spostare, ridimensionare e rifinire.';
   host.appendChild(intro);
-  const builtinTitle = document.createElement('div'); builtinTitle.className='hint'; builtinTitle.style.cssText='font-weight:600;margin:4px 0 6px;';
-  builtinTitle.textContent = 'Predefiniti';
-  host.appendChild(builtinTitle);
-  COMPONENT_LIBRARY.forEach(def=>{
-    const btn = document.createElement('button');
-    btn.className='btn'; btn.style.marginBottom='8px'; btn.textContent = def.label;
-    btn.onclick = ()=> insertComponent(def.key);
-    host.appendChild(btn);
-  });
+  buildShapeGallery(host); // galleria di forme (trascina sul foglio o clic per il centro)
   host.appendChild(document.createElement('hr')).className='sep';
   const sharedTitle = document.createElement('div'); sharedTitle.className='hint'; sharedTitle.style.cssText='font-weight:600;margin:4px 0 6px;';
   sharedTitle.textContent = 'Condivisi dalla community';
@@ -14127,6 +14631,7 @@ document.getElementById('btnCustomPage').onclick = openCustomPageModal;
 document.getElementById('unitSelect').addEventListener('change', (e)=>{
   state.unit = e.target.value;
   try{ localStorage.setItem('spikecut-unit', state.unit); }catch(err){ /* best-effort */ }
+  if(typeof refreshShapeLibUnit==='function') refreshShapeLibUnit();
   renderAll();
 });
 document.getElementById('langSelect').addEventListener('change', (e)=>{ setLang(e.target.value); });
