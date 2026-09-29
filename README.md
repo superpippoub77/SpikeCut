@@ -348,8 +348,10 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   titolo — Seleziona, Disegna, Forme pronte, Modifica (Sposta di…, Dividi in
   segmenti, Elimina), Controlla (anteprima 3D, verifica chiusure, chiudi
   percorsi aperti) e, in fondo, Cancella tutto. Con i nomi accanto alle icone
-  (predefinito) o solo icone (`localStorage` `spikecut-rail-expanded`); sotto
-  820 px sempre compatta. `buildRail()` / `railButton()` / `railSection()`.
+  (predefinito) o solo icone (`localStorage` `spikecut-rail-expanded`); si
+  alterna col pulsante ☰ in alto a sinistra nella barra principale
+  (`toggleSidebar`), come nelle applicazioni web. Sotto 820 px la barra è sempre
+  compatta e il ☰ la mostra o la nasconde. `buildRail()` / `railButton()` / `railSection()`.
   Il pannello a destra resta per modificare: Proprietà, Livelli, Immagine,
   Condivisi (progetti pubblici della community).
 - **Galleria di forme** (Forme pronte nella barra di sinistra, tasto F; si apre

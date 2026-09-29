@@ -137,6 +137,10 @@ button{font-family:inherit;}
   font-size:8px;color:inherit;opacity:.6;
 }
 .rail-sep{width:28px;height:1px;background:var(--line-soft);margin:5px 0;flex-basis:100%;}
+#topbar .sidebar-grp{ padding:0 6px 0 0 !important; border-right:none !important; }
+#btnSidebar{ width:36px !important; height:34px; padding:0 !important; display:flex; align-items:center; justify-content:center; border-radius:8px; }
+#btnSidebar:hover{ background:rgba(128,128,128,.14); }
+#btnSidebar.on{ color:var(--brass); }
 .tool .tlabel{ display:none; }
 #rail:not(.expanded) .kbd-long{ display:none; } /* barra compatta: "Invio", "Canc" solo nel suggerimento */
 .rail-title{ display:none; }
@@ -157,7 +161,7 @@ button{font-family:inherit;}
 @media (max-width:820px){ /* schermi piccoli: sempre solo icone */
   #rail.expanded{ width:52px !important; flex-direction:row; flex-wrap:wrap; padding:8px 0 8px 7px; gap:3px; }
   #rail.expanded .tool{ width:38px; height:38px; padding:0; justify-content:center; }
-  #rail.expanded .tool .tlabel, #rail.expanded .rail-title, #railExpand{ display:none !important; }
+  #rail.expanded .tool .tlabel, #rail.expanded .rail-title{ display:none !important; }
   #rail.expanded .tool .kbd{ position:absolute; font-size:8px; }
   #rail.expanded .kbd-long{ display:none; }
   #rail.expanded .rail-sep{ display:block; }
@@ -655,6 +659,9 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
 <body>
 
 <div id="topbar">
+  <div class="grp sidebar-grp"><button class="iconbtn" id="btnSidebar" aria-expanded="true" title="Comprimi o espandi la barra degli strumenti">
+    <svg viewBox="0 0 22 22" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 6h14M4 11h14M4 16h14"/></svg>
+  </button></div>
   <div class="brand"><img src="assets/logo-horizontal-dark.png" alt="SpikeCut — CAD per scatole e fustelle" style="height:34px;width:auto;vertical-align:middle;"></div>
   <div class="grp">
     <input id="filename" type="text" value="disegno" title="Nome file">
@@ -861,7 +868,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.40.1</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.41.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2764,6 +2771,11 @@ const I18N = {
     "☁ Apri dalla libreria": "☁ Open from library",
     "⇪ Importa un file (SVG, PDF, immagine)": "⇪ Import a file (SVG, PDF, image)",
     "📦 Genera una scatola": "📦 Generate a box",
+    "Comprimi o espandi la barra degli strumenti": "Collapse or expand the toolbar",
+    "Mostra la barra degli strumenti": "Show the toolbar",
+    "Nascondi la barra degli strumenti": "Hide the toolbar",
+    "Comprimi la barra degli strumenti (solo icone)": "Collapse the toolbar (icons only)",
+    "Espandi la barra degli strumenti (icone e nomi)": "Expand the toolbar (icons and names)",
   },
   de: {
     "1 cm": "1 cm",
@@ -3904,6 +3916,11 @@ const I18N = {
     "☁ Apri dalla libreria": "☁ Aus der Bibliothek öffnen",
     "⇪ Importa un file (SVG, PDF, immagine)": "⇪ Datei importieren (SVG, PDF, Bild)",
     "📦 Genera una scatola": "📦 Schachtel erzeugen",
+    "Comprimi o espandi la barra degli strumenti": "Werkzeugleiste ein- oder ausklappen",
+    "Mostra la barra degli strumenti": "Werkzeugleiste anzeigen",
+    "Nascondi la barra degli strumenti": "Werkzeugleiste ausblenden",
+    "Comprimi la barra degli strumenti (solo icone)": "Werkzeugleiste einklappen (nur Symbole)",
+    "Espandi la barra degli strumenti (icone e nomi)": "Werkzeugleiste ausklappen (Symbole und Namen)",
   },
   es: {
     "1 cm": "1 cm",
@@ -5044,6 +5061,11 @@ const I18N = {
     "☁ Apri dalla libreria": "☁ Abrir desde la biblioteca",
     "⇪ Importa un file (SVG, PDF, immagine)": "⇪ Importar un archivo (SVG, PDF, imagen)",
     "📦 Genera una scatola": "📦 Generar una caja",
+    "Comprimi o espandi la barra degli strumenti": "Contraer o expandir la barra de herramientas",
+    "Mostra la barra degli strumenti": "Mostrar la barra de herramientas",
+    "Nascondi la barra degli strumenti": "Ocultar la barra de herramientas",
+    "Comprimi la barra degli strumenti (solo icone)": "Contraer la barra de herramientas (solo iconos)",
+    "Espandi la barra degli strumenti (icone e nomi)": "Expandir la barra de herramientas (iconos y nombres)",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -6184,6 +6206,11 @@ const I18N = {
     "☁ Apri dalla libreria": "☁ 从库中打开",
     "⇪ Importa un file (SVG, PDF, immagine)": "⇪ 导入文件（SVG、PDF、图像）",
     "📦 Genera una scatola": "📦 生成盒子",
+    "Comprimi o espandi la barra degli strumenti": "折叠或展开工具栏",
+    "Mostra la barra degli strumenti": "显示工具栏",
+    "Nascondi la barra degli strumenti": "隐藏工具栏",
+    "Comprimi la barra degli strumenti (solo icone)": "折叠工具栏（仅图标）",
+    "Espandi la barra degli strumenti (icone e nomi)": "展开工具栏（图标和名称）",
   },
   fr: {
     "1 cm": "1 cm",
@@ -7324,6 +7351,11 @@ const I18N = {
     "☁ Apri dalla libreria": "☁ Ouvrir depuis la bibliothèque",
     "⇪ Importa un file (SVG, PDF, immagine)": "⇪ Importer un fichier (SVG, PDF, image)",
     "📦 Genera una scatola": "📦 Générer une boîte",
+    "Comprimi o espandi la barra degli strumenti": "Réduire ou développer la barre d’outils",
+    "Mostra la barra degli strumenti": "Afficher la barre d’outils",
+    "Nascondi la barra degli strumenti": "Masquer la barre d’outils",
+    "Comprimi la barra degli strumenti (solo icone)": "Réduire la barre d’outils (icônes seules)",
+    "Espandi la barra degli strumenti (icone e nomi)": "Développer la barre d’outils (icônes et noms)",
   },
 };
 let currentLang = 'it';
@@ -11018,7 +11050,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.40.1';
+const GUIDE_VERSION = '2.41.0';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -11079,7 +11111,7 @@ html:`<table class="guide-table"><tr><th>Tasto</th><th>Strumento</th><th>Come si
 <tr><td>A</td><td>Arco</td><td>Tre clic: inizio, fine, un punto di passaggio. Vedi <a data-topic="archi">Archi</a>.</td></tr>
 <tr><td>B</td><td>Matita</td><td>Disegno a mano libera.</td></tr>
 <tr><td>T</td><td>Testo</td><td>Clic nel punto, scrivi e premi Invio. Vedi <a data-topic="testo">Testo e font</a>.</td></tr></table>
-<p>La <b>barra a sinistra</b> contiene tutto ciò che serve per creare, diviso in sezioni: <b>Seleziona</b> (selezione, lazo), <b>Disegna</b> (penna, linea, curva/arco, matita, rettangolo, ellisse, testo), <b>Forme pronte</b> (la <a data-topic="componenti">galleria di forme</a>), <b>Modifica</b> (<a data-topic="sposta">Sposta di…</a>, <a data-topic="dividi">Dividi in segmenti</a>, Elimina) e <b>Controlla</b> (<a data-topic="anteprima-3d">anteprima 3D</a>, verifica chiusure, chiudi percorsi aperti); in fondo, separato, <b>Cancella tutto</b>. Accanto a ogni icona ci sono il nome e il tasto rapido; il pulsante <b>Solo icone</b> in fondo la rende compatta (e <b>Mostra i nomi</b> la riapre), scelta che viene ricordata. Sugli schermi piccoli è sempre compatta. Il pannello a destra è invece per modificare ciò che è selezionato: Proprietà, Livelli, Immagine e Condivisi.</p>
+<p>La <b>barra a sinistra</b> contiene tutto ciò che serve per creare, diviso in sezioni: <b>Seleziona</b> (selezione, lazo), <b>Disegna</b> (penna, linea, curva/arco, matita, rettangolo, ellisse, testo), <b>Forme pronte</b> (la <a data-topic="componenti">galleria di forme</a>), <b>Modifica</b> (<a data-topic="sposta">Sposta di…</a>, <a data-topic="dividi">Dividi in segmenti</a>, Elimina) e <b>Controlla</b> (<a data-topic="anteprima-3d">anteprima 3D</a>, verifica chiusure, chiudi percorsi aperti); in fondo, separato, <b>Cancella tutto</b>. Accanto a ogni icona ci sono il nome e il tasto rapido; il pulsante <b>☰</b> in alto a sinistra, nella barra principale, la comprime a sole icone o la espande con i nomi (scelta ricordata). Sugli schermi piccoli la barra è sempre compatta e il pulsante ☰ la mostra o la nasconde. Il pannello a destra è invece per modificare ciò che è selezionato: Proprietà, Livelli, Immagine e Condivisi.</p>
 <p>Il <a data-topic="ruoli">ruolo</a> scelto nel pannello Proprietà senza selezione vale per le forme che disegnerai.</p>` },
 
 { id:'input-numerico', cat:'Disegnare', title:'Misure esatte (input numerico)', keys:'lunghezza esatta digitare numero invio misura precisa coordinate',
@@ -11374,6 +11406,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.41</b> — Pulsante ☰ in alto a sinistra per comprimere o espandere la barra degli strumenti, come nelle applicazioni web.</li>
 <li><b>2.40.1</b> — Le schede chiuse non ricompaiono più ricaricando la pagina; si può chiudere anche l'ultima scheda (schermata "Nessun progetto aperto"); pulsante Chiudi tutte e menu col tasto destro sulle schede.</li>
 <li><b>2.40</b> — <a data-topic="importa-immagine">Importazione di immagini</a> (PNG, JPG…) con misura reale e scelta tra individuazione di taglio e pieghe, vettorizzazione o immagine di riferimento; file trascinabili sul foglio.</li>
 <li><b>2.39</b> — Barra a sinistra riorganizzata: sezioni con titolo, nomi accanto alle icone (o solo icone), forme pronte in una galleria accanto alla barra (tasto F). A destra la scheda Condivisi.</li>
@@ -12359,9 +12392,7 @@ function buildRail(){
   const spacer = document.createElement('div'); spacer.className = 'rail-spacer'; rail.appendChild(spacer);
   const sepEnd = document.createElement('div'); sepEnd.className = 'rail-sep'; rail.appendChild(sepEnd);
   rail.appendChild(railButton({id:'railClearAll', cls:'danger', label:'Cancella tutto', icon:RAIL_ICONS.clearall, onclick:clearAll, title:'Cancella tutto il disegno'}));
-  rail.appendChild(railButton({id:'railExpand', cls:'rail-mode', label: expanded ? 'Solo icone' : 'Mostra i nomi', icon: expanded ? RAIL_ICONS.collapse : RAIL_ICONS.expand,
-    title: expanded ? 'Barra compatta: solo icone (i nomi restano nei suggerimenti)' : 'Mostra i nomi accanto alle icone',
-    onclick:()=>{ try{ localStorage.setItem('spikecut-rail-expanded', expanded ? '0' : '1'); }catch(e){} rail.style.width = ''; buildRail(); applyI18n(rail); }}));
+  updateSidebarButton();
   if(shapesFlyoutOpen()) document.getElementById('railShapes').classList.add('open');
 }
 /* galleria delle forme pronte, a scomparsa accanto alla barra di sinistra */
@@ -13483,7 +13514,29 @@ function setPanelCollapsed(v){
   document.getElementById('panelResizer').style.display = v ? 'none' : '';
   document.getElementById('panelToggle').textContent = v ? '‹' : '›';
 }
-document.getElementById('railToggle').onclick = ()=> setRailCollapsed(!uiState.railCollapsed);
+document.getElementById('railToggle').onclick = ()=>{ setRailCollapsed(!uiState.railCollapsed); updateSidebarButton(); };
+// Pulsante ☰ in cima a sinistra, come nelle applicazioni web:
+// sul computer alterna la barra con i nomi e quella solo icone; su tablet e telefono
+// (dove la barra è sempre compatta) la mostra o la nasconde. Se la barra era nascosta, la riapre.
+function railExpanded(){ return document.getElementById('rail').classList.contains('expanded'); }
+function toggleSidebar(){
+  if(uiState.railCollapsed || isSmallScreen()){ setRailCollapsed(!uiState.railCollapsed); updateSidebarButton(); return; }
+  const next = !railExpanded();
+  try{ localStorage.setItem('spikecut-rail-expanded', next ? '1' : '0'); }catch(e){}
+  const rail = document.getElementById('rail'); rail.style.width = '';
+  buildRail(); applyI18n(rail);
+}
+function updateSidebarButton(){
+  const b = document.getElementById('btnSidebar'); if(!b) return;
+  const small = typeof isSmallScreen==='function' && isSmallScreen();
+  const open = !uiState.railCollapsed && (small || railExpanded());
+  b.classList.toggle('on', open); b.setAttribute('aria-expanded', open ? 'true' : 'false');
+  b.title = translate(uiState.railCollapsed ? 'Mostra la barra degli strumenti'
+    : small ? 'Nascondi la barra degli strumenti'
+    : railExpanded() ? 'Comprimi la barra degli strumenti (solo icone)' : 'Espandi la barra degli strumenti (icone e nomi)');
+}
+document.getElementById('btnSidebar').onclick = toggleSidebar;
+window.addEventListener('resize', ()=> updateSidebarButton());
 document.getElementById('panelToggle').onclick = ()=> setPanelCollapsed(!uiState.panelCollapsed);
 
 function makeResizable(handle, target, minW, maxW, sign){
