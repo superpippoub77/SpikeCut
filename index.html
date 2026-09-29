@@ -440,6 +440,19 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 #btnQuickSave.sync-lib{ color:#8ecbff; }
 #btnQuickSave.sync-warn{ color:#ffb340; }
 #btnQuickSave.sync-err{ color:#ff6a60; font-weight:700; }
+.imgimp-prev{ width:190px; height:150px; flex:none; border:1px solid var(--line); border-radius:8px; display:flex; align-items:center; justify-content:center;
+  background:repeating-conic-gradient(#e8e8e8 0% 25%, #f7f7f7 0% 50%) 50% / 14px 14px; overflow:hidden; }
+.imgimp-prev img{ max-width:100%; max-height:100%; object-fit:contain; }
+.imgimp-modes{ display:flex; flex-direction:column; gap:6px; }
+.field .imgimp-mode, .imgimp-mode{ display:grid; grid-template-columns:auto 1fr; column-gap:8px; row-gap:2px; padding:8px 10px; margin:0; border:1px solid var(--line); border-radius:8px; cursor:pointer; text-transform:none; letter-spacing:0; }
+.imgimp-mode .t, .imgimp-mode .d{ grid-column:2; display:block; }
+.imgimp-mode .row label{ font-size:11px; }
+.imgimp-mode input[type=radio]{ grid-row:1 / span 3; width:auto; margin:2px 0 0; }
+.imgimp-mode .t{ font-weight:700; font-size:13px; color:var(--ink); }
+.imgimp-mode .d{ font-size:11.5px; color:var(--ink-dim); }
+.imgimp-mode.active{ border-color:var(--brass); background:rgba(201,151,63,.10); }
+.imgimp-mode .row{ grid-column:2; display:flex; gap:8px; }
+.imgimp-mode .field{ display:flex; flex-direction:column; }
 .shapelib-cat{ font-size:11.5px; font-weight:700; color:var(--ink-dim); text-transform:uppercase; letter-spacing:.04em; margin:10px 0 5px; }
 .shapelib-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(84px, 1fr)); gap:6px; }
 .shapelib-tile{ display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 3px 5px; border:1px solid var(--line); border-radius:8px; background:rgba(128,128,128,.06); color:var(--ink); cursor:grab; }
@@ -582,6 +595,18 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
   background:var(--bg-1);color:var(--ink-dim);cursor:pointer;font-size:14px;
 }
 #addTabBtn:hover{color:var(--ink);border-color:var(--brass-dim);}
+#closeAllTabsBtn{ flex:none; height:24px; margin-bottom:5px; padding:0 9px; border-radius:6px; border:1px solid transparent; background:transparent; color:var(--ink-dim); cursor:pointer; font-size:11.5px; white-space:nowrap; }
+#closeAllTabsBtn:hover{ color:var(--cut); border-color:var(--line); background:var(--bg-1); }
+/* nessuna scheda aperta */
+.empty-state{ position:absolute; inset:0; z-index:44; display:none; align-items:center; justify-content:center; background:var(--bg-0); }
+body.no-docs .empty-state{ display:flex; }
+body.no-docs #addTabBtn{ border-color:var(--brass); color:var(--brass); }
+body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun progetto: niente da modificare */
+.empty-state .es-box{ width:min(380px, 90%); text-align:center; }
+.empty-state .es-icon{ font-size:40px; opacity:.7; }
+.empty-state h2{ margin:8px 0 4px; font-size:18px; color:var(--ink); }
+.empty-state p{ margin:0 0 16px; color:var(--ink-dim); font-size:13px; }
+.empty-state .btn{ margin:0 0 8px; }
 
 /* scrollbar "overlay": invisibili a riposo, sottili e visibili solo al passaggio del mouse */
 #stage-scroll, .tabpage, .modal-body, #rail{
@@ -691,7 +716,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
   <div class="spacer"></div>
   <div class="grp">
     <button class="iconbtn" id="btnNew" title="Nuovo progetto">＋</button>
-    <button class="iconbtn" id="btnImportSVGTop" title="Importa un file SVG o PDF esistente da modificare">⇪</button>
+    <button class="iconbtn" id="btnImportSVGTop" title="Importa un file: SVG, PDF o immagine (PNG, JPG…), con trasformazione in vettoriale e individuazione di taglio e piega">⇪</button>
     <button class="iconbtn" id="btnHelp" title="Guida (F1)">?</button>
   </div>
   <div class="grp" id="accountArea">
@@ -747,6 +772,8 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
 <div id="tabBar">
   <div id="docTabsList"></div>
   <button id="addTabBtn" title="Nuova scheda (nuovo disegno)">＋</button>
+  <span style="flex:1;"></span>
+  <button id="closeAllTabsBtn" title="Chiudi tutte le schede (quelle con lavoro non salvato in libreria chiedono conferma)">✕ Chiudi tutte</button>
 </div>
 
 <div id="body">
@@ -755,6 +782,18 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
 
   <div id="stage-wrap">
     <button class="sidetoggle left" id="railToggle" title="Mostra/nascondi strumenti">‹</button>
+    <div id="emptyState" class="empty-state">
+      <div class="es-box">
+        <div class="es-icon">📐</div>
+        <h2>Nessun progetto aperto</h2>
+        <p>Crea un nuovo disegno oppure apri un progetto esistente. Puoi anche trascinare qui un file (SVG, PDF, immagine).</p>
+        <button class="btn primary" id="esNew">＋ Nuovo disegno</button>
+        <button class="btn" id="esLib">☁ Apri dalla libreria</button>
+        <button class="btn" id="esImport">⇪ Importa un file (SVG, PDF, immagine)</button>
+        <button class="btn" id="esJson">📂 Apri un progetto da file (.json)</button>
+        <button class="btn" id="esBox">📦 Genera una scatola</button>
+      </div>
+    </div>
     <div id="shapesFlyout" class="shapes-flyout">
       <div class="sf-head"><h3>Forme pronte</h3><button class="iconbtn" id="shapesFlyoutClose" title="Chiudi (Esc)">✕</button></div>
       <div class="hint" style="margin:0 12px 8px;">Trascina una forma sul foglio per inserirla in quel punto, oppure fai clic per metterla al centro. Usa il ruolo linea scelto (Taglio, Piega…).</div>
@@ -822,7 +861,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.39.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.40.1</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1015,6 +1054,48 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
       <div style="overflow-x:auto;"><table class="admin-table" id="adminProjectsTable"></table></div>
       <div id="adminProjectsSummary" class="hint" style="margin-top:8px;"></div>
       <div class="hint" style="margin-top:10px;">Da amministratore puoi rendere pubblico o privato qualunque progetto con un proprietario; il proprietario viene indicato e resta traccia di chi ha fatto l'ultimo cambio. I progetti generici (senza proprietario) sono sempre pubblici. Un clic su un utente nella tabella qui sopra mostra solo i suoi progetti.</div>
+    </div>
+  </div>
+</div>
+
+<div id="imgImportModal" class="modal-overlay">
+  <div class="modal-box" style="width:min(640px,96vw);">
+    <div class="modal-head">
+      <h3>Importa immagine</h3>
+      <button class="iconbtn" id="imgImportClose" title="Chiudi">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;gap:14px;flex-wrap:wrap;">
+        <div class="imgimp-prev"><img id="imgImpPreview" alt=""></div>
+        <div style="flex:1;min-width:230px;">
+          <div class="hint" id="imgImpInfo" style="margin-bottom:6px;"></div>
+          <div class="row">
+            <div class="field"><label id="imgImpWLabel">Larghezza</label><input type="number" id="imgImpW" min="0" step="0.1"></div>
+            <div class="field"><label id="imgImpHLabel">Altezza</label><input type="number" id="imgImpH" min="0" step="0.1"></div>
+          </div>
+          <div class="row" style="align-items:flex-end;">
+            <div class="field"><label>Risoluzione (DPI)</label><input type="number" id="imgImpDpi" min="1" step="1"></div>
+            <div class="field"><button class="btn" id="imgImpFit" style="margin:0;">Adatta al foglio</button></div>
+          </div>
+          <div class="hint">Per avere la fustella in scala reale indica una misura vera (es. la larghezza totale) oppure i DPI della scansione.</div>
+        </div>
+      </div>
+      <div class="field" style="margin-top:12px;">
+        <label>Cosa vuoi ottenere</label>
+        <div class="imgimp-modes">
+          <label class="imgimp-mode"><input type="radio" name="imgImpMode" value="dieline"><span class="t">Individua taglio e pieghe</span><span class="d">Per fustelle scansionate, fotografate dritte o schermate: le linee continue diventano Taglio, quelle tratteggiate (o blu/verdi) Piega. Le scritte vengono scartate.</span></label>
+          <label class="imgimp-mode"><input type="radio" name="imgImpMode" value="trace"><span class="t">Vettorizza la grafica</span><span class="d">Per loghi e disegni: i contorni delle zone di colore diventano grafica vettoriale nel livello di disegno.</span>
+            <span class="row" id="imgImpTraceOpts" style="margin-top:6px;">
+              <span class="field"><label>Colori</label><input type="number" id="imgImpColors" min="2" max="16" value="4"></span>
+              <span class="field"><label>Dettaglio</label><select id="imgImpDetail"><option value="low">Basso</option><option value="mid" selected>Medio</option><option value="high">Alto</option></select></span>
+            </span>
+          </label>
+          <label class="imgimp-mode"><input type="radio" name="imgImpMode" value="ref"><span class="t">Solo immagine di riferimento</span><span class="d">L'immagine resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti.</span></label>
+        </div>
+      </div>
+      <label id="imgImpKeepRow" style="display:flex;gap:6px;align-items:center;font-size:12.5px;cursor:pointer;margin-top:4px;"><input type="checkbox" id="imgImpKeepRef" style="width:auto;margin:0;"><span>Tieni l'immagine sotto il disegno (semitrasparente) per confrontare il risultato</span></label>
+      <div id="imgImpSummary" class="hint" style="margin-top:10px;padding:8px;border-radius:6px;background:rgba(201,151,63,0.12);font-weight:600;"></div>
+      <button class="btn primary" id="imgImpApply" style="width:100%;margin-top:12px;">Importa</button>
     </div>
   </div>
 </div>
@@ -2362,9 +2443,9 @@ const I18N = {
     "Questa piega non è dritta: i suoi tratti si spostano tutti insieme.": "This fold isn’t straight: its segments move all together.",
     "tratto {k} di {n}": "segment {k} of {n}",
     "(non usata nel 3D)": "(not used in 3D)",
-    "Individua taglio e pieghe": "Detect cuts and folds",
+    "Individua taglio e pieghe": "Detect cut and fold lines",
     "Individua automaticamente le linee di taglio e di piega (per scansioni o schermate di una fustella)": "Automatically detect cut and fold lines (for scans or screenshots of a die-line)",
-    "Ricerca delle linee in corso…": "Searching for lines…",
+    "Ricerca delle linee in corso…": "Detecting lines…",
     "Nessuna linea individuata: l'immagine deve mostrare la fustella con linee ben visibili su sfondo chiaro.": "No lines detected: the image must show the die-line with clearly visible lines on a light background.",
     "Individuate {c} linee di taglio e {f} pieghe ({r} frammenti scartati, es. testi). Controllale sul disegno e con l'anteprima 3D.": "Detected {c} cut lines and {f} folds ({r} fragments discarded, e.g. text). Check them on the drawing and with the 3D preview.",
     "Impossibile analizzare l'immagine.": "Could not analyze the image.",
@@ -2636,6 +2717,53 @@ const I18N = {
     "Cerchi triangoli, poligoni, stelle o fori? Sono nelle forme pronte, nella barra a sinistra.": "Looking for triangles, polygons, stars or holes? They are in the ready-made shapes, in the left bar.",
     "Apri le forme pronte (F)": "Open ready-made shapes (F)",
     "Penna": "Pen",
+    "Importa immagine": "Import image",
+    "Risoluzione (DPI)": "Resolution (DPI)",
+    "Adatta al foglio": "Fit to sheet",
+    "Per avere la fustella in scala reale indica una misura vera (es. la larghezza totale) oppure i DPI della scansione.": "To get the dieline at real scale, enter a true measurement (e.g. the total width) or the scan DPI.",
+    "Cosa vuoi ottenere": "What do you want to get",
+    "Per fustelle scansionate, fotografate dritte o schermate: le linee continue diventano Taglio, quelle tratteggiate (o blu/verdi) Piega. Le scritte vengono scartate.": "For scanned dielines, straight photos or screenshots: solid lines become Cut, dashed (or blue/green) lines become Fold. Text is discarded.",
+    "Vettorizza la grafica": "Vectorize the artwork",
+    "Per loghi e disegni: i contorni delle zone di colore diventano grafica vettoriale nel livello di disegno.": "For logos and drawings: the outlines of the colour areas become vector artwork in the drawing layer.",
+    "Solo immagine di riferimento": "Reference image only",
+    "L'immagine resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti.": "The image stays under the drawing, semi-transparent, to trace by hand with the tools.",
+    "Tieni l'immagine sotto il disegno (semitrasparente) per confrontare il risultato": "Keep the image under the drawing (semi-transparent) to compare the result",
+    "Colori": "Colours",
+    "Dettaglio": "Detail",
+    "{name} · {w} × {h} pixel": "{name} · {w} × {h} pixels",
+    "Le linee della fustella diventeranno linee vettoriali di taglio e piega, su {size}.": "The dieline lines will become vector cut and fold lines, over {size}.",
+    "Le zone di colore diventeranno grafica vettoriale, su {size}.": "The colour areas will become vector artwork, over {size}.",
+    "La vettorizzazione richiede la connessione a Internet (libreria non caricata): scegli un'altra opzione.": "Vectorizing needs an Internet connection (library not loaded): choose another option.",
+    "L'immagine verrà posta sotto il disegno ({size}), semitrasparente, da ricalcare con gli strumenti.": "The image will be placed under the drawing ({size}), semi-transparent, to trace with the tools.",
+    "Sostituisce l'immagine di riferimento attuale.": "It replaces the current reference image.",
+    "Immagine di riferimento inserita: ricalcala con gli strumenti. Opacità, filtri e rimozione sono nella scheda Immagine.": "Reference image inserted: trace it with the tools. Opacity, filters and removal are in the Image tab.",
+    "Immagine vettorizzata ({n} tracciati): è grafica nel livello di disegno.": "Image vectorized ({n} paths): it is artwork in the drawing layer.",
+    "Impossibile leggere questa immagine.": "Could not read this image.",
+    "Formato non supportato: si possono importare SVG, PDF e immagini (PNG, JPG, WebP, GIF, BMP).": "Unsupported format: you can import SVG, PDF and images (PNG, JPG, WebP, GIF, BMP).",
+    "Importa un file: SVG, PDF o immagine (PNG, JPG…), con trasformazione in vettoriale e individuazione di taglio e piega": "Import a file: SVG, PDF or image (PNG, JPG…), with vector conversion and cut/fold detection",
+    "Importa un file": "Import a file",
+    "Clicca per importare un SVG, un PDF o un'immagine": "Click to import an SVG, a PDF or an image",
+    "(PNG, JPG…) — o trascinalo sul foglio": "(PNG, JPG…) — or drag it onto the sheet",
+    "Chiudere la scheda \"{name}\"? Le ultime modifiche non sono ancora salvate in libreria e andranno perse.": "Close the tab \"{name}\"? The latest changes are not saved in the library yet and will be lost.",
+    "Chiudere la scheda \"{name}\"? Il disegno non è salvato in libreria e andrà perso (prima puoi salvarlo in libreria o scaricarne una copia da File).": "Close the tab \"{name}\"? The drawing is not saved in the library and will be lost (you can first save it to the library or download a copy from File).",
+    "Chiudere {n} scheda? ": "Close {n} tab? ",
+    "Chiudere {n} schede? ": "Close {n} tabs? ",
+    "Questa contiene lavoro non salvato in libreria, che andrà perso: {names}.": "This one contains work not saved in the library, which will be lost: {names}.",
+    "Queste contengono lavoro non salvato in libreria, che andrà perso: {names}.": "These contain work not saved in the library, which will be lost: {names}.",
+    "Chiudi schede": "Close tabs",
+    "Scheda chiusa.": "Tab closed.",
+    "{n} schede chiuse.": "{n} tabs closed.",
+    "✕ Chiudi scheda": "✕ Close tab",
+    "Chiudi le altre schede": "Close other tabs",
+    "Chiudi tutte le schede": "Close all tabs",
+    "✕ Chiudi tutte": "✕ Close all",
+    "Chiudi tutte le schede (quelle con lavoro non salvato in libreria chiedono conferma)": "Close all tabs (those with work not saved in the library ask for confirmation)",
+    "Nessun progetto aperto": "No project open",
+    "Crea un nuovo disegno oppure apri un progetto esistente. Puoi anche trascinare qui un file (SVG, PDF, immagine).": "Create a new drawing or open an existing project. You can also drag a file here (SVG, PDF, image).",
+    "＋ Nuovo disegno": "＋ New drawing",
+    "☁ Apri dalla libreria": "☁ Open from library",
+    "⇪ Importa un file (SVG, PDF, immagine)": "⇪ Import a file (SVG, PDF, image)",
+    "📦 Genera una scatola": "📦 Generate a box",
   },
   de: {
     "1 cm": "1 cm",
@@ -3455,7 +3583,7 @@ const I18N = {
     "Questa piega non è dritta: i suoi tratti si spostano tutti insieme.": "Dieser Falz ist nicht gerade: Seine Abschnitte bewegen sich alle zusammen.",
     "tratto {k} di {n}": "Abschnitt {k} von {n}",
     "(non usata nel 3D)": "(im 3D nicht verwendet)",
-    "Individua taglio e pieghe": "Schnitte und Falze erkennen",
+    "Individua taglio e pieghe": "Schnitt- und Falzlinien erkennen",
     "Individua automaticamente le linee di taglio e di piega (per scansioni o schermate di una fustella)": "Schnitt- und Falzlinien automatisch erkennen (für Scans oder Screenshots einer Stanzform)",
     "Ricerca delle linee in corso…": "Linien werden gesucht…",
     "Nessuna linea individuata: l'immagine deve mostrare la fustella con linee ben visibili su sfondo chiaro.": "Keine Linien erkannt: Das Bild muss die Stanzform mit gut sichtbaren Linien auf hellem Hintergrund zeigen.",
@@ -3729,6 +3857,53 @@ const I18N = {
     "Cerchi triangoli, poligoni, stelle o fori? Sono nelle forme pronte, nella barra a sinistra.": "Suchst du Dreiecke, Vielecke, Sterne oder Löcher? Sie sind bei den fertigen Formen in der linken Leiste.",
     "Apri le forme pronte (F)": "Fertige Formen öffnen (F)",
     "Penna": "Stift",
+    "Importa immagine": "Bild importieren",
+    "Risoluzione (DPI)": "Auflösung (DPI)",
+    "Adatta al foglio": "An Blatt anpassen",
+    "Per avere la fustella in scala reale indica una misura vera (es. la larghezza totale) oppure i DPI della scansione.": "Für eine Stanzform im Originalmaßstab gib ein echtes Maß an (z. B. die Gesamtbreite) oder die DPI des Scans.",
+    "Cosa vuoi ottenere": "Was möchtest du erhalten",
+    "Per fustelle scansionate, fotografate dritte o schermate: le linee continue diventano Taglio, quelle tratteggiate (o blu/verdi) Piega. Le scritte vengono scartate.": "Für gescannte Stanzformen, gerade Fotos oder Screenshots: durchgezogene Linien werden Schnitt, gestrichelte (oder blaue/grüne) Falz. Texte werden verworfen.",
+    "Vettorizza la grafica": "Grafik vektorisieren",
+    "Per loghi e disegni: i contorni delle zone di colore diventano grafica vettoriale nel livello di disegno.": "Für Logos und Zeichnungen: Die Umrisse der Farbflächen werden Vektorgrafik in der Zeichenebene.",
+    "Solo immagine di riferimento": "Nur Referenzbild",
+    "L'immagine resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti.": "Das Bild bleibt halbtransparent unter der Zeichnung, zum Nachzeichnen mit den Werkzeugen.",
+    "Tieni l'immagine sotto il disegno (semitrasparente) per confrontare il risultato": "Bild unter der Zeichnung behalten (halbtransparent), um das Ergebnis zu vergleichen",
+    "Colori": "Farben",
+    "Dettaglio": "Detail",
+    "{name} · {w} × {h} pixel": "{name} · {w} × {h} Pixel",
+    "Le linee della fustella diventeranno linee vettoriali di taglio e piega, su {size}.": "Die Linien der Stanzform werden zu Vektor-Schnitt- und Falzlinien, auf {size}.",
+    "Le zone di colore diventeranno grafica vettoriale, su {size}.": "Die Farbflächen werden zu Vektorgrafik, auf {size}.",
+    "La vettorizzazione richiede la connessione a Internet (libreria non caricata): scegli un'altra opzione.": "Die Vektorisierung erfordert eine Internetverbindung (Bibliothek nicht geladen): wähle eine andere Option.",
+    "L'immagine verrà posta sotto il disegno ({size}), semitrasparente, da ricalcare con gli strumenti.": "Das Bild wird halbtransparent unter die Zeichnung gelegt ({size}), zum Nachzeichnen mit den Werkzeugen.",
+    "Sostituisce l'immagine di riferimento attuale.": "Ersetzt das aktuelle Referenzbild.",
+    "Immagine di riferimento inserita: ricalcala con gli strumenti. Opacità, filtri e rimozione sono nella scheda Immagine.": "Referenzbild eingefügt: zeichne es mit den Werkzeugen nach. Deckkraft, Filter und Entfernen findest du im Tab Bild.",
+    "Immagine vettorizzata ({n} tracciati): è grafica nel livello di disegno.": "Bild vektorisiert ({n} Pfade): Es ist Grafik in der Zeichenebene.",
+    "Impossibile leggere questa immagine.": "Dieses Bild konnte nicht gelesen werden.",
+    "Formato non supportato: si possono importare SVG, PDF e immagini (PNG, JPG, WebP, GIF, BMP).": "Nicht unterstütztes Format: Importiert werden können SVG, PDF und Bilder (PNG, JPG, WebP, GIF, BMP).",
+    "Importa un file: SVG, PDF o immagine (PNG, JPG…), con trasformazione in vettoriale e individuazione di taglio e piega": "Datei importieren: SVG, PDF oder Bild (PNG, JPG…), mit Vektorisierung und Erkennung von Schnitt und Falz",
+    "Importa un file": "Datei importieren",
+    "Clicca per importare un SVG, un PDF o un'immagine": "Klicke, um ein SVG, ein PDF oder ein Bild zu importieren",
+    "(PNG, JPG…) — o trascinalo sul foglio": "(PNG, JPG…) — oder ziehe es auf das Blatt",
+    "Chiudere la scheda \"{name}\"? Le ultime modifiche non sono ancora salvate in libreria e andranno perse.": "Tab „{name}“ schließen? Die letzten Änderungen sind noch nicht in der Bibliothek gespeichert und gehen verloren.",
+    "Chiudere la scheda \"{name}\"? Il disegno non è salvato in libreria e andrà perso (prima puoi salvarlo in libreria o scaricarne una copia da File).": "Tab „{name}“ schließen? Die Zeichnung ist nicht in der Bibliothek gespeichert und geht verloren (du kannst sie vorher in der Bibliothek speichern oder unter Datei eine Kopie herunterladen).",
+    "Chiudere {n} scheda? ": "{n} Tab schließen? ",
+    "Chiudere {n} schede? ": "{n} Tabs schließen? ",
+    "Questa contiene lavoro non salvato in libreria, che andrà perso: {names}.": "Dieser enthält nicht in der Bibliothek gespeicherte Arbeit, die verloren geht: {names}.",
+    "Queste contengono lavoro non salvato in libreria, che andrà perso: {names}.": "Diese enthalten nicht in der Bibliothek gespeicherte Arbeit, die verloren geht: {names}.",
+    "Chiudi schede": "Tabs schließen",
+    "Scheda chiusa.": "Tab geschlossen.",
+    "{n} schede chiuse.": "{n} Tabs geschlossen.",
+    "✕ Chiudi scheda": "✕ Tab schließen",
+    "Chiudi le altre schede": "Andere Tabs schließen",
+    "Chiudi tutte le schede": "Alle Tabs schließen",
+    "✕ Chiudi tutte": "✕ Alle schließen",
+    "Chiudi tutte le schede (quelle con lavoro non salvato in libreria chiedono conferma)": "Alle Tabs schließen (die mit nicht gespeicherter Arbeit fragen nach)",
+    "Nessun progetto aperto": "Kein Projekt geöffnet",
+    "Crea un nuovo disegno oppure apri un progetto esistente. Puoi anche trascinare qui un file (SVG, PDF, immagine).": "Erstelle eine neue Zeichnung oder öffne ein bestehendes Projekt. Du kannst auch eine Datei hierher ziehen (SVG, PDF, Bild).",
+    "＋ Nuovo disegno": "＋ Neue Zeichnung",
+    "☁ Apri dalla libreria": "☁ Aus der Bibliothek öffnen",
+    "⇪ Importa un file (SVG, PDF, immagine)": "⇪ Datei importieren (SVG, PDF, Bild)",
+    "📦 Genera una scatola": "📦 Schachtel erzeugen",
   },
   es: {
     "1 cm": "1 cm",
@@ -4548,7 +4723,7 @@ const I18N = {
     "Questa piega non è dritta: i suoi tratti si spostano tutti insieme.": "Este pliegue no es recto: sus tramos se mueven todos juntos.",
     "tratto {k} di {n}": "tramo {k} de {n}",
     "(non usata nel 3D)": "(no usada en 3D)",
-    "Individua taglio e pieghe": "Detectar cortes y pliegues",
+    "Individua taglio e pieghe": "Detectar corte y pliegues",
     "Individua automaticamente le linee di taglio e di piega (per scansioni o schermate di una fustella)": "Detectar automáticamente las líneas de corte y pliegue (para escaneos o capturas de un troquel)",
     "Ricerca delle linee in corso…": "Buscando líneas…",
     "Nessuna linea individuata: l'immagine deve mostrare la fustella con linee ben visibili su sfondo chiaro.": "No se detectó ninguna línea: la imagen debe mostrar el troquel con líneas bien visibles sobre fondo claro.",
@@ -4822,6 +4997,53 @@ const I18N = {
     "Cerchi triangoli, poligoni, stelle o fori? Sono nelle forme pronte, nella barra a sinistra.": "¿Buscas triángulos, polígonos, estrellas o agujeros? Están en las formas listas, en la barra de la izquierda.",
     "Apri le forme pronte (F)": "Abrir formas listas (F)",
     "Penna": "Pluma",
+    "Importa immagine": "Importar imagen",
+    "Risoluzione (DPI)": "Resolución (DPI)",
+    "Adatta al foglio": "Ajustar a la hoja",
+    "Per avere la fustella in scala reale indica una misura vera (es. la larghezza totale) oppure i DPI della scansione.": "Para tener el troquel a escala real indica una medida real (p. ej. el ancho total) o los DPI del escaneo.",
+    "Cosa vuoi ottenere": "Qué quieres obtener",
+    "Per fustelle scansionate, fotografate dritte o schermate: le linee continue diventano Taglio, quelle tratteggiate (o blu/verdi) Piega. Le scritte vengono scartate.": "Para troqueles escaneados, fotografiados de frente o capturas: las líneas continuas pasan a Corte, las discontinuas (o azules/verdes) a Pliegue. Los textos se descartan.",
+    "Vettorizza la grafica": "Vectorizar el gráfico",
+    "Per loghi e disegni: i contorni delle zone di colore diventano grafica vettoriale nel livello di disegno.": "Para logotipos y dibujos: los contornos de las zonas de color pasan a gráfico vectorial en la capa de dibujo.",
+    "Solo immagine di riferimento": "Solo imagen de referencia",
+    "L'immagine resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti.": "La imagen queda bajo el dibujo, semitransparente, para calcarla a mano con las herramientas.",
+    "Tieni l'immagine sotto il disegno (semitrasparente) per confrontare il risultato": "Mantener la imagen bajo el dibujo (semitransparente) para comparar el resultado",
+    "Colori": "Colores",
+    "Dettaglio": "Detalle",
+    "{name} · {w} × {h} pixel": "{name} · {w} × {h} píxeles",
+    "Le linee della fustella diventeranno linee vettoriali di taglio e piega, su {size}.": "Las líneas del troquel se convertirán en líneas vectoriales de corte y pliegue, en {size}.",
+    "Le zone di colore diventeranno grafica vettoriale, su {size}.": "Las zonas de color se convertirán en gráfico vectorial, en {size}.",
+    "La vettorizzazione richiede la connessione a Internet (libreria non caricata): scegli un'altra opzione.": "La vectorización requiere conexión a Internet (biblioteca no cargada): elige otra opción.",
+    "L'immagine verrà posta sotto il disegno ({size}), semitrasparente, da ricalcare con gli strumenti.": "La imagen se colocará bajo el dibujo ({size}), semitransparente, para calcarla con las herramientas.",
+    "Sostituisce l'immagine di riferimento attuale.": "Sustituye la imagen de referencia actual.",
+    "Immagine di riferimento inserita: ricalcala con gli strumenti. Opacità, filtri e rimozione sono nella scheda Immagine.": "Imagen de referencia insertada: cálcala con las herramientas. Opacidad, filtros y eliminación están en la pestaña Imagen.",
+    "Immagine vettorizzata ({n} tracciati): è grafica nel livello di disegno.": "Imagen vectorizada ({n} trazados): es gráfico en la capa de dibujo.",
+    "Impossibile leggere questa immagine.": "No se pudo leer esta imagen.",
+    "Formato non supportato: si possono importare SVG, PDF e immagini (PNG, JPG, WebP, GIF, BMP).": "Formato no compatible: se pueden importar SVG, PDF e imágenes (PNG, JPG, WebP, GIF, BMP).",
+    "Importa un file: SVG, PDF o immagine (PNG, JPG…), con trasformazione in vettoriale e individuazione di taglio e piega": "Importar un archivo: SVG, PDF o imagen (PNG, JPG…), con conversión a vectorial y detección de corte y pliegue",
+    "Importa un file": "Importar un archivo",
+    "Clicca per importare un SVG, un PDF o un'immagine": "Haz clic para importar un SVG, un PDF o una imagen",
+    "(PNG, JPG…) — o trascinalo sul foglio": "(PNG, JPG…) — o arrástralo a la hoja",
+    "Chiudere la scheda \"{name}\"? Le ultime modifiche non sono ancora salvate in libreria e andranno perse.": "¿Cerrar la pestaña «{name}»? Los últimos cambios aún no están guardados en la biblioteca y se perderán.",
+    "Chiudere la scheda \"{name}\"? Il disegno non è salvato in libreria e andrà perso (prima puoi salvarlo in libreria o scaricarne una copia da File).": "¿Cerrar la pestaña «{name}»? El dibujo no está guardado en la biblioteca y se perderá (antes puedes guardarlo en la biblioteca o descargar una copia desde Archivo).",
+    "Chiudere {n} scheda? ": "¿Cerrar {n} pestaña? ",
+    "Chiudere {n} schede? ": "¿Cerrar {n} pestañas? ",
+    "Questa contiene lavoro non salvato in libreria, che andrà perso: {names}.": "Esta contiene trabajo no guardado en la biblioteca, que se perderá: {names}.",
+    "Queste contengono lavoro non salvato in libreria, che andrà perso: {names}.": "Estas contienen trabajo no guardado en la biblioteca, que se perderá: {names}.",
+    "Chiudi schede": "Cerrar pestañas",
+    "Scheda chiusa.": "Pestaña cerrada.",
+    "{n} schede chiuse.": "{n} pestañas cerradas.",
+    "✕ Chiudi scheda": "✕ Cerrar pestaña",
+    "Chiudi le altre schede": "Cerrar las otras pestañas",
+    "Chiudi tutte le schede": "Cerrar todas las pestañas",
+    "✕ Chiudi tutte": "✕ Cerrar todas",
+    "Chiudi tutte le schede (quelle con lavoro non salvato in libreria chiedono conferma)": "Cerrar todas las pestañas (las que tienen trabajo sin guardar piden confirmación)",
+    "Nessun progetto aperto": "Ningún proyecto abierto",
+    "Crea un nuovo disegno oppure apri un progetto esistente. Puoi anche trascinare qui un file (SVG, PDF, immagine).": "Crea un dibujo nuevo o abre un proyecto existente. También puedes arrastrar aquí un archivo (SVG, PDF, imagen).",
+    "＋ Nuovo disegno": "＋ Nuevo dibujo",
+    "☁ Apri dalla libreria": "☁ Abrir desde la biblioteca",
+    "⇪ Importa un file (SVG, PDF, immagine)": "⇪ Importar un archivo (SVG, PDF, imagen)",
+    "📦 Genera una scatola": "📦 Generar una caja",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -5085,7 +5307,7 @@ const I18N = {
     "Versione ripristinata in libreria.": "已在资料库中恢复该版本。",
     "Versioni": "版本",
     "Verticale": "垂直",
-    "Vettorizzazione in corso…": "矢量化处理中…",
+    "Vettorizzazione in corso…": "正在矢量化…",
     "Vuoto.": "空。",
     "cm": "厘米",
     "https://.../font.woff2": "https://.../字体.woff2",
@@ -5641,9 +5863,9 @@ const I18N = {
     "Questa piega non è dritta: i suoi tratti si spostano tutti insieme.": "此折线不是直线：其各段将一起移动。",
     "tratto {k} di {n}": "第 {k} 段，共 {n} 段",
     "(non usata nel 3D)": "（3D中未使用）",
-    "Individua taglio e pieghe": "识别切割线与折线",
+    "Individua taglio e pieghe": "识别切割线和折线",
     "Individua automaticamente le linee di taglio e di piega (per scansioni o schermate di una fustella)": "自动识别切割线和折线（适用于刀模的扫描件或截图）",
-    "Ricerca delle linee in corso…": "正在查找线条…",
+    "Ricerca delle linee in corso…": "正在识别线条…",
     "Nessuna linea individuata: l'immagine deve mostrare la fustella con linee ben visibili su sfondo chiaro.": "未识别到线条：图像需以浅色背景清晰显示刀模线条。",
     "Individuate {c} linee di taglio e {f} pieghe ({r} frammenti scartati, es. testi). Controllale sul disegno e con l'anteprima 3D.": "识别出 {c} 条切割线和 {f} 条折线（舍弃 {r} 个碎片，如文字）。请在图纸和3D预览中检查。",
     "Impossibile analizzare l'immagine.": "无法分析图像。",
@@ -5915,6 +6137,53 @@ const I18N = {
     "Cerchi triangoli, poligoni, stelle o fori? Sono nelle forme pronte, nella barra a sinistra.": "在找三角形、多边形、星形或孔？它们在左侧工具栏的现成形状中。",
     "Apri le forme pronte (F)": "打开现成形状（F）",
     "Penna": "钢笔",
+    "Importa immagine": "导入图像",
+    "Risoluzione (DPI)": "分辨率（DPI）",
+    "Adatta al foglio": "适应画布",
+    "Per avere la fustella in scala reale indica una misura vera (es. la larghezza totale) oppure i DPI della scansione.": "要按实际比例获得刀模，请输入一个真实尺寸（如总宽度）或扫描的 DPI。",
+    "Cosa vuoi ottenere": "你想得到什么",
+    "Per fustelle scansionate, fotografate dritte o schermate: le linee continue diventano Taglio, quelle tratteggiate (o blu/verdi) Piega. Le scritte vengono scartate.": "适用于扫描、正拍或截图的刀模：实线变为切割线，虚线（或蓝/绿线）变为折线。文字会被丢弃。",
+    "Vettorizza la grafica": "矢量化图形",
+    "Per loghi e disegni: i contorni delle zone di colore diventano grafica vettoriale nel livello di disegno.": "适用于标志和图画：颜色区域的轮廓变为绘图图层中的矢量图形。",
+    "Solo immagine di riferimento": "仅参考图像",
+    "L'immagine resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti.": "图像半透明地保留在图纸下方，可用工具手动描绘。",
+    "Tieni l'immagine sotto il disegno (semitrasparente) per confrontare il risultato": "将图像保留在图纸下方（半透明）以对比结果",
+    "Colori": "颜色",
+    "Dettaglio": "细节",
+    "{name} · {w} × {h} pixel": "{name} · {w} × {h} 像素",
+    "Le linee della fustella diventeranno linee vettoriali di taglio e piega, su {size}.": "刀模线条将变为矢量切割线和折线，尺寸 {size}。",
+    "Le zone di colore diventeranno grafica vettoriale, su {size}.": "颜色区域将变为矢量图形，尺寸 {size}。",
+    "La vettorizzazione richiede la connessione a Internet (libreria non caricata): scegli un'altra opzione.": "矢量化需要联网（库未加载）：请选择其他选项。",
+    "L'immagine verrà posta sotto il disegno ({size}), semitrasparente, da ricalcare con gli strumenti.": "图像将半透明地放在图纸下方（{size}），可用工具描绘。",
+    "Sostituisce l'immagine di riferimento attuale.": "将替换当前的参考图像。",
+    "Immagine di riferimento inserita: ricalcala con gli strumenti. Opacità, filtri e rimozione sono nella scheda Immagine.": "已插入参考图像：用工具描绘。不透明度、滤镜和移除在\"图像\"选项卡中。",
+    "Immagine vettorizzata ({n} tracciati): è grafica nel livello di disegno.": "图像已矢量化（{n} 条路径）：为绘图图层中的图形。",
+    "Impossibile leggere questa immagine.": "无法读取此图像。",
+    "Formato non supportato: si possono importare SVG, PDF e immagini (PNG, JPG, WebP, GIF, BMP).": "不支持的格式：可导入 SVG、PDF 和图像（PNG、JPG、WebP、GIF、BMP）。",
+    "Importa un file: SVG, PDF o immagine (PNG, JPG…), con trasformazione in vettoriale e individuazione di taglio e piega": "导入文件：SVG、PDF 或图像（PNG、JPG…），可转换为矢量并识别切割线和折线",
+    "Importa un file": "导入文件",
+    "Clicca per importare un SVG, un PDF o un'immagine": "点击导入 SVG、PDF 或图像",
+    "(PNG, JPG…) — o trascinalo sul foglio": "（PNG、JPG…）— 或将其拖到画布上",
+    "Chiudere la scheda \"{name}\"? Le ultime modifiche non sono ancora salvate in libreria e andranno perse.": "关闭标签页\"{name}\"？最新更改尚未保存到库中，将会丢失。",
+    "Chiudere la scheda \"{name}\"? Il disegno non è salvato in libreria e andrà perso (prima puoi salvarlo in libreria o scaricarne una copia da File).": "关闭标签页\"{name}\"？该图纸未保存到库中，将会丢失（可先保存到库或从\"文件\"下载副本）。",
+    "Chiudere {n} scheda? ": "关闭 {n} 个标签页？",
+    "Chiudere {n} schede? ": "关闭 {n} 个标签页？",
+    "Questa contiene lavoro non salvato in libreria, che andrà perso: {names}.": "此标签页包含未保存到库的内容，将会丢失：{names}。",
+    "Queste contengono lavoro non salvato in libreria, che andrà perso: {names}.": "这些标签页包含未保存到库的内容，将会丢失：{names}。",
+    "Chiudi schede": "关闭标签页",
+    "Scheda chiusa.": "标签页已关闭。",
+    "{n} schede chiuse.": "已关闭 {n} 个标签页。",
+    "✕ Chiudi scheda": "✕ 关闭标签页",
+    "Chiudi le altre schede": "关闭其他标签页",
+    "Chiudi tutte le schede": "关闭所有标签页",
+    "✕ Chiudi tutte": "✕ 全部关闭",
+    "Chiudi tutte le schede (quelle con lavoro non salvato in libreria chiedono conferma)": "关闭所有标签页（含未保存内容的会要求确认）",
+    "Nessun progetto aperto": "没有打开的项目",
+    "Crea un nuovo disegno oppure apri un progetto esistente. Puoi anche trascinare qui un file (SVG, PDF, immagine).": "新建图纸或打开现有项目。也可以将文件（SVG、PDF、图像）拖到这里。",
+    "＋ Nuovo disegno": "＋ 新建图纸",
+    "☁ Apri dalla libreria": "☁ 从库中打开",
+    "⇪ Importa un file (SVG, PDF, immagine)": "⇪ 导入文件（SVG、PDF、图像）",
+    "📦 Genera una scatola": "📦 生成盒子",
   },
   fr: {
     "1 cm": "1 cm",
@@ -6734,7 +7003,7 @@ const I18N = {
     "Questa piega non è dritta: i suoi tratti si spostano tutti insieme.": "Ce pli n’est pas droit : ses segments se déplacent tous ensemble.",
     "tratto {k} di {n}": "segment {k} sur {n}",
     "(non usata nel 3D)": "(non utilisé en 3D)",
-    "Individua taglio e pieghe": "Détecter découpes et plis",
+    "Individua taglio e pieghe": "Détecter découpe et plis",
     "Individua automaticamente le linee di taglio e di piega (per scansioni o schermate di una fustella)": "Détecter automatiquement les lignes de découpe et de pli (pour scans ou captures d’une forme de découpe)",
     "Ricerca delle linee in corso…": "Recherche des lignes…",
     "Nessuna linea individuata: l'immagine deve mostrare la fustella con linee ben visibili su sfondo chiaro.": "Aucune ligne détectée : l’image doit montrer la forme de découpe avec des lignes bien visibles sur fond clair.",
@@ -7008,6 +7277,53 @@ const I18N = {
     "Cerchi triangoli, poligoni, stelle o fori? Sono nelle forme pronte, nella barra a sinistra.": "Tu cherches des triangles, polygones, étoiles ou trous ? Ils sont dans les formes prêtes, dans la barre de gauche.",
     "Apri le forme pronte (F)": "Ouvrir les formes prêtes (F)",
     "Penna": "Plume",
+    "Importa immagine": "Importer une image",
+    "Risoluzione (DPI)": "Résolution (DPI)",
+    "Adatta al foglio": "Ajuster à la feuille",
+    "Per avere la fustella in scala reale indica una misura vera (es. la larghezza totale) oppure i DPI della scansione.": "Pour avoir la forme de découpe à l’échelle réelle, indique une mesure vraie (ex. la largeur totale) ou les DPI du scan.",
+    "Cosa vuoi ottenere": "Que veux-tu obtenir",
+    "Per fustelle scansionate, fotografate dritte o schermate: le linee continue diventano Taglio, quelle tratteggiate (o blu/verdi) Piega. Le scritte vengono scartate.": "Pour les formes scannées, photographiées bien droites ou les captures : les lignes continues deviennent Découpe, les pointillées (ou bleues/vertes) Pli. Les textes sont ignorés.",
+    "Vettorizza la grafica": "Vectoriser le graphisme",
+    "Per loghi e disegni: i contorni delle zone di colore diventano grafica vettoriale nel livello di disegno.": "Pour les logos et dessins : les contours des zones de couleur deviennent du graphisme vectoriel dans le calque de dessin.",
+    "Solo immagine di riferimento": "Image de référence uniquement",
+    "L'immagine resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti.": "L’image reste sous le dessin, semi-transparente, à décalquer à la main avec les outils.",
+    "Tieni l'immagine sotto il disegno (semitrasparente) per confrontare il risultato": "Garder l’image sous le dessin (semi-transparente) pour comparer le résultat",
+    "Colori": "Couleurs",
+    "Dettaglio": "Détail",
+    "{name} · {w} × {h} pixel": "{name} · {w} × {h} pixels",
+    "Le linee della fustella diventeranno linee vettoriali di taglio e piega, su {size}.": "Les lignes de la forme deviendront des lignes vectorielles de découpe et de pli, sur {size}.",
+    "Le zone di colore diventeranno grafica vettoriale, su {size}.": "Les zones de couleur deviendront du graphisme vectoriel, sur {size}.",
+    "La vettorizzazione richiede la connessione a Internet (libreria non caricata): scegli un'altra opzione.": "La vectorisation nécessite une connexion Internet (bibliothèque non chargée) : choisis une autre option.",
+    "L'immagine verrà posta sotto il disegno ({size}), semitrasparente, da ricalcare con gli strumenti.": "L’image sera placée sous le dessin ({size}), semi-transparente, à décalquer avec les outils.",
+    "Sostituisce l'immagine di riferimento attuale.": "Remplace l’image de référence actuelle.",
+    "Immagine di riferimento inserita: ricalcala con gli strumenti. Opacità, filtri e rimozione sono nella scheda Immagine.": "Image de référence insérée : décalque-la avec les outils. Opacité, filtres et suppression sont dans l’onglet Image.",
+    "Immagine vettorizzata ({n} tracciati): è grafica nel livello di disegno.": "Image vectorisée ({n} tracés) : c’est du graphisme dans le calque de dessin.",
+    "Impossibile leggere questa immagine.": "Impossible de lire cette image.",
+    "Formato non supportato: si possono importare SVG, PDF e immagini (PNG, JPG, WebP, GIF, BMP).": "Format non pris en charge : on peut importer des SVG, PDF et images (PNG, JPG, WebP, GIF, BMP).",
+    "Importa un file: SVG, PDF o immagine (PNG, JPG…), con trasformazione in vettoriale e individuazione di taglio e piega": "Importer un fichier : SVG, PDF ou image (PNG, JPG…), avec vectorisation et détection de découpe et pli",
+    "Importa un file": "Importer un fichier",
+    "Clicca per importare un SVG, un PDF o un'immagine": "Clique pour importer un SVG, un PDF ou une image",
+    "(PNG, JPG…) — o trascinalo sul foglio": "(PNG, JPG…) — ou fais-le glisser sur la feuille",
+    "Chiudere la scheda \"{name}\"? Le ultime modifiche non sono ancora salvate in libreria e andranno perse.": "Fermer l’onglet « {name} » ? Les dernières modifications ne sont pas encore enregistrées dans la bibliothèque et seront perdues.",
+    "Chiudere la scheda \"{name}\"? Il disegno non è salvato in libreria e andrà perso (prima puoi salvarlo in libreria o scaricarne una copia da File).": "Fermer l’onglet « {name} » ? Le dessin n’est pas enregistré dans la bibliothèque et sera perdu (tu peux d’abord l’enregistrer dans la bibliothèque ou en télécharger une copie depuis Fichier).",
+    "Chiudere {n} scheda? ": "Fermer {n} onglet ? ",
+    "Chiudere {n} schede? ": "Fermer {n} onglets ? ",
+    "Questa contiene lavoro non salvato in libreria, che andrà perso: {names}.": "Celui-ci contient du travail non enregistré dans la bibliothèque, qui sera perdu : {names}.",
+    "Queste contengono lavoro non salvato in libreria, che andrà perso: {names}.": "Ceux-ci contiennent du travail non enregistré dans la bibliothèque, qui sera perdu : {names}.",
+    "Chiudi schede": "Fermer les onglets",
+    "Scheda chiusa.": "Onglet fermé.",
+    "{n} schede chiuse.": "{n} onglets fermés.",
+    "✕ Chiudi scheda": "✕ Fermer l’onglet",
+    "Chiudi le altre schede": "Fermer les autres onglets",
+    "Chiudi tutte le schede": "Fermer tous les onglets",
+    "✕ Chiudi tutte": "✕ Tout fermer",
+    "Chiudi tutte le schede (quelle con lavoro non salvato in libreria chiedono conferma)": "Fermer tous les onglets (ceux avec du travail non enregistré demandent confirmation)",
+    "Nessun progetto aperto": "Aucun projet ouvert",
+    "Crea un nuovo disegno oppure apri un progetto esistente. Puoi anche trascinare qui un file (SVG, PDF, immagine).": "Crée un nouveau dessin ou ouvre un projet existant. Tu peux aussi faire glisser un fichier ici (SVG, PDF, image).",
+    "＋ Nuovo disegno": "＋ Nouveau dessin",
+    "☁ Apri dalla libreria": "☁ Ouvrir depuis la bibliothèque",
+    "⇪ Importa un file (SVG, PDF, immagine)": "⇪ Importer un fichier (SVG, PDF, image)",
+    "📦 Genera una scatola": "📦 Générer une boîte",
   },
 };
 let currentLang = 'it';
@@ -9789,7 +10105,7 @@ function closeJoinDialog(){
    ridurre nella barra in basso, modificare il disegno e poi riprenderle
    esattamente come le si era lasciate.
 ============================================================ */
-const MINIMIZABLE_MODALS = ['moveModal','adminModal','pdfImportModal','silModal','seqModal','symModal','joinModal','fold3dModal','boxGenModal','historyModal','versionsModal','libraryModal','saveLibraryModal',
+const MINIMIZABLE_MODALS = ['imgImportModal','moveModal','adminModal','pdfImportModal','silModal','seqModal','symModal','joinModal','fold3dModal','boxGenModal','historyModal','versionsModal','libraryModal','saveLibraryModal',
   'pageSizeModal','fontModal','scaleModal','tilePrintModal','printProofModal','cutPreviewModal','weldModal','helpModal'];
 const MODAL_HOOKS = {
   fold3dModal: { onMinimize: ()=>{ stopFold3D(); if(!state.foldCheck) runFoldCheckOverlay(true); }, onRestore: ()=>{ if(state.foldCheck) endFoldCheckOverlay(); refreshFold3D(); } },
@@ -10702,7 +11018,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.39.0';
+const GUIDE_VERSION = '2.40.1';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -10725,8 +11041,9 @@ html:`<p>Lo schermo è diviso in cinque zone:</p>
 <p>In basso c'è la <b>barra di stato</b> con coordinate del cursore, unità di misura, griglia, calamita, punti, quote e pagine.</p>
 <p>Molti comandi sono anche nel <b>menu del tasto destro</b>, sia sugli oggetti sia sull'area vuota del foglio.</p>` },
 
-{ id:'schede', cat:'Per iniziare', title:'Schede e documenti', keys:'tab nuovo disegno più disegni aperti',
-html:`<p>Con il pulsante <b>＋</b> accanto alle schede crei un nuovo disegno. Ogni scheda ha il suo foglio, i suoi livelli e la sua <a data-topic="cronologia">cronologia annulla/ripeti</a>.</p>
+{ id:'schede', cat:'Per iniziare', title:'Schede e documenti', keys:'tab nuovo disegno più disegni aperti chiudi scheda chiudi tutte chiudere schede nessun progetto aperto',
+html:`<p><b>Chiudere le schede</b>: la ✕ di ogni scheda la chiude; il pulsante <b>✕ Chiudi tutte</b> a destra della barra delle schede (o il tasto destro su una scheda: Chiudi scheda, Chiudi le altre, Chiudi tutte) le chiude tutte con una sola conferma. La conferma compare solo se si perderebbe del lavoro: un disegno vuoto, o salvato in libreria e allineato, si chiude subito. Si può chiudere anche l'ultima scheda: compare la schermata <b>Nessun progetto aperto</b> con i pulsanti per creare un nuovo disegno, aprire dalla libreria, importare un file o generare una scatola (e il <b>＋</b> resta nella barra). Le schede chiuse restano chiuse anche ricaricando la pagina.</p>
+<p>Con il pulsante <b>＋</b> accanto alle schede crei un nuovo disegno. Ogni scheda ha il suo foglio, i suoi livelli e la sua <a data-topic="cronologia">cronologia annulla/ripeti</a>.</p>
 <p>Anche alcune funzioni aprono nuove schede: <a data-topic="genera-scatola">Genera scatola</a>, l'apertura di più progetti dalla <a data-topic="libreria">libreria</a> e l'apertura di una versione passata.</p>` },
 
 { id:'foglio', cat:'Per iniziare', title:'Foglio, unità, griglia, righelli e zoom', keys:'pagina formato dimensione sfondo trasparente unità mm cm pollici griglia passo righello zoom rotella',
@@ -10797,7 +11114,8 @@ html:`<p>Dalla scheda <b>Immagine</b> del pannello laterale puoi caricare un'imm
 <p>Funziona con scansioni o schermate di una fustella dritta, con linee ben visibili su sfondo chiaro; non con foto in prospettiva. Le misure dipendono da come hai dimensionato l'immagine sul foglio: prima di avviare portala alla misura reale (per esempio misurando un lato noto). Poi controlla il risultato con il <a data-topic="controllo-3d">controllo del disegno</a>.</p>` },
 
 { id:'importa-svg', cat:'Disegnare', title:'Importare SVG e PDF', keys:'importare svg pdf file aprire disegno esterno illustrator inkscape scaricato online template modello',
-html:`<p>Il pulsante <b>⇪</b> in alto importa un file <b>SVG</b> o <b>PDF</b>.</p>
+html:`<p>Per importare una <b>foto o una scansione</b> (PNG, JPG…) vedi <a data-topic="importa-immagine">Importare un'immagine</a>: anche lì si possono individuare taglio e pieghe. Tutti i file si possono anche <b>trascinare sul foglio</b>.</p>
+<p>Il pulsante <b>⇪</b> in alto importa un file <b>SVG</b> o <b>PDF</b>.</p>
 <ul><li><b>SVG</b>: viene letto con curve, archi e trasformazioni. I ruoli vengono riconosciuti dai colori del file e i doppioni tecnici dei programmi CAD vengono ripuliti.</li>
 <li><b>PDF</b>: comodo per i modelli di scatole scaricati online, che di solito sono vettoriali e in scala reale. Le linee della pagina vengono lette esattamente, in millimetri. Si apre una finestra con i <b>gruppi di linee</b> trovati (per colore e tratteggio), e per ognuno scegli il ruolo: Taglio, Piega, Fustella speciale, Incollaggio, Disegno oppure <b>Ignora</b> (per quote, cornici, marchi). La proposta iniziale: la linea continua più lunga è il taglio, le tratteggiate sono pieghe, i riempimenti sono grafica. Se il PDF ha più pagine scegli quale importare. Testi e immagini del PDF non vengono importati; un PDF che è solo una scansione non ha linee da leggere (in quel caso usa la scheda <a data-topic="immagini">Immagine</a> e la vettorizzazione).</li></ul>
 <p>Poi, per entrambi i formati: se hai già un disegno aperto scegli se aggiungere o sostituire, e puoi centrarlo o portarlo in alto a sinistra adattando il foglio, con una scala percentuale. Per metterlo in libreria salvalo con <a data-topic="libreria">☁ Libreria</a>, privato o condiviso.</p>
@@ -10925,6 +11243,14 @@ html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profo
 <li><b>Astuccio con coperchio a incastro</b>: alette antipolvere, aletta posteriore e linguetta di chiusura.</li></ul>
 <p>Le pieghe sono già impostate a monte, 90°, con un <a data-topic="ordine">ordine di piegatura</a> sensato, e la zona di incollaggio è un poligono <a data-topic="incollaggio">tratteggiato</a>. L'aletta di incollaggio si può impostare o lasciare automatica. Gli spigoli delle alette sono semplificati: verifica le misure prima della produzione.</p>` },
 
+{ id:'importa-immagine', cat:'Salvare ed esportare', title:'Importare un\'immagine (PNG, JPG…)', keys:'importare immagine foto scansione png jpg jpeg webp gif bmp vettorizzare vettoriale individua taglio piega fustella dpi riferimento ricalcare trascinare file',
+html:`<p>Con il pulsante <b>⇪</b> in alto (o trascinando il file sul foglio) si importano, oltre a SVG e PDF, anche le <b>immagini</b>: PNG, JPG, WebP, GIF e BMP. Si apre la finestra <b>Importa immagine</b>:</p>
+<ul><li><b>Misura reale</b>: indica la larghezza o l'altezza vera (l'altra segue le proporzioni) oppure i <b>DPI</b> della scansione; "Adatta al foglio" la fa stare nella pagina. Per una fustella in scala reale basta una misura nota, per esempio la larghezza totale.</li>
+<li><b>Individua taglio e pieghe</b>: per fustelle scansionate, fotografate dritte o schermate. Le linee continue diventano <b>Taglio</b>, quelle tratteggiate (o blu/verdi) <b>Piega</b>; le scritte vengono scartate. Dove restano piccoli spazi tra le linee si chiudono con Strumenti → Salda punti vicini o con il <a data-topic="controllo-3d">controllo del disegno</a>.</li>
+<li><b>Vettorizza la grafica</b>: per loghi e disegni, i contorni delle zone di colore diventano grafica vettoriale nel livello di disegno (scegli il numero di colori e il dettaglio). Richiede la connessione a Internet la prima volta.</li>
+<li><b>Solo immagine di riferimento</b>: resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti; opacità, filtri e rimozione sono nella scheda Immagine.</li></ul>
+<p>Con <b>Tieni l'immagine sotto il disegno</b> l'originale resta visibile in trasparenza per confrontarlo con le linee ottenute. Le scelte vengono ricordate per la volta successiva.</p>` },
+
 { id:'componenti', cat:'Disegnare', title:'Forme pronte e componenti condivisi', keys:'forme pronte galleria componenti condivisi community trascinare triangolo quadrato esagono pentagono ottagono poligono stella cerchio ellisse cuore freccia croce ingranaggio asola foro europeo maniglia linguetta gancio finestra sombrero tasto f',
 html:`<p><b>Forme pronte</b>: nella barra a sinistra, sezione <b>Forme pronte</b> (o tasto <b>F</b>), si apre accanto alla barra una galleria con anteprima, divisa per categorie: triangoli e quadrilateri, poligoni regolari (dal pentagono al dodecagono), curve (cerchio, ellisse, semicerchio, spicchio, corona, cuore, mezzaluna…), stelle, frecce e simboli (croce, fumetto, cartellino, ingranaggio…) e pezzi di <b>packaging</b> (aletta, foro europeo, maniglia, linguetta, gancio, foro tondo, asola, finestra, foro a sombrero, tacca a V).</p>
 <ul><li><b>Trascina</b> una forma sul foglio per inserirla in quel punto, oppure <b>fai clic</b> per metterla al centro (sui tablet si usa il clic). La galleria resta aperta per inserirne altre; si chiude con ✕, Esc o di nuovo con F.</li>
@@ -11048,6 +11374,8 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.40.1</b> — Le schede chiuse non ricompaiono più ricaricando la pagina; si può chiudere anche l'ultima scheda (schermata "Nessun progetto aperto"); pulsante Chiudi tutte e menu col tasto destro sulle schede.</li>
+<li><b>2.40</b> — <a data-topic="importa-immagine">Importazione di immagini</a> (PNG, JPG…) con misura reale e scelta tra individuazione di taglio e pieghe, vettorizzazione o immagine di riferimento; file trascinabili sul foglio.</li>
 <li><b>2.39</b> — Barra a sinistra riorganizzata: sezioni con titolo, nomi accanto alle icone (o solo icone), forme pronte in una galleria accanto alla barra (tasto F). A destra la scheda Condivisi.</li>
 <li><b>2.38</b> — <a data-topic="componenti">Galleria di forme</a> da trascinare sul foglio: 58 forme (poligoni, curve, stelle, simboli, packaging) con dimensione e ricerca. Corretti foro europeo, maniglia e gancio, che erano disegnati male.</li>
 <li><b>2.37</b> — <a data-topic="sposta">Sposta di…</a> (Invio): distanza precisa in qualsiasi direzione, anche con copie in serie; frecce della tastiera per spostare la selezione.</li>
@@ -11819,6 +12147,7 @@ function shapeLibBBox(parts){
 }
 function insertLibraryShape(key, at){
   const def = SHAPE_LIBRARY.find(d=>d.key===key); if(!def) return;
+  ensureDocumentOpen();
   const parts = shapeLibParts(def, def.fixed ? 0 : shapeLibSize());
   const bb = shapeLibBBox(parts);
   const c = at || [state.page.w/2, state.page.h/2];
@@ -11887,8 +12216,9 @@ function buildShapeGallery(host){
 // il foglio accetta le forme trascinate dalla galleria
 (function(){
   const sc = document.getElementById('stage-scroll');
-  sc.addEventListener('dragover', e=>{ if(e.dataTransfer && [...e.dataTransfer.types].includes('text/spikecut-shape')){ e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; } });
+  sc.addEventListener('dragover', e=>{ const ty = e.dataTransfer ? [...e.dataTransfer.types] : []; if(ty.includes('text/spikecut-shape') || ty.includes('Files')){ e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; } });
   sc.addEventListener('drop', e=>{
+    if(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length){ e.preventDefault(); importAnyFile(e.dataTransfer.files[0]); return; } // file (SVG, PDF, immagine) lasciato sul foglio
     const key = e.dataTransfer && e.dataTransfer.getData('text/spikecut-shape'); if(!key) return;
     e.preventDefault();
     insertLibraryShape(key, clientToMM(e.clientX, e.clientY));
@@ -13016,6 +13346,7 @@ window.addEventListener('keydown', (e)=>{
   }
 
   const k = e.key.toLowerCase();
+  if(!documents.length) return; // nessuna scheda aperta: i tasti non agiscono su un disegno invisibile
   if(e.key==='Escape' && shapesFlyoutOpen()){ toggleShapesFlyout(false); return; }
   if(k==='f' && !e.ctrlKey && !e.metaKey && !e.altKey){ e.preventDefault(); toggleShapesFlyout(); return; } // F: forme pronte
   if(/^Arrow(Left|Right|Up|Down)$/.test(e.key) && !e.ctrlKey && !e.metaKey && state.tool==='select' && state.selection.size){
@@ -13373,6 +13704,7 @@ wireMenuButton('btnToolsMenu', 'toolsMenu');
 document.addEventListener('click', closeAllMenus);
 function handleMenuAction(e){
   const action = e.target.dataset.action; if(!action) return;
+  ensureDocumentOpen(); // con tutte le schede chiuse, un comando apre prima un disegno nuovo
   if(action==='export-svg') exportSVG();
   else if(action==='export-silhouette') openSilhouetteExport();
   else if(action==='export-pdf') exportPDF();
@@ -14085,6 +14417,7 @@ async function openFolderAsTabs(items){
   showToast(tpl('Aperti {opened} progetti in altrettante schede{failNote}.', {opened, failNote}), failed>0);
 }
 async function loadFromLibrary(id, opts){
+  ensureDocumentOpen();
   try{
     const data = await apiFetch('load.php?id=' + encodeURIComponent(id), {method:'GET'});
     const proj = data.project || {};
@@ -14213,6 +14546,16 @@ document.getElementById('moveModal').addEventListener('keydown', e=>{
   else e.stopPropagation(); // i tasti scritti nei campi non comandano il disegno
 });
 document.getElementById('shapesFlyoutClose').onclick = ()=> toggleShapesFlyout(false);
+document.getElementById('imgImportClose').onclick = closeImageImport;
+setupOverlayClickClose(document.getElementById('imgImportModal'), closeImageImport);
+document.getElementById('imgImpApply').onclick = applyImageImport;
+document.querySelectorAll('input[name="imgImpMode"]').forEach(r=> r.onchange = imgImpRefresh);
+document.getElementById('imgImpKeepRef').onchange = imgImpRefresh;
+document.getElementById('imgImpW').addEventListener('input', e=>{ const v = parseFloat(e.target.value); if(v > 0){ imgImp.wMM = unitToMm(v); imgImpFillSize('w'); } });
+document.getElementById('imgImpH').addEventListener('input', e=>{ const v = parseFloat(e.target.value); if(v > 0){ imgImp.wMM = unitToMm(v) * imgImp.pw / imgImp.ph; imgImpFillSize('h'); } });
+document.getElementById('imgImpDpi').addEventListener('input', e=>{ const v = parseFloat(e.target.value); if(v > 0){ imgImp.wMM = imgImp.pw / v * 25.4; imgImpFillSize('dpi'); } });
+document.getElementById('imgImpFit').onclick = ()=>{ const r = Math.min(state.page.w*0.95 / imgImp.wMM, state.page.h*0.95 / (imgImp.wMM*imgImp.ph/imgImp.pw)); imgImp.wMM *= r; imgImpFillSize(); };
+document.getElementById('imgImportModal').addEventListener('keydown', e=> e.stopPropagation()); // i tasti scritti nei campi non comandano il disegno
 function closeFold3D(){ stopFold3D(); if(state.foldCheck) endFoldCheckOverlay(); document.getElementById('fold3dModal').classList.remove('open'); }
 document.getElementById('fold3dClose').onclick = closeFold3D;
 setupOverlayClickClose(document.getElementById('fold3dModal'), closeFold3D);
@@ -14249,6 +14592,7 @@ function closeBoxGenModal(){ document.getElementById('boxGenModal').classList.re
 document.getElementById('boxGenModalClose').onclick = closeBoxGenModal;
 setupOverlayClickClose(document.getElementById('boxGenModal'), closeBoxGenModal);
 document.getElementById('boxGenApply').onclick = ()=>{
+  ensureDocumentOpen();
   const err = document.getElementById('boxGenError');
   err.style.display = 'none';
   const L = parseFloat(document.getElementById('boxGenL').value);
@@ -14621,6 +14965,7 @@ function openProjectFilePicker(){
     r.onload = ()=>{
       try{
         const data = JSON.parse(r.result);
+        ensureDocumentOpen();
         state.shapes = data.shapes || []; migrateLegacyArcs(state.shapes);
         state.page = data.page || state.page;
         state.refImage = data.refImage || null;
@@ -15818,8 +16163,8 @@ function buildImageTab(){
   const host = document.getElementById('tab-image');
   host.innerHTML = `
     <div class="field">
-      <label>Importa un file SVG esistente</label>
-      <div class="dropzone" id="dropzoneSVG">Clicca per caricare un .svg da modificare</div>
+      <label>Importa un file</label>
+      <div class="dropzone" id="dropzoneSVG">Clicca per importare un SVG, un PDF o un'immagine<br>(PNG, JPG…) — o trascinalo sul foglio</div>
       <div class="hint">Linee rette e poligoni diventano nodi trascinabili (con calamita attiva). Curve complesse restano modificabili in blocco: colore, posizione e dimensione. Il disegno viene centrato e, se necessario, ridotto per stare nella pagina.</div>
     </div>
     <hr class="sep">
@@ -16059,42 +16404,57 @@ function rdpSimplify(pts, eps){
 }
 
 // Legge l'immagine di riferimento e crea le linee di taglio e piega individuate
+function loadImageEl(dataUrl){ return new Promise((resolve, reject)=>{ const im = new Image(); im.onload = ()=> resolve(im); im.onerror = reject; im.src = dataUrl; }); }
+// Individua le linee di taglio e piega in un'immagine posta nel rettangolo (x, y, w, h) in mm.
+async function detectLinesFromImage(src){
+  const img = await loadImageEl(src.dataUrl);
+  await new Promise(r=> setTimeout(r, 30)); // lascia aggiornare l'interfaccia prima del calcolo
+  const sw = img.width || src.srcW, shh = img.height || src.srcH;
+  const k = Math.min(1, 1600/Math.max(sw, shh));
+  const cv = document.createElement('canvas'); cv.width = Math.max(1, Math.round(sw*k)); cv.height = Math.max(1, Math.round(shh*k));
+  const g = cv.getContext('2d'); g.fillStyle = '#ffffff'; g.fillRect(0,0,cv.width,cv.height); g.drawImage(img, 0, 0, cv.width, cv.height);
+  const res = detectDielineLines(g.getImageData(0, 0, cv.width, cv.height));
+  const sx = src.w/cv.width, sy = src.h/cv.height;
+  const toMM = q=> [src.x + q[0]*sx, src.y + q[1]*sy];
+  const made = res.lines.map(l=>{
+    const s = makeShape('path', {points: l.pts.map(toMM), closed: l.closed});
+    const rs = ROLE_STYLE[l.role];
+    s.style.role = l.role; s.style.stroke = rs.stroke; s.style.dash = rs.dash; s.style.fill = 'none'; s.style.hasRealStroke = true;
+    return s;
+  });
+  return {made, res};
+}
+function dielineToast(res){
+  const nc = res.lines.filter(l=>l.role==='cut').length, nf = res.lines.filter(l=>l.role==='fold').length;
+  showToast(tpl('Individuate {c} linee di taglio e {f} pieghe ({r} frammenti scartati, es. testi). Controllale sul disegno e con l\'anteprima 3D.', {c:nc, f:nf, r:res.rejected||0}), false);
+}
+// Vettorizzazione a contorni di colore (grafica), nel rettangolo (x, y, w, h) in mm.
+function traceImageToShape(src, colors, detail){
+  return new Promise((resolve, reject)=>{
+    if(typeof ImageTracer==='undefined') return reject(new Error('lib'));
+    const detailMap = {low:{ltres:2,qtres:2,pathomit:12}, mid:{ltres:1,qtres:1,pathomit:6}, high:{ltres:0.5,qtres:0.5,pathomit:2}};
+    const opts = Object.assign({numberofcolors: clamp(colors||4, 2, 16), scale:1, strokewidth:0}, detailMap[detail] || detailMap.mid);
+    ImageTracer.imageToSVG(src.dataUrl, function(svgstr){ // contorni delle macchie di colore
+      const doc = new DOMParser().parseFromString(svgstr, 'image/svg+xml');
+      const paths = [...doc.querySelectorAll('path')].map(p=>({ d:p.getAttribute('d'), fill:p.getAttribute('fill') }));
+      if(!paths.length){ resolve(null); return; }
+      const shape = makeShape('tracedpath', { x:src.x, y:src.y, w:src.w, h:src.h, srcW: src.srcW, srcH: src.srcH, paths });
+      shape.style.role = 'design';
+      resolve(shape);
+    }, opts);
+  });
+}
 function runDielineDetect(){
   const ri = state.refImage; if(!ri) return;
   const btn = document.getElementById('btnTrace'); btn.disabled = true; btn.textContent = translate('Ricerca delle linee in corso…');
-  const img = new Image();
-  img.onload = ()=>{
-    setTimeout(()=>{ // lascia aggiornare il pulsante prima del calcolo
-      try{
-        const sw = img.width || ri.srcW, shh = img.height || ri.srcH;
-        const k = Math.min(1, 1600/Math.max(sw, shh));
-        const cv = document.createElement('canvas'); cv.width = Math.max(1, Math.round(sw*k)); cv.height = Math.max(1, Math.round(shh*k));
-        const g = cv.getContext('2d'); g.fillStyle = '#ffffff'; g.fillRect(0,0,cv.width,cv.height); g.drawImage(img, 0, 0, cv.width, cv.height);
-        const data = g.getImageData(0, 0, cv.width, cv.height);
-        const res = detectDielineLines(data);
-        const sx = ri.w/cv.width, sy = ri.h/cv.height;
-        const toMM = q=> [ri.x + q[0]*sx, ri.y + q[1]*sy];
-        const made = [];
-        res.lines.forEach(l=>{
-          const s = makeShape('path', {points: l.pts.map(toMM), closed: l.closed});
-          const rs = ROLE_STYLE[l.role];
-          s.style.role = l.role; s.style.stroke = rs.stroke; s.style.dash = rs.dash; s.style.fill = 'none'; s.style.hasRealStroke = true;
-          state.shapes.push(s); made.push(s);
-        });
-        btn.disabled = false; btn.textContent = translate('Individua taglio e pieghe');
-        if(!made.length){ showToast('Nessuna linea individuata: l\'immagine deve mostrare la fustella con linee ben visibili su sfondo chiaro.', true); return; }
-        state.selection = new Set(made.map(s=>s.id));
-        pushHistory(); renderAll();
-        const nc = res.lines.filter(l=>l.role==='cut').length, nf = res.lines.filter(l=>l.role==='fold').length;
-        showToast(tpl('Individuate {c} linee di taglio e {f} pieghe ({r} frammenti scartati, es. testi). Controllale sul disegno e con l\'anteprima 3D.', {c:nc, f:nf, r:res.rejected}), false);
-      }catch(err){
-        btn.disabled = false; btn.textContent = translate('Individua taglio e pieghe');
-        showToast('Impossibile analizzare l\'immagine.', true);
-      }
-    }, 30);
-  };
-  img.onerror = ()=>{ btn.disabled = false; showToast('Impossibile analizzare l\'immagine.', true); };
-  img.src = ri.dataUrl;
+  const done = ()=>{ btn.disabled = false; btn.textContent = translate('Individua taglio e pieghe'); };
+  detectLinesFromImage(ri).then(({made, res})=>{
+    done();
+    if(!made.length){ showToast('Nessuna linea individuata: l\'immagine deve mostrare la fustella con linee ben visibili su sfondo chiaro.', true); return; }
+    made.forEach(s=> state.shapes.push(s));
+    state.selection = new Set(made.map(s=>s.id));
+    pushHistory(); renderAll(); dielineToast(res);
+  }).catch(()=>{ done(); showToast('Impossibile analizzare l\'immagine.', true); });
 }
 
 function runTrace(){
@@ -16104,25 +16464,104 @@ function runTrace(){
     showToast('Libreria di vettorizzazione non disponibile (verifica la connessione a Internet).', true);
     return;
   }
-  const colors = clamp(parseInt(document.getElementById('traceColors').value)||4, 2, 16);
-  const detailMap = {low:{ltres:2,qtres:2,pathomit:12}, mid:{ltres:1,qtres:1,pathomit:6}, high:{ltres:0.5,qtres:0.5,pathomit:2}};
-  const opts = Object.assign({numberofcolors:colors, scale:1, strokewidth:0}, detailMap[document.getElementById('traceDetail').value]);
-  const btn = document.getElementById('btnTrace'); btn.textContent='Vettorizzazione in corso…'; btn.disabled=true;
-  ImageTracer.imageToSVG(state.refImage.dataUrl, function(svgstr){ // vettorizzazione classica: contorni delle macchie di colore
-    btn.textContent='Trasforma in disegno vettoriale'; btn.disabled=false;
-    const doc = new DOMParser().parseFromString(svgstr, 'image/svg+xml');
-    const paths = [...doc.querySelectorAll('path')].map(p=>({ d:p.getAttribute('d'), fill:p.getAttribute('fill') }));
-    if(!paths.length){ showToast('Non sono stati trovati tracciati; prova con più colori o maggior dettaglio.', true); return; }
-    const shape = makeShape('tracedpath', {
-      x:state.refImage.x, y:state.refImage.y, w:state.refImage.w, h:state.refImage.h,
-      srcW: state.refImage.srcW, srcH: state.refImage.srcH, paths
-    });
-    shape.style.role='design';
-    state.shapes.push(shape);
-    state.selection = new Set([shape.id]);
-    pushHistory();
-    renderAll();
-  }, opts);
+  const colors = parseInt(document.getElementById('traceColors').value)||4;
+  const btn = document.getElementById('btnTrace'); btn.textContent = translate('Vettorizzazione in corso…'); btn.disabled = true;
+  traceImageToShape(state.refImage, colors, document.getElementById('traceDetail').value).then(shape=>{
+    btn.textContent = translate('Trasforma in disegno vettoriale'); btn.disabled = false;
+    if(!shape){ showToast('Non sono stati trovati tracciati; prova con più colori o maggior dettaglio.', true); return; }
+    state.shapes.push(shape); state.selection = new Set([shape.id]);
+    pushHistory(); renderAll();
+  }).catch(()=>{ btn.textContent = translate('Trasforma in disegno vettoriale'); btn.disabled = false; showToast('Libreria di vettorizzazione non disponibile (verifica la connessione a Internet).', true); });
+}
+
+/* ============================================================
+   IMPORTA IMMAGINE (PNG, JPG, WebP, GIF, BMP) — come per i PDF: si sceglie la
+   misura reale e cosa ottenere: linee di taglio e piega, grafica vettoriale o
+   solo un'immagine di riferimento da ricalcare.
+============================================================ */
+const imgImp = { dataUrl:null, name:'', pw:0, ph:0, wMM:100, mode:'dieline' };
+try{ const sv = JSON.parse(localStorage.getItem('spikecut-imgimp') || '{}'); if(sv.mode) imgImp.mode = sv.mode; if(sv.colors) imgImp.colors = sv.colors; if(sv.detail) imgImp.detail = sv.detail; if(sv.keepRef!=null) imgImp.keepRef = sv.keepRef; }catch(e){}
+function openImageImport(file){
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    loadImageEl(reader.result).then(img=>{
+      imgImp.dataUrl = reader.result; imgImp.name = file.name; imgImp.pw = img.naturalWidth || img.width; imgImp.ph = img.naturalHeight || img.height;
+      // misura iniziale: 150 DPI (tipica di scansioni e schermate), ridotta se non sta nel foglio
+      imgImp.wMM = imgImp.pw / 150 * 25.4;
+      const maxW = state.page.w*0.95, maxH = state.page.h*0.95;
+      const r = Math.min(1, maxW/imgImp.wMM, maxH/(imgImp.wMM*imgImp.ph/imgImp.pw)); imgImp.wMM *= r;
+      document.getElementById('imgImpPreview').src = reader.result;
+      document.getElementById('imgImpInfo').textContent = tpl('{name} · {w} × {h} pixel', {name:file.name, w:imgImp.pw, h:imgImp.ph});
+      const u = unitLabel();
+      document.getElementById('imgImpWLabel').textContent = tpl('Larghezza ({unit})', {unit:u});
+      document.getElementById('imgImpHLabel').textContent = tpl('Altezza ({unit})', {unit:u});
+      document.querySelectorAll('input[name="imgImpMode"]').forEach(r=> r.checked = r.value===imgImp.mode);
+      document.getElementById('imgImpColors').value = imgImp.colors || 4;
+      document.getElementById('imgImpDetail').value = imgImp.detail || 'mid';
+      document.getElementById('imgImpKeepRef').checked = imgImp.keepRef!=null ? imgImp.keepRef : true;
+      imgImpFillSize();
+      openModal('imgImportModal');
+    }).catch(()=> showToast('Impossibile leggere questa immagine.', true));
+  };
+  reader.readAsDataURL(file);
+}
+function imgImpFillSize(skip){
+  const hMM = imgImp.wMM * imgImp.ph / imgImp.pw, dpi = imgImp.pw / (imgImp.wMM/25.4);
+  if(skip!=='w') document.getElementById('imgImpW').value = Math.round(mmToUnit(imgImp.wMM)*100)/100;
+  if(skip!=='h') document.getElementById('imgImpH').value = Math.round(mmToUnit(hMM)*100)/100;
+  if(skip!=='dpi') document.getElementById('imgImpDpi').value = Math.round(dpi);
+  imgImpRefresh();
+}
+function imgImpRefresh(){
+  const mode = (document.querySelector('input[name="imgImpMode"]:checked')||{}).value || 'dieline';
+  imgImp.mode = mode;
+  document.getElementById('imgImpTraceOpts').style.display = mode==='trace' ? '' : 'none';
+  document.getElementById('imgImpKeepRow').style.display = mode==='ref' ? 'none' : '';
+  document.querySelectorAll('.imgimp-mode').forEach(l=> l.classList.toggle('active', l.querySelector('input').checked));
+  const hMM = imgImp.wMM * imgImp.ph / imgImp.pw;
+  const size = fmtUnit(imgImp.wMM) + ' × ' + fmtUnit(hMM);
+  const tracerOk = typeof ImageTracer!=='undefined';
+  let txt = mode==='dieline' ? tpl('Le linee della fustella diventeranno linee vettoriali di taglio e piega, su {size}.', {size})
+    : mode==='trace' ? (tracerOk ? tpl('Le zone di colore diventeranno grafica vettoriale, su {size}.', {size}) : translate('La vettorizzazione richiede la connessione a Internet (libreria non caricata): scegli un\'altra opzione.'))
+    : tpl('L\'immagine verrà posta sotto il disegno ({size}), semitrasparente, da ricalcare con gli strumenti.', {size});
+  if(state.refImage && (mode==='ref' || document.getElementById('imgImpKeepRef').checked)) txt += ' ' + translate('Sostituisce l\'immagine di riferimento attuale.');
+  document.getElementById('imgImpSummary').textContent = txt;
+  document.getElementById('imgImpApply').disabled = mode==='trace' && !tracerOk;
+}
+function closeImageImport(){ document.getElementById('imgImportModal').classList.remove('open'); }
+async function applyImageImport(){
+  const mode = imgImp.mode, keepRef = mode==='ref' || document.getElementById('imgImpKeepRef').checked;
+  const colors = parseInt(document.getElementById('imgImpColors').value)||4, detail = document.getElementById('imgImpDetail').value;
+  try{ localStorage.setItem('spikecut-imgimp', JSON.stringify({mode, colors, detail, keepRef: document.getElementById('imgImpKeepRef').checked})); }catch(e){}
+  const w = imgImp.wMM, h = w * imgImp.ph / imgImp.pw;
+  const src = { dataUrl: imgImp.dataUrl, x:(state.page.w-w)/2, y:(state.page.h-h)/2, w, h, srcW: imgImp.pw, srcH: imgImp.ph };
+  const btn = document.getElementById('imgImpApply'); const label = btn.textContent;
+  const setRef = op=>{ state.refImage = Object.assign({}, src, { opacity:op, layerId: state.activeLayerId, hidden:false, rotation:0, locked:false,
+    filters:{brightness:100, contrast:100, saturate:100, grayscale:0, sepia:0, invert:0, hueRotate:0, blur:0} }); };
+  if(mode==='ref'){
+    setRef(0.5); closeImageImport(); renderAll(); refreshImageTabPreview();
+    showToast('Immagine di riferimento inserita: ricalcala con gli strumenti. Opacità, filtri e rimozione sono nella scheda Immagine.', false);
+    return;
+  }
+  btn.disabled = true; btn.textContent = translate(mode==='dieline' ? 'Ricerca delle linee in corso…' : 'Vettorizzazione in corso…');
+  try{
+    if(mode==='dieline'){
+      const {made, res} = await detectLinesFromImage(src);
+      if(!made.length){ showToast('Nessuna linea individuata: l\'immagine deve mostrare la fustella con linee ben visibili su sfondo chiaro.', true); return; }
+      if(keepRef) setRef(0.3);
+      made.forEach(s=> state.shapes.push(s)); state.selection = new Set(made.map(s=>s.id));
+      closeImageImport(); pushHistory(); renderAll(); refreshImageTabPreview(); dielineToast(res);
+    } else {
+      const shape = await traceImageToShape(src, colors, detail);
+      if(!shape){ showToast('Non sono stati trovati tracciati; prova con più colori o maggior dettaglio.', true); return; }
+      if(keepRef) setRef(0.3);
+      state.shapes.push(shape); state.selection = new Set([shape.id]);
+      closeImageImport(); pushHistory(); renderAll(); refreshImageTabPreview();
+      showToast(tpl('Immagine vettorizzata ({n} tracciati): è grafica nel livello di disegno.', {n: shape.paths.length}), false);
+    }
+  }catch(err){
+    showToast(mode==='trace' ? 'Libreria di vettorizzazione non disponibile (verifica la connessione a Internet).' : 'Impossibile analizzare l\'immagine.', true);
+  }finally{ btn.disabled = false; btn.textContent = label; }
 }
 
 /* ============================================================
@@ -16961,25 +17400,35 @@ function applyPdfImport(){
 
 let pendingSVGImportText = null;
 let pendingSVGImportName = null;
-function openSVGFilePicker(){
-  const inp = document.createElement('input'); inp.type='file'; inp.accept='.svg,image/svg+xml,.pdf,application/pdf';
-  inp.onchange = ()=>{
-    if(!inp.files[0]) return;
-    if(/\.pdf$/i.test(inp.files[0].name) || inp.files[0].type==='application/pdf'){ // PDF: prima si leggono i tracciati
-      const fr = new FileReader(); const nm = inp.files[0].name.replace(/\.pdf$/i, '');
-      fr.onload = ()=> openPdfImport(fr.result, nm);
-      fr.readAsArrayBuffer(inp.files[0]);
-      return;
-    }
-    const fileName = inp.files[0].name.replace(/\.svg$/i, '');
+const IMPORT_ACCEPT = '.svg,image/svg+xml,.pdf,application/pdf,.png,.jpg,.jpeg,.webp,.gif,.bmp,image/png,image/jpeg,image/webp,image/gif,image/bmp';
+// un solo punto per tutti i file importati: SVG, PDF e immagini (pulsante ⇪, scheda Immagine, trascinamento sul foglio)
+function importAnyFile(file){
+  if(!file) return;
+  ensureDocumentOpen();
+  const n = file.name || '';
+  if(/\.pdf$/i.test(n) || file.type==='application/pdf'){ // PDF: prima si leggono i tracciati
+    const fr = new FileReader(); const nm = n.replace(/\.pdf$/i, '');
+    fr.onload = ()=> openPdfImport(fr.result, nm);
+    fr.readAsArrayBuffer(file);
+    return;
+  }
+  if(/\.svg$/i.test(n) || file.type==='image/svg+xml'){
+    const fileName = n.replace(/\.svg$/i, '');
     const r = new FileReader();
     r.onload = ()=>{
       const text = r.result;
       if(state.shapes.length > 0) openImportChoiceModal(text, fileName);
       else openSVGImportOptionsModal(text, fileName);
     };
-    r.readAsText(inp.files[0]);
-  };
+    r.readAsText(file);
+    return;
+  }
+  if(/^image\//.test(file.type) || /\.(png|jpe?g|webp|gif|bmp)$/i.test(n)){ openImageImport(file); return; }
+  showToast('Formato non supportato: si possono importare SVG, PDF e immagini (PNG, JPG, WebP, GIF, BMP).', true);
+}
+function openSVGFilePicker(){
+  const inp = document.createElement('input'); inp.type='file'; inp.accept = IMPORT_ACCEPT;
+  inp.onchange = ()=>{ if(inp.files[0]) importAnyFile(inp.files[0]); };
   inp.click();
 }
 function openImportChoiceModal(text, fileName){
@@ -18186,6 +18635,10 @@ document.getElementById('btnSaveLibraryTop').onclick = quickSaveToLibrary;
 document.getElementById('btnOpenLibraryTop').onclick = openLibraryModal;
 function restoreFromPayload(raw){
   const data = JSON.parse(raw);
+  if(Array.isArray(data.documents) && !data.documents.length && data.savedAt){ // tutte le schede erano state chiuse
+    documents = []; activeDocId = null; localSave.at = data.savedAt; state.customFonts = data.customFonts || [];
+    return true;
+  }
   if(Array.isArray(data.documents) && data.documents.length){
     documents = data.documents;
     documents.forEach(doc=>{
@@ -18331,12 +18784,15 @@ function loadDocumentIntoState(doc){
   updateUndoRedoButtons();
   renderAll();
 }
+// Ogni operazione sulle schede (aprire, chiudere, cambiare, rinominare) aggiorna anche la copia nel
+// browser: prima la chiusura di una scheda non veniva salvata e, ricaricando la pagina, la scheda ricompariva.
 function switchToDocument(id){
   if(id===activeDocId) return;
   snapshotActiveDocument();
   activeDocId = id;
   loadDocumentIntoState(documents.find(d=>d.id===id));
   renderTabBar();
+  scheduleAutosave();
 }
 function addNewDocumentTab(){
   snapshotActiveDocument();
@@ -18344,25 +18800,53 @@ function addNewDocumentTab(){
   documents.push(doc);
   activeDocId = doc.id;
   loadDocumentIntoState(doc);
-  renderTabBar();
+  renderTabBar(); updateEmptyState();
+  scheduleAutosave();
+}
+// nessuna scheda aperta: prima di creare contenuto se ne apre una nuova
+function ensureDocumentOpen(){ if(!documents.length) addNewDocumentTab(); }
+// chiudendo questa scheda si perde qualcosa? (un disegno salvato e allineato in libreria non si perde)
+function docLosesWork(doc){
+  const active = doc.id===activeDocId;
+  const shapes = (active ? state.shapes : doc.shapes) || [];
+  if(!shapes.length) return false;
+  if(doc.libraryId && !(active ? state.libraryDirty : doc.libraryDirty)) return false;
+  return true;
+}
+function removeDocuments(ids){
+  const set = new Set(ids), wasActive = set.has(activeDocId);
+  const idx = documents.findIndex(d=>d.id===activeDocId);
+  documents = documents.filter(d=>!set.has(d.id));
+  if(wasActive){
+    if(documents.length){ const next = documents[Math.max(0, Math.min(idx-1, documents.length-1))] || documents[0]; activeDocId = next.id; loadDocumentIntoState(next); }
+    else { activeDocId = null; loadDocumentIntoState(makeNewDocument('')); } // nessuna scheda: stato vuoto, non salvato
+  }
+  renderTabBar(); updateEmptyState();
+  scheduleAutosave();
 }
 async function closeDocumentTab(id){
-  if(documents.length<=1){ showToast('Non puoi chiudere l\'unica scheda aperta.', true); return; }
-  const idx = documents.findIndex(d=>d.id===id);
-  if(idx<0) return;
-  const hasContent = (id===activeDocId ? state.shapes : documents[idx].shapes || []).length > 0;
-  if(hasContent){
-    const ok = await showConfirm(tpl('Chiudere la scheda "{name}"? Le modifiche non salvate andranno perse.', {name: documents[idx].name}), 'Chiudi scheda');
-    if(!ok) return;
+  const doc = documents.find(d=>d.id===id); if(!doc) return;
+  snapshotActiveDocument();
+  if(docLosesWork(doc)){
+    const msg = doc.libraryId
+      ? tpl('Chiudere la scheda "{name}"? Le ultime modifiche non sono ancora salvate in libreria e andranno perse.', {name: doc.name})
+      : tpl('Chiudere la scheda "{name}"? Il disegno non è salvato in libreria e andrà perso (prima puoi salvarlo in libreria o scaricarne una copia da File).', {name: doc.name});
+    if(!(await showConfirm(msg, 'Chiudi scheda'))) return;
   }
-  if(id===activeDocId) snapshotActiveDocument();
-  documents.splice(idx,1);
-  if(activeDocId===id){
-    const next = documents[Math.max(0, idx-1)] || documents[0];
-    activeDocId = next.id;
-    loadDocumentIntoState(next);
+  removeDocuments([id]);
+}
+async function closeDocumentTabs(ids){ // "Chiudi tutte" / "Chiudi le altre": una sola conferma
+  if(!ids.length) return;
+  snapshotActiveDocument();
+  const risky = documents.filter(d=> ids.includes(d.id) && docLosesWork(d));
+  if(risky.length){
+    const names = risky.map(d=>'«'+d.name+'»').join(', ');
+    const msg = tpl(ids.length===1 ? 'Chiudere {n} scheda? ' : 'Chiudere {n} schede? ', {n: ids.length})
+      + tpl(risky.length===1 ? 'Questa contiene lavoro non salvato in libreria, che andrà perso: {names}.' : 'Queste contengono lavoro non salvato in libreria, che andrà perso: {names}.', {names});
+    if(!(await showConfirm(msg, 'Chiudi schede'))) return;
   }
-  renderTabBar();
+  removeDocuments(ids);
+  showToast(tpl(ids.length===1 ? 'Scheda chiusa.' : '{n} schede chiuse.', {n: ids.length}), false);
 }
 function renameDocument(id, name){
   const doc = documents.find(d=>d.id===id);
@@ -18370,6 +18854,14 @@ function renameDocument(id, name){
   doc.name = (name||'').trim() || doc.name;
   if(id===activeDocId) document.getElementById('filename').value = doc.name;
   renderTabBar();
+  scheduleAutosave();
+}
+// schermata "Nessun progetto aperto" quando tutte le schede sono chiuse
+function updateEmptyState(){
+  const none = !documents.length;
+  document.body.classList.toggle('no-docs', none);
+  if(none && typeof toggleShapesFlyout==='function' && shapesFlyoutOpen()) toggleShapesFlyout(false);
+  const ca = document.getElementById('closeAllTabsBtn'); if(ca) ca.style.display = documents.length ? '' : 'none';
 }
 function renameActiveTab(name){ renameDocument(activeDocId, name); }
 function renderTabBar(){
@@ -18405,10 +18897,32 @@ function renderTabBarInner(){
     closeBtn.onclick = (e)=>{ e.stopPropagation(); closeDocumentTab(doc.id); };
     tab.appendChild(nameEl); tab.appendChild(closeBtn);
     tab.onclick = ()=> switchToDocument(doc.id);
+    tab.oncontextmenu = (e)=>{
+      e.preventDefault();
+      showContextMenu(e.clientX, e.clientY, [
+        {label:'✎ Rinomina', action:()=> nameEl.ondblclick(new MouseEvent('dblclick'))},
+        'sep',
+        {label:'✕ Chiudi scheda', action:()=> closeDocumentTab(doc.id)},
+        ...(documents.length>1 ? [{label:'Chiudi le altre schede', action:()=> closeDocumentTabs(documents.filter(d=>d.id!==doc.id).map(d=>d.id))}] : []),
+        {label:'Chiudi tutte le schede', action:()=> closeDocumentTabs(documents.map(d=>d.id))},
+      ]);
+    };
     host.appendChild(tab);
   });
 }
 document.getElementById('addTabBtn').onclick = addNewDocumentTab;
+document.getElementById('closeAllTabsBtn').onclick = ()=> closeDocumentTabs(documents.map(d=>d.id));
+// schermata "Nessun progetto aperto"
+document.getElementById('esNew').onclick = addNewDocumentTab;
+document.getElementById('esLib').onclick = ()=> openLibraryModal();
+document.getElementById('esImport').onclick = ()=> openSVGFilePicker();
+document.getElementById('esJson').onclick = ()=> openProjectFilePicker();
+document.getElementById('esBox').onclick = ()=>{ ensureDocumentOpen(); document.querySelector('[data-action="generate-box"]').click(); };
+(function(){
+  const es = document.getElementById('emptyState');
+  es.addEventListener('dragover', e=>{ if(e.dataTransfer && [...e.dataTransfer.types].includes('Files')){ e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; } });
+  es.addEventListener('drop', e=>{ if(e.dataTransfer && e.dataTransfer.files.length){ e.preventDefault(); importAnyFile(e.dataTransfer.files[0]); } });
+})();
 document.getElementById('filename').addEventListener('change', (e)=> renameDocument(activeDocId, e.target.value));
 
 /* ============================================================
@@ -18448,8 +18962,8 @@ async function init(){
     const doc = makeNewDocument('Disegno 1');
     documents = [doc]; activeDocId = doc.id;
   }
-  loadDocumentIntoState(documents.find(d=>d.id===activeDocId));
-  renderTabBar();
+  loadDocumentIntoState(documents.find(d=>d.id===activeDocId) || makeNewDocument(''));
+  renderTabBar(); updateEmptyState();
   applyI18n(document.body); // traduce anche l'interfaccia statica (topbar, finestre) in base alla lingua ripristinata
   updateSyncChip();
   authReady.then(()=> checkLibraryFreshness()); // le schede della libreria sono aggiornate?

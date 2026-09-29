@@ -327,6 +327,23 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   stesso ruolo e livello vengono fuse in un unico percorso, e una linea che
   si richiude su se stessa diventa un percorso chiuso. Le catene (un punto
   sia di partenza sia di arrivo) vengono segnalate e bloccate.
+- **Schede (2.40.1)**: aprire, chiudere, cambiare e rinominare una scheda
+  aggiornano subito la copia nel browser (prima la chiusura non veniva salvata
+  e la scheda ricompariva ricaricando la pagina). Si può chiudere anche
+  l'ultima: compare "Nessun progetto aperto" (`#emptyState`), i comandi che
+  creano contenuto aprono prima una scheda (`ensureDocumentOpen`). "✕ Chiudi
+  tutte" e il tasto destro sulle schede (chiudi, chiudi le altre, chiudi
+  tutte) chiedono una sola conferma, e solo se si perde lavoro
+  (`docLosesWork`: un disegno vuoto o salvato e allineato in libreria si chiude
+  subito).
+- **Importazione di immagini (dalla 2.40)**: il pulsante ⇪ (e il
+  trascinamento di file sul foglio) accetta SVG, PDF e immagini PNG, JPG,
+  WebP, GIF, BMP; tutto passa da `importAnyFile()`. Per le immagini si apre
+  "Importa immagine": misura reale (larghezza/altezza o DPI, "Adatta al
+  foglio"), poi individuazione di taglio e pieghe (`detectLinesFromImage`),
+  vettorizzazione a zone di colore (`traceImageToShape`, libreria ImageTracer
+  da CDN) o sola immagine di riferimento; opzione per tenere l'immagine sotto
+  il disegno. Scelte ricordate in `localStorage` (`spikecut-imgimp`).
 - **Barra di sinistra (dalla 2.39)**: tutto ciò che crea, in sezioni con
   titolo — Seleziona, Disegna, Forme pronte, Modifica (Sposta di…, Dividi in
   segmenti, Elimina), Controlla (anteprima 3D, verifica chiusure, chiudi
