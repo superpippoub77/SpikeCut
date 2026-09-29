@@ -868,7 +868,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.43.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.43.1</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2818,6 +2818,10 @@ const I18N = {
     "Interlinea": "Line spacing",
     "Distanza tra le righe, in multipli della dimensione del testo (1,2 = normale)": "Distance between lines, as a multiple of the text size (1.2 = normal)",
     "Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter).": "Bold works with every font; weights lighter than regular only show if the font contains them (for example Inter).",
+    "Assottiglia": "Thin down",
+    "Rende più sottili i tratti delle lettere; utile per i font che hanno un solo spessore (es. Hammer Fat)": "Makes the letter strokes thinner; useful for fonts that have only one weight (e.g. Hammer Fat)",
+    "Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter). Per i font con un solo spessore usa «Assottiglia».": "Bold works with every font; weights lighter than regular only show if the font contains them (for example Inter). For fonts with only one weight use \"Thin down\".",
+    "Questo font personalizzato ha un solo spessore: i pesi sottili non cambiano nulla. Usa «Assottiglia» qui sotto.": "This custom font has only one weight: light weights change nothing. Use \"Thin down\" below.",
   },
   de: {
     "1 cm": "1 cm",
@@ -4005,6 +4009,10 @@ const I18N = {
     "Interlinea": "Zeilenabstand",
     "Distanza tra le righe, in multipli della dimensione del testo (1,2 = normale)": "Abstand zwischen den Zeilen, als Vielfaches der Textgröße (1,2 = normal)",
     "Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter).": "Fett funktioniert mit jeder Schrift; dünnere Stärken als Normal erscheinen nur, wenn die Schrift sie enthält (z. B. Inter).",
+    "Assottiglia": "Verdünnen",
+    "Rende più sottili i tratti delle lettere; utile per i font che hanno un solo spessore (es. Hammer Fat)": "Macht die Striche der Buchstaben dünner; nützlich für Schriften mit nur einer Stärke (z. B. Hammer Fat)",
+    "Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter). Per i font con un solo spessore usa «Assottiglia».": "Fett funktioniert mit jeder Schrift; dünnere Stärken erscheinen nur, wenn die Schrift sie enthält (z. B. Inter). Für Schriften mit nur einer Stärke „Verdünnen“ verwenden.",
+    "Questo font personalizzato ha un solo spessore: i pesi sottili non cambiano nulla. Usa «Assottiglia» qui sotto.": "Diese eigene Schrift hat nur eine Stärke: dünne Stärken ändern nichts. Verwende unten „Verdünnen“.",
   },
   es: {
     "1 cm": "1 cm",
@@ -5192,6 +5200,10 @@ const I18N = {
     "Interlinea": "Interlineado",
     "Distanza tra le righe, in multipli della dimensione del testo (1,2 = normale)": "Distancia entre líneas, en múltiplos del tamaño del texto (1,2 = normal)",
     "Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter).": "La negrita funciona con todas las fuentes; los pesos más finos que el normal solo se ven si la fuente los incluye (por ejemplo Inter).",
+    "Assottiglia": "Adelgazar",
+    "Rende più sottili i tratti delle lettere; utile per i font che hanno un solo spessore (es. Hammer Fat)": "Hace más finos los trazos de las letras; útil para fuentes con un solo grosor (p. ej. Hammer Fat)",
+    "Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter). Per i font con un solo spessore usa «Assottiglia».": "La negrita funciona con todas las fuentes; los pesos más finos solo se ven si la fuente los incluye (por ejemplo Inter). Para fuentes con un solo grosor usa «Adelgazar».",
+    "Questo font personalizzato ha un solo spessore: i pesi sottili non cambiano nulla. Usa «Assottiglia» qui sotto.": "Esta fuente personalizada tiene un solo grosor: los pesos finos no cambian nada. Usa «Adelgazar» abajo.",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -6379,6 +6391,10 @@ const I18N = {
     "Interlinea": "行距",
     "Distanza tra le righe, in multipli della dimensione del testo (1,2 = normale)": "行与行之间的距离，以文字大小的倍数表示（1.2 = 正常）",
     "Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter).": "粗体适用于所有字体；比常规更细的字重只有字体包含时才会显示（例如 Inter）。",
+    "Assottiglia": "变细",
+    "Rende più sottili i tratti delle lettere; utile per i font che hanno un solo spessore (es. Hammer Fat)": "使字母笔画变细；适用于只有一种字重的字体（如 Hammer Fat）",
+    "Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter). Per i font con un solo spessore usa «Assottiglia».": "粗体适用于所有字体；更细的字重只有字体包含时才会显示（例如 Inter）。只有一种字重的字体请使用\"变细\"。",
+    "Questo font personalizzato ha un solo spessore: i pesi sottili non cambiano nulla. Usa «Assottiglia» qui sotto.": "此自定义字体只有一种字重：细字重不会有任何变化。请使用下方的\"变细\"。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -7566,6 +7582,10 @@ const I18N = {
     "Interlinea": "Interligne",
     "Distanza tra le righe, in multipli della dimensione del testo (1,2 = normale)": "Distance entre les lignes, en multiples de la taille du texte (1,2 = normal)",
     "Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter).": "Le gras fonctionne avec toutes les polices ; les graisses plus fines que le normal ne s’affichent que si la police les contient (par exemple Inter).",
+    "Assottiglia": "Affiner",
+    "Rende più sottili i tratti delle lettere; utile per i font che hanno un solo spessore (es. Hammer Fat)": "Rend les traits des lettres plus fins ; utile pour les polices à une seule graisse (ex. Hammer Fat)",
+    "Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter). Per i font con un solo spessore usa «Assottiglia».": "Le gras fonctionne avec toutes les polices ; les graisses plus fines ne s’affichent que si la police les contient (par exemple Inter). Pour les polices à une seule graisse, utilise « Affiner ».",
+    "Questo font personalizzato ha un solo spessore: i pesi sottili non cambiano nulla. Usa «Assottiglia» qui sotto.": "Cette police personnalisée n’a qu’une graisse : les graisses fines ne changent rien. Utilise « Affiner » ci-dessous.",
   },
 };
 let currentLang = 'it';
@@ -8358,6 +8378,10 @@ function shapeToNode(s){
     node = el('text', Object.assign(textAttrs(s, state.scale), {stroke:'none', fill: st.stroke}, {'data-id':s.id,'data-role':st.role}));
     textTspans(s, state.scale).forEach(t=>{ const ts = el('tspan', {x:t.x, dy:t.dy}); ts.textContent = t.text; node.appendChild(ts); });
     const trT = textTransform(s, state.scale); if(trT) node.setAttribute('transform', trT);
+    if(textThinRadius(s) > 0){ // assottiglia: il filtro sta accanto al testo, in un gruppo
+      const g = el('g', {}); g.innerHTML = textThinFilterSVG(s, state.scale);
+      node.setAttribute('filter', `url(#txthin-${s.id})`); g.appendChild(node); node = g;
+    }
   } else if(s.type==='image'){
     node = el('image', {x:s.x*state.scale, y:s.y*state.scale, width:s.w*state.scale, height:s.h*state.scale, preserveAspectRatio:'none', 'data-id':s.id, 'data-role':st.role});
     node.setAttributeNS('http://www.w3.org/1999/xlink','href', s.href);
@@ -8415,6 +8439,14 @@ function textTransform(s, k){
 // righe come <tspan>: ogni riga riparte dal punto di allineamento, le righe vuote tengono il loro spazio
 function textTspans(s, k, xmlEscape){
   return textLines(s).map((line, i)=>({ x: s.x*k, dy: i ? textLineStep(s)*k : 0, text: line.length ? line : '\u00a0' }));
+}
+// Assottiglia (0–100): per i font con un solo spessore (es. Hammer Fat) il browser non sa creare pesi più
+// sottili; erodo i bordi delle lettere in modo uniforme. Raggio massimo: 2,8% della dimensione del testo
+// (oltre, i tratti obliqui e le punte delle lettere si spezzano).
+function textThinRadius(s){ return (s.thin||0) > 0 ? (s.fontSize||6) * 0.028 * (s.thin/100) : 0; }
+function textThinFilterSVG(s, k){
+  const r = textThinRadius(s) * k;
+  return `<filter id="txthin-${s.id}" x="-5%" y="-25%" width="110%" height="150%" primitiveUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feMorphology operator="erode" radius="${r}"/></filter>`;
 }
 function textBBoxFrom(s, w){
   const fs = s.fontSize||6, n = textLines(s).length;
@@ -11330,7 +11362,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.43.0';
+const GUIDE_VERSION = '2.43.1';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -11416,6 +11448,7 @@ html:`<p>Con lo strumento Arco (<b>A</b>): clic sul punto di <b>inizio</b>, clic
 html:`<p><b>Più righe</b>: scrivendo un testo, <b>Invio</b> va a capo; per finire fai clic fuori o premi Ctrl+Invio. Anche nel pannello Proprietà il campo Testo accetta più righe.</p>
 <ul><li><b>Allineamento</b>: sinistra, centro o destra; il blocco di testo resta dov'è e si riallineano le righe.</li>
 <li><b>Spessore carattere</b>: da Sottilissimo (100) a Nero (900). Il grassetto funziona con tutti i font; i pesi più sottili del normale solo se il font li contiene (per esempio Inter).</li>
+<li><b>Assottiglia</b>: rende più sottili i tratti delle lettere con qualsiasi font, anche con quelli che hanno un solo spessore (come Hammer Fat, che esiste solo in versione Regular). Vale sullo schermo, nel PDF e nella stampa; è un effetto di disegno, non cambia i contorni per il taglio.</li>
 <li><b>Spaziatura caratteri</b>: negativa per avvicinare le lettere, positiva per allontanarle.</li>
 <li><b>Larghezza caratteri (%)</b>: sotto 100 il carattere diventa più stretto e snello, sopra 100 più largo; l'altezza non cambia.</li>
 <li><b>Interlinea</b>: la distanza tra le righe (1,2 = normale).</li></ul>
@@ -11696,6 +11729,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.43.1</b> — «Assottiglia» per i testi: tratti più sottili anche con i font che hanno un solo spessore.</li>
 <li><b>2.43</b> — Testo su più righe con allineamento, spessore, spaziatura, larghezza caratteri e interlinea; Shift mantiene le proporzioni ridimensionando (anche più forme e gruppi); gli SVG importati diventano un gruppo e le toppe bianche diventano fori.</li>
 <li><b>2.42</b> — Individuazione di taglio e pieghe dalle immagini riscritta: curve, diagonali, chiusure, scritte scartate, pieghe riconosciute anche se disegnate come i tagli. Incolla immagini dagli appunti (Ctrl+V). Misure lette dal file; il foglio non cambia importando. Font per più testi, per livello e per i nuovi testi.</li>
 <li><b>2.41</b> — Pulsante ☰ in alto a sinistra per comprimere o espandere la barra degli strumenti, come nelle applicazioni web.</li>
@@ -15640,7 +15674,12 @@ function renderTextStyleSection(host, s){
   fw.innerHTML = `<label>${escapeHTML(translate('Spessore carattere'))}</label>`;
   const wsel = document.createElement('select');
   TEXT_WEIGHTS.forEach(([v,l])=>{ const o = document.createElement('option'); o.value = v; o.textContent = translate(l) + ' (' + v + ')'; if((s.fontWeight||400)===v) o.selected = true; wsel.appendChild(o); });
-  wsel.onchange = ()=>{ s.fontWeight = parseInt(wsel.value, 10); pushHistory(); renderAll(); };
+  wsel.onchange = ()=>{
+    s.fontWeight = parseInt(wsel.value, 10);
+    const custom = s.fontFamily && !String(s.fontFamily).startsWith('builtin:');
+    if(s.fontWeight < 400 && custom) showToast('Questo font personalizzato ha un solo spessore: i pesi sottili non cambiano nulla. Usa «Assottiglia» qui sotto.', false);
+    pushHistory(); renderAll();
+  };
   fw.appendChild(wsel); row.appendChild(fw);
   // spaziatura tra i caratteri (anche negativa)
   const fl = document.createElement('div'); fl.className='field';
@@ -15673,8 +15712,16 @@ function renderTextStyleSection(host, s){
   lh.addEventListener('keydown', e=> e.stopPropagation());
   flh.appendChild(lh); row2.appendChild(flh);
   host.appendChild(row2);
+  // assottiglia: funziona con qualsiasi font, anche con un solo spessore
+  const ft = document.createElement('div'); ft.className='field';
+  ft.innerHTML = `<label>${escapeHTML(translate('Assottiglia'))} <span id="thinVal" style="float:right;color:var(--ink-dim);">${s.thin||0}%</span></label>`;
+  const th = document.createElement('input'); th.type='range'; th.min='0'; th.max='100'; th.step='5'; th.value = s.thin||0; th.style.width='100%';
+  th.title = translate('Rende più sottili i tratti delle lettere; utile per i font che hanno un solo spessore (es. Hammer Fat)');
+  th.addEventListener('input', ()=>{ s.thin = parseInt(th.value, 10); ft.querySelector('#thinVal').textContent = s.thin + '%'; renderCanvasOnly(); });
+  th.addEventListener('change', ()=> pushHistory());
+  ft.appendChild(th); host.appendChild(ft);
   const hint = document.createElement('div'); hint.className='hint';
-  hint.textContent = translate('Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter).');
+  hint.textContent = translate('Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter). Per i font con un solo spessore usa «Assottiglia».');
   host.appendChild(hint);
 }
 
@@ -19078,7 +19125,8 @@ function exportNode(s){
     const a = textAttrs(s, 1), tr = textTransform(s, 1);
     const attrs = Object.entries(a).map(([k,v])=> `${k}="${typeof v==='number' ? sN(v) : escapeXML(String(v))}"`).join(' ');
     const spans = textTspans(s, 1).map(t=> `<tspan x="${sN(t.x)}" dy="${sN(t.dy)}">${escapeXML(t.text)}</tspan>`).join('');
-    return `<text ${attrs} fill="${st.stroke}"${tr ? ` transform="${tr}"` : ''} xml:space="preserve">${spans}</text>`;
+    const thin = textThinRadius(s) > 0;
+    return (thin ? textThinFilterSVG(s, 1) : '') + `<text ${attrs} fill="${st.stroke}"${tr ? ` transform="${tr}"` : ''}${thin ? ` filter="url(#txthin-${s.id})"` : ''} xml:space="preserve">${spans}</text>`;
   }
   if(s.type==='tracedpath'){
     const sx=s.w/s.srcW, sy=s.h/s.srcH;

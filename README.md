@@ -344,6 +344,9 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   (`textAttrs`, `textTransform`, `textTspans`), quindi SVG, PDF e stampa
   coincidono con lo schermo. Casella di creazione a più righe (Invio = a capo,
   Ctrl+Invio o clic fuori per finire).
+  `thin` (0–100, «Assottiglia»): filtro `feMorphology erode` con raggio fino al
+  2,8% della dimensione del testo, per i font con un solo spessore (i pesi
+  sottili non si possono simulare); incluso anche nell'SVG esportato.
 - **Ridimensionamento (2.43)**: `resizeFromCorner()`; con Shift le proporzioni
   restano fisse (forme singole, immagine di riferimento, selezioni multiple e
   gruppi, che hanno maniglie sul riquadro complessivo: `dragMode 'resize-sel'`).
