@@ -868,7 +868,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.43.1</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.43.2</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -9984,6 +9984,14 @@ function artShapesForFold3D(){
   return state.shapes.filter(s=> isShapeEffVisible(s) && !(s.style && ['cut','diecut','fold','glue'].includes(s.style.role)));
 }
 // "Stampa" la grafica su un'immagine del foglio piatto (stesso aspetto dell'esportazione SVG)
+// Un SVG caricato come immagine carica i font incorporati (@font-face) DOPO l'evento "load": disegnandolo
+// subito, alcuni browser (Firefox, Safari) usano il carattere di riserva, più largo o diverso, e il testo
+// risulta spostato. Se ci sono font personalizzati aspetto che siano pronti prima di disegnare.
+function afterSVGFonts(svg, draw){
+  if(!/@font-face/.test(svg)){ draw(); return; }
+  const ready = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  ready.then(()=> setTimeout(draw, 450)).catch(()=> setTimeout(draw, 450));
+}
 function buildArtTexture(){
   fold3d.art = null;
   const token = ++fold3d.artToken;
@@ -9993,17 +10001,17 @@ function buildArtTexture(){
   if(!art.length || (box && !box.checked)) return;
   const W = state.page.w, H = state.page.h, k = Math.max(1, Math.min(6, 4096/Math.max(W,H)));
   const set = new Set(art);
-  const body = shapesInZOrder().filter(s=>set.has(s)).map(exportNode).join('\n');
+  const body = `<style>${buildFontFaceCSS()}</style>` + shapesInZOrder().filter(s=>set.has(s)).map(exportNode).join('\n'); // anche i font personalizzati
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${Math.round(W*k)}" height="${Math.round(H*k)}" viewBox="0 0 ${W} ${H}">${body}</svg>`;
   const img = new Image();
-  img.onload = ()=>{
+  img.onload = ()=> afterSVGFonts(svg, ()=>{
     if(token!==fold3d.artToken) return; // nel frattempo è stata richiesta un'immagine più recente
     const cv = document.createElement('canvas'); cv.width = Math.round(W*k); cv.height = Math.round(H*k);
     const g = cv.getContext('2d'); if(!g) return;
     g.drawImage(img, 0, 0, cv.width, cv.height);
     fold3d.art = {canvas:cv, k};
     renderFold3D();
-  };
+  });
   img.onerror = ()=>{ if(token===fold3d.artToken) document.getElementById('fold3dInfo').textContent += ' ' + translate('(la grafica non è stata caricata: alcuni elementi non si possono disegnare nel 3D)'); };
   img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
 }
@@ -11362,7 +11370,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.43.1';
+const GUIDE_VERSION = '2.43.2';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -11729,6 +11737,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.43.2</b> — L'anteprima 3D usa i font personalizzati; anteprime, stampa di prova e PDF aspettano che i font siano caricati prima di disegnare il testo.</li>
 <li><b>2.43.1</b> — «Assottiglia» per i testi: tratti più sottili anche con i font che hanno un solo spessore.</li>
 <li><b>2.43</b> — Testo su più righe con allineamento, spessore, spaziatura, larghezza caratteri e interlinea; Shift mantiene le proporzioni ridimensionando (anche più forme e gruppi); gli SVG importati diventano un gruppo e le toppe bianche diventano fori.</li>
 <li><b>2.42</b> — Individuazione di taglio e pieghe dalle immagini riscritta: curve, diagonali, chiusure, scritte scartate, pieghe riconosciute anche se disegnate come i tagli. Incolla immagini dagli appunti (Ctrl+V). Misure lette dal file; il foglio non cambia importando. Font per più testi, per livello e per i nuovi testi.</li>
@@ -15401,7 +15410,7 @@ function exportPDF(){
   const blob = new Blob([svgStr], {type:'image/svg+xml;charset=utf-8'});
   const url = URL.createObjectURL(blob);
   const img = new Image();
-  img.onload = ()=>{
+  img.onload = ()=> afterSVGFonts(svgStr, ()=>{
     ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,canvas.width,canvas.height);
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     URL.revokeObjectURL(url);
@@ -15410,7 +15419,7 @@ function exportPDF(){
     const pdf = new jsPDF({ orientation: wmm>=hmm?'landscape':'portrait', unit:'mm', format:[wmm,hmm] });
     pdf.addImage(imgData, 'PNG', 0, 0, wmm, hmm);
     pdf.save((document.getElementById('filename').value||'disegno') + '.pdf');
-  };
+  });
   img.onerror = ()=>{ URL.revokeObjectURL(url); showToast('Errore durante la generazione del PDF.', true); };
   img.src = url;
 }
@@ -15478,7 +15487,7 @@ function generatePrintProof(){
   const blob = new Blob([svgStr], {type:'image/svg+xml;charset=utf-8'});
   const url = URL.createObjectURL(blob);
   const img = new Image();
-  img.onload = ()=>{
+  img.onload = ()=> afterSVGFonts(svgStr, ()=>{
     try{
       ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,canvas.width,canvas.height);
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -15495,7 +15504,7 @@ function generatePrintProof(){
       if(proofWindow && !proofWindow.closed) proofWindow.close();
       showToast('Errore nella generazione della stampa di prova: ' + err.message, true);
     }
-  };
+  });
   img.onerror = ()=>{
     URL.revokeObjectURL(url);
     if(proofWindow && !proofWindow.closed) proofWindow.close();
@@ -19292,12 +19301,12 @@ function rasterizeSVGToDataURL(svgStr, wmm, hmm){
     const blob = new Blob([svgStr], {type:'image/svg+xml;charset=utf-8'});
     const url = URL.createObjectURL(blob);
     const img = new Image();
-    img.onload = ()=>{
+    img.onload = ()=> afterSVGFonts(svgStr, ()=>{
       ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,canvas.width,canvas.height);
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       URL.revokeObjectURL(url);
       resolve(canvas.toDataURL('image/png'));
-    };
+    });
     img.onerror = ()=>{ URL.revokeObjectURL(url); reject(new Error('Errore nella generazione di uno dei fogli.')); };
     img.src = url;
   });

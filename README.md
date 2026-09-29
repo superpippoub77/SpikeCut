@@ -354,6 +354,14 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   bianche disegnate sopra una forma colorata diventano fori veri di quella forma
   (`mergeWhiteKnockouts`), così le lettere (A, R, O…) restano aperte anche
   ridimensionando.
+- **Font nelle anteprime (2.43.2)**: la grafica dell'anteprima 3D include i font
+  personalizzati (`buildFontFaceCSS`, prima mancava e si vedeva il carattere di
+  riserva). Anteprima 3D, stampa di prova, PDF e PDF multi-pagina trasformano il
+  disegno in immagine: `afterSVGFonts()` aspetta che i font incorporati siano
+  caricati prima di disegnare (in alcuni browser, disegnando subito, il testo
+  usciva col carattere di riserva e quindi spostato). I font aggiunti da un link
+  che il sito non lascia scaricare non si possono incorporare nei file (l'app lo
+  segnala quando li aggiungi).
 - **Individuazione di taglio e pieghe (dalla 2.42)**: `traceLineArt()` segue le
   linee pixel per pixel (inchiostro → scritte tolte riconoscendo le lettere
   affiancate → assottigliamento Zhang-Suen → pixel a scalino tolti → grafo di
