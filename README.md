@@ -336,6 +336,21 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   tutte) chiedono una sola conferma, e solo se si perde lavoro
   (`docLosesWork`: un disegno vuoto o salvato e allineato in libreria si chiude
   subito).
+- **Testo (2.43)**: più righe (`\n`, resi come `<tspan>`), `align`
+  (left/center/right, `text-anchor`; cambiando allineamento il blocco resta
+  fermo), `fontWeight` (100–900), `letterSpacing` (mm, anche negativa),
+  `widthPct` (larghezza dei caratteri, scala orizzontale attorno al punto di
+  allineamento), `lineHeight`. Unico costruttore per schermo ed esportazione
+  (`textAttrs`, `textTransform`, `textTspans`), quindi SVG, PDF e stampa
+  coincidono con lo schermo. Casella di creazione a più righe (Invio = a capo,
+  Ctrl+Invio o clic fuori per finire).
+- **Ridimensionamento (2.43)**: `resizeFromCorner()`; con Shift le proporzioni
+  restano fisse (forme singole, immagine di riferimento, selezioni multiple e
+  gruppi, che hanno maniglie sul riquadro complessivo: `dragMode 'resize-sel'`).
+- **SVG importati (2.43)**: le forme dello stesso file sono raggruppate; le toppe
+  bianche disegnate sopra una forma colorata diventano fori veri di quella forma
+  (`mergeWhiteKnockouts`), così le lettere (A, R, O…) restano aperte anche
+  ridimensionando.
 - **Individuazione di taglio e pieghe (dalla 2.42)**: `traceLineArt()` segue le
   linee pixel per pixel (inchiostro → scritte tolte riconoscendo le lettere
   affiancate → assottigliamento Zhang-Suen → pixel a scalino tolti → grafo di

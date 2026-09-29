@@ -868,7 +868,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.42.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.43.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2794,6 +2794,30 @@ const I18N = {
     "il file non indica la risoluzione: considerati 96 DPI (valore tipico di schermate e immagini dal web). Se conosci una misura reale, scrivila qui sotto.": "the file does not state its resolution: 96 DPI assumed (typical of screenshots and web images). If you know a real measurement, enter it below.",
     "È più grande del foglio ({pw} × {ph}): il foglio resta com'è e la parte in eccesso uscirà dal foglio (puoi usare \"Adatta al foglio\").": "It is larger than the sheet ({pw} × {ph}): the sheet stays as it is and the excess part will go outside it (you can use \"Fit to sheet\").",
     "Il disegno importato ({bw} × {bh} mm) è più grande del foglio: il formato del foglio non è stato cambiato e la parte in eccesso esce dal foglio.": "The imported drawing ({bw} × {bh} mm) is larger than the sheet: the sheet format was not changed and the excess goes outside the sheet.",
+    "Importate {n} forme, raggruppate (Ctrl+Shift+G per separarle).": "{n} shapes imported, grouped (Ctrl+Shift+G to ungroup).",
+    "{n} forma bianca sopra il disegno è diventata un foro.": "{n} white shape on top of the drawing became a hole.",
+    "{n} forme bianche sopra il disegno sono diventate fori.": "{n} white shapes on top of the drawing became holes.",
+    "Testo… (Invio = a capo, clic fuori o Ctrl+Invio per finire)": "Text… (Enter = new line, click outside or Ctrl+Enter to finish)",
+    "Testo (Invio = a capo)": "Text (Enter = new line)",
+    "Allineamento": "Alignment",
+    "Centro": "Centre",
+    "Spessore carattere": "Font weight",
+    "Sottilissimo": "Thin",
+    "Extra sottile": "Extra light",
+    "Sottile": "Light",
+    "Normale": "Regular",
+    "Medio": "Medium",
+    "Semi-grassetto": "Semibold",
+    "Grassetto": "Bold",
+    "Extra grassetto": "Extra bold",
+    "Nero": "Black",
+    "Spaziatura caratteri ({unit})": "Letter spacing ({unit})",
+    "Negativa per avvicinare i caratteri, positiva per allontanarli": "Negative to bring letters closer, positive to spread them apart",
+    "Larghezza caratteri (%)": "Character width (%)",
+    "Sotto 100 stringe il carattere (più snello), sopra 100 lo allarga; l'altezza non cambia": "Below 100 narrows the font (slimmer), above 100 widens it; the height does not change",
+    "Interlinea": "Line spacing",
+    "Distanza tra le righe, in multipli della dimensione del testo (1,2 = normale)": "Distance between lines, as a multiple of the text size (1.2 = normal)",
+    "Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter).": "Bold works with every font; weights lighter than regular only show if the font contains them (for example Inter).",
   },
   de: {
     "1 cm": "1 cm",
@@ -3957,6 +3981,30 @@ const I18N = {
     "il file non indica la risoluzione: considerati 96 DPI (valore tipico di schermate e immagini dal web). Se conosci una misura reale, scrivila qui sotto.": "die Datei gibt keine Auflösung an: 96 DPI angenommen (typisch für Screenshots und Webbilder). Wenn du ein echtes Maß kennst, gib es unten ein.",
     "È più grande del foglio ({pw} × {ph}): il foglio resta com'è e la parte in eccesso uscirà dal foglio (puoi usare \"Adatta al foglio\").": "Es ist größer als das Blatt ({pw} × {ph}): Das Blatt bleibt unverändert und der überstehende Teil ragt heraus (du kannst „An Blatt anpassen“ verwenden).",
     "Il disegno importato ({bw} × {bh} mm) è più grande del foglio: il formato del foglio non è stato cambiato e la parte in eccesso esce dal foglio.": "Die importierte Zeichnung ({bw} × {bh} mm) ist größer als das Blatt: Das Blattformat wurde nicht geändert, der überstehende Teil ragt heraus.",
+    "Importate {n} forme, raggruppate (Ctrl+Shift+G per separarle).": "{n} Formen importiert, gruppiert (Strg+Umschalt+G zum Trennen).",
+    "{n} forma bianca sopra il disegno è diventata un foro.": "{n} weiße Form über der Zeichnung wurde zu einem Loch.",
+    "{n} forme bianche sopra il disegno sono diventate fori.": "{n} weiße Formen über der Zeichnung wurden zu Löchern.",
+    "Testo… (Invio = a capo, clic fuori o Ctrl+Invio per finire)": "Text… (Eingabe = neue Zeile, außerhalb klicken oder Strg+Eingabe zum Beenden)",
+    "Testo (Invio = a capo)": "Text (Eingabe = neue Zeile)",
+    "Allineamento": "Ausrichtung",
+    "Centro": "Mitte",
+    "Spessore carattere": "Schriftstärke",
+    "Sottilissimo": "Dünn",
+    "Extra sottile": "Extraleicht",
+    "Sottile": "Leicht",
+    "Normale": "Normal",
+    "Medio": "Mittel",
+    "Semi-grassetto": "Halbfett",
+    "Grassetto": "Fett",
+    "Extra grassetto": "Extrafett",
+    "Nero": "Schwarz",
+    "Spaziatura caratteri ({unit})": "Zeichenabstand ({unit})",
+    "Negativa per avvicinare i caratteri, positiva per allontanarli": "Negativ, um Zeichen anzunähern, positiv, um sie auseinanderzuziehen",
+    "Larghezza caratteri (%)": "Zeichenbreite (%)",
+    "Sotto 100 stringe il carattere (più snello), sopra 100 lo allarga; l'altezza non cambia": "Unter 100 wird die Schrift schmaler, über 100 breiter; die Höhe bleibt gleich",
+    "Interlinea": "Zeilenabstand",
+    "Distanza tra le righe, in multipli della dimensione del testo (1,2 = normale)": "Abstand zwischen den Zeilen, als Vielfaches der Textgröße (1,2 = normal)",
+    "Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter).": "Fett funktioniert mit jeder Schrift; dünnere Stärken als Normal erscheinen nur, wenn die Schrift sie enthält (z. B. Inter).",
   },
   es: {
     "1 cm": "1 cm",
@@ -5120,6 +5168,30 @@ const I18N = {
     "il file non indica la risoluzione: considerati 96 DPI (valore tipico di schermate e immagini dal web). Se conosci una misura reale, scrivila qui sotto.": "el archivo no indica la resolución: se consideran 96 DPI (típico de capturas e imágenes web). Si conoces una medida real, escríbela abajo.",
     "È più grande del foglio ({pw} × {ph}): il foglio resta com'è e la parte in eccesso uscirà dal foglio (puoi usare \"Adatta al foglio\").": "Es más grande que la hoja ({pw} × {ph}): la hoja no cambia y la parte sobrante quedará fuera (puedes usar «Ajustar a la hoja»).",
     "Il disegno importato ({bw} × {bh} mm) è più grande del foglio: il formato del foglio non è stato cambiato e la parte in eccesso esce dal foglio.": "El dibujo importado ({bw} × {bh} mm) es más grande que la hoja: el formato no se ha cambiado y la parte sobrante queda fuera.",
+    "Importate {n} forme, raggruppate (Ctrl+Shift+G per separarle).": "{n} formas importadas, agrupadas (Ctrl+Mayús+G para separarlas).",
+    "{n} forma bianca sopra il disegno è diventata un foro.": "{n} forma blanca sobre el dibujo se ha convertido en un agujero.",
+    "{n} forme bianche sopra il disegno sono diventate fori.": "{n} formas blancas sobre el dibujo se han convertido en agujeros.",
+    "Testo… (Invio = a capo, clic fuori o Ctrl+Invio per finire)": "Texto… (Intro = nueva línea, clic fuera o Ctrl+Intro para terminar)",
+    "Testo (Invio = a capo)": "Texto (Intro = nueva línea)",
+    "Allineamento": "Alineación",
+    "Centro": "Centro",
+    "Spessore carattere": "Grosor de la fuente",
+    "Sottilissimo": "Fina",
+    "Extra sottile": "Extra ligera",
+    "Sottile": "Ligera",
+    "Normale": "Normal",
+    "Medio": "Media",
+    "Semi-grassetto": "Seminegrita",
+    "Grassetto": "Negrita",
+    "Extra grassetto": "Extra negrita",
+    "Nero": "Negra",
+    "Spaziatura caratteri ({unit})": "Espaciado de caracteres ({unit})",
+    "Negativa per avvicinare i caratteri, positiva per allontanarli": "Negativo para acercar los caracteres, positivo para separarlos",
+    "Larghezza caratteri (%)": "Ancho de caracteres (%)",
+    "Sotto 100 stringe il carattere (più snello), sopra 100 lo allarga; l'altezza non cambia": "Por debajo de 100 estrecha la fuente (más delgada), por encima la ensancha; la altura no cambia",
+    "Interlinea": "Interlineado",
+    "Distanza tra le righe, in multipli della dimensione del testo (1,2 = normale)": "Distancia entre líneas, en múltiplos del tamaño del texto (1,2 = normal)",
+    "Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter).": "La negrita funciona con todas las fuentes; los pesos más finos que el normal solo se ven si la fuente los incluye (por ejemplo Inter).",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -6283,6 +6355,30 @@ const I18N = {
     "il file non indica la risoluzione: considerati 96 DPI (valore tipico di schermate e immagini dal web). Se conosci una misura reale, scrivila qui sotto.": "文件未注明分辨率：按 96 DPI 处理（截图和网页图像的常见值）。如果知道实际尺寸，请在下方填写。",
     "È più grande del foglio ({pw} × {ph}): il foglio resta com'è e la parte in eccesso uscirà dal foglio (puoi usare \"Adatta al foglio\").": "比画布大（{pw} × {ph}）：画布保持不变，超出部分会在画布外（可使用\"适应画布\"）。",
     "Il disegno importato ({bw} × {bh} mm) è più grande del foglio: il formato del foglio non è stato cambiato e la parte in eccesso esce dal foglio.": "导入的图纸（{bw} × {bh} mm）比画布大：画布格式未更改，超出部分在画布外。",
+    "Importate {n} forme, raggruppate (Ctrl+Shift+G per separarle).": "已导入 {n} 个形状并编组（Ctrl+Shift+G 取消编组）。",
+    "{n} forma bianca sopra il disegno è diventata un foro.": "图纸上方的 {n} 个白色形状已变为孔。",
+    "{n} forme bianche sopra il disegno sono diventate fori.": "图纸上方的 {n} 个白色形状已变为孔。",
+    "Testo… (Invio = a capo, clic fuori o Ctrl+Invio per finire)": "文本…（回车 = 换行，点击外部或 Ctrl+回车 完成）",
+    "Testo (Invio = a capo)": "文本（回车 = 换行）",
+    "Allineamento": "对齐",
+    "Centro": "居中",
+    "Spessore carattere": "字重",
+    "Sottilissimo": "极细",
+    "Extra sottile": "特细",
+    "Sottile": "细",
+    "Normale": "常规",
+    "Medio": "中等",
+    "Semi-grassetto": "半粗",
+    "Grassetto": "粗体",
+    "Extra grassetto": "特粗",
+    "Nero": "黑体",
+    "Spaziatura caratteri ({unit})": "字间距（{unit}）",
+    "Negativa per avvicinare i caratteri, positiva per allontanarli": "负值使字符靠近，正值使字符分开",
+    "Larghezza caratteri (%)": "字符宽度（%）",
+    "Sotto 100 stringe il carattere (più snello), sopra 100 lo allarga; l'altezza non cambia": "小于 100 使字体变窄，大于 100 使其变宽；高度不变",
+    "Interlinea": "行距",
+    "Distanza tra le righe, in multipli della dimensione del testo (1,2 = normale)": "行与行之间的距离，以文字大小的倍数表示（1.2 = 正常）",
+    "Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter).": "粗体适用于所有字体；比常规更细的字重只有字体包含时才会显示（例如 Inter）。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -7446,6 +7542,30 @@ const I18N = {
     "il file non indica la risoluzione: considerati 96 DPI (valore tipico di schermate e immagini dal web). Se conosci una misura reale, scrivila qui sotto.": "le fichier n’indique pas sa résolution : 96 DPI supposés (typique des captures et images web). Si tu connais une mesure réelle, écris-la ci-dessous.",
     "È più grande del foglio ({pw} × {ph}): il foglio resta com'è e la parte in eccesso uscirà dal foglio (puoi usare \"Adatta al foglio\").": "Elle est plus grande que la feuille ({pw} × {ph}) : la feuille reste telle quelle et l’excédent dépassera (tu peux utiliser « Ajuster à la feuille »).",
     "Il disegno importato ({bw} × {bh} mm) è più grande del foglio: il formato del foglio non è stato cambiato e la parte in eccesso esce dal foglio.": "Le dessin importé ({bw} × {bh} mm) est plus grand que la feuille : le format n’a pas été modifié et l’excédent dépasse de la feuille.",
+    "Importate {n} forme, raggruppate (Ctrl+Shift+G per separarle).": "{n} formes importées, groupées (Ctrl+Maj+G pour les séparer).",
+    "{n} forma bianca sopra il disegno è diventata un foro.": "{n} forme blanche au-dessus du dessin est devenue un trou.",
+    "{n} forme bianche sopra il disegno sono diventate fori.": "{n} formes blanches au-dessus du dessin sont devenues des trous.",
+    "Testo… (Invio = a capo, clic fuori o Ctrl+Invio per finire)": "Texte… (Entrée = nouvelle ligne, clic à l’extérieur ou Ctrl+Entrée pour terminer)",
+    "Testo (Invio = a capo)": "Texte (Entrée = nouvelle ligne)",
+    "Allineamento": "Alignement",
+    "Centro": "Centre",
+    "Spessore carattere": "Graisse",
+    "Sottilissimo": "Fin",
+    "Extra sottile": "Extra-léger",
+    "Sottile": "Léger",
+    "Normale": "Normal",
+    "Medio": "Moyen",
+    "Semi-grassetto": "Demi-gras",
+    "Grassetto": "Gras",
+    "Extra grassetto": "Extra-gras",
+    "Nero": "Noir",
+    "Spaziatura caratteri ({unit})": "Espacement des lettres ({unit})",
+    "Negativa per avvicinare i caratteri, positiva per allontanarli": "Négatif pour rapprocher les lettres, positif pour les écarter",
+    "Larghezza caratteri (%)": "Largeur des caractères (%)",
+    "Sotto 100 stringe il carattere (più snello), sopra 100 lo allarga; l'altezza non cambia": "En dessous de 100 la police est plus étroite, au-dessus plus large ; la hauteur ne change pas",
+    "Interlinea": "Interligne",
+    "Distanza tra le righe, in multipli della dimensione del testo (1,2 = normale)": "Distance entre les lignes, en multiples de la taille du texte (1,2 = normal)",
+    "Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter).": "Le gras fonctionne avec toutes les polices ; les graisses plus fines que le normal ne s’affichent que si la police les contient (par exemple Inter).",
   },
 };
 let currentLang = 'it';
@@ -8235,13 +8355,9 @@ function shapeToNode(s){
       node.setAttribute('transform', `rotate(${s.rotation} ${cx} ${cy})`);
     }
   } else if(s.type==='text'){
-    node = el('text', Object.assign({x:s.x*state.scale, y:s.y*state.scale, 'font-size':(s.fontSize||6)*state.scale, 'font-family': resolveFontFamily(s.fontFamily), stroke:'none', fill: st.stroke}, {'data-id':s.id,'data-role':st.role}));
-    node.textContent = s.text||'';
-    if(s.rotation){
-      const bbox = shapeBBox(s);
-      const cx = (bbox.x+bbox.w/2)*state.scale, cy = (bbox.y+bbox.h/2)*state.scale;
-      node.setAttribute('transform', `rotate(${s.rotation} ${cx} ${cy})`);
-    }
+    node = el('text', Object.assign(textAttrs(s, state.scale), {stroke:'none', fill: st.stroke}, {'data-id':s.id,'data-role':st.role}));
+    textTspans(s, state.scale).forEach(t=>{ const ts = el('tspan', {x:t.x, dy:t.dy}); ts.textContent = t.text; node.appendChild(ts); });
+    const trT = textTransform(s, state.scale); if(trT) node.setAttribute('transform', trT);
   } else if(s.type==='image'){
     node = el('image', {x:s.x*state.scale, y:s.y*state.scale, width:s.w*state.scale, height:s.h*state.scale, preserveAspectRatio:'none', 'data-id':s.id, 'data-role':st.role});
     node.setAttributeNS('http://www.w3.org/1999/xlink','href', s.href);
@@ -8271,6 +8387,52 @@ function shapeToNode(s){
   return node;
 }
 
+
+/* ============================================================
+   TESTO — più righe (Invio), allineamento, spessore, spaziatura tra i
+   caratteri, larghezza dei caratteri, interlinea. s.x / s.y = linea di base
+   della prima riga nel punto di allineamento (bordo sinistro, centro o bordo destro).
+============================================================ */
+const TEXT_WEIGHTS = [[100,'Sottilissimo'],[200,'Extra sottile'],[300,'Sottile'],[400,'Normale'],[500,'Medio'],[600,'Semi-grassetto'],[700,'Grassetto'],[800,'Extra grassetto'],[900,'Nero']];
+function textLines(s){ return String(s.text||'').split('\n'); }
+function textAnchor(s){ return s.align==='center' ? 'middle' : s.align==='right' ? 'end' : 'start'; }
+function textLineStep(s){ return (s.fontSize||6) * (s.lineHeight || 1.2); }
+// attributi comuni (k = mm → unità di destinazione: pixel dello schermo oppure mm nell'esportazione)
+function textAttrs(s, k){
+  const a = { x: s.x*k, y: s.y*k, 'font-size': (s.fontSize||6)*k, 'font-family': resolveFontFamily(s.fontFamily), 'text-anchor': textAnchor(s) };
+  if(s.fontWeight && s.fontWeight!==400) a['font-weight'] = s.fontWeight;
+  if(s.letterSpacing) a['letter-spacing'] = s.letterSpacing*k;
+  return a;
+}
+// trasformazione: larghezza dei caratteri (solo in orizzontale, attorno al punto di allineamento) e rotazione
+function textTransform(s, k){
+  const parts = [];
+  if(s.rotation){ const b = shapeBBox(s); parts.push(`rotate(${s.rotation} ${(b.x+b.w/2)*k} ${(b.y+b.h/2)*k})`); }
+  const sx = (s.widthPct || 100) / 100;
+  if(Math.abs(sx-1) > 1e-6) parts.push(`translate(${s.x*k} 0) scale(${sx} 1) translate(${-s.x*k} 0)`);
+  return parts.join(' ');
+}
+// righe come <tspan>: ogni riga riparte dal punto di allineamento, le righe vuote tengono il loro spazio
+function textTspans(s, k, xmlEscape){
+  return textLines(s).map((line, i)=>({ x: s.x*k, dy: i ? textLineStep(s)*k : 0, text: line.length ? line : '\u00a0' }));
+}
+function textBBoxFrom(s, w){
+  const fs = s.fontSize||6, n = textLines(s).length;
+  const h = fs*1.3 + (n-1)*textLineStep(s);
+  const x = s.align==='center' ? s.x - w/2 : s.align==='right' ? s.x - w : s.x;
+  return {x, y: s.y - fs, w: w || 0.01, h};
+}
+function estimateTextWidth(s){
+  const fs = s.fontSize||6, sx = (s.widthPct||100)/100, wf = (s.fontWeight||400) >= 600 ? 1.08 : 1;
+  return Math.max(...textLines(s).map(l=> l.length*fs*0.55*wf + l.length*(s.letterSpacing||0))) * sx;
+}
+// cambiando l'allineamento il blocco resta fermo: si sposta solo il punto di riferimento
+function setTextAlign(s, align){
+  const b = shapeBBox(s);
+  s.align = align;
+  s.x = align==='center' ? b.x + b.w/2 : align==='right' ? b.x + b.w : b.x;
+}
+
 function renderShapes(){
   layerArt.innerHTML='';
   for(const s of shapesInZOrder()){
@@ -8283,8 +8445,9 @@ function renderShapes(){
     const s = state.shapes.find(x=>x.id===node.dataset.id);
     if(!s || s.type!=='text') return;
     try{
-      const len = node.getComputedTextLength();
-      if(len>0) s._measuredW = len/state.scale;
+      const spans = node.querySelectorAll('tspan');
+      const len = spans.length ? Math.max(...[...spans].map(t=>t.getComputedTextLength())) : node.getComputedTextLength();
+      if(len>0) s._measuredW = len/state.scale * ((s.widthPct||100)/100);
     }catch(err){ /* ambienti senza supporto alla misura reale: resta la stima */ }
   });
 }
@@ -8309,6 +8472,19 @@ function renderSelectionHandles(){
     }
   }
   if(state.selection.size===0) return;
+  if(state.selection.size > 1 && state.tool==='select' && !state.drag){ // più forme o un gruppo: si ridimensionano insieme
+    const sel = [...state.selection].map(id=>state.shapes.find(x=>x.id===id)).filter(s=>s && !s.locked && isShapeEffVisible(s));
+    const bb = sel.map(shapeBBox).filter(Boolean);
+    if(bb.length){
+      const x0=Math.min(...bb.map(b=>b.x)), y0=Math.min(...bb.map(b=>b.y)), x1=Math.max(...bb.map(b=>b.x+b.w)), y1=Math.max(...bb.map(b=>b.y+b.h));
+      const sc = state.scale, pad = 6/sc;
+      layerOverlay.appendChild(el('rect', {x:(x0-pad)*sc, y:(y0-pad)*sc, width:(x1-x0+2*pad)*sc, height:(y1-y0+2*pad)*sc, fill:'none', stroke:'var(--brass)', 'stroke-width':1, 'stroke-dasharray':'6,3', 'pointer-events':'none'}));
+      [[x0-pad,y0-pad,'nw'],[x1+pad,y0-pad,'ne'],[x0-pad,y1+pad,'sw'],[x1+pad,y1+pad,'se']].forEach(([cx,cy,pos])=>{
+        layerOverlay.appendChild(el('rect', {x:cx*sc-5, y:cy*sc-5, width:10, height:10, fill:'var(--brass)', stroke:'#fff', 'stroke-width':1.5, 'data-sel-resize':pos,
+          style:'cursor:' + (pos==='nw'||pos==='se' ? 'nwse' : 'nesw') + '-resize'}));
+      });
+    }
+  }
   for(const id of state.selection){
     const s = state.shapes.find(x=>x.id===id);
     if(!s) continue;
@@ -8405,6 +8581,20 @@ function renderTextHandles(s, interactive){
   layerOverlay.appendChild(el('circle', {cx:handlePt[0]*state.scale, cy:handlePt[1]*state.scale, r:5.5, fill:'#fff', stroke:'var(--brass)', 'stroke-width':1.5, 'data-rotate':'1', 'data-shape':s.id, style:'cursor:grab'}));
 }
 
+// Ridimensionamento da un angolo: il vertice opposto resta fermo. Con Shift le proporzioni restano identiche
+// (conta l'asse che è cambiato di più, così l'angolo segue il puntatore).
+function resizeFromCorner(start, corner, pt, keepRatio, minSize){
+  minSize = minSize || 1;
+  const ax = corner.includes('w') ? start.x + start.w : start.x, ay = corner.includes('n') ? start.y + start.h : start.y;
+  let w = Math.max(minSize, corner.includes('w') ? ax - pt[0] : pt[0] - ax);
+  let h = Math.max(minSize, corner.includes('n') ? ay - pt[1] : pt[1] - ay);
+  if(keepRatio && start.w > 0 && start.h > 0){
+    const sx = w / start.w, sy = h / start.h;
+    const s = Math.max(minSize / Math.min(start.w, start.h), Math.abs(sx - 1) > Math.abs(sy - 1) ? sx : sy);
+    w = start.w * s; h = start.h * s;
+  }
+  return { x: corner.includes('w') ? ax - w : ax, y: corner.includes('n') ? ay - h : ay, w, h };
+}
 function drawBBox(x,y,w,h, withHandles, shapeId){
   const rect = el('rect', {x:x*state.scale,y:y*state.scale,width:w*state.scale,height:h*state.scale, fill:'none', stroke:'var(--brass)', 'stroke-width':1, 'stroke-dasharray':'4,3', 'pointer-events':'none'});
   layerOverlay.appendChild(rect);
@@ -11140,7 +11330,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.42.0';
+const GUIDE_VERSION = '2.43.0';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -11223,7 +11413,14 @@ html:`<p>Con lo strumento Arco (<b>A</b>): clic sul punto di <b>inizio</b>, clic
 <p>Oltre al rombo, l'arco mostra solo le maniglie delle estremità: trascinandole, o spostando una linea collegata, viene ricalcolato e resta un arco. Le quote indicano lunghezza e raggio. Se aggiungi o togli un punto al suo interno, o lo unisci a un'altra linea, diventa una linea normale con la stessa forma.</p>` },
 
 { id:'testo', cat:'Disegnare', title:'Testo e font', keys:'testo scritta font carattere tipo personalizzato caricare',
-html:`<p><b>Carattere (font)</b>: nel pannello Proprietà del testo selezionato. Con <b>più testi selezionati</b> (anche su livelli diversi) il campo "Font dei testi selezionati" li cambia tutti insieme; i pulsanti <b>A tutti i testi del livello</b> e <b>A tutti i testi del disegno</b> applicano lo stesso carattere a tutti. L'ultimo carattere scelto vale per i <b>nuovi testi</b>, su qualsiasi livello; senza selezione si sceglie in "Font dei nuovi testi".</p>
+html:`<p><b>Più righe</b>: scrivendo un testo, <b>Invio</b> va a capo; per finire fai clic fuori o premi Ctrl+Invio. Anche nel pannello Proprietà il campo Testo accetta più righe.</p>
+<ul><li><b>Allineamento</b>: sinistra, centro o destra; il blocco di testo resta dov'è e si riallineano le righe.</li>
+<li><b>Spessore carattere</b>: da Sottilissimo (100) a Nero (900). Il grassetto funziona con tutti i font; i pesi più sottili del normale solo se il font li contiene (per esempio Inter).</li>
+<li><b>Spaziatura caratteri</b>: negativa per avvicinare le lettere, positiva per allontanarle.</li>
+<li><b>Larghezza caratteri (%)</b>: sotto 100 il carattere diventa più stretto e snello, sopra 100 più largo; l'altezza non cambia.</li>
+<li><b>Interlinea</b>: la distanza tra le righe (1,2 = normale).</li></ul>
+<p>Tutte queste impostazioni valgono anche nelle esportazioni SVG, PDF e nella stampa.</p>
+<p><b>Carattere (font)</b>: nel pannello Proprietà del testo selezionato. Con <b>più testi selezionati</b> (anche su livelli diversi) il campo "Font dei testi selezionati" li cambia tutti insieme; i pulsanti <b>A tutti i testi del livello</b> e <b>A tutti i testi del disegno</b> applicano lo stesso carattere a tutti. L'ultimo carattere scelto vale per i <b>nuovi testi</b>, su qualsiasi livello; senza selezione si sceglie in "Font dei nuovi testi".</p>
 <p>Con lo strumento Testo (<b>T</b>) clicca nel punto, scrivi e conferma. Dal pannello Proprietà cambi testo, dimensione e font.</p>
 <p>Oltre ai font di sistema puoi caricare font personalizzati (anche in blocco da un file .zip) e usarli nel disegno. Il riquadro di selezione si adatta alla larghezza reale del testo nel font scelto.</p>` },
 
@@ -11237,7 +11434,8 @@ html:`<p>Dalla scheda <b>Immagine</b> del pannello laterale puoi caricare un'imm
 <p>Funziona con scansioni o schermate di una fustella dritta, con linee ben visibili su sfondo chiaro; non con foto in prospettiva. Le misure dipendono da come hai dimensionato l'immagine sul foglio: prima di avviare portala alla misura reale (per esempio misurando un lato noto). Poi controlla il risultato con il <a data-topic="controllo-3d">controllo del disegno</a>.</p>` },
 
 { id:'importa-svg', cat:'Disegnare', title:'Importare SVG e PDF', keys:'importare svg pdf file aprire disegno esterno illustrator inkscape scaricato online template modello',
-html:`<p>Per importare una <b>foto o una scansione</b> (PNG, JPG…) vedi <a data-topic="importa-immagine">Importare un'immagine</a>: anche lì si possono individuare taglio e pieghe. Tutti i file si possono anche <b>trascinare sul foglio</b>.</p>
+html:`<p>Le forme di uno stesso file SVG vengono importate <b>raggruppate</b> (Ctrl+Shift+G per separarle). Molti loghi e scritte non hanno veri fori: disegnano la forma piena e sopra delle toppe bianche (l'interno di A, R, O…). All'importazione queste toppe diventano <b>fori veri</b> della forma che coprono, così le lettere restano aperte anche ridimensionando.</p>
+<p>Per importare una <b>foto o una scansione</b> (PNG, JPG…) vedi <a data-topic="importa-immagine">Importare un'immagine</a>: anche lì si possono individuare taglio e pieghe. Tutti i file si possono anche <b>trascinare sul foglio</b>.</p>
 <p>Il pulsante <b>⇪</b> in alto importa un file <b>SVG</b> o <b>PDF</b>.</p>
 <ul><li><b>SVG</b>: viene letto con curve, archi e trasformazioni. I ruoli vengono riconosciuti dai colori del file e i doppioni tecnici dei programmi CAD vengono ripuliti.</li>
 <li><b>PDF</b>: comodo per i modelli di scatole scaricati online, che di solito sono vettoriali e in scala reale. Le linee della pagina vengono lette esattamente, in millimetri. Si apre una finestra con i <b>gruppi di linee</b> trovati (per colore e tratteggio), e per ognuno scegli il ruolo: Taglio, Piega, Fustella speciale, Incollaggio, Disegno oppure <b>Ignora</b> (per quote, cornici, marchi). La proposta iniziale: la linea continua più lunga è il taglio, le tratteggiate sono pieghe, i riempimenti sono grafica. Se il PDF ha più pagine scegli quale importare. Testi e immagini del PDF non vengono importati; un PDF che è solo una scansione non ha linee da leggere (in quel caso usa la scheda <a data-topic="immagini">Immagine</a> e la vettorizzazione).</li></ul>
@@ -11314,7 +11512,8 @@ html:`<p>I punti che coincidono sono uniti: spostandone uno si trascina l'altro.
 <p>I punti scollegati hanno la maniglia <b>viola tratteggiata</b> e contano come punti liberi. Si ricollegano con "🔗 Ricollega", o unendoli con <a data-topic="unisci">Unisci punti</a>.</p>` },
 
 { id:'sposta', cat:'Modificare', title:'Spostare di una distanza precisa', keys:'spostare sposta distanza precisa mm cm direzione angolo frecce tastiera copie serie ripeti passo invio nudge',
-html:`<p><b>Sposta di…</b>: seleziona uno o più oggetti e premi <b>Invio</b> (oppure menu Strumenti, tasto destro sull'oggetto o il pulsante nel pannello Proprietà). Nella finestra indichi lo spostamento in uno dei due modi, che si aggiornano a vicenda:</p>
+html:`<p><b>Ridimensionare con le maniglie</b>: trascina un angolo; tenendo premuto <b>Shift</b> larghezza e altezza cambiano nella stessa proporzione (vale per le forme singole, per l'immagine di riferimento e per più forme selezionate o un gruppo, che hanno le maniglie sul riquadro complessivo).</p>
+<p><b>Sposta di…</b>: seleziona uno o più oggetti e premi <b>Invio</b> (oppure menu Strumenti, tasto destro sull'oggetto o il pulsante nel pannello Proprietà). Nella finestra indichi lo spostamento in uno dei due modi, che si aggiornano a vicenda:</p>
 <ul><li><b>Orizzontale / Verticale</b> nell'unità di misura scelta (positivo = verso destra / verso il basso);</li>
 <li><b>Distanza e Angolo</b> (0° = destra, 90° = su, 180° = sinistra, 270° = giù), oppure i pulsanti delle <b>8 direzioni</b>.</li></ul>
 <p>Sul disegno un'<b>anteprima tratteggiata</b> mostra dove finiranno gli oggetti. Con <b>Crea copie invece di spostare</b> gli originali restano dove sono e vengono create una o più copie in serie, ognuna spostata rispetto alla precedente (per esempio 5 copie ogni 30 mm). Invio applica, Esc annulla; i valori usati vengono ricordati.</p>
@@ -11497,6 +11696,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.43</b> — Testo su più righe con allineamento, spessore, spaziatura, larghezza caratteri e interlinea; Shift mantiene le proporzioni ridimensionando (anche più forme e gruppi); gli SVG importati diventano un gruppo e le toppe bianche diventano fori.</li>
 <li><b>2.42</b> — Individuazione di taglio e pieghe dalle immagini riscritta: curve, diagonali, chiusure, scritte scartate, pieghe riconosciute anche se disegnate come i tagli. Incolla immagini dagli appunti (Ctrl+V). Misure lette dal file; il foglio non cambia importando. Font per più testi, per livello e per i nuovi testi.</li>
 <li><b>2.41</b> — Pulsante ☰ in alto a sinistra per comprimere o espandere la barra degli strumenti, come nelle applicazioni web.</li>
 <li><b>2.40.1</b> — Le schede chiuse non ricompaiono più ricaricando la pagina; si può chiudere anche l'ultima scheda (schermata "Nessun progetto aperto"); pulsante Chiudi tutte e menu col tasto destro sulle schede.</li>
@@ -12795,7 +12995,7 @@ function handleMouseDown(mm, e){
       return;
     }
     if(state.refImageSelected && target.dataset && target.dataset.imgResize){
-      dragMode='resize-image'; state.drag={corner:target.dataset.imgResize};
+      dragMode='resize-image'; state.drag={corner:target.dataset.imgResize, box:{x:state.refImage.x, y:state.refImage.y, w:state.refImage.w, h:state.refImage.h}};
       return;
     }
     if(target.dataset && target.dataset.arcMid){ // curvatura dell'arco
@@ -12824,12 +13024,22 @@ function handleMouseDown(mm, e){
         const bbox = shapeBBox(s);
         const center = [bbox.x+bbox.w/2, bbox.y+bbox.h/2];
         dragMode='resize-text';
-        state.drag = {shapeId:s.id, center, startFontSize:s.fontSize||6, startDist: Math.max(0.1, dist(mm, center))};
+        state.drag = {shapeId:s.id, center, startFontSize:s.fontSize||6, startLS: s.letterSpacing||0, startDist: Math.max(0.1, dist(mm, center))};
       }
       return;
     }
+    if(target.dataset && target.dataset.selResize){ // ridimensiona insieme tutte le forme selezionate
+      const sel = [...state.selection].map(id=>state.shapes.find(x=>x.id===id)).filter(s=>s && !s.locked && isShapeEffVisible(s));
+      const bb = sel.map(shapeBBox).filter(Boolean);
+      const box = {x:Math.min(...bb.map(b=>b.x)), y:Math.min(...bb.map(b=>b.y))};
+      box.w = Math.max(...bb.map(b=>b.x+b.w)) - box.x; box.h = Math.max(...bb.map(b=>b.y+b.h)) - box.y;
+      dragMode='resize-sel';
+      state.drag = {corner: target.dataset.selResize, box, snap: sel.map(s=>({id:s.id, points: s.points ? s.points.map(p=>p.slice()) : null, x:s.x, y:s.y, w:s.w, h:s.h, fontSize:s.fontSize, letterSpacing:s.letterSpacing}))};
+      return;
+    }
     if(target.dataset && target.dataset.resize){
-      dragMode='resize'; state.drag={shapeId:target.dataset.shape, corner:target.dataset.resize, start:mm};
+      { const rs = state.shapes.find(x=>x.id===target.dataset.shape);
+        dragMode='resize'; state.drag={shapeId:target.dataset.shape, corner:target.dataset.resize, start:mm, box: rs ? {x:rs.x, y:rs.y, w:rs.w, h:rs.h} : null}; }
       return;
     }
     const hit = topShapeAt(mm);
@@ -12984,12 +13194,24 @@ function handleMouseMove(mm, e){
         lm = rotatePointAround(mm, [cx,cy], -s.rotation);
       }
       const c = state.drag.corner;
-      if(c.includes('e')) s.w = Math.max(1, lm[0]-s.x);
-      if(c.includes('s')) s.h = Math.max(1, lm[1]-s.y);
-      if(c.includes('w')){ const nx=lm[0]; s.w = Math.max(1, s.x+s.w-nx); s.x=nx; }
-      if(c.includes('n')){ const ny=lm[1]; s.h = Math.max(1, s.y+s.h-ny); s.y=ny; }
+      const r = resizeFromCorner(state.drag.box || {x:s.x, y:s.y, w:s.w, h:s.h}, c, lm, e && e.shiftKey, 1); // Shift: proporzioni fisse
+      s.x = r.x; s.y = r.y; s.w = r.w; s.h = r.h;
       renderAll();
     }
+    return;
+  }
+  if(dragMode==='resize-sel' && state.drag){
+    const d = state.drag, b = d.box;
+    const nb = resizeFromCorner(b, d.corner, mm, e && e.shiftKey, 0.5);
+    const sx = b.w ? nb.w / b.w : 1, sy = b.h ? nb.h / b.h : 1;
+    const X = v=> nb.x + (v - b.x) * sx, Y = v=> nb.y + (v - b.y) * sy;
+    d.snap.forEach(o=>{
+      const s = state.shapes.find(x=>x.id===o.id); if(!s) return;
+      if(o.points) s.points = o.points.map(p=>[X(p[0]), Y(p[1])]);
+      else if(s.type==='text'){ s.x = X(o.x); s.y = Y(o.y); s.fontSize = Math.max(0.5, (o.fontSize||6) * Math.min(sx, sy)); if(o.letterSpacing) s.letterSpacing = o.letterSpacing * Math.min(sx, sy); }
+      else if(o.x!=null){ s.x = X(o.x); s.y = Y(o.y); if(o.w!=null){ s.w = Math.max(0.1, o.w*sx); s.h = Math.max(0.1, o.h*sy); } }
+    });
+    renderAll();
     return;
   }
   if(dragMode==='resize-text' && state.drag){
@@ -12998,6 +13220,7 @@ function handleMouseMove(mm, e){
       const d = Math.max(0.1, dist(mm, state.drag.center));
       const factor = d / state.drag.startDist;
       s.fontSize = Math.max(0.5, state.drag.startFontSize * factor);
+      if(state.drag.startLS) s.letterSpacing = state.drag.startLS * factor;
       renderAll();
     }
     return;
@@ -13026,11 +13249,8 @@ function handleMouseMove(mm, e){
   }
   if(dragMode==='resize-image' && state.drag){
     const r = state.refImage;
-    const c = state.drag.corner;
-    if(c.includes('e')) r.w = Math.max(2, mm[0]-r.x);
-    if(c.includes('s')) r.h = Math.max(2, mm[1]-r.y);
-    if(c.includes('w')){ const nx=mm[0]; r.w = Math.max(2, r.x+r.w-nx); r.x=nx; }
-    if(c.includes('n')){ const ny=mm[1]; r.h = Math.max(2, r.y+r.h-ny); r.y=ny; }
+    const nb = resizeFromCorner(state.drag.box, state.drag.corner, mm, e && e.shiftKey, 2); // Shift: proporzioni fisse
+    r.x = nb.x; r.y = nb.y; r.w = nb.w; r.h = nb.h;
     renderAll();
     return;
   }
@@ -13067,7 +13287,7 @@ function handleMouseUp(mm, e){
       commitShapeDraft(d);
     }
     state.draft=null;
-  } else if(dragMode==='move-shape' || dragMode==='move-vertex' || dragMode==='resize' || dragMode==='resize-text' || dragMode==='rotate-shape' || dragMode==='arc-bulge'){
+  } else if(dragMode==='move-shape' || dragMode==='move-vertex' || dragMode==='resize' || dragMode==='resize-sel' || dragMode==='resize-text' || dragMode==='rotate-shape' || dragMode==='arc-bulge'){
     state.guides = null; state.arcEditLabel = null;
     if(dragMode==='move-vertex' && state.drag){
       // un punto staccato lasciato su un altro punto si riattacca lì (nuova unione)
@@ -13390,20 +13610,22 @@ function migrateLegacyArcs(shapes){
 
 function placeTextInput(mm){
   const holder = document.getElementById('canvasHolder');
-  const input = document.createElement('input');
+  const input = document.createElement('textarea'); // più righe: Invio va a capo
   input.className='floating-text-input';
   input.style.left = mm[0]*state.scale + 'px';
   input.style.top = (mm[1]*state.scale - 14) + 'px';
-  input.style.minWidth = '120px';
+  input.style.minWidth = '160px';
   input.style.zIndex = '999';
   input.style.fontSize = (6*state.scale)+'px';
-  input.placeholder='Testo…';
+  input.style.lineHeight = '1.2'; input.style.resize = 'both'; input.rows = 1;
+  input.placeholder = translate('Testo… (Invio = a capo, clic fuori o Ctrl+Invio per finire)');
+  input.addEventListener('input', ()=>{ input.rows = Math.max(1, input.value.split('\n').length); });
   holder.appendChild(input);
   setTimeout(()=> input.focus(), 0);
   function commit(){
-    const val = input.value.trim();
+    const val = input.value.replace(/\s+$/,'').replace(/^\n+/,''); // tolgo solo righe vuote in fondo e in cima
     holder.removeChild(input);
-    if(val){
+    if(val.trim()){
       const shape = makeShape('text', {x:mm[0], y:mm[1], text:val, fontSize:6, fontFamily: textFontDefault()}); // ultimo carattere scelto
       state.shapes.push(shape);
       state.selection = new Set([shape.id]);
@@ -13413,7 +13635,8 @@ function placeTextInput(mm){
   }
   input.addEventListener('blur', commit);
   input.addEventListener('keydown', ev=>{
-    if(ev.key==='Enter'){ ev.preventDefault(); input.blur(); }
+    ev.stopPropagation(); // i tasti scritti non comandano il disegno
+    if(ev.key==='Enter' && (ev.ctrlKey || ev.metaKey)){ ev.preventDefault(); input.blur(); } // Invio da solo = a capo
     if(ev.key==='Escape'){ input.value=''; input.blur(); }
   });
 }
@@ -15398,6 +15621,63 @@ function applyFontToTexts(texts, v){
   setTextFontDefault(v);
   pushHistory(); renderAll();
 }
+
+// allineamento, spessore, spaziatura, larghezza dei caratteri, interlinea
+function renderTextStyleSection(host, s){
+  const wrap = document.createElement('div'); wrap.className='field'; wrap.style.marginTop='8px';
+  wrap.innerHTML = `<label>${escapeHTML(translate('Allineamento'))}</label>`;
+  const seg = document.createElement('div'); seg.className='seg3';
+  [['left','⯇ ' + translate('Sinistra')],['center','≡ ' + translate('Centro')],['right',translate('Destra') + ' ⯈']].forEach(([v,l])=>{
+    const b = document.createElement('button'); b.type='button'; b.textContent = l; b.dataset.align = v;
+    if((s.align||'left')===v) b.classList.add('active');
+    b.onclick = ()=>{ setTextAlign(s, v); pushHistory(); renderAll(); };
+    seg.appendChild(b);
+  });
+  wrap.appendChild(seg); host.appendChild(wrap);
+  const row = document.createElement('div'); row.className='row'; row.style.marginTop='6px';
+  // spessore
+  const fw = document.createElement('div'); fw.className='field';
+  fw.innerHTML = `<label>${escapeHTML(translate('Spessore carattere'))}</label>`;
+  const wsel = document.createElement('select');
+  TEXT_WEIGHTS.forEach(([v,l])=>{ const o = document.createElement('option'); o.value = v; o.textContent = translate(l) + ' (' + v + ')'; if((s.fontWeight||400)===v) o.selected = true; wsel.appendChild(o); });
+  wsel.onchange = ()=>{ s.fontWeight = parseInt(wsel.value, 10); pushHistory(); renderAll(); };
+  fw.appendChild(wsel); row.appendChild(fw);
+  // spaziatura tra i caratteri (anche negativa)
+  const fl = document.createElement('div'); fl.className='field';
+  fl.innerHTML = `<label>${escapeHTML(tpl('Spaziatura caratteri ({unit})', {unit: unitLabel()}))}</label>`;
+  const ls = document.createElement('input'); ls.type='number'; ls.step = String(UNITS[state.unit].step/2 || 0.05);
+  ls.value = Math.round(mmToUnit(s.letterSpacing||0)*1000)/1000;
+  ls.title = translate('Negativa per avvicinare i caratteri, positiva per allontanarli');
+  ls.addEventListener('input', ()=>{ const v = parseFloat(ls.value); if(!isNaN(v)){ s.letterSpacing = Math.max(-(s.fontSize||6)*0.5, unitToMm(v)); renderCanvasOnly(); } });
+  ls.addEventListener('change', ()=>{ pushHistory(); renderPropPanel(); });
+  ls.addEventListener('keydown', e=> e.stopPropagation());
+  fl.appendChild(ls); row.appendChild(fl);
+  host.appendChild(row);
+  const row2 = document.createElement('div'); row2.className='row';
+  // larghezza dei caratteri
+  const fwp = document.createElement('div'); fwp.className='field';
+  fwp.innerHTML = `<label>${escapeHTML(translate('Larghezza caratteri (%)'))}</label>`;
+  const wp = document.createElement('input'); wp.type='number'; wp.step='5'; wp.min='30'; wp.max='200'; wp.value = s.widthPct || 100;
+  wp.title = translate('Sotto 100 stringe il carattere (più snello), sopra 100 lo allarga; l\'altezza non cambia');
+  wp.addEventListener('input', ()=>{ const v = parseFloat(wp.value); if(v >= 30 && v <= 200){ s.widthPct = v; renderCanvasOnly(); } });
+  wp.addEventListener('change', ()=>{ pushHistory(); renderPropPanel(); });
+  wp.addEventListener('keydown', e=> e.stopPropagation());
+  fwp.appendChild(wp); row2.appendChild(fwp);
+  // interlinea
+  const flh = document.createElement('div'); flh.className='field';
+  flh.innerHTML = `<label>${escapeHTML(translate('Interlinea'))}</label>`;
+  const lh = document.createElement('input'); lh.type='number'; lh.step='0.05'; lh.min='0.6'; lh.max='4'; lh.value = s.lineHeight || 1.2;
+  lh.title = translate('Distanza tra le righe, in multipli della dimensione del testo (1,2 = normale)');
+  lh.addEventListener('input', ()=>{ const v = parseFloat(lh.value); if(v >= 0.6 && v <= 4){ s.lineHeight = v; renderCanvasOnly(); } });
+  lh.addEventListener('change', ()=> pushHistory());
+  lh.addEventListener('keydown', e=> e.stopPropagation());
+  flh.appendChild(lh); row2.appendChild(flh);
+  host.appendChild(row2);
+  const hint = document.createElement('div'); hint.className='hint';
+  hint.textContent = translate('Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter).');
+  host.appendChild(hint);
+}
+
 function renderTextFontSection(host, texts){
   const fams = [...new Set(texts.map(t=>t.fontFamily||''))], mixed = fams.length > 1, current = mixed ? null : (fams[0] || null);
   const ff = document.createElement('div'); ff.className='field'; ff.style.marginTop='8px';
@@ -15606,11 +15886,14 @@ function renderPropPanelInner(){
 
   if(s.type==='text' && ids.length===1){
     const f = document.createElement('div'); f.className='field'; f.style.marginTop='10px';
-    f.innerHTML = `<label>Testo</label>`;
-    const inp = document.createElement('input'); inp.type='text'; inp.value = s.text||'';
-    inp.oninput = ()=>{ s.text=inp.value; renderCanvasOnly(); };
+    f.innerHTML = `<label>${escapeHTML(translate('Testo (Invio = a capo)'))}</label>`;
+    const inp = document.createElement('textarea'); inp.value = s.text||'';
+    inp.rows = Math.min(8, Math.max(2, textLines(s).length)); inp.style.cssText='width:100%;resize:vertical;font-family:var(--sans);font-size:13px;line-height:1.35;';
+    inp.oninput = ()=>{ s.text=inp.value; inp.rows = Math.min(8, Math.max(2, inp.value.split('\n').length)); renderCanvasOnly(); };
     inp.onchange = ()=>pushHistory();
+    inp.addEventListener('keydown', e=> e.stopPropagation());
     f.appendChild(inp); host.appendChild(f);
+    renderTextStyleSection(host, s);
 
     const sizeRow = document.createElement('div'); sizeRow.className='field'; sizeRow.style.marginTop='8px';
     sizeRow.innerHTML = `<label>${tpl('Dimensione testo ({unit})', {unit: unitLabel()})}</label>`;
@@ -17395,6 +17678,68 @@ function scaleDashArray(dash, factor){
   if(!dash || dash==='none') return 'none';
   return dash.split(/[\s,]+/).map(n=>(parseFloat(n)*factor).toFixed(2)).join(',');
 }
+
+// Sposta un tracciato (comandi assoluti M L C Q A Z) di (dx, dy)
+function translatePathD(d, dx, dy){
+  const tok = d.match(/[MLCQAZmlcqaz]|-?\d*\.?\d+(?:e[-+]?\d+)?/gi) || [];
+  let out = [], cmd = '', args = [];
+  const flush = ()=>{
+    if(!cmd) return;
+    if(cmd==='Z'){ out.push('Z'); return; }
+    const n = args.map(Number);
+    if(cmd==='A'){ for(let i=0;i+6<n.length;i+=7) out.push(`A ${n[i]} ${n[i+1]} ${n[i+2]} ${n[i+3]} ${n[i+4]} ${n[i+5]+dx} ${n[i+6]+dy}`); return; }
+    const pts = []; for(let i=0;i+1<n.length;i+=2) pts.push(`${n[i]+dx} ${n[i+1]+dy}`);
+    out.push(cmd + ' ' + pts.join(' '));
+  };
+  for(const t of tok){ if(/^[a-z]$/i.test(t)){ flush(); cmd = t.toUpperCase(); args = []; } else args.push(t); }
+  flush();
+  return out.join(' ');
+}
+const isWhiteFill = f=> !!f && /^(#fff|#ffffff|white|rgb\(\s*255\s*,\s*255\s*,\s*255\s*\))$/i.test(String(f).trim());
+// Molti loghi e scritte non hanno veri fori: disegnano la forma piena e sopra delle "toppe" bianche (l'interno
+// di A, R, O…). Nell'app le toppe sarebbero forme separate: ridimensionando la scritta resterebbero ferme e le
+// lettere sembrerebbero chiuse. Le trasformo in fori veri della forma colorata che coprono (e che sta sotto).
+function mergeWhiteKnockouts(shapes){
+  const bbOf = s=> s.type==='tracedpath' ? {x:s.x, y:s.y, w:s.w, h:s.h}
+    : (s.points ? (()=>{ const xs=s.points.map(p=>p[0]), ys=s.points.map(p=>p[1]); return {x:Math.min(...xs), y:Math.min(...ys), w:Math.max(...xs)-Math.min(...xs), h:Math.max(...ys)-Math.min(...ys)}; })() : null);
+  const fillOf = s=> s.type==='tracedpath' ? ((s.paths[0]||{}).fill || s.style.fill) : s.style.fill;
+  const localD = s=> s.type==='tracedpath' ? s.paths.map(sp=>sp.d) : ['M ' + s.points.map(p=>p[0]+' '+p[1]).join(' L ') + (s.closed ? ' Z' : '')];
+  let holes = 0;
+  for(let i=shapes.length-1; i>=0; i--){
+    const W = shapes[i];
+    if(!(W.type==='tracedpath' || (W.type==='path' && W.closed)) || !isWhiteFill(fillOf(W))) continue;
+    const wb = bbOf(W); if(!wb) continue;
+    let B = null;
+    for(let j=i-1; j>=0; j--){ // la forma colorata più vicina sotto la toppa che la contiene
+      const s = shapes[j], f = fillOf(s);
+      if(!(s.type==='tracedpath' || (s.type==='path' && s.closed)) || !f || f==='none' || isWhiteFill(f)) continue;
+      const b = bbOf(s); if(!b) continue;
+      if(wb.x >= b.x-0.3 && wb.y >= b.y-0.3 && wb.x+wb.w <= b.x+b.w+0.3 && wb.y+wb.h <= b.y+b.h+0.3){ B = s; break; }
+    }
+    if(!B) continue;
+    if(B.type==='path'){ // una forma a linee diventa tracciato per poter avere fori
+      const bb = bbOf(B);
+      B.paths = [{ d: translatePathD(localD(B)[0], -bb.x, -bb.y), fill: B.style.fill, stroke: 'none' }];
+      B.type = 'tracedpath'; B.x = bb.x; B.y = bb.y; B.w = bb.w; B.h = bb.h; B.srcW = bb.w; B.srcH = bb.h;
+      delete B.points; delete B.smooth; delete B.closed;
+    }
+    // coordinate della toppa nel sistema locale di B (all'importazione 1 unità = 1 mm)
+    const wd = W.type==='tracedpath' ? W.paths.map(sp=> translatePathD(sp.d, W.x - B.x, W.y - B.y))
+                                     : localD(W).map(d=> translatePathD(d, -B.x, -B.y));
+    let target = B.paths[0];
+    if(B.paths.length > 1){ // il sotto-tracciato che contiene la toppa
+      const cx = wb.x + wb.w/2 - B.x, cy = wb.y + wb.h/2 - B.y;
+      const bbs = measureBBoxesOfPaths(B.paths.map(sp=>sp.d));
+      const k = bbs.findIndex(b=> cx>=b.x && cx<=b.x+b.w && cy>=b.y && cy<=b.y+b.h);
+      if(k>=0) target = B.paths[k];
+    }
+    target.d = target.d + ' ' + wd.join(' '); // con fill-rule "evenodd" la toppa diventa un foro
+    shapes.splice(i, 1); holes++;
+  }
+  return holes;
+}
+function measureBBoxesOfPaths(dStrings){ return dStrings.map(d=> measureBBoxOfPaths([d])); }
+
 function importSVGString(text, opts){
   let doc;
   try{ doc = new DOMParser().parseFromString(text, 'image/svg+xml'); }catch(e){ doc=null; }
@@ -17555,7 +17900,13 @@ function importSVGString(text, opts){
   walk(svgRoot, baseMat, rootInh);
 
   if(!newShapes.length){ showToast('Non ho trovato elementi disegnabili modificabili in questo file SVG.', true); return; }
-  autoFitImportedShapes(dedupeImportedShapes(newShapes), opts);
+  const imported = dedupeImportedShapes(newShapes);
+  const holes = mergeWhiteKnockouts(imported);
+  if(imported.length > 1){ const gid = 'g' + uid(); imported.forEach(s=> s.groupId = gid); } // le forme dello stesso file restano insieme
+  autoFitImportedShapes(imported, opts);
+  if(imported.length > 1 || holes) setTimeout(()=> showToast(
+    (imported.length > 1 ? tpl('Importate {n} forme, raggruppate (Ctrl+Shift+G per separarle).', {n: imported.length}) : '')
+    + (holes ? ' ' + tpl(holes===1 ? '{n} forma bianca sopra il disegno è diventata un foro.' : '{n} forme bianche sopra il disegno sono diventate fori.', {n: holes}) : ''), false), 400);
 }
 function isNearBlackColor(hex){
   const rgb = hexToRGB(hex);
@@ -17697,7 +18048,7 @@ function createOffsetCopy(s, distanceMM){
 }
 function shapeBBox(s){
   if(s.points){ const xs=s.points.map(p=>p[0]), ys=s.points.map(p=>p[1]); return {x:Math.min(...xs),y:Math.min(...ys),w:(Math.max(...xs)-Math.min(...xs))||0.01,h:(Math.max(...ys)-Math.min(...ys))||0.01}; }
-  if(s.type==='text'){ const w = s._measuredW!=null ? s._measuredW : (s.text||'').length*(s.fontSize||6)*0.55; return {x:s.x, y:s.y-(s.fontSize||6), w:w||0.01, h:(s.fontSize||6)*1.3}; }
+  if(s.type==='text') return textBBoxFrom(s, s._measuredW!=null ? s._measuredW : estimateTextWidth(s));
   return {x:s.x, y:s.y, w:s.w||0.01, h:s.h||0.01};
 }
 async function autoFitImportedShapes(newShapes, opts){
@@ -18370,7 +18721,7 @@ function scaleShapesAroundCenter(targets, factor){
   targets.forEach(s=>{
     if(s.points) s.points = s.points.map(fn);
     if(s.x!=null){ const np=fn([s.x,s.y]); s.x=np[0]; s.y=np[1]; if(s.w!=null){ s.w*=factor; s.h*=factor; } }
-    if(s.type==='text') s.fontSize = (s.fontSize||6)*factor;
+    if(s.type==='text'){ s.fontSize = (s.fontSize||6)*factor; if(s.letterSpacing) s.letterSpacing *= factor; }
     if(s.style && s.style.strokeWidth) s.style.strokeWidth *= factor;
     if(s.smooth) s.smooth = s.smooth.map(v=>v*factor);
   });
@@ -18724,13 +19075,10 @@ function exportNode(s){
     return `<image x="${sN(s.x)}" y="${sN(s.y)}" width="${sN(s.w)}" height="${sN(s.h)}" preserveAspectRatio="none" xlink:href="${s.href}"${tr?` transform="${tr}"`:''}/>`;
   }
   if(s.type==='text'){
-    let rotAttr = '';
-    if(s.rotation){
-      const bbox = shapeBBox(s);
-      const cx = bbox.x+bbox.w/2, cy = bbox.y+bbox.h/2;
-      rotAttr = ` transform="rotate(${sN(s.rotation)} ${sN(cx)} ${sN(cy)})"`;
-    }
-    return `<text x="${sN(s.x)}" y="${sN(s.y)}" font-size="${sN(s.fontSize||6)}" font-family="${resolveFontFamily(s.fontFamily)}" fill="${st.stroke}"${rotAttr}>${escapeXML(s.text||'')}</text>`;
+    const a = textAttrs(s, 1), tr = textTransform(s, 1);
+    const attrs = Object.entries(a).map(([k,v])=> `${k}="${typeof v==='number' ? sN(v) : escapeXML(String(v))}"`).join(' ');
+    const spans = textTspans(s, 1).map(t=> `<tspan x="${sN(t.x)}" dy="${sN(t.dy)}">${escapeXML(t.text)}</tspan>`).join('');
+    return `<text ${attrs} fill="${st.stroke}"${tr ? ` transform="${tr}"` : ''} xml:space="preserve">${spans}</text>`;
   }
   if(s.type==='tracedpath'){
     const sx=s.w/s.srcW, sy=s.h/s.srcH;
