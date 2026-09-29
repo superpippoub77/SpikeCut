@@ -336,6 +336,27 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   tutte) chiedono una sola conferma, e solo se si perde lavoro
   (`docLosesWork`: un disegno vuoto o salvato e allineato in libreria si chiude
   subito).
+- **Individuazione di taglio e pieghe (dalla 2.42)**: `traceLineArt()` segue le
+  linee pixel per pixel (inchiostro → scritte tolte riconoscendo le lettere
+  affiancate → assottigliamento Zhang-Suen → pixel a scalino tolti → grafo di
+  linee spezzato agli incroci, incroci vicini uniti → semplificazione RDP → linee
+  quasi orizzontali/verticali raddrizzate). Taglio o piega dalla posizione: linea
+  sul bordo della sagoma = taglio, linea interna = piega (fori chiusi e tagli con
+  un estremo libero restano tagli); tratteggi = pieghe (prolungate fino al
+  contorno), rosso = taglio, blu/verde = piega. Se non trova nulla si usa il
+  vecchio `detectDielineLines()`.
+- **Incolla (2.42)**: Ctrl+V lascia arrivare l'evento `paste`: un'immagine negli
+  appunti apre "Importa immagine", un testo SVG si importa come SVG, altrimenti
+  si incollano le forme copiate nell'app. Pulsante "Incolla un'immagine dagli
+  appunti" nella scheda Immagine (`navigator.clipboard.read`).
+- **Misure e foglio (2.42)**: `readImageDPI()` legge i DPI da JPEG (JFIF, EXIF) e
+  PNG (pHYs); senza, 96 DPI. Importando immagini, SVG o PDF su un foglio già in
+  uso il formato non cambia: l'eccedenza esce dal foglio (partendo dall'angolo
+  in alto a sinistra).
+- **Font (2.42)**: campo Font anche con più testi selezionati, pulsanti "A tutti i
+  testi del livello / del disegno", l'ultimo carattere scelto vale per i nuovi
+  testi (`localStorage` `spikecut-textfont`), campo "Font dei nuovi testi" senza
+  selezione.
 - **Importazione di immagini (dalla 2.40)**: il pulsante ⇪ (e il
   trascinamento di file sul foglio) accetta SVG, PDF e immagini PNG, JPG,
   WebP, GIF, BMP; tutto passa da `importAnyFile()`. Per le immagini si apre

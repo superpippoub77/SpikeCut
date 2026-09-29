@@ -868,7 +868,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.41.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.42.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2776,6 +2776,24 @@ const I18N = {
     "Nascondi la barra degli strumenti": "Hide the toolbar",
     "Comprimi la barra degli strumenti (solo icone)": "Collapse the toolbar (icons only)",
     "Espandi la barra degli strumenti (icone e nomi)": "Expand the toolbar (icons and names)",
+    "(caratteri diversi)": "(different fonts)",
+    "Font dei {n} testi selezionati": "Font of the {n} selected texts",
+    "Scegli prima un carattere qui sopra": "First choose a font above",
+    "Carattere «{f}» applicato a {n} testi.": "Font \"{f}\" applied to {n} texts.",
+    "A tutti i testi del livello «{l}» ({n})": "To all texts on layer \"{l}\" ({n})",
+    "A tutti i testi del disegno ({n})": "To all texts in the drawing ({n})",
+    "Il carattere scelto vale anche per i prossimi testi, su qualsiasi livello.": "The chosen font also applies to the next texts, on any layer.",
+    "Font dei nuovi testi": "Font for new texts",
+    "I nuovi testi useranno «{f}».": "New texts will use \"{f}\".",
+    "Questa immagine è su un altro sito e non si può leggere dal testo copiato: sulla pagina usa il tasto destro → \"Copia immagine\" e poi incolla, oppure salvala e importala.": "This image is on another site and cannot be read from the copied text: on the page use right-click → \"Copy image\" and then paste, or save it and import it.",
+    "Il browser non consente di leggere gli appunti da un pulsante: fai clic sul foglio e premi Ctrl+V.": "The browser does not allow reading the clipboard from a button: click on the sheet and press Ctrl+V.",
+    "Negli appunti non c'è un'immagine: copiala (es. tasto destro → \"Copia immagine\") e riprova.": "There is no image in the clipboard: copy one (e.g. right-click → \"Copy image\") and try again.",
+    "Il browser non ha dato il permesso di leggere gli appunti: fai clic sul foglio e premi Ctrl+V.": "The browser did not grant permission to read the clipboard: click on the sheet and press Ctrl+V.",
+    "📋 Incolla un'immagine dagli appunti (Ctrl+V)": "📋 Paste an image from the clipboard (Ctrl+V)",
+    "risoluzione nel file: {d} DPI": "resolution in the file: {d} DPI",
+    "il file non indica la risoluzione: considerati 96 DPI (valore tipico di schermate e immagini dal web). Se conosci una misura reale, scrivila qui sotto.": "the file does not state its resolution: 96 DPI assumed (typical of screenshots and web images). If you know a real measurement, enter it below.",
+    "È più grande del foglio ({pw} × {ph}): il foglio resta com'è e la parte in eccesso uscirà dal foglio (puoi usare \"Adatta al foglio\").": "It is larger than the sheet ({pw} × {ph}): the sheet stays as it is and the excess part will go outside it (you can use \"Fit to sheet\").",
+    "Il disegno importato ({bw} × {bh} mm) è più grande del foglio: il formato del foglio non è stato cambiato e la parte in eccesso esce dal foglio.": "The imported drawing ({bw} × {bh} mm) is larger than the sheet: the sheet format was not changed and the excess goes outside the sheet.",
   },
   de: {
     "1 cm": "1 cm",
@@ -2883,7 +2901,7 @@ const I18N = {
     "File di progetto non valido o corrotto.": "Ungültige oder beschädigte Projektdatei.",
     "File ▾": "Datei ▾",
     "Font \"{name}\" aggiunto.": "Schriftart \"{name}\" hinzugefügt.",
-    "Font personalizzati": "Benutzerdefinierte Schriftarten",
+    "Font personalizzati": "Eigene Schriften",
     "Font scaricato e incorporato nel disegno.": "Schriftart heruntergeladen und in die Zeichnung eingebettet.",
     "Formato carta": "Papierformat",
     "Formato foglio base": "Basis-Blattformat",
@@ -3100,7 +3118,7 @@ const I18N = {
     "Es. cartoncino patinato 300 g/m², fustellabile": "z.B. gestrichener Karton 300 g/m², stanzbar",
     "Es. scatola a incastro, astuccio, fondo automontante…": "z.B. Stecklaschenschachtel, Etui, selbstschließender Boden…",
     "Es. stampa fronte/retro, taglio con lama a 45°, margine di sicurezza 3mm dal bordo…": "z.B. Druck Vorder-/Rückseite, Schnitt mit 45°-Klinge, 3mm Sicherheitsabstand vom Rand…",
-    "Font di sistema": "Systemschriftarten",
+    "Font di sistema": "Systemschriften",
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
@@ -3921,6 +3939,24 @@ const I18N = {
     "Nascondi la barra degli strumenti": "Werkzeugleiste ausblenden",
     "Comprimi la barra degli strumenti (solo icone)": "Werkzeugleiste einklappen (nur Symbole)",
     "Espandi la barra degli strumenti (icone e nomi)": "Werkzeugleiste ausklappen (Symbole und Namen)",
+    "(caratteri diversi)": "(verschiedene Schriften)",
+    "Font dei {n} testi selezionati": "Schrift der {n} ausgewählten Texte",
+    "Scegli prima un carattere qui sopra": "Wähle zuerst oben eine Schrift",
+    "Carattere «{f}» applicato a {n} testi.": "Schrift „{f}“ auf {n} Texte angewendet.",
+    "A tutti i testi del livello «{l}» ({n})": "Auf alle Texte der Ebene „{l}“ ({n})",
+    "A tutti i testi del disegno ({n})": "Auf alle Texte der Zeichnung ({n})",
+    "Il carattere scelto vale anche per i prossimi testi, su qualsiasi livello.": "Die gewählte Schrift gilt auch für die nächsten Texte, auf jeder Ebene.",
+    "Font dei nuovi testi": "Schrift für neue Texte",
+    "I nuovi testi useranno «{f}».": "Neue Texte verwenden „{f}“.",
+    "Questa immagine è su un altro sito e non si può leggere dal testo copiato: sulla pagina usa il tasto destro → \"Copia immagine\" e poi incolla, oppure salvala e importala.": "Dieses Bild liegt auf einer anderen Website und kann aus dem kopierten Text nicht gelesen werden: Rechtsklick → „Bild kopieren“ und einfügen, oder speichern und importieren.",
+    "Il browser non consente di leggere gli appunti da un pulsante: fai clic sul foglio e premi Ctrl+V.": "Der Browser erlaubt das Lesen der Zwischenablage über eine Schaltfläche nicht: Klicke auf das Blatt und drücke Strg+V.",
+    "Negli appunti non c'è un'immagine: copiala (es. tasto destro → \"Copia immagine\") e riprova.": "In der Zwischenablage ist kein Bild: Kopiere eines (z. B. Rechtsklick → „Bild kopieren“) und versuche es erneut.",
+    "Il browser non ha dato il permesso di leggere gli appunti: fai clic sul foglio e premi Ctrl+V.": "Der Browser hat das Lesen der Zwischenablage nicht erlaubt: Klicke auf das Blatt und drücke Strg+V.",
+    "📋 Incolla un'immagine dagli appunti (Ctrl+V)": "📋 Bild aus der Zwischenablage einfügen (Strg+V)",
+    "risoluzione nel file: {d} DPI": "Auflösung in der Datei: {d} DPI",
+    "il file non indica la risoluzione: considerati 96 DPI (valore tipico di schermate e immagini dal web). Se conosci una misura reale, scrivila qui sotto.": "die Datei gibt keine Auflösung an: 96 DPI angenommen (typisch für Screenshots und Webbilder). Wenn du ein echtes Maß kennst, gib es unten ein.",
+    "È più grande del foglio ({pw} × {ph}): il foglio resta com'è e la parte in eccesso uscirà dal foglio (puoi usare \"Adatta al foglio\").": "Es ist größer als das Blatt ({pw} × {ph}): Das Blatt bleibt unverändert und der überstehende Teil ragt heraus (du kannst „An Blatt anpassen“ verwenden).",
+    "Il disegno importato ({bw} × {bh} mm) è più grande del foglio: il formato del foglio non è stato cambiato e la parte in eccesso esce dal foglio.": "Die importierte Zeichnung ({bw} × {bh} mm) ist größer als das Blatt: Das Blattformat wurde nicht geändert, der überstehende Teil ragt heraus.",
   },
   es: {
     "1 cm": "1 cm",
@@ -4125,7 +4161,7 @@ const I18N = {
     "Percentuale": "Porcentaje",
     "Personalizzato…": "Personalizado…",
     "Piega (cordonatura)": "Pliegue (hendido)",
-    "Predefinito (Inter)": "Predeterminado (Inter)",
+    "Predefinito (Inter)": "Predeterminada (Inter)",
     "Progetto caricato da Google Drive.": "Proyecto cargado desde Google Drive.",
     "Progetto condiviso caricato: salvandolo verrà creata una tua copia personale.": "Proyecto compartido cargado: al guardarlo se creará tu propia copia personal.",
     "Proprietà": "Propiedades",
@@ -5066,6 +5102,24 @@ const I18N = {
     "Nascondi la barra degli strumenti": "Ocultar la barra de herramientas",
     "Comprimi la barra degli strumenti (solo icone)": "Contraer la barra de herramientas (solo iconos)",
     "Espandi la barra degli strumenti (icone e nomi)": "Expandir la barra de herramientas (iconos y nombres)",
+    "(caratteri diversi)": "(fuentes distintas)",
+    "Font dei {n} testi selezionati": "Fuente de los {n} textos seleccionados",
+    "Scegli prima un carattere qui sopra": "Elige primero una fuente arriba",
+    "Carattere «{f}» applicato a {n} testi.": "Fuente «{f}» aplicada a {n} textos.",
+    "A tutti i testi del livello «{l}» ({n})": "A todos los textos de la capa «{l}» ({n})",
+    "A tutti i testi del disegno ({n})": "A todos los textos del dibujo ({n})",
+    "Il carattere scelto vale anche per i prossimi testi, su qualsiasi livello.": "La fuente elegida vale también para los próximos textos, en cualquier capa.",
+    "Font dei nuovi testi": "Fuente de los textos nuevos",
+    "I nuovi testi useranno «{f}».": "Los textos nuevos usarán «{f}».",
+    "Questa immagine è su un altro sito e non si può leggere dal testo copiato: sulla pagina usa il tasto destro → \"Copia immagine\" e poi incolla, oppure salvala e importala.": "Esta imagen está en otro sitio y no se puede leer del texto copiado: en la página usa clic derecho → «Copiar imagen» y pega, o guárdala e impórtala.",
+    "Il browser non consente di leggere gli appunti da un pulsante: fai clic sul foglio e premi Ctrl+V.": "El navegador no permite leer el portapapeles desde un botón: haz clic en la hoja y pulsa Ctrl+V.",
+    "Negli appunti non c'è un'immagine: copiala (es. tasto destro → \"Copia immagine\") e riprova.": "No hay ninguna imagen en el portapapeles: cópiala (p. ej. clic derecho → «Copiar imagen») y vuelve a intentarlo.",
+    "Il browser non ha dato il permesso di leggere gli appunti: fai clic sul foglio e premi Ctrl+V.": "El navegador no dio permiso para leer el portapapeles: haz clic en la hoja y pulsa Ctrl+V.",
+    "📋 Incolla un'immagine dagli appunti (Ctrl+V)": "📋 Pegar una imagen del portapapeles (Ctrl+V)",
+    "risoluzione nel file: {d} DPI": "resolución en el archivo: {d} DPI",
+    "il file non indica la risoluzione: considerati 96 DPI (valore tipico di schermate e immagini dal web). Se conosci una misura reale, scrivila qui sotto.": "el archivo no indica la resolución: se consideran 96 DPI (típico de capturas e imágenes web). Si conoces una medida real, escríbela abajo.",
+    "È più grande del foglio ({pw} × {ph}): il foglio resta com'è e la parte in eccesso uscirà dal foglio (puoi usare \"Adatta al foglio\").": "Es más grande que la hoja ({pw} × {ph}): la hoja no cambia y la parte sobrante quedará fuera (puedes usar «Ajustar a la hoja»).",
+    "Il disegno importato ({bw} × {bh} mm) è più grande del foglio: il formato del foglio non è stato cambiato e la parte in eccesso esce dal foglio.": "El dibujo importado ({bw} × {bh} mm) es más grande que la hoja: el formato no se ha cambiado y la parte sobrante queda fuera.",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -6211,6 +6265,24 @@ const I18N = {
     "Nascondi la barra degli strumenti": "隐藏工具栏",
     "Comprimi la barra degli strumenti (solo icone)": "折叠工具栏（仅图标）",
     "Espandi la barra degli strumenti (icone e nomi)": "展开工具栏（图标和名称）",
+    "(caratteri diversi)": "（字体不同）",
+    "Font dei {n} testi selezionati": "所选 {n} 个文本的字体",
+    "Scegli prima un carattere qui sopra": "请先在上方选择字体",
+    "Carattere «{f}» applicato a {n} testi.": "已将字体\"{f}\"应用于 {n} 个文本。",
+    "A tutti i testi del livello «{l}» ({n})": "应用到图层\"{l}\"的所有文本（{n}）",
+    "A tutti i testi del disegno ({n})": "应用到图纸中的所有文本（{n}）",
+    "Il carattere scelto vale anche per i prossimi testi, su qualsiasi livello.": "所选字体也适用于之后在任何图层上创建的文本。",
+    "Font dei nuovi testi": "新文本的字体",
+    "I nuovi testi useranno «{f}».": "新文本将使用\"{f}\"。",
+    "Questa immagine è su un altro sito e non si può leggere dal testo copiato: sulla pagina usa il tasto destro → \"Copia immagine\" e poi incolla, oppure salvala e importala.": "此图像位于其他网站，无法从复制的文本读取：请在网页上右键 → \"复制图像\"后粘贴，或保存后导入。",
+    "Il browser non consente di leggere gli appunti da un pulsante: fai clic sul foglio e premi Ctrl+V.": "浏览器不允许通过按钮读取剪贴板：请点击画布并按 Ctrl+V。",
+    "Negli appunti non c'è un'immagine: copiala (es. tasto destro → \"Copia immagine\") e riprova.": "剪贴板中没有图像：请先复制（如右键 → \"复制图像\"）再试。",
+    "Il browser non ha dato il permesso di leggere gli appunti: fai clic sul foglio e premi Ctrl+V.": "浏览器未授予读取剪贴板的权限：请点击画布并按 Ctrl+V。",
+    "📋 Incolla un'immagine dagli appunti (Ctrl+V)": "📋 从剪贴板粘贴图像（Ctrl+V）",
+    "risoluzione nel file: {d} DPI": "文件中的分辨率：{d} DPI",
+    "il file non indica la risoluzione: considerati 96 DPI (valore tipico di schermate e immagini dal web). Se conosci una misura reale, scrivila qui sotto.": "文件未注明分辨率：按 96 DPI 处理（截图和网页图像的常见值）。如果知道实际尺寸，请在下方填写。",
+    "È più grande del foglio ({pw} × {ph}): il foglio resta com'è e la parte in eccesso uscirà dal foglio (puoi usare \"Adatta al foglio\").": "比画布大（{pw} × {ph}）：画布保持不变，超出部分会在画布外（可使用\"适应画布\"）。",
+    "Il disegno importato ({bw} × {bh} mm) è più grande del foglio: il formato del foglio non è stato cambiato e la parte in eccesso esce dal foglio.": "导入的图纸（{bw} × {bh} mm）比画布大：画布格式未更改，超出部分在画布外。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -7356,6 +7428,24 @@ const I18N = {
     "Nascondi la barra degli strumenti": "Masquer la barre d’outils",
     "Comprimi la barra degli strumenti (solo icone)": "Réduire la barre d’outils (icônes seules)",
     "Espandi la barra degli strumenti (icone e nomi)": "Développer la barre d’outils (icônes et noms)",
+    "(caratteri diversi)": "(polices différentes)",
+    "Font dei {n} testi selezionati": "Police des {n} textes sélectionnés",
+    "Scegli prima un carattere qui sopra": "Choisis d’abord une police ci-dessus",
+    "Carattere «{f}» applicato a {n} testi.": "Police « {f} » appliquée à {n} textes.",
+    "A tutti i testi del livello «{l}» ({n})": "À tous les textes du calque « {l} » ({n})",
+    "A tutti i testi del disegno ({n})": "À tous les textes du dessin ({n})",
+    "Il carattere scelto vale anche per i prossimi testi, su qualsiasi livello.": "La police choisie vaut aussi pour les prochains textes, sur n’importe quel calque.",
+    "Font dei nuovi testi": "Police des nouveaux textes",
+    "I nuovi testi useranno «{f}».": "Les nouveaux textes utiliseront « {f} ».",
+    "Questa immagine è su un altro sito e non si può leggere dal testo copiato: sulla pagina usa il tasto destro → \"Copia immagine\" e poi incolla, oppure salvala e importala.": "Cette image est sur un autre site et ne peut pas être lue depuis le texte copié : sur la page, clic droit → « Copier l’image » puis colle, ou enregistre-la et importe-la.",
+    "Il browser non consente di leggere gli appunti da un pulsante: fai clic sul foglio e premi Ctrl+V.": "Le navigateur ne permet pas de lire le presse-papiers depuis un bouton : clique sur la feuille et appuie sur Ctrl+V.",
+    "Negli appunti non c'è un'immagine: copiala (es. tasto destro → \"Copia immagine\") e riprova.": "Il n’y a pas d’image dans le presse-papiers : copie-la (ex. clic droit → « Copier l’image ») et réessaie.",
+    "Il browser non ha dato il permesso di leggere gli appunti: fai clic sul foglio e premi Ctrl+V.": "Le navigateur n’a pas autorisé la lecture du presse-papiers : clique sur la feuille et appuie sur Ctrl+V.",
+    "📋 Incolla un'immagine dagli appunti (Ctrl+V)": "📋 Coller une image du presse-papiers (Ctrl+V)",
+    "risoluzione nel file: {d} DPI": "résolution dans le fichier : {d} DPI",
+    "il file non indica la risoluzione: considerati 96 DPI (valore tipico di schermate e immagini dal web). Se conosci una misura reale, scrivila qui sotto.": "le fichier n’indique pas sa résolution : 96 DPI supposés (typique des captures et images web). Si tu connais une mesure réelle, écris-la ci-dessous.",
+    "È più grande del foglio ({pw} × {ph}): il foglio resta com'è e la parte in eccesso uscirà dal foglio (puoi usare \"Adatta al foglio\").": "Elle est plus grande que la feuille ({pw} × {ph}) : la feuille reste telle quelle et l’excédent dépassera (tu peux utiliser « Ajuster à la feuille »).",
+    "Il disegno importato ({bw} × {bh} mm) è più grande del foglio: il formato del foglio non è stato cambiato e la parte in eccesso esce dal foglio.": "Le dessin importé ({bw} × {bh} mm) est plus grand que la feuille : le format n’a pas été modifié et l’excédent dépasse de la feuille.",
   },
 };
 let currentLang = 'it';
@@ -11050,7 +11140,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.41.0';
+const GUIDE_VERSION = '2.42.0';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -11133,7 +11223,8 @@ html:`<p>Con lo strumento Arco (<b>A</b>): clic sul punto di <b>inizio</b>, clic
 <p>Oltre al rombo, l'arco mostra solo le maniglie delle estremità: trascinandole, o spostando una linea collegata, viene ricalcolato e resta un arco. Le quote indicano lunghezza e raggio. Se aggiungi o togli un punto al suo interno, o lo unisci a un'altra linea, diventa una linea normale con la stessa forma.</p>` },
 
 { id:'testo', cat:'Disegnare', title:'Testo e font', keys:'testo scritta font carattere tipo personalizzato caricare',
-html:`<p>Con lo strumento Testo (<b>T</b>) clicca nel punto, scrivi e conferma. Dal pannello Proprietà cambi testo, dimensione e font.</p>
+html:`<p><b>Carattere (font)</b>: nel pannello Proprietà del testo selezionato. Con <b>più testi selezionati</b> (anche su livelli diversi) il campo "Font dei testi selezionati" li cambia tutti insieme; i pulsanti <b>A tutti i testi del livello</b> e <b>A tutti i testi del disegno</b> applicano lo stesso carattere a tutti. L'ultimo carattere scelto vale per i <b>nuovi testi</b>, su qualsiasi livello; senza selezione si sceglie in "Font dei nuovi testi".</p>
+<p>Con lo strumento Testo (<b>T</b>) clicca nel punto, scrivi e conferma. Dal pannello Proprietà cambi testo, dimensione e font.</p>
 <p>Oltre ai font di sistema puoi caricare font personalizzati (anche in blocco da un file .zip) e usarli nel disegno. Il riquadro di selezione si adatta alla larghezza reale del testo nel font scelto.</p>` },
 
 { id:'immagini', cat:'Disegnare', title:'Immagini e vettorizzazione', keys:'immagine foto jpg png vettorizzare tracciare riferimento luminosità contrasto',
@@ -11276,9 +11367,9 @@ html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profo
 <p>Le pieghe sono già impostate a monte, 90°, con un <a data-topic="ordine">ordine di piegatura</a> sensato, e la zona di incollaggio è un poligono <a data-topic="incollaggio">tratteggiato</a>. L'aletta di incollaggio si può impostare o lasciare automatica. Gli spigoli delle alette sono semplificati: verifica le misure prima della produzione.</p>` },
 
 { id:'importa-immagine', cat:'Salvare ed esportare', title:'Importare un\'immagine (PNG, JPG…)', keys:'importare immagine foto scansione png jpg jpeg webp gif bmp vettorizzare vettoriale individua taglio piega fustella dpi riferimento ricalcare trascinare file',
-html:`<p>Con il pulsante <b>⇪</b> in alto (o trascinando il file sul foglio) si importano, oltre a SVG e PDF, anche le <b>immagini</b>: PNG, JPG, WebP, GIF e BMP. Si apre la finestra <b>Importa immagine</b>:</p>
-<ul><li><b>Misura reale</b>: indica la larghezza o l'altezza vera (l'altra segue le proporzioni) oppure i <b>DPI</b> della scansione; "Adatta al foglio" la fa stare nella pagina. Per una fustella in scala reale basta una misura nota, per esempio la larghezza totale.</li>
-<li><b>Individua taglio e pieghe</b>: per fustelle scansionate, fotografate dritte o schermate. Le linee continue diventano <b>Taglio</b>, quelle tratteggiate (o blu/verdi) <b>Piega</b>; le scritte vengono scartate. Dove restano piccoli spazi tra le linee si chiudono con Strumenti → Salda punti vicini o con il <a data-topic="controllo-3d">controllo del disegno</a>.</li>
+html:`<p>Con il pulsante <b>⇪</b> in alto, trascinando il file sul foglio o <b>incollandolo con Ctrl+V</b> (un'immagine copiata da una pagina web con tasto destro → "Copia immagine", da Paint, da uno screenshot o da altri programmi) si importano, oltre a SVG e PDF, anche le <b>immagini</b>: PNG, JPG, WebP, GIF e BMP. Si apre la finestra <b>Importa immagine</b>:</p>
+<ul><li><b>Misura reale</b>: se il file contiene la sua risoluzione (DPI) viene usata quella; altrimenti si considerano 96 DPI, tipici di schermate e immagini dal web, e la finestra lo dice. Puoi indicare la larghezza o l'altezza vera (l'altra segue le proporzioni) oppure i DPI della scansione: per una fustella in scala reale basta una misura nota, per esempio la larghezza totale. Il <b>foglio non cambia</b>: se l'immagine è più grande, parte dall'angolo in alto a sinistra e la parte in eccesso esce dal foglio ("Adatta al foglio" la rimpicciolisce se preferisci).</li>
+<li><b>Individua taglio e pieghe</b>: per fustelle scansionate, fotografate dritte, schermate o modelli disegnati al tratto. Le linee vengono seguite pixel per pixel, comprese <b>curve e diagonali</b>; le <b>scritte</b> vengono scartate. Le linee sul <b>bordo</b> della sagoma diventano <b>Taglio</b>, quelle <b>interne</b> (con la sagoma da entrambi i lati) diventano <b>Piega</b>: funziona anche nei modelli dove tagli e pieghe sono disegnati nello stesso modo. Linee tratteggiate o blu/verdi sono pieghe, linee rosse sono tagli. Dove restano piccoli spazi tra le linee si chiudono con Strumenti → Salda punti vicini o con il <a data-topic="controllo-3d">controllo del disegno</a>.</li>
 <li><b>Vettorizza la grafica</b>: per loghi e disegni, i contorni delle zone di colore diventano grafica vettoriale nel livello di disegno (scegli il numero di colori e il dettaglio). Richiede la connessione a Internet la prima volta.</li>
 <li><b>Solo immagine di riferimento</b>: resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti; opacità, filtri e rimozione sono nella scheda Immagine.</li></ul>
 <p>Con <b>Tieni l'immagine sotto il disegno</b> l'originale resta visibile in trasparenza per confrontarlo con le linee ottenute. Le scelte vengono ricordate per la volta successiva.</p>` },
@@ -11406,6 +11497,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.42</b> — Individuazione di taglio e pieghe dalle immagini riscritta: curve, diagonali, chiusure, scritte scartate, pieghe riconosciute anche se disegnate come i tagli. Incolla immagini dagli appunti (Ctrl+V). Misure lette dal file; il foglio non cambia importando. Font per più testi, per livello e per i nuovi testi.</li>
 <li><b>2.41</b> — Pulsante ☰ in alto a sinistra per comprimere o espandere la barra degli strumenti, come nelle applicazioni web.</li>
 <li><b>2.40.1</b> — Le schede chiuse non ricompaiono più ricaricando la pagina; si può chiudere anche l'ultima scheda (schermata "Nessun progetto aperto"); pulsante Chiudi tutte e menu col tasto destro sulle schede.</li>
 <li><b>2.40</b> — <a data-topic="importa-immagine">Importazione di immagini</a> (PNG, JPG…) con misura reale e scelta tra individuazione di taglio e pieghe, vettorizzazione o immagine di riferimento; file trascinabili sul foglio.</li>
@@ -13312,7 +13404,7 @@ function placeTextInput(mm){
     const val = input.value.trim();
     holder.removeChild(input);
     if(val){
-      const shape = makeShape('text', {x:mm[0], y:mm[1], text:val, fontSize:6});
+      const shape = makeShape('text', {x:mm[0], y:mm[1], text:val, fontSize:6, fontFamily: textFontDefault()}); // ultimo carattere scelto
       state.shapes.push(shape);
       state.selection = new Set([shape.id]);
       pushHistory();
@@ -13410,7 +13502,11 @@ window.addEventListener('keydown', (e)=>{
     deleteSelection();
     return;
   }
-  if((e.ctrlKey||e.metaKey) && k==='v'){ e.preventDefault(); pasteClipboardShapesAt(null); return; }
+  if((e.ctrlKey||e.metaKey) && k==='v'){ // l'incolla lo gestisce l'evento "paste" (immagini, SVG o forme copiate nell'app)
+    pasteWaiting = true;
+    setTimeout(()=>{ if(pasteWaiting){ pasteWaiting = false; pasteClipboardShapesAt(null); } }, 120); // browser che non inviano "paste" fuori dai campi
+    return;
+  }
   if((e.ctrlKey||e.metaKey)) return; // avoid clobbering other browser shortcuts
   const map = {v:'select',q:'lasso',p:'pen',l:'line',r:'rect',o:'ellipse',a:'arc',b:'freehand',t:'text'};
   if(map[k]){ setTool(map[k]); return; }
@@ -15267,6 +15363,75 @@ function renderPropPanel(){
   renderPropPanelInner();
   applyI18n(document.getElementById('tab-prop'));
 }
+/* ---------- carattere dei testi: uno, più testi selezionati, livello, disegno, nuovi testi ---------- */
+function textFontDefault(){
+  if(state.textFont===undefined){ try{ state.textFont = localStorage.getItem('spikecut-textfont') || null; }catch(e){ state.textFont = null; } }
+  return state.textFont;
+}
+function setTextFontDefault(v){ // l'ultimo carattere scelto vale per i testi creati dopo, su qualsiasi livello
+  state.textFont = v || null;
+  try{ if(v) localStorage.setItem('spikecut-textfont', v); else localStorage.removeItem('spikecut-textfont'); }catch(e){}
+}
+function fontLabel(v){
+  if(!v) return translate('Predefinito (Inter)');
+  const b = BUILTIN_FONTS.find(f=>'builtin:'+f.css===v); if(b) return b.name;
+  const c = state.customFonts.find(f=>cssFontName(f)===v); return c ? c.name : v;
+}
+function buildFontSelect(current, mixed){
+  const sel = document.createElement('select');
+  if(mixed){ const o = document.createElement('option'); o.value='__mixed'; o.textContent = translate('(caratteri diversi)'); o.selected = true; o.disabled = true; sel.appendChild(o); }
+  const optDefault = document.createElement('option'); optDefault.value=''; optDefault.textContent = translate('Predefinito (Inter)');
+  if(!mixed && !current) optDefault.selected = true;
+  sel.appendChild(optDefault);
+  const bg = document.createElement('optgroup'); bg.label = translate('Font di sistema');
+  BUILTIN_FONTS.forEach(bf=>{ const o = document.createElement('option'); o.value = 'builtin:'+bf.css; o.textContent = bf.name; if(!mixed && current===o.value) o.selected = true; bg.appendChild(o); });
+  sel.appendChild(bg);
+  if(state.customFonts.length){
+    const cg = document.createElement('optgroup'); cg.label = translate('Font personalizzati');
+    state.customFonts.forEach(font=>{ const o = document.createElement('option'); o.value = cssFontName(font); o.textContent = font.name; o.style.fontFamily = `'${cssFontName(font)}'`; if(!mixed && current===o.value) o.selected = true; cg.appendChild(o); });
+    sel.appendChild(cg);
+  }
+  return sel;
+}
+function applyFontToTexts(texts, v){
+  texts.forEach(t=>{ t.fontFamily = v || null; });
+  setTextFontDefault(v);
+  pushHistory(); renderAll();
+}
+function renderTextFontSection(host, texts){
+  const fams = [...new Set(texts.map(t=>t.fontFamily||''))], mixed = fams.length > 1, current = mixed ? null : (fams[0] || null);
+  const ff = document.createElement('div'); ff.className='field'; ff.style.marginTop='8px';
+  ff.innerHTML = `<label>${escapeHTML(texts.length>1 ? tpl('Font dei {n} testi selezionati', {n:texts.length}) : translate('Font'))}</label>`;
+  const sel = buildFontSelect(current, mixed);
+  sel.onchange = ()=> applyFontToTexts(texts, sel.value);
+  ff.appendChild(sel);
+  // stesso carattere a tutti i testi di un livello o del disegno
+  const allTexts = state.shapes.filter(x=>x.type==='text');
+  const layerIds = [...new Set(texts.map(t=>t.layerId))];
+  const row = document.createElement('div'); row.style.cssText='display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;';
+  const mkBtn = (label, targets)=>{ const b = document.createElement('button'); b.className='btn'; b.style.cssText='width:auto;margin:0;flex:1;font-size:11.5px;padding:5px 8px;';
+    b.textContent = label; b.disabled = mixed; b.title = mixed ? translate('Scegli prima un carattere qui sopra') : '';
+    b.onclick = ()=>{ applyFontToTexts(targets, current); showToast(tpl('Carattere «{f}» applicato a {n} testi.', {f: fontLabel(current), n: targets.length}), false); };
+    row.appendChild(b); };
+  if(layerIds.length===1){
+    const lay = state.layers.find(l=>l.id===layerIds[0]);
+    const inLayer = allTexts.filter(x=>x.layerId===layerIds[0]);
+    if(inLayer.length > texts.length) mkBtn(tpl('A tutti i testi del livello «{l}» ({n})', {l: lay ? lay.name : '', n: inLayer.length}), inLayer);
+  }
+  if(allTexts.length > texts.length) mkBtn(tpl('A tutti i testi del disegno ({n})', {n: allTexts.length}), allTexts);
+  if(row.children.length) ff.appendChild(row);
+  const hint = document.createElement('div'); hint.className='hint'; hint.style.marginTop='4px';
+  hint.textContent = translate('Il carattere scelto vale anche per i prossimi testi, su qualsiasi livello.') + (state.customFonts.length ? '' : ' ' + translate('Per usare un font tuo: menu File → "Gestisci font personalizzati…".'));
+  ff.appendChild(hint);
+  host.appendChild(ff);
+}
+function renderNewTextFontField(host){
+  const ff = document.createElement('div'); ff.className='field';
+  ff.innerHTML = `<label>${escapeHTML(translate('Font dei nuovi testi'))}</label>`;
+  const sel = buildFontSelect(textFontDefault(), false);
+  sel.onchange = ()=>{ setTextFontDefault(sel.value); showToast(tpl('I nuovi testi useranno «{f}».', {f: fontLabel(sel.value)}), false); };
+  ff.appendChild(sel); host.appendChild(ff);
+}
 function renderPropPanelInner(){
   const host = document.getElementById('tab-prop');
   const ids = [...state.selection];
@@ -15313,6 +15478,8 @@ function renderPropPanelInner(){
   host.appendChild(document.createElement('hr')).className='sep';
 
   if(ids.length===0){
+    renderNewTextFontField(host);
+    host.appendChild(document.createElement('hr')).className='sep';
     renderProjectInfoSection(host);
     return;
   }
@@ -15406,6 +15573,10 @@ function renderPropPanelInner(){
     mb.title = translate('Sposta la selezione di una distanza precisa in qualsiasi direzione, o crea copie in serie. Frecce: 1 mm, Shift 10 mm, Alt 0,1 mm.');
     mb.onclick = openMoveModal; mf.appendChild(mb); host.appendChild(mf);
   }
+  if(ids.length>1){ // più testi selezionati (anche su livelli diversi): lo stesso carattere a tutti
+    const selTexts = ids.map(id=>state.shapes.find(x=>x.id===id)).filter(x=>x && x.type==='text');
+    if(selTexts.length) renderTextFontSection(host, selTexts);
+  }
   renderGroupSection(host, ids);
   if(ids.length>1) renderAlignSection(host, ids);
   if(ids.length) renderFoldOrderSection(host, ids);
@@ -15464,36 +15635,7 @@ function renderPropPanelInner(){
     rotInp.addEventListener('change', ()=>{ pushHistory(); renderPropPanel(); });
     rotRow.appendChild(rotInp); host.appendChild(rotRow);
 
-    const ff = document.createElement('div'); ff.className='field'; ff.style.marginTop='8px';
-    ff.innerHTML = `<label>Font</label>`;
-    const fontSel = document.createElement('select');
-    const optDefault = document.createElement('option'); optDefault.value=''; optDefault.textContent='Predefinito (Inter)';
-    if(!s.fontFamily) optDefault.selected = true;
-    fontSel.appendChild(optDefault);
-    const builtinGroup = document.createElement('optgroup'); builtinGroup.label = 'Font di sistema';
-    BUILTIN_FONTS.forEach(bf=>{
-      const opt = document.createElement('option'); opt.value = 'builtin:'+bf.css; opt.textContent = bf.name;
-      if(s.fontFamily===opt.value) opt.selected = true;
-      builtinGroup.appendChild(opt);
-    });
-    fontSel.appendChild(builtinGroup);
-    if(state.customFonts.length){
-      const customGroup = document.createElement('optgroup'); customGroup.label = 'Font personalizzati';
-      state.customFonts.forEach(font=>{
-        const opt = document.createElement('option'); opt.value = cssFontName(font); opt.textContent = font.name;
-        if(s.fontFamily===cssFontName(font)) opt.selected = true;
-        customGroup.appendChild(opt);
-      });
-      fontSel.appendChild(customGroup);
-    }
-    fontSel.onchange = ()=>{ s.fontFamily = fontSel.value || null; pushHistory(); renderAll(); };
-    ff.appendChild(fontSel);
-    if(!state.customFonts.length){
-      const hint = document.createElement('div'); hint.className='hint';
-      hint.textContent = 'Per usare un font tuo: menu File → "Gestisci font personalizzati…".';
-      ff.appendChild(hint);
-    }
-    host.appendChild(ff);
+    renderTextFontSection(host, [s]);
   }
 
   host.appendChild(document.createElement('hr')).className='sep';
@@ -16218,6 +16360,7 @@ function buildImageTab(){
     <div class="field">
       <label>Importa un file</label>
       <div class="dropzone" id="dropzoneSVG">Clicca per importare un SVG, un PDF o un'immagine<br>(PNG, JPG…) — o trascinalo sul foglio</div>
+      <button class="btn" id="btnPasteImage" style="margin-top:6px;">📋 Incolla un'immagine dagli appunti (Ctrl+V)</button>
       <div class="hint">Linee rette e poligoni diventano nodi trascinabili (con calamita attiva). Curve complesse restano modificabili in blocco: colore, posizione e dimensione. Il disegno viene centrato e, se necessario, ridotto per stare nella pagina.</div>
     </div>
     <hr class="sep">
@@ -16249,6 +16392,7 @@ function buildImageTab(){
     </div>
   `;
   document.getElementById('dropzoneSVG').onclick = openSVGFilePicker;
+  document.getElementById('btnPasteImage').onclick = pasteImageFromClipboardButton; // pulsante creato insieme alla scheda Immagine
   document.getElementById('dropzone').onclick = ()=>{
     const inp = document.createElement('input'); inp.type='file'; inp.accept='image/*';
     inp.onchange = ()=>{ if(inp.files[0]) loadRefImage(inp.files[0]); };
@@ -16457,6 +16601,279 @@ function rdpSimplify(pts, eps){
 }
 
 // Legge l'immagine di riferimento e crea le linee di taglio e piega individuate
+// Riconoscimento delle linee di una fustella disegnata al tratto (modelli, schemi, scansioni pulite).
+// Ingresso: {width, height, data} (RGBA). Uscita: {lines:[{pts:[[x,y]...], closed, role}], textRemoved, dashLines}.
+// Passi: inchiostro → scritte tolte → assottigliamento → grafo di linee (spezzate agli incroci) →
+// semplificazione → allineamento di orizzontali e verticali → taglio o piega dalla posizione.
+function traceLineArt(img, opts){
+  opts = opts || {};
+  const W = img.width, H = img.height, D = img.data, N = W*H;
+  // 1) inchiostro: tutto ciò che è abbastanza scuro (le linee sottili sono grigie per l'antialias)
+  const lum = new Float32Array(N), ink = new Uint8Array(N);
+  let thr = opts.threshold || 185;
+  for(let i=0;i<N;i++){ const r=D[i*4], g=D[i*4+1], b=D[i*4+2]; lum[i] = 0.299*r + 0.587*g + 0.114*b; if(lum[i] < thr) ink[i] = 1; }
+  // 2) componenti connesse dell'inchiostro
+  const lab = new Int32Array(N).fill(-1), comps = [];
+  const stack = new Int32Array(N);
+  for(let i=0;i<N;i++){
+    if(!ink[i] || lab[i]>=0) continue;
+    const id = comps.length; let sp = 0; stack[sp++] = i; lab[i] = id;
+    let x0=W, y0=H, x1=0, y1=0, n=0;
+    while(sp){
+      const p = stack[--sp], x = p%W, y = (p/W)|0; n++;
+      if(x<x0)x0=x; if(x>x1)x1=x; if(y<y0)y0=y; if(y>y1)y1=y;
+      for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++){
+        if(!dx && !dy) continue; const nx=x+dx, ny=y+dy; if(nx<0||ny<0||nx>=W||ny>=H) continue;
+        const q = ny*W+nx; if(ink[q] && lab[q]<0){ lab[q]=id; stack[sp++]=q; }
+      }
+    }
+    comps.push({id, x0, y0, x1, y1, w:x1-x0+1, h:y1-y0+1, n});
+  }
+  const M = Math.max(W, H);
+  const big = c=> Math.max(c.w, c.h) >= 0.12*M;          // la rete delle linee della fustella
+  // 3) componenti piccole: tratteggi (in fila, allineati) o scritte (lettere affiancate)
+  const small = comps.filter(c=>!big(c) && c.n >= 2);
+  const elong = c=> Math.min(c.w, c.h) <= 5 && Math.max(c.w, c.h) >= 2.5*Math.min(c.w, c.h) && Math.max(c.w, c.h) >= 4;
+  const dashLines = [], usedDash = new Set();
+  const dashes = small.filter(elong).map(c=>({c, horiz: c.w >= c.h, cx:(c.x0+c.x1)/2, cy:(c.y0+c.y1)/2, len: Math.max(c.w, c.h)}));
+  ['h','v'].forEach(dir=>{
+    const ds = dashes.filter(d=> (dir==='h') === d.horiz).sort((a,b)=> dir==='h' ? (a.cy-b.cy)||(a.cx-b.cx) : (a.cx-b.cx)||(a.cy-b.cy));
+    const taken = new Set();
+    for(const d of ds){
+      if(taken.has(d)) continue;
+      const chain = [d]; taken.add(d);
+      let last = d, grew = true;
+      while(grew){
+        grew = false;
+        for(const e of ds){
+          if(taken.has(e)) continue;
+          const off = dir==='h' ? Math.abs(e.cy-last.cy) : Math.abs(e.cx-last.cx);
+          const gap = dir==='h' ? e.c.x0 - last.c.x1 : e.c.y0 - last.c.y1;
+          if(off <= 2.5 && gap > 0 && gap <= Math.max(4, 2.5*last.len) && Math.abs(e.len - last.len) <= Math.max(3, last.len*0.8)){ chain.push(e); taken.add(e); last = e; grew = true; break; }
+        }
+      }
+      if(chain.length >= 3){
+        chain.forEach(x=> usedDash.add(x.c.id));
+        const a = chain[0].c, b = chain[chain.length-1].c;
+        const pts = dir==='h' ? [[a.x0, chain.reduce((s,x)=>s+x.cy,0)/chain.length],[b.x1, chain.reduce((s,x)=>s+x.cy,0)/chain.length]]
+                              : [[chain.reduce((s,x)=>s+x.cx,0)/chain.length, a.y0],[chain.reduce((s,x)=>s+x.cx,0)/chain.length, b.y1]];
+        dashLines.push({pts, closed:false, role:'fold', dashed:true, dashLen: chain.reduce((s,x)=>s+x.len,0)/chain.length});
+      }
+    }
+  });
+  // scritte: componenti piccole non usate come tratteggi → si tolgono (le lettere non fanno parte della fustella)
+  // tengo solo quelle piccole ma "da fustella": anelli chiusi isolati e abbastanza grandi (fori, asole) lontani da altre lettere
+  const rest = small.filter(c=>!usedDash.has(c.id));
+  const isTextLike = c=> rest.some(o=> o!==c && Math.abs(o.h - c.h) <= Math.max(4, 0.6*c.h) && Math.min(o.y1, c.y1) - Math.max(o.y0, c.y0) >= 0.4*Math.min(o.h, c.h)
+      && Math.max(o.x0 - c.x1, c.x0 - o.x1) <= Math.max(6, 0.9*Math.max(o.h, c.h)));
+  const keepSmall = new Set(rest.filter(c=> c.n >= 20 && Math.max(c.w, c.h) >= 8 && !isTextLike(c)).map(c=>c.id));
+  const textRemoved = rest.length - keepSmall.size;
+  const keep = new Uint8Array(N);
+  for(let i=0;i<N;i++){ const l = lab[i]; if(l>=0 && (big(comps[l]) || keepSmall.has(l))) keep[i] = 1; }
+  // 4) assottigliamento (Zhang-Suen) → linee larghe 1 pixel
+  const sk = keep.slice();
+  const nb = (p, k)=>{ const x=p%W, y=(p/W)|0; const o=[[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]][k]; const nx=x+o[0], ny=y+o[1]; return (nx<0||ny<0||nx>=W||ny>=H) ? 0 : sk[ny*W+nx]; };
+  let changed = true;
+  const cand = [];
+  for(let i=0;i<N;i++) if(sk[i]) cand.push(i);
+  while(changed){
+    changed = false;
+    for(let pass=0; pass<2; pass++){
+      const del = [];
+      for(const p of cand){
+        if(!sk[p]) continue;
+        const v = [0,1,2,3,4,5,6,7].map(k=>nb(p,k));
+        const B = v.reduce((a,b)=>a+b,0); if(B<2 || B>6) continue;
+        let A = 0; for(let k=0;k<8;k++) if(!v[k] && v[(k+1)%8]) A++;
+        if(A!==1) continue;
+        if(pass===0){ if(v[0]*v[2]*v[4]) continue; if(v[2]*v[4]*v[6]) continue; }
+        else { if(v[0]*v[2]*v[6]) continue; if(v[0]*v[4]*v[6]) continue; }
+        del.push(p);
+      }
+      if(del.length){ changed = true; del.forEach(p=> sk[p]=0); }
+    }
+  }
+  // 4b) scalini superflui: sulle diagonali lo scheletro a "scala" ha pixel con tre vicini che sembrerebbero
+  // incroci. Un pixel si toglie se i suoi vicini restano collegati tra loro anche senza di lui (e non è un
+  // estremo): la linea resta continua e ogni pixel tocca solo il precedente e il successivo.
+  const RING = [[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]];
+  for(let iter=0; iter<4; iter++){
+    let removed = 0;
+    for(const p of cand){
+      if(!sk[p]) continue;
+      const v = RING.map((_,k)=>nb(p,k)); const idx = []; for(let k=0;k<8;k++) if(v[k]) idx.push(k);
+      if(idx.length < 2) continue;
+      // componenti connesse dei vicini (adiacenza a 8 tra le posizioni dell'anello)
+      const comp = new Array(8).fill(-1); let nc = 0;
+      for(const k of idx){ if(comp[k]>=0) continue; comp[k] = nc; const q=[k];
+        while(q.length){ const a=q.pop(); for(const b of idx){ if(comp[b]>=0) continue; const [ax,ay]=RING[a], [bx,by]=RING[b]; if(Math.abs(ax-bx)<=1 && Math.abs(ay-by)<=1){ comp[b]=nc; q.push(b); } } }
+        nc++; }
+      if(nc===1 && idx.length <= 3){ sk[p] = 0; removed++; }
+    }
+    if(!removed) break;
+  }
+  // 5) grafo: nodi = estremi e incroci (pixel con numero di vicini diverso da 2), archi = catene di pixel
+  const deg = new Uint8Array(N), skl = [];
+  for(let i=0;i<N;i++) if(sk[i]){ skl.push(i); let d=0; for(let k=0;k<8;k++) d+=nb(i,k); deg[i]=d; }
+  const isNode = p=> deg[p] !== 2;
+  const nodeOf = new Int32Array(N).fill(-1), nodes = [];
+  for(const p of skl){ // incroci adiacenti = un solo nodo
+    if(!isNode(p) || nodeOf[p]>=0) continue;
+    const id = nodes.length, q=[p]; nodeOf[p]=id; let sx=0, sy=0, cnt=0;
+    while(q.length){ const a=q.pop(); sx+=a%W; sy+=(a/W)|0; cnt++;
+      for(let k=0;k<8;k++){ const x=a%W, y=(a/W)|0; const o=[[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]][k]; const nx=x+o[0], ny=y+o[1]; if(nx<0||ny<0||nx>=W||ny>=H) continue; const b=ny*W+nx; if(sk[b] && isNode(b) && nodeOf[b]<0){ nodeOf[b]=id; q.push(b); } } }
+    nodes.push({x:sx/cnt, y:sy/cnt, deg:0});
+  }
+  const seen = new Uint8Array(N), edges = [];
+  const neigh = p=>{ const out=[], x=p%W, y=(p/W)|0; for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++){ if(!dx&&!dy) continue; const nx=x+dx, ny=y+dy; if(nx<0||ny<0||nx>=W||ny>=H) continue; const q=ny*W+nx; if(sk[q]) out.push(q); } return out; };
+  const walk = (startNode, first)=>{
+    const chain = [[nodes[startNode].x, nodes[startNode].y]];
+    let prev = -1, cur = first;
+    while(true){
+      if(nodeOf[cur] >= 0){ chain.push([nodes[nodeOf[cur]].x, nodes[nodeOf[cur]].y]); return {a:startNode, b:nodeOf[cur], pts:chain}; }
+      seen[cur] = 1; chain.push([cur%W, (cur/W)|0]);
+      const nx = neigh(cur).filter(q=> q!==prev && !seen[q] && !(nodeOf[q]===startNode && chain.length<3));
+      // preferisci un nodo se è tra i vicini (chiude l'arco), poi i vicini ortogonali
+      let nxt = nx.find(q=> nodeOf[q]>=0) ?? nx.sort((p1,p2)=>{ const d1=Math.abs(p1-cur)===1||Math.abs(p1-cur)===W?0:1, d2=Math.abs(p2-cur)===1||Math.abs(p2-cur)===W?0:1; return d1-d2; })[0];
+      if(nxt===undefined) return {a:startNode, b:-1, pts:chain};
+      prev = cur; cur = nxt;
+    }
+  };
+  for(const p of skl){
+    if(nodeOf[p] < 0) continue;
+    for(const q of neigh(p)){ if(nodeOf[q] >= 0 || seen[q]) continue; const e = walk(nodeOf[p], q); edges.push(e); }
+  }
+  // anelli senza incroci (es. un foro rotondo isolato)
+  for(const p of skl){
+    if(seen[p] || nodeOf[p]>=0) continue;
+    const chain = []; let prev=-1, cur=p;
+    while(cur!==undefined && !seen[cur]){ seen[cur]=1; chain.push([cur%W,(cur/W)|0]); const nx = neigh(cur).filter(q=>q!==prev && !seen[q]); prev=cur; cur=nx[0]; }
+    if(chain.length > 8) edges.push({a:-1, b:-1, pts:chain, closed:true});
+  }
+  // incroci vicini (entro 5 px, collegati da un arco cortissimo) = un solo incrocio: agli angoli acuti due linee
+  // si toccano per un tratto e lo scheletro crea più incroci ravvicinati e piccoli doppioni
+  { const par = nodes.map((_,i)=>i); const find = i=>{ while(par[i]!==i){ par[i]=par[par[i]]; i=par[i]; } return i; };
+    const elen = e=>{ let s=0; for(let i=1;i<e.pts.length;i++) s+=Math.hypot(e.pts[i][0]-e.pts[i-1][0], e.pts[i][1]-e.pts[i-1][1]); return s; };
+    edges.forEach(e=>{ if(e.a>=0 && e.b>=0 && e.a!==e.b && elen(e) < 5.5) par[find(e.a)] = find(e.b); });
+    // anche nodi vicinissimi non collegati da un arco (entro 3 px)
+    for(let i=0;i<nodes.length;i++) for(let j=i+1;j<nodes.length;j++) if(Math.hypot(nodes[i].x-nodes[j].x, nodes[i].y-nodes[j].y) < 3) par[find(i)] = find(j);
+    const acc = new Map(); nodes.forEach((n,i)=>{ const r=find(i); const a=acc.get(r)||{x:0,y:0,n:0}; a.x+=n.x; a.y+=n.y; a.n++; acc.set(r,a); });
+    acc.forEach((a,r)=>{ nodes[r].x = a.x/a.n; nodes[r].y = a.y/a.n; });
+    for(let k=edges.length-1;k>=0;k--){ const e = edges[k]; if(e.a>=0) e.a = find(e.a); if(e.b>=0) e.b = find(e.b);
+      if(e.a>=0 && e.a===e.b && elen(e) < 12){ edges.splice(k,1); continue; } // piccolo anello nato dall'unione: si toglie
+      if(e.a>=0){ e.pts[0] = [nodes[e.a].x, nodes[e.a].y]; } if(e.b>=0){ e.pts[e.pts.length-1] = [nodes[e.b].x, nodes[e.b].y]; } }
+    // doppioni: due archi tra gli stessi nodi e quasi uguali → ne resta uno
+    for(let k=edges.length-1;k>=0;k--){ const e = edges[k]; if(e.a<0 || e.b<0) continue;
+      // doppione solo se passa negli stessi punti (stesso punto a metà percorso), non solo stessi estremi:
+      // una piega e il contorno dell'aletta accanto hanno gli stessi estremi ma percorsi diversi
+      const mid = pts=>{ const L = elen({pts}); let s=0; for(let i=1;i<pts.length;i++){ const d=Math.hypot(pts[i][0]-pts[i-1][0], pts[i][1]-pts[i-1][1]); if(s+d >= L/2){ const t=(L/2-s)/(d||1); return [pts[i-1][0]+(pts[i][0]-pts[i-1][0])*t, pts[i-1][1]+(pts[i][1]-pts[i-1][1])*t]; } s+=d; } return pts[0]; };
+      const me = mid(e.pts);
+      const twin = edges.findIndex((f,j)=> j<k && ((f.a===e.a && f.b===e.b) || (f.a===e.b && f.b===e.a)) && Math.abs(elen(f)-elen(e)) < 0.15*Math.max(elen(f),elen(e)) + 2
+        && Math.hypot(mid(f.pts)[0]-me[0], mid(f.pts)[1]-me[1]) < 3);
+      if(twin>=0) edges.splice(k,1); } }
+  // archi tra due nodi collegati direttamente (vicini) → nessun pixel in mezzo: ignoro i doppioni
+  // 6) potatura dei "peli" dell'assottigliamento (rametti corti che finiscono nel vuoto) e unione attraverso i nodi di grado 2
+  const plen = pts=>{ let s=0; for(let i=1;i<pts.length;i++) s+=Math.hypot(pts[i][0]-pts[i-1][0], pts[i][1]-pts[i-1][1]); return s; };
+  let E = edges.filter(e=> e.pts.length >= 2);
+  for(let iter=0; iter<3; iter++){
+    const dcount = new Map(); const inc = (n)=>{ if(n>=0) dcount.set(n, (dcount.get(n)||0)+1); };
+    E.forEach(e=>{ inc(e.a); inc(e.b); });
+    E = E.filter(e=>{ if(e.closed) return true; const da = e.a<0 ? 1 : dcount.get(e.a), db = e.b<0 ? 1 : dcount.get(e.b);
+      const spur = (da===1 && db>=3) || (db===1 && da>=3); return !(spur && plen(e.pts) < 7); });
+    // unione: un nodo con esattamente 2 archi diventa un punto interno
+    const dc = new Map(); E.forEach(e=>{ if(!e.closed){ inc2(dc,e.a); inc2(dc,e.b); } });
+    function inc2(m,n){ if(n>=0) m.set(n,(m.get(n)||0)+1); }
+    let merged = true;
+    while(merged){
+      merged = false;
+      for(const [n, c] of dc){
+        if(c!==2) continue;
+        const two = E.filter(e=> !e.closed && (e.a===n || e.b===n)); if(two.length!==2 || two[0]===two[1]) continue;
+        let [e1, e2] = two;
+        const p1 = e1.b===n ? e1.pts : e1.pts.slice().reverse(); const s1 = e1.b===n ? e1.a : e1.b;
+        const p2 = e2.a===n ? e2.pts : e2.pts.slice().reverse(); const s2 = e2.a===n ? e2.b : e2.a;
+        const ne = {a:s1, b:s2, pts:p1.concat(p2.slice(1))};
+        if(s1===s2 && s1>=0){ ne.closed = true; ne.a = ne.b = -1; }
+        E = E.filter(e=> e!==e1 && e!==e2); E.push(ne); dc.delete(n); merged = true; break;
+      }
+    }
+  }
+  // 7) semplificazione (Ramer-Douglas-Peucker): le rette diventano due punti, le curve restano dense
+  const rdp = (pts, eps)=>{
+    if(pts.length < 3) return pts.slice();
+    const [ax,ay] = pts[0], [bx,by] = pts[pts.length-1], L = Math.hypot(bx-ax, by-ay) || 1e-9;
+    let md = -1, mi = 0;
+    for(let i=1;i<pts.length-1;i++){ const d = Math.abs((bx-ax)*(ay-pts[i][1]) - (ax-pts[i][0])*(by-ay)) / L; if(d>md){ md=d; mi=i; } }
+    if(md <= eps) return [pts[0], pts[pts.length-1]];
+    return rdp(pts.slice(0, mi+1), eps).slice(0,-1).concat(rdp(pts.slice(mi), eps));
+  };
+  const eps = opts.eps || 0.9;
+  let lines = E.map(e=>{ let pts = e.closed ? e.pts.concat([e.pts[0]]) : e.pts; pts = rdp(pts, eps); if(e.closed) pts = pts.slice(0,-1); return {pts, closed: !!e.closed, a:e.a, b:e.b}; })
+               .filter(l=> l.pts.length>=2 && plen(l.pts) >= 3);
+  // 8) raddrizzo le linee quasi orizzontali / verticali: coordinate vicine (entro 1,6 px) diventano uguali
+  const snapAxis = (axis)=>{
+    const vals = [];
+    lines.forEach(l=> l.pts.forEach((p,i)=>{ const q = l.pts[i+1] || (l.closed ? l.pts[0] : null); const r = l.pts[i-1] || (l.closed ? l.pts[l.pts.length-1] : null);
+      const straight = [q, r].some(o=> o && Math.abs(o[axis]-p[axis]) <= 1.6 && Math.abs(o[1-axis]-p[1-axis]) >= 6);
+      if(straight) vals.push({v:p[axis], p}); }));
+    vals.sort((a,b)=>a.v-b.v);
+    for(let i=0;i<vals.length;){ let j=i; while(j+1<vals.length && vals[j+1].v - vals[i].v <= 1.6) j++; const m = vals.slice(i,j+1).reduce((s,x)=>s+x.v,0)/(j-i+1); for(let k=i;k<=j;k++) vals[k].p[axis] = m; i=j+1; }
+  };
+  // i nodi condivisi devono restare uguali in tutte le linee: lavoro su oggetti punto condivisi
+  const nodePt = new Map();
+  lines.forEach(l=>{ if(!l.closed){ if(l.a>=0){ if(!nodePt.has(l.a)) nodePt.set(l.a, l.pts[0]); else l.pts[0] = nodePt.get(l.a); }
+                                     if(l.b>=0){ if(!nodePt.has(l.b)) nodePt.set(l.b, l.pts[l.pts.length-1]); else l.pts[l.pts.length-1] = nodePt.get(l.b); } } });
+  snapAxis(0); snapAxis(1);
+  // 9) taglio o piega: una linea che confina con l'esterno della sagoma è un taglio; con la sagoma da entrambi i lati è una piega
+  const outside = new Uint8Array(N); { const q = []; const push = p=>{ if(!keep[p] && !outside[p]){ outside[p]=1; q.push(p); } };
+    for(let x=0;x<W;x++){ push(x); push((H-1)*W+x); } for(let y=0;y<H;y++){ push(y*W); push(y*W+W-1); }
+    while(q.length){ const p=q.pop(), x=p%W, y=(p/W)|0; if(x>0) push(p-1); if(x<W-1) push(p+1); if(y>0) push(p-W); if(y<H-1) push(p+W); } }
+  const isOut = (x,y)=>{ x=Math.round(x); y=Math.round(y); if(x<0||y<0||x>=W||y>=H) return true; return !!outside[y*W+x]; };
+  const colorOf = l=>{ let r=0,g=0,b=0,n=0; l.pts.forEach((p,i)=>{ const q=l.pts[i+1]; if(!q) return; const L=Math.hypot(q[0]-p[0],q[1]-p[1]); for(let t=0;t<=L;t+=2){ const x=Math.round(p[0]+(q[0]-p[0])*t/(L||1)), y=Math.round(p[1]+(q[1]-p[1])*t/(L||1)); if(x<0||y<0||x>=W||y>=H) continue; const i4=(y*W+x)*4; r+=D[i4]; g+=D[i4+1]; b+=D[i4+2]; n++; } }); return n ? [r/n,g/n,b/n] : [0,0,0]; };
+  const nodeDeg = new Map(); lines.forEach(l=>{ if(!l.closed){ [l.a,l.b].forEach(n=>{ if(n>=0) nodeDeg.set(n,(nodeDeg.get(n)||0)+1); }); } });
+  lines.forEach(l=>{
+    let votes = 0, tot = 0;
+    const seg = l.closed ? l.pts.concat([l.pts[0]]) : l.pts;
+    for(let i=0;i<seg.length-1;i++){
+      const [ax,ay]=seg[i], [bx,by]=seg[i+1], L=Math.hypot(bx-ax,by-ay); if(L<1) continue;
+      const nx=-(by-ay)/L, ny=(bx-ax)/L;
+      for(let t=Math.min(3,L/2); t<=L-Math.min(3,L/2); t+=3){
+        const x=ax+(bx-ax)*t/L, y=ay+(by-ay)*t/L; tot++;
+        if([3,5,8].some(d=> isOut(x+nx*d, y+ny*d) || isOut(x-nx*d, y-ny*d))) votes++;
+      }
+    }
+    const [r,g,b] = colorOf(l);
+    const reddish = r>140 && g<110 && b<110, blueGreen = (b>140 && r<110) || (g>130 && r<110 && b<140);
+    const boundary = tot ? votes/tot >= 0.5 : true;
+    const freeEnd = !l.closed && ((l.a<0 || nodeDeg.get(l.a)===1) || (l.b<0 || nodeDeg.get(l.b)===1));
+    // interne: pieghe, salvo fori chiusi e tagli che finiscono nel vuoto (asole, tagli di scarico)
+    l.role = reddish ? 'cut' : blueGreen ? 'fold' : (boundary || l.closed || freeEnd) ? 'cut' : 'fold';
+  });
+  // 10) pieghe tratteggiate: il primo e l'ultimo trattino spesso toccano il contorno e ne vengono assorbiti.
+  // Prolungo la piega lungo la sua direzione fino alla linea che incontra, e tolgo i mozziconi allineati.
+  const skAt = (x,y)=>{ x=Math.round(x); y=Math.round(y); return x>=0 && y>=0 && x<W && y<H && keep[y*W+x]; };
+  dashLines.forEach(dl=>{
+    const [a,b] = dl.pts, L = Math.hypot(b[0]-a[0], b[1]-a[1]) || 1, ux = (b[0]-a[0])/L, uy = (b[1]-a[1])/L;
+    const reach = Math.max(30, L*0.15);
+    [[a,-1],[b,1]].forEach(([p,s])=>{ for(let t=1; t<=reach; t++){ const x=p[0]+ux*s*t, y=p[1]+uy*s*t; if(skAt(x,y)){
+      // mi fermo sulla linea (centro del tratto d'inchiostro)
+      // seguo l'inchiostro lungo la direzione della piega: se è un trattino assorbito dal contorno lo supero
+      // un trattino assorbito dal contorno è lungo al massimo un trattino (+ lo spessore del contorno): lo supero;
+      // se l'inchiostro prosegue oltre è una linea continua sulla stessa retta: mi fermo all'incrocio
+      let t2 = t; while(t2 < reach + 8 && skAt(p[0]+ux*s*(t2+1), p[1]+uy*s*(t2+1))) t2++;
+      const absorbed = (t2 - t) > 7 && (t2 - t) <= dl.dashLen*1.4 + 7;
+      const tm = absorbed ? t2 - 1.5 : t + Math.min(t2 - t, 5)/2; p[0] += ux*s*tm; p[1] += uy*s*tm; break; } } });
+  });
+  const nearDash = (l)=> dashLines.some(dl=>{ const [a,b]=dl.pts, L=Math.hypot(b[0]-a[0],b[1]-a[1])||1;
+    return l.pts.every(p=>{ const t=((p[0]-a[0])*(b[0]-a[0])+(p[1]-a[1])*(b[1]-a[1]))/(L*L); const d=Math.abs((b[0]-a[0])*(a[1]-p[1])-(a[0]-p[0])*(b[1]-a[1]))/L; return d<=2.5 && t>=-0.02 && t<=1.02; }); });
+  lines = lines.filter(l=>{ if(l.closed) return true; const freeEnd = (l.a<0 || nodeDeg.get(l.a)===1) || (l.b<0 || nodeDeg.get(l.b)===1);
+    return !(freeEnd && plen(l.pts) < 40 && nearDash(l)); });
+  const out = lines.map(l=>({pts:l.pts.map(p=>[p[0],p[1]]), closed:l.closed, role:l.role})).concat(dashLines);
+  const dbg = opts.debug ? {skel: skl.filter(p=>sk[p]).map(p=>[p%W,(p/W)|0]), nodes: nodes.map(n=>[n.x,n.y])} : null;
+  return {lines: out, textRemoved, dashLines: dashLines.length, rejected: textRemoved, dbg};
+}
+
+
 function loadImageEl(dataUrl){ return new Promise((resolve, reject)=>{ const im = new Image(); im.onload = ()=> resolve(im); im.onerror = reject; im.src = dataUrl; }); }
 // Individua le linee di taglio e piega in un'immagine posta nel rettangolo (x, y, w, h) in mm.
 async function detectLinesFromImage(src){
@@ -16466,7 +16883,12 @@ async function detectLinesFromImage(src){
   const k = Math.min(1, 1600/Math.max(sw, shh));
   const cv = document.createElement('canvas'); cv.width = Math.max(1, Math.round(sw*k)); cv.height = Math.max(1, Math.round(shh*k));
   const g = cv.getContext('2d'); g.fillStyle = '#ffffff'; g.fillRect(0,0,cv.width,cv.height); g.drawImage(img, 0, 0, cv.width, cv.height);
-  const res = detectDielineLines(g.getImageData(0, 0, cv.width, cv.height));
+  const imgData = g.getImageData(0, 0, cv.width, cv.height);
+  // motore per disegni al tratto: segue curve e diagonali, toglie le scritte, taglio o piega dalla posizione
+  // (linee sul bordo della sagoma = taglio, linee interne = piega), riconosce tratteggi e colori.
+  // Se non trova nulla si usa il metodo precedente.
+  let res = traceLineArt(imgData);
+  if(!res.lines.length) res = detectDielineLines(imgData);
   const sx = src.w/cv.width, sy = src.h/cv.height;
   const toMM = q=> [src.x + q[0]*sx, src.y + q[1]*sy];
   const made = res.lines.map(l=>{
@@ -16527,6 +16949,53 @@ function runTrace(){
   }).catch(()=>{ btn.textContent = translate('Trasforma in disegno vettoriale'); btn.disabled = false; showToast('Libreria di vettorizzazione non disponibile (verifica la connessione a Internet).', true); });
 }
 
+
+/* ============================================================
+   INCOLLA DAGLI APPUNTI — immagini copiate da pagine web, Paint, screenshot,
+   altri programmi; SVG copiato come testo; oppure le forme copiate nell'app.
+============================================================ */
+let pasteWaiting = false;
+async function importClipboardBlob(blob, name){
+  const ext = (blob.type.split('/')[1] || 'png').replace('jpeg','jpg').replace('svg+xml','svg');
+  importAnyFile(new File([blob], name || ('immagine-incollata.' + ext), {type: blob.type}));
+}
+document.addEventListener('paste', async e=>{
+  const t = e.target;
+  if(t && (t.tagName==='INPUT' || t.tagName==='TEXTAREA' || t.isContentEditable)) return; // nei campi l'incolla è quello normale
+  pasteWaiting = false;
+  const cd = e.clipboardData;
+  const files = cd ? [...cd.items].filter(it=>it.kind==='file').map(it=>it.getAsFile()).filter(Boolean) : [];
+  const img = files.find(f=> /^image\//.test(f.type));
+  if(img){ e.preventDefault(); importClipboardBlob(img, img.name && !/^image\.\w+$/.test(img.name) ? img.name : null); return; }
+  if(files.length){ e.preventDefault(); importAnyFile(files[0]); return; }                         // file PDF/SVG copiato dal computer
+  const text = cd ? (cd.getData('text/plain') || '') : '';
+  if(/^\s*(<\?xml[\s\S]*?)?<svg[\s>]/i.test(text)){ e.preventDefault(); importAnyFile(new File([text], 'incollato.svg', {type:'image/svg+xml'})); return; }
+  const html = cd ? (cd.getData('text/html') || '') : '';
+  const m = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+  if(m){
+    e.preventDefault();
+    try{
+      const r = await fetch(m[1]); if(!r.ok) throw new Error('http');
+      const blob = await r.blob(); if(!/^image\//.test(blob.type)) throw new Error('tipo');
+      importClipboardBlob(blob, null);
+    }catch(err){
+      showToast('Questa immagine è su un altro sito e non si può leggere dal testo copiato: sulla pagina usa il tasto destro → "Copia immagine" e poi incolla, oppure salvala e importala.', true);
+    }
+    return;
+  }
+  e.preventDefault();
+  pasteClipboardShapesAt(null); // forme copiate nell'app
+});
+// pulsante "Incolla dagli appunti" (dove il browser lo consente)
+async function pasteImageFromClipboardButton(){
+  if(!navigator.clipboard || !navigator.clipboard.read){ showToast('Il browser non consente di leggere gli appunti da un pulsante: fai clic sul foglio e premi Ctrl+V.', true); return; }
+  try{
+    const items = await navigator.clipboard.read();
+    for(const it of items){ const ty = it.types.find(x=>/^image\//.test(x)); if(ty){ importClipboardBlob(await it.getType(ty), null); return; } }
+    showToast('Negli appunti non c\'è un\'immagine: copiala (es. tasto destro → "Copia immagine") e riprova.', true);
+  }catch(err){ showToast('Il browser non ha dato il permesso di leggere gli appunti: fai clic sul foglio e premi Ctrl+V.', true); }
+}
+
 /* ============================================================
    IMPORTA IMMAGINE (PNG, JPG, WebP, GIF, BMP) — come per i PDF: si sceglie la
    misura reale e cosa ottenere: linee di taglio e piega, grafica vettoriale o
@@ -16534,17 +17003,60 @@ function runTrace(){
 ============================================================ */
 const imgImp = { dataUrl:null, name:'', pw:0, ph:0, wMM:100, mode:'dieline' };
 try{ const sv = JSON.parse(localStorage.getItem('spikecut-imgimp') || '{}'); if(sv.mode) imgImp.mode = sv.mode; if(sv.colors) imgImp.colors = sv.colors; if(sv.detail) imgImp.detail = sv.detail; if(sv.keepRef!=null) imgImp.keepRef = sv.keepRef; }catch(e){}
+
+// Risoluzione salvata nel file (se c'è): JPEG (JFIF o EXIF) e PNG (pHYs). Senza, restituisce null.
+function readImageDPI(buf){
+  try{
+    const b = new Uint8Array(buf), dv = new DataView(buf);
+    if(b[0]===0x89 && b[1]===0x50){ // PNG
+      let o = 8;
+      while(o + 8 < b.length){
+        const len = dv.getUint32(o), type = String.fromCharCode(b[o+4], b[o+5], b[o+6], b[o+7]);
+        if(type==='pHYs'){ const px = dv.getUint32(o+8), unit = b[o+16]; return unit===1 && px > 0 ? px * 0.0254 : null; }
+        if(type==='IDAT' || type==='IEND') break;
+        o += 12 + len;
+      }
+      return null;
+    }
+    if(b[0]===0xFF && b[1]===0xD8){ // JPEG
+      let o = 2, jfif = null, exif = null;
+      while(o + 4 < b.length && b[o]===0xFF){
+        const mk = b[o+1], len = dv.getUint16(o+2);
+        if(mk===0xE0 && String.fromCharCode(b[o+4],b[o+5],b[o+6],b[o+7])==='JFIF'){
+          const unit = b[o+11], xd = dv.getUint16(o+12);
+          if(unit===1 && xd > 0) jfif = xd; else if(unit===2 && xd > 0) jfif = xd*2.54;
+        }
+        if(mk===0xE1 && String.fromCharCode(b[o+4],b[o+5],b[o+6],b[o+7])==='Exif'){
+          const t = o + 10, le = b[t]===0x49, g16 = p=>dv.getUint16(p, le), g32 = p=>dv.getUint32(p, le);
+          const ifd = t + g32(t+4), n = g16(ifd); let xres = null, unit = 2;
+          for(let i=0;i<n;i++){ const e = ifd + 2 + i*12, tag = g16(e);
+            if(tag===0x011A){ const vo = t + g32(e+8); const den = g32(vo+4); xres = den ? g32(vo)/den : null; }
+            if(tag===0x0128) unit = g16(e+8); }
+          if(xres && xres > 0) exif = unit===3 ? xres*2.54 : xres;
+        }
+        if(mk===0xDA) break;
+        o += 2 + len;
+      }
+      const v = exif || jfif;
+      return v && v >= 30 && v <= 4800 ? v : null;
+    }
+  }catch(e){}
+  return null;
+}
+
 function openImageImport(file){
   const reader = new FileReader();
-  reader.onload = ()=>{
+  reader.onload = async ()=>{
+    let fileDpi = null; try{ fileDpi = readImageDPI(await file.arrayBuffer()); }catch(e){}
     loadImageEl(reader.result).then(img=>{
       imgImp.dataUrl = reader.result; imgImp.name = file.name; imgImp.pw = img.naturalWidth || img.width; imgImp.ph = img.naturalHeight || img.height;
-      // misura iniziale: 150 DPI (tipica di scansioni e schermate), ridotta se non sta nel foglio
-      imgImp.wMM = imgImp.pw / 150 * 25.4;
-      const maxW = state.page.w*0.95, maxH = state.page.h*0.95;
-      const r = Math.min(1, maxW/imgImp.wMM, maxH/(imgImp.wMM*imgImp.ph/imgImp.pw)); imgImp.wMM *= r;
+      // misura: quella scritta nel file (DPI); se manca, 96 DPI (schermate, immagini dal web, Paint).
+      // Nessun rimpicciolimento automatico: il foglio non cambia e l'eccedenza esce dal foglio.
+      imgImp.fileDpi = fileDpi;
+      imgImp.wMM = imgImp.pw / (fileDpi || 96) * 25.4;
       document.getElementById('imgImpPreview').src = reader.result;
-      document.getElementById('imgImpInfo').textContent = tpl('{name} · {w} × {h} pixel', {name:file.name, w:imgImp.pw, h:imgImp.ph});
+      document.getElementById('imgImpInfo').textContent = tpl('{name} · {w} × {h} pixel', {name:file.name, w:imgImp.pw, h:imgImp.ph}) + ' · '
+        + (fileDpi ? tpl('risoluzione nel file: {d} DPI', {d: Math.round(fileDpi)}) : translate('il file non indica la risoluzione: considerati 96 DPI (valore tipico di schermate e immagini dal web). Se conosci una misura reale, scrivila qui sotto.'));
       const u = unitLabel();
       document.getElementById('imgImpWLabel').textContent = tpl('Larghezza ({unit})', {unit:u});
       document.getElementById('imgImpHLabel').textContent = tpl('Altezza ({unit})', {unit:u});
@@ -16578,6 +17090,7 @@ function imgImpRefresh(){
     : mode==='trace' ? (tracerOk ? tpl('Le zone di colore diventeranno grafica vettoriale, su {size}.', {size}) : translate('La vettorizzazione richiede la connessione a Internet (libreria non caricata): scegli un\'altra opzione.'))
     : tpl('L\'immagine verrà posta sotto il disegno ({size}), semitrasparente, da ricalcare con gli strumenti.', {size});
   if(state.refImage && (mode==='ref' || document.getElementById('imgImpKeepRef').checked)) txt += ' ' + translate('Sostituisce l\'immagine di riferimento attuale.');
+  if(imgImp.wMM > state.page.w + 0.01 || hMM > state.page.h + 0.01) txt += ' ' + tpl('È più grande del foglio ({pw} × {ph}): il foglio resta com\'è e la parte in eccesso uscirà dal foglio (puoi usare "Adatta al foglio").', {pw: fmtUnit(state.page.w), ph: fmtUnit(state.page.h)});
   document.getElementById('imgImpSummary').textContent = txt;
   document.getElementById('imgImpApply').disabled = mode==='trace' && !tracerOk;
 }
@@ -16587,7 +17100,8 @@ async function applyImageImport(){
   const colors = parseInt(document.getElementById('imgImpColors').value)||4, detail = document.getElementById('imgImpDetail').value;
   try{ localStorage.setItem('spikecut-imgimp', JSON.stringify({mode, colors, detail, keepRef: document.getElementById('imgImpKeepRef').checked})); }catch(e){}
   const w = imgImp.wMM, h = w * imgImp.ph / imgImp.pw;
-  const src = { dataUrl: imgImp.dataUrl, x:(state.page.w-w)/2, y:(state.page.h-h)/2, w, h, srcW: imgImp.pw, srcH: imgImp.ph };
+  // il foglio non cambia: se l'immagine è più grande parte dall'angolo in alto a sinistra e l'eccedenza esce dal foglio
+  const src = { dataUrl: imgImp.dataUrl, x: w <= state.page.w ? (state.page.w-w)/2 : 0, y: h <= state.page.h ? (state.page.h-h)/2 : 0, w, h, srcW: imgImp.pw, srcH: imgImp.ph };
   const btn = document.getElementById('imgImpApply'); const label = btn.textContent;
   const setRef = op=>{ state.refImage = Object.assign({}, src, { opacity:op, layerId: state.activeLayerId, hidden:false, rotation:0, locked:false,
     filters:{brightness:100, contrast:100, saturate:100, grayscale:0, sepia:0, invert:0, hueRotate:0, blur:0} }); };
@@ -17209,7 +17723,10 @@ async function autoFitImportedShapes(newShapes, opts){
     syncPageSizeSelect();
   } else {
     const fitsPage = bw <= state.page.w && bh <= state.page.h;
-    if(!fitsPage){
+    const sheetHasWork = state.shapes.length > 0 || !!state.refImage;
+    if(!fitsPage && sheetHasWork){ // foglio già in uso: il formato non si tocca, la parte in eccesso esce dal foglio
+      showToast(tpl('Il disegno importato ({bw} × {bh} mm) è più grande del foglio: il formato del foglio non è stato cambiato e la parte in eccesso esce dal foglio.', {bw: bw.toFixed(1), bh: bh.toFixed(1)}), false);
+    } else if(!fitsPage){
       const ok = await showConfirm(
         tpl('Il disegno importato misura {bw}×{bh} mm, più grande della pagina attuale ({pw}×{ph} mm).\n\nImpostare la pagina esattamente su queste misure? Le dimensioni del disegno importato non vengono comunque alterate in nessun caso.',
           {bw: bw.toFixed(1), bh: bh.toFixed(1), pw: state.page.w, ph: state.page.h}),
@@ -17222,7 +17739,8 @@ async function autoFitImportedShapes(newShapes, opts){
     }
     // Il disegno importato viene solo CENTRATO, mai riscalato oltre al fattore già eventualmente applicato sopra.
     const srcCenter = [minX+bw/2, minY+bh/2];
-    const dstCenter = [state.page.w/2, state.page.h/2];
+    // centrato; se non sta nel foglio parte dall'angolo in alto a sinistra (l'eccedenza esce a destra / in basso)
+    const dstCenter = [bw <= state.page.w ? state.page.w/2 : bw/2, bh <= state.page.h ? state.page.h/2 : bh/2];
     function fn(p){ return [dstCenter[0]+(p[0]-srcCenter[0]), dstCenter[1]+(p[1]-srcCenter[1])]; }
     newShapes.forEach(s=>{
       if(s.points) s.points = s.points.map(fn);
