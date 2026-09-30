@@ -13,7 +13,7 @@ $name = trim((string)($body['name'] ?? ''));
 if ($name === '') {
     json_error('Il progetto deve avere un nome.');
 }
-$name = function_exists('mb_substr') ? mb_substr($name, 0, 120) : substr($name, 0, 120);
+$name = utf8_cut($name, 120);
 $shared = !empty($body['shared']);
 
 $id = $body['id'] ?? null;

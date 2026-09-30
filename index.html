@@ -487,6 +487,18 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 .seg3 button:hover{ color:var(--ink); background:rgba(128,128,128,.12); }
 .seg3 button.active{ background:var(--brass); color:#1a1300; font-weight:700; }
 .libvis{ font-size:11px; opacity:.85; }
+.versions-bar{ display:flex; gap:8px; align-items:center; padding:8px 14px; border-bottom:1px solid var(--line-soft); flex-wrap:wrap; }
+.ver-row{ display:flex; gap:8px; align-items:center; padding:7px 8px; border-radius:8px; border:1px solid transparent; }
+.ver-row + .ver-row{ border-top:1px solid var(--line-soft); }
+.ver-row.pinned{ background:rgba(201,151,63,.10); border-color:rgba(201,151,63,.45); }
+.ver-row.current{ background:rgba(63,163,77,.10); border-color:rgba(63,163,77,.45); }
+.ver-row .ver-main{ flex:1; min-width:0; }
+.ver-row .ver-title{ font-weight:600; font-size:13px; }
+.ver-row .ver-sub{ color:var(--ink-dim); font-size:11px; }
+.ver-row .ver-note{ font-size:11.5px; margin-top:2px; white-space:pre-wrap; }
+.ver-row button{ flex:none; font-size:11.5px; padding:4px 8px; }
+.ver-section{ font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-dim); margin:12px 2px 4px; }
+.ver-info{ color:var(--ink-dim); font-size:11.5px; padding:4px 2px 8px; }
 .lib-toolbar{ display:flex; align-items:center; gap:2px; padding:5px 8px; border-bottom:1px solid var(--line-soft); flex-shrink:0; overflow-x:auto; scrollbar-width:thin; }
 .lib-tb-group{ display:flex; align-items:center; gap:2px; }
 .lib-toolbar .lib-tb-trash{ display:none; }
@@ -765,6 +777,8 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
       <div class="menu-sep"></div>
       <button data-action="save-library">Salva in libreria (server)</button>
       <button data-action="open-library">Apri dalla libreria (server)</button>
+      <button data-action="pin-version" title="Dai un nome a questo punto del progetto (es. «Approvata dal cliente»): resterà per sempre nella cronologia e potrai tornarci quando vuoi">📌 Fissa questa versione…</button>
+      <button data-action="versions-current" title="Tutte le versioni salvate di questo progetto, con quelle fissate">🕐 Versioni di questo progetto…</button>
       <div class="menu-sep"></div>
       <button data-action="save-project" title="Scarica sul tuo computer una copia completa del progetto: per archiviarla, passarla a qualcuno o riaprirla su un altro computer senza account">⬇ Scarica una copia del progetto (.json)</button>
       <button data-action="open-project" title="Apri un progetto salvato in precedenza come file .json">📂 Apri un progetto da file (.json)</button>
@@ -897,7 +911,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.45.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.47.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -996,13 +1010,33 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   </div>
 </div>
 
+<div id="pinModal" class="modal-overlay">
+  <div class="modal-box" style="width:min(420px,96vw);">
+    <div class="modal-head"><h3 id="pinTitle">Fissa versione</h3><button class="iconbtn" id="pinClose" title="Chiudi">✕</button></div>
+    <div class="modal-body">
+      <div class="hint" id="pinInfo" style="margin-bottom:8px;"></div>
+      <div class="field"><label>Nome della versione</label><input type="text" id="pinLabel" maxlength="80" placeholder="es. Approvata dal cliente, Prima stampa, v2 definitiva"></div>
+      <div class="field"><label>Nota (facoltativa)</label><textarea id="pinNote" rows="3" maxlength="500" style="width:100%;resize:vertical;" placeholder="Cosa c'è di importante in questa versione"></textarea></div>
+      <div class="hint">Le versioni fissate non vengono mai cancellate e restano nella cronologia insieme a tutte le altre.</div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px;">
+        <button class="btn" id="pinCancel" style="width:auto;margin:0;">Annulla</button>
+        <button class="btn primary" id="pinOk" style="width:auto;margin:0;">📌 Fissa</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="versionsModal" class="modal-overlay">
-  <div class="modal-box">
+  <div class="modal-box" style="width:min(620px,96vw);">
     <div class="modal-head">
       <h3>Cronologia versioni</h3>
       <button class="iconbtn" id="versionsModalClose" title="Chiudi">✕</button>
     </div>
-    <div id="versionsList" class="modal-body">
+    <div class="versions-bar">
+      <button class="btn primary" id="verPinCurrent" style="width:auto;margin:0;">📌 Fissa lo stato attuale…</button>
+      <label style="display:flex;gap:6px;align-items:center;font-size:12.5px;cursor:pointer;margin:0 0 0 auto;"><input type="checkbox" id="verOnlyPinned" style="width:auto;margin:0;"> Solo versioni fissate</label>
+    </div>
+    <div id="versionsList" class="modal-body" style="max-height:62vh;overflow-y:auto;">
       <div class="emptystate">Caricamento…</div>
     </div>
   </div>
@@ -2961,6 +2995,60 @@ const I18N = {
     "{n} elementi: scegli la cartella di destinazione.": "{n} items: choose the destination folder.",
     "Libreria (cartella principale)": "Library (main folder)",
     "Non si può spostare una cartella dentro se stessa": "A folder cannot be moved into itself",
+    "Secchiello": "Paint bucket",
+    "Secchiello: colora una zona chiusa (anche formata da più linee)": "Paint bucket: fill a closed area (even one formed by several lines)",
+    "Colore del secchiello": "Paint bucket colour",
+    "Fai clic dentro una zona chiusa: anche se è formata da più linee, viene colorata tutta, fori esclusi. Le piccole aperture (fino a 1 mm) si chiudono da sole.": "Click inside a closed area: even if it is formed by several lines, it is filled entirely, holes excluded. Small gaps (up to 1 mm) close by themselves.",
+    "Non ci sono linee che chiudono una zona da colorare.": "There are no lines closing an area to fill.",
+    "Fai clic dentro una zona chiusa dalle linee.": "Click inside an area closed by the lines.",
+    "Hai fatto clic proprio su una linea: fai clic dentro la zona da colorare.": "You clicked right on a line: click inside the area to fill.",
+    "Zona colorata (il contorno aveva un'apertura: chiusa con una tolleranza di {g} mm).": "Area filled (the outline had a gap: closed with a tolerance of {g} mm).",
+    "Zona colorata.": "Area filled.",
+    "{n} foro all'interno lasciato vuoto.": "{n} hole inside left empty.",
+    "{n} fori all'interno lasciati vuoti.": "{n} holes inside left empty.",
+    "Colore e opacità si cambiano nel pannello Proprietà.": "Colour and opacity can be changed in the Properties panel.",
+    "Questa zona non è chiusa: il contorno ha un'apertura più grande di 1 mm. Usa \"Verifica chiusure\" per trovarla, oppure chiudila con la penna.": "This area is not closed: the outline has a gap larger than 1 mm. Use \"Check closures\" to find it, or close it with the pen.",
+    "📌 Fissa questa versione…": "📌 Pin this version…",
+    "🕐 Versioni di questo progetto…": "🕐 Versions of this project…",
+    "Dai un nome a questo punto del progetto (es. «Approvata dal cliente»): resterà per sempre nella cronologia e potrai tornarci quando vuoi": "Give this point of the project a name (e.g. \"Approved by client\"): it stays in the history forever and you can go back to it whenever you want",
+    "Tutte le versioni salvate di questo progetto, con quelle fissate": "All saved versions of this project, including pinned ones",
+    "Fissa versione": "Pin version",
+    "Nome della versione": "Version name",
+    "Nota (facoltativa)": "Note (optional)",
+    "Le versioni fissate non vengono mai cancellate e restano nella cronologia insieme a tutte le altre.": "Pinned versions are never deleted and stay in the history together with all the others.",
+    "📌 Fissa": "📌 Pin",
+    "📌 Fissa lo stato attuale…": "📌 Pin the current state…",
+    "Solo versioni fissate": "Pinned versions only",
+    "{n} versioni, di cui {p} fissate. Le versioni fissate non vengono mai cancellate; delle altre restano le ultime {m}. Ripristinando una versione lo stato attuale resta nella cronologia.": "{n} versions, {p} of them pinned. Pinned versions are never deleted; of the others the latest {m} are kept. When you restore a version the current state stays in the history.",
+    "Stato attuale in libreria": "Current state in the library",
+    "ripristinato il {d} da «{l}»": "restored on {d} from \"{l}\"",
+    "Nessuna versione fissata: usa «📌 Fissa lo stato attuale…» o «Fissa…» su una versione.": "No pinned versions: use \"📌 Pin the current state…\" or \"Pin…\" on a version.",
+    "Rendi questa la versione attuale salvata in libreria (lo stato attuale resta nella cronologia)": "Make this the current version saved in the library (the current state stays in the history)",
+    "Modifica nome e nota": "Edit name and note",
+    "Togli ⭐": "Unpin ⭐",
+    "Togli dalle versioni fissate (resta nella cronologia, ma potrà essere cancellata come le altre)": "Remove from pinned versions (it stays in the history, but may be deleted like the others)",
+    "📌 Fissa…": "📌 Pin…",
+    "Dai un nome a questa versione perché resti per sempre": "Give this version a name so it stays forever",
+    "Modifica versione fissata": "Edit pinned version",
+    "Fissa lo stato attuale": "Pin the current state",
+    "Fissa questa versione": "Pin this version",
+    "Lo stato del progetto salvato ora in libreria diventa una versione con un nome, a cui potrai sempre tornare.": "The project state now saved in the library becomes a named version you can always go back to.",
+    "Versione del {d}.": "Version of {d}.",
+    "Dai un nome alla versione.": "Give the version a name.",
+    "Versione fissata: «{l}».": "Version pinned: \"{l}\".",
+    "Togliere «{l}» dalle versioni fissate? Resterà nella cronologia, ma potrà essere cancellata come le altre quando se ne accumulano troppe.": "Remove \"{l}\" from pinned versions? It stays in the history, but may be deleted like the others when too many build up.",
+    "Togli": "Remove",
+    "Questo disegno non è ancora nella libreria: salvalo prima con «Salva in libreria», poi potrai fissarne le versioni.": "This drawing is not in the library yet: save it first with \"Save to library\", then you can pin its versions.",
+    "Questo disegno non è ancora nella libreria: salvalo prima con «Salva in libreria».": "This drawing is not in the library yet: save it first with \"Save to library\".",
+    "Accedi al tuo account per fissare le versioni.": "Sign in to your account to pin versions.",
+    "Ci sono modifiche non ancora salvate in libreria. Salvarle adesso e fissare questa versione?": "There are changes not yet saved to the library. Save them now and pin this version?",
+    "Salva e fissa": "Save and pin",
+    "la versione fissata «{l}»": "the pinned version \"{l}\"",
+    "la versione del {d}": "the version of {d}",
+    "Ripristinare {what} come stato attuale del progetto? Lo stato di adesso resta nella cronologia, quindi potrai tornarci.": "Restore {what} as the current state of the project? The current state stays in the history, so you can go back to it.",
+    "Ripristinata «{l}».": "Restored \"{l}\".",
+    "Versioni fissate ({n})": "Pinned versions ({n})",
+    "Cronologia completa": "Full history",
   },
   de: {
     "1 cm": "1 cm",
@@ -4215,6 +4303,60 @@ const I18N = {
     "{n} elementi: scegli la cartella di destinazione.": "{n} Elemente: Wähle den Zielordner.",
     "Libreria (cartella principale)": "Bibliothek (Hauptordner)",
     "Non si può spostare una cartella dentro se stessa": "Ein Ordner kann nicht in sich selbst verschoben werden",
+    "Secchiello": "Farbeimer",
+    "Secchiello: colora una zona chiusa (anche formata da più linee)": "Farbeimer: eine geschlossene Fläche füllen (auch aus mehreren Linien)",
+    "Colore del secchiello": "Farbe des Farbeimers",
+    "Fai clic dentro una zona chiusa: anche se è formata da più linee, viene colorata tutta, fori esclusi. Le piccole aperture (fino a 1 mm) si chiudono da sole.": "Klicke in eine geschlossene Fläche: Auch wenn sie aus mehreren Linien besteht, wird sie ganz gefüllt, Löcher ausgenommen. Kleine Lücken (bis 1 mm) werden automatisch geschlossen.",
+    "Non ci sono linee che chiudono una zona da colorare.": "Es gibt keine Linien, die eine Fläche zum Füllen umschließen.",
+    "Fai clic dentro una zona chiusa dalle linee.": "Klicke in eine von Linien umschlossene Fläche.",
+    "Hai fatto clic proprio su una linea: fai clic dentro la zona da colorare.": "Du hast genau auf eine Linie geklickt: Klicke in die zu füllende Fläche.",
+    "Zona colorata (il contorno aveva un'apertura: chiusa con una tolleranza di {g} mm).": "Fläche gefüllt (die Kontur hatte eine Lücke: mit {g} mm Toleranz geschlossen).",
+    "Zona colorata.": "Fläche gefüllt.",
+    "{n} foro all'interno lasciato vuoto.": "{n} Loch im Inneren bleibt leer.",
+    "{n} fori all'interno lasciati vuoti.": "{n} Löcher im Inneren bleiben leer.",
+    "Colore e opacità si cambiano nel pannello Proprietà.": "Farbe und Deckkraft änderst du im Eigenschaften-Bereich.",
+    "Questa zona non è chiusa: il contorno ha un'apertura più grande di 1 mm. Usa \"Verifica chiusure\" per trovarla, oppure chiudila con la penna.": "Diese Fläche ist nicht geschlossen: Die Kontur hat eine Lücke größer als 1 mm. Nutze „Schließungen prüfen“, um sie zu finden, oder schließe sie mit dem Stift.",
+    "📌 Fissa questa versione…": "📌 Diese Version festhalten…",
+    "🕐 Versioni di questo progetto…": "🕐 Versionen dieses Projekts…",
+    "Dai un nome a questo punto del progetto (es. «Approvata dal cliente»): resterà per sempre nella cronologia e potrai tornarci quando vuoi": "Gib diesem Stand des Projekts einen Namen (z. B. „Vom Kunden freigegeben“): Er bleibt für immer im Verlauf und du kannst jederzeit dorthin zurück",
+    "Tutte le versioni salvate di questo progetto, con quelle fissate": "Alle gespeicherten Versionen dieses Projekts, mit den festgehaltenen",
+    "Fissa versione": "Version festhalten",
+    "Nome della versione": "Name der Version",
+    "Nota (facoltativa)": "Notiz (optional)",
+    "Le versioni fissate non vengono mai cancellate e restano nella cronologia insieme a tutte le altre.": "Festgehaltene Versionen werden nie gelöscht und bleiben mit allen anderen im Verlauf.",
+    "📌 Fissa": "📌 Festhalten",
+    "📌 Fissa lo stato attuale…": "📌 Aktuellen Stand festhalten…",
+    "Solo versioni fissate": "Nur festgehaltene Versionen",
+    "{n} versioni, di cui {p} fissate. Le versioni fissate non vengono mai cancellate; delle altre restano le ultime {m}. Ripristinando una versione lo stato attuale resta nella cronologia.": "{n} Versionen, davon {p} festgehalten. Festgehaltene Versionen werden nie gelöscht; von den anderen bleiben die letzten {m}. Beim Wiederherstellen bleibt der aktuelle Stand im Verlauf.",
+    "Stato attuale in libreria": "Aktueller Stand in der Bibliothek",
+    "ripristinato il {d} da «{l}»": "am {d} aus „{l}“ wiederhergestellt",
+    "Nessuna versione fissata: usa «📌 Fissa lo stato attuale…» o «Fissa…» su una versione.": "Keine festgehaltenen Versionen: Verwende „📌 Aktuellen Stand festhalten…“ oder „Festhalten…“ bei einer Version.",
+    "Rendi questa la versione attuale salvata in libreria (lo stato attuale resta nella cronologia)": "Diese Version zur aktuellen in der Bibliothek machen (der aktuelle Stand bleibt im Verlauf)",
+    "Modifica nome e nota": "Name und Notiz bearbeiten",
+    "Togli ⭐": "Lösen ⭐",
+    "Togli dalle versioni fissate (resta nella cronologia, ma potrà essere cancellata come le altre)": "Aus den festgehaltenen entfernen (bleibt im Verlauf, kann aber wie die anderen gelöscht werden)",
+    "📌 Fissa…": "📌 Festhalten…",
+    "Dai un nome a questa versione perché resti per sempre": "Gib dieser Version einen Namen, damit sie für immer bleibt",
+    "Modifica versione fissata": "Festgehaltene Version bearbeiten",
+    "Fissa lo stato attuale": "Aktuellen Stand festhalten",
+    "Fissa questa versione": "Diese Version festhalten",
+    "Lo stato del progetto salvato ora in libreria diventa una versione con un nome, a cui potrai sempre tornare.": "Der jetzt in der Bibliothek gespeicherte Stand wird zu einer benannten Version, zu der du immer zurückkehren kannst.",
+    "Versione del {d}.": "Version vom {d}.",
+    "Dai un nome alla versione.": "Gib der Version einen Namen.",
+    "Versione fissata: «{l}».": "Version festgehalten: „{l}“.",
+    "Togliere «{l}» dalle versioni fissate? Resterà nella cronologia, ma potrà essere cancellata come le altre quando se ne accumulano troppe.": "„{l}“ aus den festgehaltenen Versionen entfernen? Sie bleibt im Verlauf, kann aber wie die anderen gelöscht werden, wenn sich zu viele ansammeln.",
+    "Togli": "Entfernen",
+    "Questo disegno non è ancora nella libreria: salvalo prima con «Salva in libreria», poi potrai fissarne le versioni.": "Diese Zeichnung ist noch nicht in der Bibliothek: Speichere sie zuerst mit „In Bibliothek speichern“, dann kannst du Versionen festhalten.",
+    "Questo disegno non è ancora nella libreria: salvalo prima con «Salva in libreria».": "Diese Zeichnung ist noch nicht in der Bibliothek: Speichere sie zuerst mit „In Bibliothek speichern“.",
+    "Accedi al tuo account per fissare le versioni.": "Melde dich an, um Versionen festzuhalten.",
+    "Ci sono modifiche non ancora salvate in libreria. Salvarle adesso e fissare questa versione?": "Es gibt noch nicht gespeicherte Änderungen. Jetzt speichern und diese Version festhalten?",
+    "Salva e fissa": "Speichern und festhalten",
+    "la versione fissata «{l}»": "die festgehaltene Version „{l}“",
+    "la versione del {d}": "die Version vom {d}",
+    "Ripristinare {what} come stato attuale del progetto? Lo stato di adesso resta nella cronologia, quindi potrai tornarci.": "{what} als aktuellen Stand des Projekts wiederherstellen? Der jetzige Stand bleibt im Verlauf, du kannst also zurück.",
+    "Ripristinata «{l}».": "„{l}“ wiederhergestellt.",
+    "Versioni fissate ({n})": "Festgehaltene Versionen ({n})",
+    "Cronologia completa": "Vollständiger Verlauf",
   },
   es: {
     "1 cm": "1 cm",
@@ -5469,6 +5611,60 @@ const I18N = {
     "{n} elementi: scegli la cartella di destinazione.": "{n} elementos: elige la carpeta de destino.",
     "Libreria (cartella principale)": "Biblioteca (carpeta principal)",
     "Non si può spostare una cartella dentro se stessa": "Una carpeta no se puede mover dentro de sí misma",
+    "Secchiello": "Bote de pintura",
+    "Secchiello: colora una zona chiusa (anche formata da più linee)": "Bote de pintura: rellena una zona cerrada (aunque esté formada por varias líneas)",
+    "Colore del secchiello": "Color del bote de pintura",
+    "Fai clic dentro una zona chiusa: anche se è formata da più linee, viene colorata tutta, fori esclusi. Le piccole aperture (fino a 1 mm) si chiudono da sole.": "Haz clic dentro de una zona cerrada: aunque esté formada por varias líneas, se rellena entera, sin los agujeros. Las aberturas pequeñas (hasta 1 mm) se cierran solas.",
+    "Non ci sono linee che chiudono una zona da colorare.": "No hay líneas que cierren una zona para rellenar.",
+    "Fai clic dentro una zona chiusa dalle linee.": "Haz clic dentro de una zona cerrada por las líneas.",
+    "Hai fatto clic proprio su una linea: fai clic dentro la zona da colorare.": "Has hecho clic justo sobre una línea: haz clic dentro de la zona a rellenar.",
+    "Zona colorata (il contorno aveva un'apertura: chiusa con una tolleranza di {g} mm).": "Zona rellenada (el contorno tenía una abertura: cerrada con una tolerancia de {g} mm).",
+    "Zona colorata.": "Zona rellenada.",
+    "{n} foro all'interno lasciato vuoto.": "{n} agujero interior dejado vacío.",
+    "{n} fori all'interno lasciati vuoti.": "{n} agujeros interiores dejados vacíos.",
+    "Colore e opacità si cambiano nel pannello Proprietà.": "El color y la opacidad se cambian en el panel Propiedades.",
+    "Questa zona non è chiusa: il contorno ha un'apertura più grande di 1 mm. Usa \"Verifica chiusure\" per trovarla, oppure chiudila con la penna.": "Esta zona no está cerrada: el contorno tiene una abertura mayor de 1 mm. Usa «Verificar cierres» para encontrarla o ciérrala con la pluma.",
+    "📌 Fissa questa versione…": "📌 Fijar esta versión…",
+    "🕐 Versioni di questo progetto…": "🕐 Versiones de este proyecto…",
+    "Dai un nome a questo punto del progetto (es. «Approvata dal cliente»): resterà per sempre nella cronologia e potrai tornarci quando vuoi": "Da un nombre a este punto del proyecto (p. ej. «Aprobada por el cliente»): quedará para siempre en el historial y podrás volver cuando quieras",
+    "Tutte le versioni salvate di questo progetto, con quelle fissate": "Todas las versiones guardadas de este proyecto, con las fijadas",
+    "Fissa versione": "Fijar versión",
+    "Nome della versione": "Nombre de la versión",
+    "Nota (facoltativa)": "Nota (opcional)",
+    "Le versioni fissate non vengono mai cancellate e restano nella cronologia insieme a tutte le altre.": "Las versiones fijadas nunca se borran y permanecen en el historial junto a todas las demás.",
+    "📌 Fissa": "📌 Fijar",
+    "📌 Fissa lo stato attuale…": "📌 Fijar el estado actual…",
+    "Solo versioni fissate": "Solo versiones fijadas",
+    "{n} versioni, di cui {p} fissate. Le versioni fissate non vengono mai cancellate; delle altre restano le ultime {m}. Ripristinando una versione lo stato attuale resta nella cronologia.": "{n} versiones, {p} de ellas fijadas. Las fijadas nunca se borran; de las demás se conservan las últimas {m}. Al restaurar una versión el estado actual queda en el historial.",
+    "Stato attuale in libreria": "Estado actual en la biblioteca",
+    "ripristinato il {d} da «{l}»": "restaurado el {d} desde «{l}»",
+    "Nessuna versione fissata: usa «📌 Fissa lo stato attuale…» o «Fissa…» su una versione.": "Ninguna versión fijada: usa «📌 Fijar el estado actual…» o «Fijar…» en una versión.",
+    "Rendi questa la versione attuale salvata in libreria (lo stato attuale resta nella cronologia)": "Convertir esta en la versión actual de la biblioteca (el estado actual queda en el historial)",
+    "Modifica nome e nota": "Editar nombre y nota",
+    "Togli ⭐": "Quitar ⭐",
+    "Togli dalle versioni fissate (resta nella cronologia, ma potrà essere cancellata come le altre)": "Quitar de las versiones fijadas (queda en el historial, pero podrá borrarse como las demás)",
+    "📌 Fissa…": "📌 Fijar…",
+    "Dai un nome a questa versione perché resti per sempre": "Da un nombre a esta versión para que quede para siempre",
+    "Modifica versione fissata": "Editar versión fijada",
+    "Fissa lo stato attuale": "Fijar el estado actual",
+    "Fissa questa versione": "Fijar esta versión",
+    "Lo stato del progetto salvato ora in libreria diventa una versione con un nome, a cui potrai sempre tornare.": "El estado del proyecto guardado ahora en la biblioteca se convierte en una versión con nombre a la que siempre podrás volver.",
+    "Versione del {d}.": "Versión del {d}.",
+    "Dai un nome alla versione.": "Da un nombre a la versión.",
+    "Versione fissata: «{l}».": "Versión fijada: «{l}».",
+    "Togliere «{l}» dalle versioni fissate? Resterà nella cronologia, ma potrà essere cancellata come le altre quando se ne accumulano troppe.": "¿Quitar «{l}» de las versiones fijadas? Quedará en el historial, pero podrá borrarse como las demás cuando se acumulen demasiadas.",
+    "Togli": "Quitar",
+    "Questo disegno non è ancora nella libreria: salvalo prima con «Salva in libreria», poi potrai fissarne le versioni.": "Este dibujo aún no está en la biblioteca: guárdalo primero con «Guardar en biblioteca» y luego podrás fijar sus versiones.",
+    "Questo disegno non è ancora nella libreria: salvalo prima con «Salva in libreria».": "Este dibujo aún no está en la biblioteca: guárdalo primero con «Guardar en biblioteca».",
+    "Accedi al tuo account per fissare le versioni.": "Inicia sesión para fijar versiones.",
+    "Ci sono modifiche non ancora salvate in libreria. Salvarle adesso e fissare questa versione?": "Hay cambios aún no guardados en la biblioteca. ¿Guardarlos ahora y fijar esta versión?",
+    "Salva e fissa": "Guardar y fijar",
+    "la versione fissata «{l}»": "la versión fijada «{l}»",
+    "la versione del {d}": "la versión del {d}",
+    "Ripristinare {what} come stato attuale del progetto? Lo stato di adesso resta nella cronologia, quindi potrai tornarci.": "¿Restaurar {what} como estado actual del proyecto? El estado de ahora queda en el historial, así que podrás volver.",
+    "Ripristinata «{l}».": "Restaurada «{l}».",
+    "Versioni fissate ({n})": "Versiones fijadas ({n})",
+    "Cronologia completa": "Historial completo",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -6723,6 +6919,60 @@ const I18N = {
     "{n} elementi: scegli la cartella di destinazione.": "{n} 个项目：选择目标文件夹。",
     "Libreria (cartella principale)": "库（主文件夹）",
     "Non si può spostare una cartella dentro se stessa": "文件夹不能移动到自身内部",
+    "Secchiello": "油漆桶",
+    "Secchiello: colora una zona chiusa (anche formata da più linee)": "油漆桶：填充封闭区域（即使由多条线组成）",
+    "Colore del secchiello": "油漆桶颜色",
+    "Fai clic dentro una zona chiusa: anche se è formata da più linee, viene colorata tutta, fori esclusi. Le piccole aperture (fino a 1 mm) si chiudono da sole.": "在封闭区域内点击：即使由多条线组成也会整体填充（孔除外）。小缺口（最大 1 mm）会自动闭合。",
+    "Non ci sono linee che chiudono una zona da colorare.": "没有可填充的封闭线条区域。",
+    "Fai clic dentro una zona chiusa dalle linee.": "请在线条围成的区域内点击。",
+    "Hai fatto clic proprio su una linea: fai clic dentro la zona da colorare.": "你点在了线上：请点击要填充的区域内部。",
+    "Zona colorata (il contorno aveva un'apertura: chiusa con una tolleranza di {g} mm).": "区域已填充（轮廓有缺口：已按 {g} mm 容差闭合）。",
+    "Zona colorata.": "区域已填充。",
+    "{n} foro all'interno lasciato vuoto.": "内部 {n} 个孔保持空白。",
+    "{n} fori all'interno lasciati vuoti.": "内部 {n} 个孔保持空白。",
+    "Colore e opacità si cambiano nel pannello Proprietà.": "颜色和不透明度可在\"属性\"面板中修改。",
+    "Questa zona non è chiusa: il contorno ha un'apertura più grande di 1 mm. Usa \"Verifica chiusure\" per trovarla, oppure chiudila con la penna.": "此区域未闭合：轮廓有大于 1 mm 的缺口。使用\"检查闭合\"查找，或用钢笔闭合。",
+    "📌 Fissa questa versione…": "📌 固定此版本…",
+    "🕐 Versioni di questo progetto…": "🕐 此项目的版本…",
+    "Dai un nome a questo punto del progetto (es. «Approvata dal cliente»): resterà per sempre nella cronologia e potrai tornarci quando vuoi": "为项目的这一刻命名（如\"客户已确认\"）：它会永久保留在历史中，随时可以回到这里",
+    "Tutte le versioni salvate di questo progetto, con quelle fissate": "此项目的所有已保存版本，包括已固定的版本",
+    "Fissa versione": "固定版本",
+    "Nome della versione": "版本名称",
+    "Nota (facoltativa)": "备注（可选）",
+    "Le versioni fissate non vengono mai cancellate e restano nella cronologia insieme a tutte le altre.": "已固定的版本永不删除，并与其他所有版本一起保留在历史中。",
+    "📌 Fissa": "📌 固定",
+    "📌 Fissa lo stato attuale…": "📌 固定当前状态…",
+    "Solo versioni fissate": "仅显示已固定版本",
+    "{n} versioni, di cui {p} fissate. Le versioni fissate non vengono mai cancellate; delle altre restano le ultime {m}. Ripristinando una versione lo stato attuale resta nella cronologia.": "共 {n} 个版本，其中 {p} 个已固定。已固定版本永不删除；其余版本保留最近 {m} 个。还原版本时，当前状态会保留在历史中。",
+    "Stato attuale in libreria": "库中的当前状态",
+    "ripristinato il {d} da «{l}»": "于 {d} 从\"{l}\"还原",
+    "Nessuna versione fissata: usa «📌 Fissa lo stato attuale…» o «Fissa…» su una versione.": "没有已固定的版本：使用\"📌 固定当前状态…\"或在某个版本上点击\"固定…\"。",
+    "Rendi questa la versione attuale salvata in libreria (lo stato attuale resta nella cronologia)": "将此设为库中的当前版本（当前状态会保留在历史中）",
+    "Modifica nome e nota": "编辑名称和备注",
+    "Togli ⭐": "取消固定 ⭐",
+    "Togli dalle versioni fissate (resta nella cronologia, ma potrà essere cancellata come le altre)": "从已固定版本中移除（仍保留在历史中，但可能像其他版本一样被删除）",
+    "📌 Fissa…": "📌 固定…",
+    "Dai un nome a questa versione perché resti per sempre": "为此版本命名，使其永久保留",
+    "Modifica versione fissata": "编辑已固定版本",
+    "Fissa lo stato attuale": "固定当前状态",
+    "Fissa questa versione": "固定此版本",
+    "Lo stato del progetto salvato ora in libreria diventa una versione con un nome, a cui potrai sempre tornare.": "当前库中保存的项目状态将成为一个命名版本，随时可以回到它。",
+    "Versione del {d}.": "{d} 的版本。",
+    "Dai un nome alla versione.": "请为版本命名。",
+    "Versione fissata: «{l}».": "版本已固定：\"{l}\"。",
+    "Togliere «{l}» dalle versioni fissate? Resterà nella cronologia, ma potrà essere cancellata come le altre quando se ne accumulano troppe.": "将\"{l}\"从已固定版本中移除？它仍在历史中，但版本过多时可能像其他版本一样被删除。",
+    "Togli": "移除",
+    "Questo disegno non è ancora nella libreria: salvalo prima con «Salva in libreria», poi potrai fissarne le versioni.": "此图纸尚未在库中：请先用\"保存到库\"保存，然后才能固定其版本。",
+    "Questo disegno non è ancora nella libreria: salvalo prima con «Salva in libreria».": "此图纸尚未在库中：请先用\"保存到库\"保存。",
+    "Accedi al tuo account per fissare le versioni.": "请登录账户以固定版本。",
+    "Ci sono modifiche non ancora salvate in libreria. Salvarle adesso e fissare questa versione?": "有尚未保存到库的更改。现在保存并固定此版本？",
+    "Salva e fissa": "保存并固定",
+    "la versione fissata «{l}»": "已固定版本\"{l}\"",
+    "la versione del {d}": "{d} 的版本",
+    "Ripristinare {what} come stato attuale del progetto? Lo stato di adesso resta nella cronologia, quindi potrai tornarci.": "将{what}还原为项目的当前状态？当前状态会保留在历史中，可以回到它。",
+    "Ripristinata «{l}».": "已还原\"{l}\"。",
+    "Versioni fissate ({n})": "已固定版本（{n}）",
+    "Cronologia completa": "完整历史",
   },
   fr: {
     "1 cm": "1 cm",
@@ -7977,6 +8227,60 @@ const I18N = {
     "{n} elementi: scegli la cartella di destinazione.": "{n} éléments : choisis le dossier de destination.",
     "Libreria (cartella principale)": "Bibliothèque (dossier principal)",
     "Non si può spostare una cartella dentro se stessa": "Un dossier ne peut pas être déplacé dans lui-même",
+    "Secchiello": "Pot de peinture",
+    "Secchiello: colora una zona chiusa (anche formata da più linee)": "Pot de peinture : remplit une zone fermée (même formée de plusieurs lignes)",
+    "Colore del secchiello": "Couleur du pot de peinture",
+    "Fai clic dentro una zona chiusa: anche se è formata da più linee, viene colorata tutta, fori esclusi. Le piccole aperture (fino a 1 mm) si chiudono da sole.": "Clique dans une zone fermée : même formée de plusieurs lignes, elle est entièrement remplie, trous exclus. Les petites ouvertures (jusqu’à 1 mm) se ferment toutes seules.",
+    "Non ci sono linee che chiudono una zona da colorare.": "Aucune ligne ne ferme une zone à remplir.",
+    "Fai clic dentro una zona chiusa dalle linee.": "Clique dans une zone fermée par les lignes.",
+    "Hai fatto clic proprio su una linea: fai clic dentro la zona da colorare.": "Tu as cliqué pile sur une ligne : clique dans la zone à remplir.",
+    "Zona colorata (il contorno aveva un'apertura: chiusa con una tolleranza di {g} mm).": "Zone remplie (le contour avait une ouverture : fermée avec une tolérance de {g} mm).",
+    "Zona colorata.": "Zone remplie.",
+    "{n} foro all'interno lasciato vuoto.": "{n} trou à l’intérieur laissé vide.",
+    "{n} fori all'interno lasciati vuoti.": "{n} trous à l’intérieur laissés vides.",
+    "Colore e opacità si cambiano nel pannello Proprietà.": "Couleur et opacité se modifient dans le panneau Propriétés.",
+    "Questa zona non è chiusa: il contorno ha un'apertura più grande di 1 mm. Usa \"Verifica chiusure\" per trovarla, oppure chiudila con la penna.": "Cette zone n’est pas fermée : le contour a une ouverture de plus de 1 mm. Utilise « Vérifier les fermetures » pour la trouver, ou ferme-la avec la plume.",
+    "📌 Fissa questa versione…": "📌 Épingler cette version…",
+    "🕐 Versioni di questo progetto…": "🕐 Versions de ce projet…",
+    "Dai un nome a questo punto del progetto (es. «Approvata dal cliente»): resterà per sempre nella cronologia e potrai tornarci quando vuoi": "Donne un nom à ce point du projet (ex. « Validée par le client ») : il restera pour toujours dans l’historique et tu pourras y revenir quand tu veux",
+    "Tutte le versioni salvate di questo progetto, con quelle fissate": "Toutes les versions enregistrées de ce projet, avec les épinglées",
+    "Fissa versione": "Épingler la version",
+    "Nome della versione": "Nom de la version",
+    "Nota (facoltativa)": "Note (facultative)",
+    "Le versioni fissate non vengono mai cancellate e restano nella cronologia insieme a tutte le altre.": "Les versions épinglées ne sont jamais supprimées et restent dans l’historique avec toutes les autres.",
+    "📌 Fissa": "📌 Épingler",
+    "📌 Fissa lo stato attuale…": "📌 Épingler l’état actuel…",
+    "Solo versioni fissate": "Versions épinglées uniquement",
+    "{n} versioni, di cui {p} fissate. Le versioni fissate non vengono mai cancellate; delle altre restano le ultime {m}. Ripristinando una versione lo stato attuale resta nella cronologia.": "{n} versions, dont {p} épinglées. Les versions épinglées ne sont jamais supprimées ; pour les autres, les {m} plus récentes sont conservées. En restaurant une version, l’état actuel reste dans l’historique.",
+    "Stato attuale in libreria": "État actuel dans la bibliothèque",
+    "ripristinato il {d} da «{l}»": "restauré le {d} depuis « {l} »",
+    "Nessuna versione fissata: usa «📌 Fissa lo stato attuale…» o «Fissa…» su una versione.": "Aucune version épinglée : utilise « 📌 Épingler l’état actuel… » ou « Épingler… » sur une version.",
+    "Rendi questa la versione attuale salvata in libreria (lo stato attuale resta nella cronologia)": "Faire de celle-ci la version actuelle de la bibliothèque (l’état actuel reste dans l’historique)",
+    "Modifica nome e nota": "Modifier le nom et la note",
+    "Togli ⭐": "Désépingler ⭐",
+    "Togli dalle versioni fissate (resta nella cronologia, ma potrà essere cancellata come le altre)": "Retirer des versions épinglées (elle reste dans l’historique, mais pourra être supprimée comme les autres)",
+    "📌 Fissa…": "📌 Épingler…",
+    "Dai un nome a questa versione perché resti per sempre": "Donne un nom à cette version pour qu’elle reste pour toujours",
+    "Modifica versione fissata": "Modifier la version épinglée",
+    "Fissa lo stato attuale": "Épingler l’état actuel",
+    "Fissa questa versione": "Épingler cette version",
+    "Lo stato del progetto salvato ora in libreria diventa una versione con un nome, a cui potrai sempre tornare.": "L’état du projet enregistré maintenant dans la bibliothèque devient une version nommée, à laquelle tu pourras toujours revenir.",
+    "Versione del {d}.": "Version du {d}.",
+    "Dai un nome alla versione.": "Donne un nom à la version.",
+    "Versione fissata: «{l}».": "Version épinglée : « {l} ».",
+    "Togliere «{l}» dalle versioni fissate? Resterà nella cronologia, ma potrà essere cancellata come le altre quando se ne accumulano troppe.": "Retirer « {l} » des versions épinglées ? Elle restera dans l’historique, mais pourra être supprimée comme les autres quand il y en aura trop.",
+    "Togli": "Retirer",
+    "Questo disegno non è ancora nella libreria: salvalo prima con «Salva in libreria», poi potrai fissarne le versioni.": "Ce dessin n’est pas encore dans la bibliothèque : enregistre-le d’abord avec « Enregistrer dans la bibliothèque », puis tu pourras épingler ses versions.",
+    "Questo disegno non è ancora nella libreria: salvalo prima con «Salva in libreria».": "Ce dessin n’est pas encore dans la bibliothèque : enregistre-le d’abord avec « Enregistrer dans la bibliothèque ».",
+    "Accedi al tuo account per fissare le versioni.": "Connecte-toi pour épingler des versions.",
+    "Ci sono modifiche non ancora salvate in libreria. Salvarle adesso e fissare questa versione?": "Il y a des modifications pas encore enregistrées. Les enregistrer maintenant et épingler cette version ?",
+    "Salva e fissa": "Enregistrer et épingler",
+    "la versione fissata «{l}»": "la version épinglée « {l} »",
+    "la versione del {d}": "la version du {d}",
+    "Ripristinare {what} come stato attuale del progetto? Lo stato di adesso resta nella cronologia, quindi potrai tornarci.": "Restaurer {what} comme état actuel du projet ? L’état actuel reste dans l’historique, tu pourras donc y revenir.",
+    "Ripristinata «{l}».": "« {l} » restaurée.",
+    "Versioni fissate ({n})": "Versions épinglées ({n})",
+    "Cronologia completa": "Historique complet",
   },
 };
 let currentLang = 'it';
@@ -9381,7 +9685,7 @@ function renderFoldIndicators(){
 function renderCornerAngles(){
   const rays = [];
   state.shapes.forEach(s=>{
-    if(!s.points || !isShapeEffVisible(s)) return;
+    if(!s.points || !isShapeEffVisible(s) || s.fromBucket) return; // le zone del secchiello non hanno angoli da mostrare
     const n = s.points.length;
     if(n<2) return;
     for(let i=0;i<n;i++){
@@ -9577,6 +9881,7 @@ const TOOLS = [
   {id:'ellipse', key:'o', short:'Ellisse', label:'Ellisse', icon:'M4 11a7 4 0 1014 0 7 4 0 10-14 0z'},
   {id:'arc', key:'a', short:'Curva / arco', label:'Curva / Arco (3 clic: inizio, fine, curvatura)', icon:'M4 18C4 9 9 4 18 4'},
   {id:'freehand', key:'b', short:'Matita libera', label:'Matita libera', icon:'M4 17c3-8 5-3 8-9 2 4 4-1 6 2'},
+  {id:'bucket', key:'k', short:'Secchiello', label:'Secchiello: colora una zona chiusa (anche formata da più linee)', icon:'M5 11l6-6 7 7-6 6z M11 5l-2-2 M4 12c-1 2-1 4 0 5 1 1 2 1 2-1 0-1-1-2-2-4z'},
   {id:'text', key:'t', short:'Testo', label:'Testo', icon:'M5 4h12M11 4v14'},
 ];
 /* ============================================================
@@ -11761,7 +12066,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.45.0';
+const GUIDE_VERSION = '2.47.0';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -12005,8 +12310,9 @@ html:`<p>Con il pulsante <b>⇪</b> in alto, trascinando il file sul foglio o <b
 <li><b>Solo immagine di riferimento</b>: resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti; opacità, filtri e rimozione sono nella scheda Immagine.</li></ul>
 <p>Con <b>Tieni l'immagine sotto il disegno</b> l'originale resta visibile in trasparenza per confrontarlo con le linee ottenute. Le scelte vengono ricordate per la volta successiva.</p>` },
 
-{ id:'colore-interno', cat:'Modificare', title:'Colorare l\'interno di una forma', keys:'colore interno riempimento riempire colorare forma chiusa figura percorso sfondo trasparenza opacità fill',
-html:`<p>Seleziona una o più forme chiuse (rettangoli, ellissi, figure disegnate con la penna, tracciati importati) e nel pannello Proprietà attiva <b>Colora l'interno</b>:</p>
+{ id:'colore-interno', cat:'Modificare', title:'Colorare l\'interno di una forma', keys:'colore interno riempimento riempire colorare forma chiusa figura percorso sfondo trasparenza opacità fill secchiello zona linee separate pannello',
+html:`<p><b>Secchiello (K)</b>: per colorare una zona chiusa <b>formata da più linee separate</b> (per esempio un pannello di una fustella, chiuso da tagli e pieghe, o una sagoma disegnata a pezzi) scegli il secchiello nella barra a sinistra e fai clic dentro la zona. Viene creata una forma colorata esattamente di quella zona, messa sotto le linee; le figure chiuse al suo interno restano vuote (fori). Se il contorno ha una piccola apertura (fino a circa 1 mm) si chiude da sola; se è più grande l'app lo segnala. Il colore del secchiello si sceglie nel pannello quando lo strumento è attivo.</p>
+<p>Per una forma singola già chiusa: selezionala (rettangoli, ellissi, figure disegnate con la penna, tracciati importati) e nel pannello Proprietà attiva <b>Colora l'interno</b>:</p>
 <ul><li>scegli il colore con il selettore o con uno dei <b>12 colori rapidi</b>;</li>
 <li>il cursore <b>Opacità del colore</b> lo rende trasparente, per vedere quello che c'è sotto;</li>
 <li>togliendo la spunta la forma torna senza colore.</li></ul>
@@ -12078,7 +12384,8 @@ html:`<ul><li><b>Salvataggio automatico nel browser</b>: a ogni modifica, dopo c
 <li><b>☁ Libreria</b>: salvataggio sul server, vedi <a data-topic="libreria">Libreria</a>.</li></ul>` },
 
 { id:'libreria', cat:'Salvare ed esportare', title:'Account e libreria online', keys:'account accesso registrazione libreria server cartelle condividere privato versioni nuvola password cercare ricerca trovare file progetto',
-html:`<p>La finestra della libreria funziona come Esplora file. In alto c'è la <b>barra dei comandi</b>: Su, Nuova cartella, Apri, Rinomina, Duplica, Elimina, Taglia, Copia, Incolla, <b>Sposta in…</b>, <b>Copia in…</b> e Proprietà; i pulsanti si attivano secondo quello che è selezionato. Gli stessi comandi sono nel tasto destro e sulla tastiera: Invio apri, F2 rinomina, Ctrl+D duplica, Ctrl+C / Ctrl+X / Ctrl+V copia, taglia e incolla, Ctrl+A seleziona tutto, Ctrl+Shift+N nuova cartella, Backspace cartella superiore, F5 aggiorna; clic, Ctrl+clic e Shift+clic per selezionare più elementi; trascinamento sulle cartelle per spostare.</p>
+html:`<p>Per tenere da parte un punto preciso della storia di un progetto vedi <a data-topic="versioni">Versioni e versioni fissate</a>.</p>
+<p>La finestra della libreria funziona come Esplora file. In alto c'è la <b>barra dei comandi</b>: Su, Nuova cartella, Apri, Rinomina, Duplica, Elimina, Taglia, Copia, Incolla, <b>Sposta in…</b>, <b>Copia in…</b> e Proprietà; i pulsanti si attivano secondo quello che è selezionato. Gli stessi comandi sono nel tasto destro e sulla tastiera: Invio apri, F2 rinomina, Ctrl+D duplica, Ctrl+C / Ctrl+X / Ctrl+V copia, taglia e incolla, Ctrl+A seleziona tutto, Ctrl+Shift+N nuova cartella, Backspace cartella superiore, F5 aggiorna; clic, Ctrl+clic e Shift+clic per selezionare più elementi; trascinamento sulle cartelle per spostare.</p>
 <p><b>Cestino</b>: <b>Canc</b> sposta i progetti nel Cestino (in fondo all'albero delle cartelle), da cui si possono <b>ripristinare</b> nella loro cartella per 30 giorni; poi vengono cancellati. <b>Shift+Canc</b> elimina definitivamente, senza passare dal Cestino. Nel Cestino ci sono anche "Elimina definitivamente" e "Svuota Cestino". Le cartelle non vanno nel Cestino: eliminandole, il loro contenuto sale nella cartella superiore e non si perde nulla.</p>
 <ul><li><b>Account</b>: registrazione, accesso (anche "ricordami"), recupero della password via email. Il pulsante in alto mostra il tuo nome quando sei collegato, "Accedi" quando non lo sei. Uscendo dall'account (o se l'accesso scade) tutto ciò che era stato scaricato dalla libreria viene cancellato dal browser e le finestre della libreria, delle versioni e del salvataggio si chiudono, anche se erano ridotte a icona. I progetti già aperti nelle schede restano: sono il tuo lavoro in corso.</li>
 <li><b>☁ Libreria</b>: se il progetto è già collegato alla libreria, un clic lo sovrascrive subito; la prima volta chiede nome, cartella e condivisione. File → "Salva in libreria (server)" riapre sempre la finestra completa (per salvare con un altro nome).</li>
@@ -12086,6 +12393,14 @@ html:`<p>La finestra della libreria funziona come Esplora file. In alto c'è la 
 <li><b>🔍 Ricerca</b>: la casella in alto nella finestra della libreria cerca in <b>tutte le cartelle</b> insieme, anche nella libreria comune, senza sapere dove si trova il file. Cerca nel nome del progetto, nei nomi delle cartelle e nell'autore dei progetti condivisi; ignora maiuscole e accenti e trova i progetti che contengono tutte le parole scritte (anche solo una parte: "scatol" trova "scatola" e "scatole"). Sotto ogni risultato c'è il suo percorso: un clic porta nella cartella. Esc o "✕ Annulla ricerca" tornano all'elenco normale.</li>
 <li><b>Privato o pubblico</b>: accanto al nome di ogni progetto c'è la sua visibilità: <b>🔒</b> privato (lo vedi solo tu), <b>🌐</b> pubblico (lo vedono tutti gli utenti), <b>🌐 generico</b>. I tuoi progetti si rendono pubblici o privati in qualsiasi momento col tasto destro nella libreria ("🌐 Rendi pubblico" / "🔒 Rendi privato"), senza doverli risalvare; la scelta si fa anche al primo salvataggio. I progetti degli altri non puoi cambiarli, salvo che tu sia <a data-topic="amministrazione">amministratore</a>. I progetti <b>generici</b>, cioè senza proprietario, sono <b>sempre pubblici</b>: tutti li vedono e li aprono, nessuno può renderli privati, modificarli o eliminarli. I progetti pubblici compaiono anche tra i <a data-topic="componenti">componenti</a>; aprendo un progetto altrui (o generico) e salvandolo si crea una copia tua.</li>
 <li><b>Versioni</b>: ogni salvataggio conserva il precedente (fino a 30); puoi aprire una versione in una scheda o ripristinarla.</li></ul>` },
+
+{ id:'versioni', cat:'Salvare ed esportare', title:'Versioni e versioni fissate', keys:'versioni versione cronologia storia fissa fissare fissata milestone tappa stella ripristina ripristinare tornare indietro precedente nota approvata',
+html:`<p>Ogni volta che salvi un progetto in libreria, lo stato precedente entra nella <b>cronologia delle versioni</b> (File → 🕐 Versioni di questo progetto, oppure "Versioni" nella libreria).</p>
+<p><b>Versioni fissate</b>: dai un nome a un punto preciso della storia del progetto (per esempio «Approvata dal cliente» o «Prima stampa»), con una nota facoltativa. Dal menu <b>File → 📌 Fissa questa versione…</b> fissi ciò che stai vedendo (se ci sono modifiche non salvate, l'app le salva prima); nella finestra Versioni puoi fissare lo stato attuale o una qualsiasi versione della cronologia con <b>📌 Fissa…</b>, cambiarne nome e nota (✎) o toglierla dalle fissate.</p>
+<ul><li>Le versioni fissate <b>non vengono mai cancellate</b>; delle altre restano le ultime 30.</li>
+<li>Nella finestra le fissate stanno in cima (⭐), poi c'è la cronologia completa; il filtro <b>Solo versioni fissate</b> mostra solo quelle.</li>
+<li><b>Ripristina</b> riporta il progetto a quella versione senza cancellare nulla: lo stato di prima entra nella cronologia, quindi puoi sempre tornarci. Le schede aperte su quel progetto si aggiornano da sole.</li>
+<li><b>Apri qui</b> apre la versione in una scheda separata, per confrontarla senza toccare quella salvata.</li></ul>` },
 
 { id:'amministrazione', cat:'Salvare ed esportare', title:'Amministrazione (stato del database e utenti)', keys:'amministratore admin database connesso stato utenti elenco sqlite mysql server copia sicurezza',
 html:`<p>Gli <b>amministratori</b> trovano nella finestra dell'account (👤) il pulsante <b>🛠 Amministrazione</b>. Chi è amministratore si decide nel file <code>api/config.php</code> (<code>ADMIN_USERS</code>); se l'elenco è vuoto, è amministratore il primo utente registrato.</p>
@@ -12137,6 +12452,8 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.47</b> — <a data-topic="versioni">Versioni fissate</a>: un nome e una nota per un punto della storia del progetto, mai cancellato; ripristino senza perdere la cronologia (ora anche della descrizione del progetto).</li>
+<li><b>2.46</b> — <a data-topic="colore-interno">Secchiello</a> (K): colora una zona chiusa anche se formata da più linee, lasciando vuoti i fori.</li>
 <li><b>2.45</b> — Libreria come Esplora file: barra dei comandi, Sposta in… / Copia in…, Cestino con ripristino (Canc) ed eliminazione definitiva (Shift+Canc).</li>
 <li><b>2.44</b> — <a data-topic="colore-interno">Colore interno</a> delle forme più chiaro: interruttore, colori rapidi, opacità e "Chiudi la forma".</li>
 <li><b>2.43.2</b> — L'anteprima 3D usa i font personalizzati; anteprime, stampa di prova e PDF aspettano che i font siano caricati prima di disegnare il testo.</li>
@@ -13109,7 +13426,7 @@ function buildRail(){
   railSection(rail, 'Seleziona');
   ['select','lasso'].forEach(id=> rail.appendChild(toolBtn(id)));
   railSection(rail, 'Disegna');
-  ['pen','line','arc','freehand','rect','ellipse','text'].forEach(id=> rail.appendChild(toolBtn(id)));
+  ['pen','line','arc','freehand','rect','ellipse','text','bucket'].forEach(id=> rail.appendChild(toolBtn(id)));
   railSection(rail, 'Forme pronte');
   rail.appendChild(railButton({id:'railShapes', label:'Forme pronte…', key:'F', icon:RAIL_ICONS.shapes, onclick:()=> toggleShapesFlyout(),
     title:'Galleria di forme pronte (triangoli, poligoni, curve, stelle, simboli, fori e pezzi di packaging) da trascinare sul foglio'}));
@@ -13154,6 +13471,8 @@ function setTool(id){
   document.querySelectorAll('.tool[data-tool]').forEach(b=>b.classList.toggle('active', b.dataset.tool===activeBtn));
   stage.style.cursor = id==='select' ? 'default' : 'crosshair';
   renderAll();
+  if(typeof renderPropPanel==='function' && (id==='bucket' || setTool._last==='bucket')) renderPropPanel(); // colore del secchiello nel pannello
+  setTool._last = id;
 }
 
 /* ============================================================
@@ -13543,6 +13862,7 @@ function handleMouseDown(mm, e){
     renderAll();
     return;
   }
+  if(state.tool==='bucket'){ bucketFillAt(mm); return; }
   if(state.tool==='text'){
     placeTextInput(mm);
     return;
@@ -14176,7 +14496,7 @@ window.addEventListener('keydown', (e)=>{
     return;
   }
   if((e.ctrlKey||e.metaKey)) return; // avoid clobbering other browser shortcuts
-  const map = {v:'select',q:'lasso',p:'pen',l:'line',r:'rect',o:'ellipse',a:'arc',b:'freehand',t:'text'};
+  const map = {v:'select',q:'lasso',p:'pen',l:'line',r:'rect',o:'ellipse',a:'arc',b:'freehand',t:'text',k:'bucket'};
   if(map[k]){ setTool(map[k]); return; }
   if(k==='delete' || k==='backspace'){
     e.preventDefault();
@@ -14530,6 +14850,8 @@ function handleMenuAction(e){
   else if(action==='save-project') saveProjectFile();
   else if(action==='open-project') openProjectFilePicker();
   else if(action==='save-library') saveToLibrary();
+  else if(action==='pin-version') pinCurrentVersion();
+  else if(action==='versions-current'){ if(!state.libraryId){ showToast('Questo disegno non è ancora nella libreria: salvalo prima con «Salva in libreria».', true); } else openVersionsModal(state.libraryId); }
   else if(action==='open-library') openLibraryModal();
   else if(action==='open-drive') openGoogleDrivePicker();
   else if(action==='check-closures') checkClosures();
@@ -14597,7 +14919,8 @@ async function quickSaveToLibrary(){
     state.libraryUpdated = saved.updated || new Date().toISOString(); state.libraryDirty = false;
     snapshotActiveDocument(); scheduleAutosave(); updateSyncChip();
     showToast('Salvato in libreria.', false);
-  }catch(err){ showToast('Errore nel salvataggio in libreria: ' + err.message, true); }
+    return true;
+  }catch(err){ showToast('Errore nel salvataggio in libreria: ' + err.message, true); return false; }
 }
 async function saveToLibrary(){
   if(!currentUser){ openAccountModal('login'); showToast('Accedi al tuo account per salvare in libreria.', true); return; }
@@ -15745,6 +16068,16 @@ function openVersionsModal(id){
 }
 function closeVersionsModal(){ document.getElementById('versionsModal').classList.remove('open'); }
 document.getElementById('versionsModalClose').onclick = closeVersionsModal;
+document.getElementById('verOnlyPinned').onchange = ()=> renderVersionsList(versionsModalProjectId);
+document.getElementById('verPinCurrent').onclick = ()=>{
+  if(state.libraryId===versionsModalProjectId && state.libraryDirty) pinCurrentVersion(); // modifiche non salvate: prima si salvano
+  else openPinDialog({id: versionsModalProjectId, current: true});
+};
+document.getElementById('pinClose').onclick = closePinDialog;
+document.getElementById('pinCancel').onclick = closePinDialog;
+document.getElementById('pinOk').onclick = applyPin;
+setupOverlayClickClose(document.getElementById('pinModal'), closePinDialog);
+document.getElementById('pinModal').addEventListener('keydown', e=>{ e.stopPropagation(); if(e.key==='Enter' && e.target.id==='pinLabel'){ e.preventDefault(); applyPin(); } });
 setupOverlayClickClose(document.getElementById('versionsModal'), closeVersionsModal);
 
 document.getElementById('btnHistory').onclick = openHistoryModal;
@@ -15906,38 +16239,103 @@ document.getElementById('boxGenApply').onclick = ()=>{
   showToast('Fustella generata in una nuova scheda: verifica le misure prima di esportare.', false);
 };
 
+let versionsData = null;
 async function loadVersionsList(id){
   const host = document.getElementById('versionsList');
   host.innerHTML = '<div class="emptystate">Caricamento…</div>';
   try{
-    const data = await apiFetch('versions.php?id=' + encodeURIComponent(id), {method:'GET'});
-    const items = data.items || [];
-    if(!items.length){
-      host.innerHTML = '<div class="emptystate">Ancora nessuna versione precedente: la cronologia si riempie dal secondo salvataggio in poi.</div>';
-      return;
-    }
-    host.innerHTML = '';
-    items.forEach(it=>{
-      const row = document.createElement('div'); row.className='layerrow';
-      const when = it.savedAt ? new Date(it.savedAt).toLocaleString() : '';
-      const lbl = document.createElement('span'); lbl.className='lbl';
-      lbl.innerHTML = `${escapeHTML(it.name||'(senza nome)')}<br><span style="color:var(--ink-dim);font-size:10.5px;">${escapeHTML(when)}</span>`;
-      const openBtn = document.createElement('button'); openBtn.textContent='Apri qui';
-      openBtn.title = 'Carica questa versione in una scheda separata, senza modificare quella salvata';
-      openBtn.onclick = ()=> loadSpecificVersion(id, it.file);
-      row.appendChild(lbl); row.appendChild(openBtn);
-      if(data.mine){
-        const restoreBtn = document.createElement('button'); restoreBtn.textContent='Ripristina';
-        restoreBtn.title = 'Rendi questa la versione attuale salvata in libreria';
-        restoreBtn.onclick = ()=> restoreSpecificVersion(id, it.file);
-        row.appendChild(restoreBtn);
-      }
-      host.appendChild(row);
-    });
+    versionsData = await apiFetch('versions.php?id=' + encodeURIComponent(id), {method:'GET'});
+    renderVersionsList(id);
   }catch(err){
     host.innerHTML = `<div class="emptystate">${escapeHTML(err.message)}</div>`;
   }
 }
+function renderVersionsList(id){
+  const data = versionsData || {items:[]}, host = document.getElementById('versionsList');
+  const onlyPinned = document.getElementById('verOnlyPinned').checked;
+  document.getElementById('verPinCurrent').style.display = data.mine ? '' : 'none';
+  const all = data.items || [], pinnedN = all.filter(x=>x.pin).length;
+  const items = onlyPinned ? all.filter(x=>x.pin) : all;
+  host.innerHTML = '';
+  const info = document.createElement('div'); info.className='ver-info';
+  info.textContent = tpl('{n} versioni, di cui {p} fissate. Le versioni fissate non vengono mai cancellate; delle altre restano le ultime {m}. Ripristinando una versione lo stato attuale resta nella cronologia.', {n: all.length, p: pinnedN, m: data.maxVersions || 30});
+  host.appendChild(info);
+  // stato attuale
+  const cur = document.createElement('div'); cur.className='ver-row current';
+  const rf = data.restoredFrom;
+  cur.innerHTML = `<div class="ver-main"><div class="ver-title">● ${escapeHTML(translate('Stato attuale in libreria'))}</div>`
+    + (rf ? `<div class="ver-sub">${escapeHTML(tpl('ripristinato il {d} da «{l}»', {d: new Date(rf.at).toLocaleString(), l: rf.label || new Date(parseInt(String(rf.file).split('_')[0],10)).toLocaleString()}))}</div>` : '') + `</div>`;
+  host.appendChild(cur);
+  if(!items.length){
+    const em = document.createElement('div'); em.className='emptystate';
+    em.textContent = translate(onlyPinned ? 'Nessuna versione fissata: usa «📌 Fissa lo stato attuale…» o «Fissa…» su una versione.' : 'Ancora nessuna versione precedente: la cronologia si riempie dal secondo salvataggio in poi.');
+    host.appendChild(em); return;
+  }
+  const section = t=>{ const h = document.createElement('div'); h.className='ver-section'; h.textContent = t; host.appendChild(h); };
+  const renderRow = it=>{
+    const row = document.createElement('div'); row.className = 'ver-row' + (it.pin ? ' pinned' : '');
+    const when = it.savedAt ? new Date(it.savedAt).toLocaleString() : '';
+    const main = document.createElement('div'); main.className='ver-main';
+    main.innerHTML = it.pin
+      ? `<div class="ver-title">⭐ ${escapeHTML(it.pin.label)}</div><div class="ver-sub">${escapeHTML(when)} · ${escapeHTML(it.name||'')}${it.shapes!=null ? ' · ' + escapeHTML(tpl('{n} forme', {n: it.shapes})) : ''}</div>` + (it.pin.note ? `<div class="ver-note">${escapeHTML(it.pin.note)}</div>` : '')
+      : `<div class="ver-title" style="font-weight:500;">${escapeHTML(it.name||'(senza nome)')}</div><div class="ver-sub">${escapeHTML(when)}${it.shapes!=null ? ' · ' + escapeHTML(tpl('{n} forme', {n: it.shapes})) : ''}</div>`;
+    row.appendChild(main);
+    const btn = (label, title, fn, cls)=>{ const b = document.createElement('button'); b.className = 'btn' + (cls ? ' ' + cls : ''); b.style.cssText='width:auto;margin:0;'; b.textContent = translate(label); b.title = translate(title); b.onclick = fn; row.appendChild(b); };
+    btn('Apri qui', 'Carica questa versione in una scheda separata, senza modificare quella salvata', ()=> loadSpecificVersion(id, it.file));
+    if(data.mine){
+      btn('Ripristina', 'Rendi questa la versione attuale salvata in libreria (lo stato attuale resta nella cronologia)', ()=> restoreSpecificVersion(id, it.file));
+      if(it.pin){
+        btn('✎', 'Modifica nome e nota', ()=> openPinDialog({id, file: it.file, label: it.pin.label, note: it.pin.note}));
+        btn('Togli ⭐', 'Togli dalle versioni fissate (resta nella cronologia, ma potrà essere cancellata come le altre)', ()=> unpinVersion(id, it.file, it.pin.label));
+      } else btn('📌 Fissa…', 'Dai un nome a questa versione perché resti per sempre', ()=> openPinDialog({id, file: it.file}));
+    }
+    host.appendChild(row);
+  };
+  // le versioni fissate in cima (sono quelle che si cercano), poi tutta la cronologia in ordine di tempo
+  const pinned = items.filter(x=>x.pin);
+  if(!onlyPinned && pinned.length){ section('⭐ ' + tpl('Versioni fissate ({n})', {n: pinned.length})); pinned.forEach(renderRow); section(translate('Cronologia completa')); }
+  items.forEach(renderRow);
+}
+/* ---------- versioni fissate ---------- */
+const pinReq = { id:null, file:null, current:false };
+function openPinDialog(o){
+  Object.assign(pinReq, {id:o.id, file:o.file||null, current:!!o.current});
+  document.getElementById('pinTitle').textContent = translate(o.label ? 'Modifica versione fissata' : (o.current ? 'Fissa lo stato attuale' : 'Fissa questa versione'));
+  document.getElementById('pinInfo').textContent = o.current ? translate('Lo stato del progetto salvato ora in libreria diventa una versione con un nome, a cui potrai sempre tornare.')
+    : tpl('Versione del {d}.', {d: new Date(parseInt(String(o.file).split('_')[0],10)).toLocaleString()});
+  document.getElementById('pinLabel').value = o.label || '';
+  document.getElementById('pinNote').value = o.note || '';
+  openModal('pinModal');
+  setTimeout(()=> document.getElementById('pinLabel').focus(), 50);
+}
+function closePinDialog(){ document.getElementById('pinModal').classList.remove('open'); }
+async function applyPin(){
+  const label = document.getElementById('pinLabel').value.trim();
+  if(!label){ document.getElementById('pinLabel').focus(); showToast('Dai un nome alla versione.', true); return; }
+  const note = document.getElementById('pinNote').value.trim();
+  try{
+    await apiFetch('pin_version.php', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(pinReq.current ? {id:pinReq.id, current:true, label, note} : {id:pinReq.id, file:pinReq.file, label, note})});
+    closePinDialog();
+    showToast(tpl('Versione fissata: «{l}».', {l: label}), false);
+    if(document.getElementById('versionsModal').classList.contains('open') && versionsModalProjectId===pinReq.id) loadVersionsList(pinReq.id);
+  }catch(err){ showToast('Errore: ' + err.message, true); }
+}
+async function unpinVersion(id, file, label){
+  if(!(await showConfirm(tpl('Togliere «{l}» dalle versioni fissate? Resterà nella cronologia, ma potrà essere cancellata come le altre quando se ne accumulano troppe.', {l: label}), 'Togli'))) return;
+  try{ await apiFetch('pin_version.php', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, file, unpin:true})}); loadVersionsList(id); }
+  catch(err){ showToast('Errore: ' + err.message, true); }
+}
+// dal menu File: fissa ciò che si vede (se ci sono modifiche non salvate le salva prima)
+async function pinCurrentVersion(){
+  if(!currentUser){ openAccountModal('login'); showToast('Accedi al tuo account per fissare le versioni.', true); return; }
+  if(!state.libraryId){ showToast('Questo disegno non è ancora nella libreria: salvalo prima con «Salva in libreria», poi potrai fissarne le versioni.', true); return; }
+  if(state.libraryDirty){
+    if(!(await showConfirm('Ci sono modifiche non ancora salvate in libreria. Salvarle adesso e fissare questa versione?', 'Salva e fissa'))) return;
+    if(!(await quickSaveToLibrary())) return;
+  }
+  openPinDialog({id: state.libraryId, current: true});
+}
+
 async function loadSpecificVersion(id, file){
   try{
     const data = await apiFetch('load_version.php?id=' + encodeURIComponent(id) + '&file=' + encodeURIComponent(file), {method:'GET'});
@@ -15957,12 +16355,16 @@ async function loadSpecificVersion(id, file){
   }catch(err){ showToast('Errore nel caricamento della versione: ' + err.message, true); }
 }
 async function restoreSpecificVersion(id, file){
-  const ok = await showConfirm('Ripristinare questa versione come stato attuale del progetto? Lo stato di adesso viene comunque salvato nella cronologia, quindi resta recuperabile in seguito.', 'Ripristina versione');
+  const it = versionsData && (versionsData.items||[]).find(x=>x.file===file);
+  const what = it && it.pin ? tpl('la versione fissata «{l}»', {l: it.pin.label}) : tpl('la versione del {d}', {d: it && it.savedAt ? new Date(it.savedAt).toLocaleString() : ''});
+  const ok = await showConfirm(tpl('Ripristinare {what} come stato attuale del progetto? Lo stato di adesso resta nella cronologia, quindi potrai tornarci.', {what}), 'Ripristina');
   if(!ok) return;
   try{
     await apiFetch('restore_version.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, file})});
-    showToast('Versione ripristinata in libreria.', false);
+    showToast(it && it.pin ? tpl('Ripristinata «{l}».', {l: it.pin.label}) : translate('Versione ripristinata in libreria.'), false);
     loadVersionsList(id);
+    // le schede che hanno aperto questo progetto si allineano (se hanno modifiche locali l'app chiede cosa fare)
+    if(documents.some(d=> d.libraryId===id) || state.libraryId===id) checkLibraryFreshness();
   }catch(err){ showToast('Errore nel ripristino: ' + err.message, true); }
 }
 
@@ -15974,7 +16376,7 @@ async function restoreSpecificVersion(id, file){
 ============================================================ */
 let currentUser = null;
 // Finestre che mostrano dati privati della libreria (nomi di progetti e cartelle, versioni)
-const PRIVATE_MODALS = ['libraryModal','versionsModal','saveLibraryModal','saveConflictModal','adminModal','libMoveModal'];
+const PRIVATE_MODALS = ['libraryModal','versionsModal','pinModal','saveLibraryModal','saveConflictModal','adminModal','libMoveModal'];
 // Cancella dal browser tutto ciò che è stato scaricato dalla libreria dell'utente e chiude le finestre
 // che lo mostrano (anche se ridotte a icona): va fatto all'uscita, allo scadere dell'accesso e al cambio utente.
 function clearPrivateLibraryData(){
@@ -16681,6 +17083,7 @@ function renderPropPanelInner(){
   host.appendChild(document.createElement('hr')).className='sep';
 
   if(ids.length===0){
+    if(state.tool==='bucket'){ renderBucketColorField(host); host.appendChild(document.createElement('hr')).className='sep'; }
     renderNewTextFontField(host);
     host.appendChild(document.createElement('hr')).className='sep';
     renderProjectInfoSection(host);
@@ -17363,11 +17766,170 @@ function allSelectedHaveRole(ids, role){
 /* ---------- colore interno delle forme (riempimento), anche con trasparenza ---------- */
 const FILL_SWATCHES = ['#111111','#ffffff','#d1402c','#e8732a','#f2c230','#3fa34d','#2f9e9a','#3572d6','#6b4fbf','#c2477d','#8b5a2b','#9aa0a6'];
 function shapeCanFill(s){ return s && (s.type==='rect' || s.type==='ellipse' || s.type==='tracedpath' || (s.type==='path' && s.points && s.points.length>=3)); }
+
+/* ============================================================
+   SECCHIELLO — colora una zona chiusa anche quando è formata da più linee
+   separate (pannelli di una fustella, contorni importati…). Le linee visibili
+   vengono ridisegnate su una tela invisibile, il colore si "versa" dal punto
+   cliccato e la zona riempita diventa una forma vettoriale (con i fori), messa
+   sotto le linee. Piccole aperture del contorno (fino a ~1 mm) si chiudono da sole.
+============================================================ */
+function bucketOutlineToCtx(g, s, k, ox, oy, lwPx){
+  g.save();
+  g.setTransform(k, 0, 0, k, -ox*k, -oy*k);
+  if(s.rotation && s.type!=='path'){ const b = shapeBBox(s), cx = b.x+b.w/2, cy = b.y+b.h/2; g.translate(cx, cy); g.rotate(s.rotation*Math.PI/180); g.translate(-cx, -cy); }
+  g.lineWidth = lwPx / k;
+  if(s.type==='path' && s.points && s.points.length>1){
+    g.stroke(new Path2D(buildSmoothPathD(s.points, s.closed, s.smooth || s.points.map(()=>0), 1)));
+  } else if(s.type==='rect'){ g.beginPath(); g.rect(s.x, s.y, s.w, s.h); g.stroke(); }
+  else if(s.type==='ellipse'){ g.beginPath(); g.ellipse(s.x+s.w/2, s.y+s.h/2, Math.abs(s.w/2), Math.abs(s.h/2), 0, 0, Math.PI*2); g.stroke(); }
+  else if(s.type==='tracedpath'){
+    const sx = s.w/(s.srcW||s.w||1), sy = s.h/(s.srcH||s.h||1);
+    g.translate(s.x, s.y); g.scale(sx, sy); g.lineWidth = lwPx / k / Math.min(sx, sy);
+    s.paths.forEach(sp=>{ try{ g.stroke(new Path2D(sp.d)); }catch(e){} });
+  }
+  g.restore();
+}
+function bucketRegion(shapes, ext, k, mm, gapMM){
+  const W = Math.ceil(ext.w*k)+2, H = Math.ceil(ext.h*k)+2;
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const g = cv.getContext('2d', {willReadFrequently:true});
+  g.strokeStyle = '#000'; g.lineCap = 'round'; g.lineJoin = 'round';
+  const lwPx = Math.max(1.4, gapMM*k);
+  shapes.forEach(s=> bucketOutlineToCtx(g, s, k, ext.x, ext.y, lwPx));
+  const data = g.getImageData(0, 0, W, H).data, N = W*H, ink = new Uint8Array(N);
+  for(let i=0;i<N;i++) if(data[i*4+3] > 60) ink[i] = 1;
+  const sx = Math.floor((mm[0]-ext.x)*k), sy = Math.floor((mm[1]-ext.y)*k);
+  if(sx<0 || sy<0 || sx>=W || sy>=H) return {leaked:true};
+  if(ink[sy*W+sx]) return {onLine:true};
+  // riempimento (4 vicini) dal punto cliccato: se tocca il bordo della tela la zona non è chiusa
+  const reg = new Uint8Array(N), stack = [sy*W+sx]; reg[sy*W+sx] = 1; let n = 0;
+  while(stack.length){
+    const p = stack.pop(), x = p%W, y = (p/W)|0; n++;
+    if(x===0 || y===0 || x===W-1 || y===H-1) return {leaked:true};
+    for(const q of [p-1, p+1, p-W, p+W]) if(!reg[q] && !ink[q]){ reg[q] = 1; stack.push(q); }
+  }
+  if(n < 4) return {onLine:true};
+  // la zona arriva fino al centro delle linee (niente bordo bianco): cresce dentro l'inchiostro di mezza linea
+  let front = []; for(let i=0;i<N;i++) if(reg[i]) front.push(i);
+  const grow = Math.max(1, Math.round(lwPx/2));
+  for(let step=0; step<grow; step++){
+    const next = [];
+    for(const p of front){ for(const q of [p-1, p+1, p-W, p+W]) if(q>=0 && q<N && !reg[q] && ink[q]){ reg[q] = 1; next.push(q); } }
+    front = next; if(!front.length) break;
+  }
+  // contorni (marching squares), fori compresi
+  let x0=W, y0=H, x1=0, y1=0;
+  for(let i=0;i<N;i++) if(reg[i]){ const x=i%W, y=(i/W)|0; if(x<x0)x0=x; if(x>x1)x1=x; if(y<y0)y0=y; if(y>y1)y1=y; }
+  const M = (x,y)=> (x<0||y<0||x>=W||y>=H) ? 0 : reg[y*W+x];
+  const adj = new Map(), key = (a,b)=> a + ',' + b;
+  const link = (p, q)=>{ const kp = key(p[0]*2, p[1]*2), kq = key(q[0]*2, q[1]*2);
+    (adj.get(kp) || adj.set(kp, []).get(kp)).push(kq); (adj.get(kq) || adj.set(kq, []).get(kq)).push(kp); };
+  for(let y=y0-1; y<=y1; y++) for(let x=x0-1; x<=x1; x++){
+    const a=M(x,y), b=M(x+1,y), cc=M(x+1,y+1), d=M(x,y+1), idx = a*8 + b*4 + cc*2 + d;
+    if(idx===0 || idx===15) continue;
+    const T=[x+0.5,y], R=[x+1,y+0.5], B=[x+0.5,y+1], Lf=[x,y+0.5];
+    switch(idx){
+      case 1: link(Lf,B); break;   case 2: link(B,R); break;   case 3: link(Lf,R); break;
+      case 4: link(T,R); break;    case 5: link(Lf,T); link(B,R); break;
+      case 6: link(T,B); break;    case 7: link(Lf,T); break;  case 8: link(Lf,T); break;
+      case 9: link(T,B); break;    case 10: link(T,R); link(Lf,B); break;
+      case 11: link(T,R); break;   case 12: link(Lf,R); break; case 13: link(B,R); break;
+      case 14: link(Lf,B); break;
+    }
+  }
+  const rings = [], used = new Set();
+  for(const [start] of adj){
+    if(used.has(start)) continue;
+    const ring = []; let prev = null, cur = start;
+    while(cur && !used.has(cur)){
+      used.add(cur); const [ax,ay] = cur.split(',').map(Number); ring.push([ax/2, ay/2]);
+      const nx = (adj.get(cur)||[]).find(q=> q!==prev && !used.has(q)); prev = cur; cur = nx;
+    }
+    if(ring.length >= 4) rings.push(ring);
+  }
+  const rdp = (pts, eps)=>{
+    if(pts.length < 3) return pts.slice();
+    const [ax,ay] = pts[0], [bx,by] = pts[pts.length-1], L = Math.hypot(bx-ax, by-ay) || 1e-9;
+    let md = -1, mi = 0;
+    for(let i=1;i<pts.length-1;i++){ const dd = Math.abs((bx-ax)*(ay-pts[i][1]) - (ax-pts[i][0])*(by-ay)) / L; if(dd>md){ md=dd; mi=i; } }
+    if(md <= eps) return [pts[0], pts[pts.length-1]];
+    return rdp(pts.slice(0, mi+1), eps).slice(0,-1).concat(rdp(pts.slice(mi), eps));
+  };
+  const toMM = q=> [ext.x + (q[0]+0.5)/k, ext.y + (q[1]+0.5)/k];
+  // un anello chiuso ha inizio e fine coincidenti: lo spezzo nel punto più lontano dall'inizio e
+  // semplifico le due metà separatamente (altrimenti tutte le distanze risultano zero e l'anello sparisce)
+  const simplifyRing = r=>{
+    let far = 0, fd = -1; r.forEach((q,i)=>{ const d = Math.hypot(q[0]-r[0][0], q[1]-r[0][1]); if(d>fd){ fd=d; far=i; } });
+    const eps = Math.max(1.0, 0.1*k); // tolleranza: un decimo di millimetro (toglie la "scaletta" dei pixel sulle diagonali)
+    const a = rdp(r.slice(0, far+1), eps), b = rdp(r.slice(far).concat([r[0]]), eps);
+    return a.slice(0,-1).concat(b.slice(0,-1));
+  };
+  const out = rings.map(r=> simplifyRing(r).map(toMM)).filter(r=> r.length >= 3);
+  return {rings: out, area: n};
+}
+function bucketFillAt(mm){
+  const shapes = state.shapes.filter(s=> isShapeEffVisible(s) && !s.fromBucket && s.type!=='text' && s.type!=='image');
+  if(!shapes.length){ showToast('Non ci sono linee che chiudono una zona da colorare.', true); return; }
+  const bb = shapes.map(shapeBBox).filter(Boolean);
+  const pad = 3, ext = {x: Math.min(...bb.map(b=>b.x)) - pad, y: Math.min(...bb.map(b=>b.y)) - pad};
+  ext.w = Math.max(...bb.map(b=>b.x+b.w)) + pad - ext.x; ext.h = Math.max(...bb.map(b=>b.y+b.h)) + pad - ext.y;
+  if(mm[0] <= ext.x || mm[1] <= ext.y || mm[0] >= ext.x+ext.w || mm[1] >= ext.y+ext.h){ showToast('Fai clic dentro una zona chiusa dalle linee.', true); return; }
+  const k = Math.max(2, Math.min(12, 3000 / Math.max(ext.w, ext.h)));
+  for(const gap of [0, 0.5, 1.0]){ // se il contorno ha una piccola apertura riprovo chiudendola
+    const r = bucketRegion(shapes, ext, k, mm, gap);
+    if(r.onLine){ showToast('Hai fatto clic proprio su una linea: fai clic dentro la zona da colorare.', true); return; }
+    if(r.leaked) continue;
+    if(!r.rings.length) break;
+    const color = state.lastFill || '#f2c230';
+    let shape;
+    if(r.rings.length === 1){
+      shape = makeShape('path', {points: r.rings[0], closed: true, smooth: r.rings[0].map(()=>0)});
+    } else { // zona con fori: un tracciato con più contorni ("evenodd")
+      const all = r.rings.flat(), x0 = Math.min(...all.map(p=>p[0])), y0 = Math.min(...all.map(p=>p[1]));
+      const w = Math.max(...all.map(p=>p[0])) - x0, h = Math.max(...all.map(p=>p[1])) - y0;
+      const d = r.rings.map(rg=> 'M ' + rg.map(p=> (p[0]-x0).toFixed(3) + ' ' + (p[1]-y0).toFixed(3)).join(' L ') + ' Z').join(' ');
+      shape = makeShape('tracedpath', {x:x0, y:y0, w, h, srcW:w, srcH:h, paths:[{d, fill: color, stroke:'none'}]});
+    }
+    Object.assign(shape.style, {role:'design', stroke:'none', hasRealStroke:false, fill: color, fillOpacity: 1});
+    shape.fromBucket = true;
+    const firstOfLayer = state.shapes.findIndex(s=> s.layerId===shape.layerId);
+    state.shapes.splice(firstOfLayer >= 0 ? firstOfLayer : 0, 0, shape); // sotto le linee
+    state.selection = new Set([shape.id]);
+    pushHistory(); renderAll();
+    const holes = r.rings.length - 1;
+    showToast((gap ? tpl('Zona colorata (il contorno aveva un\'apertura: chiusa con una tolleranza di {g} mm).', {g: String(gap).replace('.', ',')}) : translate('Zona colorata.'))
+      + (holes ? ' ' + tpl(holes===1 ? '{n} foro all\'interno lasciato vuoto.' : '{n} fori all\'interno lasciati vuoti.', {n: holes}) : '')
+      + ' ' + translate('Colore e opacità si cambiano nel pannello Proprietà.'), false);
+    return;
+  }
+  showToast('Questa zona non è chiusa: il contorno ha un\'apertura più grande di 1 mm. Usa "Verifica chiusure" per trovarla, oppure chiudila con la penna.', true);
+}
+function renderBucketColorField(host){
+  const f = document.createElement('div'); f.className='field fill-field';
+  f.innerHTML = `<label>${escapeHTML(translate('Colore del secchiello'))}</label>`;
+  const row = document.createElement('div'); row.style.cssText='display:flex;gap:8px;align-items:center;';
+  const cur = state.lastFill || '#f2c230';
+  const inp = document.createElement('input'); inp.type='color'; inp.value = cur; inp.style.cssText='width:46px;height:32px;padding:2px;flex:none;';
+  inp.oninput = ()=>{ state.lastFill = inp.value; };
+  const sw = document.createElement('div'); sw.className='fill-swatches';
+  FILL_SWATCHES.forEach(col=>{ const b = document.createElement('button'); b.type='button'; b.style.background = col; b.title = col;
+    if(col.toLowerCase()===cur.toLowerCase()) b.classList.add('active');
+    b.onclick = ()=>{ state.lastFill = col; renderPropPanel(); }; sw.appendChild(b); });
+  row.append(inp, sw); f.appendChild(row);
+  const h = document.createElement('div'); h.className='hint'; h.style.marginTop='6px';
+  h.textContent = translate('Fai clic dentro una zona chiusa: anche se è formata da più linee, viene colorata tutta, fori esclusi. Le piccole aperture (fino a 1 mm) si chiudono da sole.');
+  f.appendChild(h); host.appendChild(f);
+}
+
 function renderFillSection(host, ids){
   const sel = ids.map(id=>state.shapes.find(x=>x.id===id)).filter(shapeCanFill);
   if(!sel.length) return;
+  // i tracciati disegnano il colore di ogni loro parte: lo tengo allineato a quello della forma
+  sel.forEach(x=>{ if(x.type==='tracedpath' && (!x.style.fill || x.style.fill==='none')){ const f = (x.paths.find(sp=>sp.fill && sp.fill!=='none')||{}).fill; if(f) x.style.fill = f; } });
+  const syncT = x=>{ if(x.type==='tracedpath') x.paths.forEach(sp=>{ sp.fill = x.style.fill || 'none'; }); };
   const s = sel[0], on = sel.some(x=> x.style.fill && x.style.fill!=='none');
-  const apply = (fn, history)=>{ sel.forEach(fn); if(history) pushHistory(); renderAll(); };
+  const apply = (fn, history)=>{ sel.forEach(x=>{ fn(x); syncT(x); }); if(history) pushHistory(); renderAll(); };
   const f = document.createElement('div'); f.className='field fill-field';
   const head = document.createElement('label'); head.style.cssText='display:flex;align-items:center;gap:8px;cursor:pointer;text-transform:none;letter-spacing:0;';
   const chk = document.createElement('input'); chk.type='checkbox'; chk.checked = on; chk.style.cssText='width:auto;margin:0;';
@@ -17378,7 +17940,7 @@ function renderFillSection(host, ids){
     const cur = s.style.fill && s.style.fill!=='none' ? s.style.fill : '#f2c230';
     const row = document.createElement('div'); row.style.cssText='display:flex;gap:8px;align-items:center;margin-top:6px;';
     const inp = document.createElement('input'); inp.type='color'; inp.value = cur.startsWith('#') && cur.length===7 ? cur : '#f2c230'; inp.style.cssText='width:46px;height:32px;padding:2px;flex:none;';
-    inp.oninput = ()=>{ state.lastFill = inp.value; sel.forEach(x=> x.style.fill = inp.value); renderCanvasOnly(); };
+    inp.oninput = ()=>{ state.lastFill = inp.value; sel.forEach(x=>{ x.style.fill = inp.value; syncT(x); }); renderCanvasOnly(); };
     inp.onchange = ()=>{ pushHistory(); renderPropPanel(); };
     const sw = document.createElement('div'); sw.className='fill-swatches';
     FILL_SWATCHES.forEach(col=>{ const b = document.createElement('button'); b.type='button'; b.style.background = col; b.title = col;

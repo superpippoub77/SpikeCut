@@ -354,6 +354,24 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   bianche disegnate sopra una forma colorata diventano fori veri di quella forma
   (`mergeWhiteKnockouts`), così le lettere (A, R, O…) restano aperte anche
   ridimensionando.
+- **Versioni fissate (2.47)**: `versions/<id>/pins.json` registra le versioni
+  fissate (`label`, `note`, `pinnedAt`, `pinnedBy`); `snapshot_version()` pota
+  solo le versioni NON fissate oltre `MAX_VERSIONS_PER_PROJECT`.
+  `pin_version.php` (nuovo): fissa una versione (`file`), lo stato attuale
+  (`current:true`, crea una voce della cronologia) o la toglie (`unpin`).
+  `versions.php` restituisce `pin`, numero di forme, `restoredFrom`.
+  `restore_version.php` ripristina anche `projectInfo` e registra
+  `restoredFrom`. `utf8_cut()` in common.php sostituisce `mb_substr` (che non
+  tutti gli hosting hanno). Nell'app: File → "Fissa questa versione…",
+  finestra Versioni con le fissate in cima, filtro, rinomina e "Togli".
+- **Secchiello (2.46)**: strumento `bucket` (tasto K). `bucketFillAt()` ridisegna
+  le linee visibili su una tela invisibile (`bucketOutlineToCtx`), riempie dal
+  punto cliccato, fa crescere la zona fino al centro delle linee, ricava i
+  contorni (marching squares, fori compresi) e li semplifica. Una zona senza
+  fori diventa un percorso chiuso, con fori un `tracedpath` "evenodd"; messa
+  sotto le linee del livello, `fromBucket: true` (niente angoli, esclusa dai
+  secchielli successivi). Aperture fino a 1 mm chiuse in automatico.
+  Il colore interno dei `tracedpath` ora si cambia anche dal pannello.
 - **Libreria come Esplora file (2.45)**: barra dei comandi (`#libToolbar`,
   pulsanti attivi secondo la selezione), "Sposta in… / Copia in…"
   (`openLibMoveDialog`, stessa logica di Incolla: `libTransfer`), Cestino:

@@ -204,16 +204,38 @@ function ensure_versions_dir($id) {
     }
 }
 
+// Versioni FISSATE: l'utente dà un nome a una versione ("Approvata dal cliente") perché resti
+// per sempre. Sono registrate in versions/<id>/pins.json { "file": {label, note, pinnedAt, pinnedBy} }
+// e la pulizia delle versioni vecchie non le cancella mai.
+// taglia un testo a $n caratteri senza spezzare le lettere accentate (non richiede l'estensione mbstring)
+function utf8_cut($s, $n) {
+    if (function_exists('mb_substr')) return mb_substr($s, 0, $n, 'UTF-8');
+    return preg_match('/^.{0,' . (int) $n . '}/us', $s, $m) ? $m[0] : substr($s, 0, $n);
+}
+function pins_path($id) { return versions_dir($id) . '/pins.json'; }
+function read_pins($id) {
+    $p = pins_path($id);
+    if (!file_exists($p)) return [];
+    $d = json_decode(file_get_contents($p), true);
+    return is_array($d) ? $d : [];
+}
+function write_pins($id, $pins) {
+    ensure_versions_dir($id);
+    atomic_write(pins_path($id), json_encode((object) $pins, JSON_UNESCAPED_UNICODE));
+}
+
 // Salva $projectData (lo stato PRECEDENTE al salvataggio in corso) come
 // nuova voce della cronologia, e pota le versioni più vecchie oltre il
-// limite configurato.
+// limite configurato (le versioni fissate non contano e non si cancellano).
 function snapshot_version($id, $projectData) {
     ensure_versions_dir($id);
     $fname = ((int) round(microtime(true) * 1000)) . '_' . bin2hex(random_bytes(2)) . '.json';
     atomic_write(versions_dir($id) . '/' . $fname, json_encode($projectData, JSON_UNESCAPED_UNICODE));
 
-    $files = glob(versions_dir($id) . '/*.json');
+    $files = glob(versions_dir($id) . '/*_*.json');
     if ($files === false) return $fname;
+    $pins = read_pins($id);
+    $files = array_values(array_filter($files, function ($f) use ($pins) { return !isset($pins[basename($f)]); }));
     sort($files); // i nomi iniziano col timestamp: ordine cronologico crescente
     $excess = count($files) - MAX_VERSIONS_PER_PROJECT;
     for ($i = 0; $i < $excess; $i++) {

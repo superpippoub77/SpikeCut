@@ -17,7 +17,7 @@ if (!safe_id($id)) {
 if ($name === '') {
     json_error('Il progetto deve avere un nome.');
 }
-$name = function_exists('mb_substr') ? mb_substr($name, 0, 120) : substr($name, 0, 120);
+$name = utf8_cut($name, 120);
 
 $path = project_path($id);
 $project = json_decode(@file_get_contents($path), true);

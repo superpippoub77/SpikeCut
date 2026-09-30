@@ -14,7 +14,7 @@ $parentId = array_key_exists('parentId', $body) ? $body['parentId'] : null;
 if ($name === '') {
     json_error('La cartella deve avere un nome.');
 }
-$name = function_exists('mb_substr') ? mb_substr($name, 0, 80) : substr($name, 0, 80);
+$name = utf8_cut($name, 80);
 
 if (!safe_folder_id($parentId)) {
     json_error('Cartella superiore non valida.', 400);

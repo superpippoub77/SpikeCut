@@ -17,7 +17,7 @@ if (!safe_folder_id($id) || $id === null) {
 if ($name === '') {
     json_error('La cartella deve avere un nome.');
 }
-$name = function_exists('mb_substr') ? mb_substr($name, 0, 80) : substr($name, 0, 80);
+$name = utf8_cut($name, 80);
 
 $folders = read_folders();
 $found = false;

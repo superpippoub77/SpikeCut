@@ -48,6 +48,8 @@ $restored = [
     'layers'        => $old['layers'] ?? null,
     'activeLayerId' => $old['activeLayerId'] ?? null,
     'customFonts'   => $old['customFonts'] ?? null,
+    'projectInfo'   => array_key_exists('projectInfo', $old) ? $old['projectInfo'] : ($current['projectInfo'] ?? null),
+    'folderId'      => $current['folderId'] ?? null,
     // proprietario e condivisione restano quelli ATTUALI: sono impostazioni
     // dell'account, non fanno parte della cronologia del contenuto.
     'ownerId'       => $current['ownerId'],
@@ -55,6 +57,8 @@ $restored = [
     'shared'        => $current['shared'] ?? false,
     'created'       => $current['created'] ?? $now,
     'updated'       => $now,
+    // da quale versione arriva lo stato attuale (per mostrarlo nella cronologia)
+    'restoredFrom'  => ['file' => $file, 'label' => (read_pins($id)[$file]['label'] ?? null), 'at' => $now],
 ];
 
 if (atomic_write($path, json_encode($restored, JSON_UNESCAPED_UNICODE)) === false) {

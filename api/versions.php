@@ -30,19 +30,24 @@ if (!$isOwner && !$isShared) {
 $dir = versions_dir($id);
 $items = [];
 if (is_dir($dir)) {
-    $files = glob($dir . '/*.json');
+    $pins = read_pins($id);
+    $files = glob($dir . '/*_*.json');
     foreach ($files as $f) {
         $fname = basename($f);
         $data = json_decode(file_get_contents($f), true);
         $parts = explode('_', $fname);
         $ts = isset($parts[0]) ? intdiv((int) $parts[0], 1000) : time();
-        $items[] = [
+        $item = [
             'file'    => $fname,
             'name'    => is_array($data) ? ($data['name'] ?? '') : '',
             'savedAt' => date('c', $ts),
+            'shapes'  => is_array($data) && isset($data['shapes']) && is_array($data['shapes']) ? count($data['shapes']) : null,
         ];
+        if (isset($pins[$fname])) $item['pin'] = $pins[$fname];   // versione fissata: nome, nota, data
+        $items[] = $item;
     }
 }
 usort($items, function ($a, $b) { return strcmp($b['file'], $a['file']); }); // più recenti prima
 
-json_ok(['items' => $items, 'mine' => $isOwner]);
+json_ok(['items' => $items, 'mine' => $isOwner, 'maxVersions' => MAX_VERSIONS_PER_PROJECT,
+         'restoredFrom' => $current['restoredFrom'] ?? null]);
