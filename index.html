@@ -274,6 +274,14 @@ input[type=range]{width:100%;accent-color:var(--brass);}
 .libtree-row.dragover{outline:2px dashed var(--brass);outline-offset:-2px;}
 .libitem-row{display:grid;grid-template-columns:1fr 100px 76px auto;gap:8px;align-items:center;padding:5px 4px;border-radius:5px;font-size:12px;}
 .libitem-row:not(.libitem-head):hover{background:var(--bg-2);}
+.libitem-row.selected, .libitem-row.selected:hover{ background:rgba(201,151,63,.20); box-shadow:inset 0 0 0 1px rgba(201,151,63,.55); }
+.libitem-row.cut-pending{ opacity:.5; }
+.libitem-row{ user-select:none; cursor:default; }
+.libitem-head .sortable{ cursor:pointer; }
+.libitem-head .sortable:hover{ color:var(--ink); }
+.lib-rename{ width:100%; margin:0; padding:2px 6px; font-size:12px; }
+.lib-status{ font-size:11px; color:var(--ink-dim); padding:6px 4px 2px; border-top:1px solid var(--line-soft); margin-top:6px; }
+#libList:focus{ outline:none; }
 .libitem-row.dragover{outline:2px dashed var(--brass);outline-offset:-2px;}
 .libitem-head{color:var(--ink-dim);font-weight:600;font-size:11px;border-bottom:1px solid var(--line-soft);margin-bottom:2px;padding-bottom:6px;}
 .libitem-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;}
@@ -468,12 +476,33 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 .move-compass button{ border:1px solid var(--line); background:rgba(128,128,128,.08); color:var(--ink); border-radius:6px; cursor:pointer; font-size:14px; padding:0; }
 .move-compass button:hover{ border-color:var(--brass); }
 .move-compass button.active{ background:var(--brass); color:#1a1300; border-color:var(--brass); }
+.fill-swatches{ display:grid; grid-template-columns:repeat(6, 1fr); gap:4px; flex:1; }
+.fill-swatches button{ height:15px; border-radius:4px; border:1px solid rgba(128,128,128,.45); cursor:pointer; padding:0; }
+.fill-swatches button:hover{ transform:scale(1.12); }
+.fill-swatches button.active{ outline:2px solid var(--brass); outline-offset:1px; }
+.fill-field{ margin-top:6px; padding:8px; border:1px solid var(--line); border-radius:8px; }
 .seg3{ display:flex; border:1px solid var(--line); border-radius:7px; overflow:hidden; }
 .seg3 button{ flex:1; padding:5px 6px; background:transparent; border:0; border-right:1px solid var(--line); color:var(--ink-dim); cursor:pointer; font-size:12px; }
 .seg3 button:last-child{ border-right:0; }
 .seg3 button:hover{ color:var(--ink); background:rgba(128,128,128,.12); }
 .seg3 button.active{ background:var(--brass); color:#1a1300; font-weight:700; }
 .libvis{ font-size:11px; opacity:.85; }
+.lib-toolbar{ display:flex; align-items:center; gap:2px; padding:5px 8px; border-bottom:1px solid var(--line-soft); flex-shrink:0; overflow-x:auto; scrollbar-width:thin; }
+.lib-tb-group{ display:flex; align-items:center; gap:2px; }
+.lib-toolbar .lib-tb-trash{ display:none; }
+.lib-toolbar.in-trash .lib-tb-files{ display:none; }
+.lib-toolbar.in-trash .lib-tb-trash{ display:flex; }
+.lib-toolbar button{ display:flex; flex-direction:column; align-items:center; gap:1px; min-width:52px; padding:4px 6px; border:1px solid transparent; border-radius:6px; background:transparent; color:var(--ink); cursor:pointer; font-size:15px; line-height:1.1; flex:none; }
+.lib-toolbar button span{ font-size:10.5px; color:var(--ink-dim); white-space:nowrap; }
+.lib-toolbar button:hover:not(:disabled){ background:rgba(128,128,128,.14); border-color:var(--line); }
+.lib-toolbar button:disabled{ opacity:.32; cursor:default; }
+.lib-tb-sep{ width:1px; align-self:stretch; background:var(--line-soft); margin:2px 4px; flex:none; }
+.libtree-row.trash-row{ margin-top:8px; border-top:1px solid var(--line-soft); padding-top:6px; }
+.lib-move-tree{ max-height:46vh; overflow-y:auto; border:1px solid var(--line); border-radius:8px; padding:4px; }
+.lib-move-tree .mv-row{ padding:5px 8px; border-radius:5px; cursor:pointer; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.lib-move-tree .mv-row:hover{ background:rgba(128,128,128,.12); }
+.lib-move-tree .mv-row.sel{ background:var(--brass); color:#1a1300; font-weight:700; }
+.lib-move-tree .mv-row.disabled{ opacity:.35; cursor:not-allowed; }
 .admin-badge{ font-size:12px; font-weight:700; padding:2px 10px; border-radius:10px; background:rgba(128,128,128,.2); }
 .admin-badge.ok{ background:rgba(47,158,90,.2); color:#3fbf72; }
 .admin-badge.ko{ background:rgba(255,59,48,.18); color:#ff6a60; }
@@ -868,7 +897,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.43.2</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.45.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1062,6 +1091,13 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
       <div id="adminProjectsSummary" class="hint" style="margin-top:8px;"></div>
       <div class="hint" style="margin-top:10px;">Da amministratore puoi rendere pubblico o privato qualunque progetto con un proprietario; il proprietario viene indicato e resta traccia di chi ha fatto l'ultimo cambio. I progetti generici (senza proprietario) sono sempre pubblici. Un clic su un utente nella tabella qui sopra mostra solo i suoi progetti.</div>
     </div>
+  </div>
+</div>
+
+<div id="libPropsModal" class="modal-overlay">
+  <div class="modal-box" style="width:min(420px,94vw);">
+    <div class="modal-head"><h3 id="libPropsTitle">Proprietà</h3><button class="iconbtn" id="libPropsClose" title="Chiudi">✕</button></div>
+    <div class="modal-body"><table class="admin-table" id="libPropsTable"></table></div>
   </div>
 </div>
 
@@ -1273,15 +1309,55 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   </div>
 </div>
 
+<div id="libMoveModal" class="modal-overlay">
+  <div class="modal-box" style="width:min(420px,96vw);">
+    <div class="modal-head"><h3 id="libMoveTitle">Sposta in…</h3><button class="iconbtn" id="libMoveClose" title="Chiudi">✕</button></div>
+    <div class="modal-body">
+      <div class="hint" id="libMoveInfo" style="margin-bottom:8px;"></div>
+      <div id="libMoveTree" class="lib-move-tree"></div>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <button class="btn" id="libMoveNewFolder" style="width:auto;margin:0;">📁+ Nuova cartella</button>
+        <span style="flex:1;"></span>
+        <button class="btn" id="libMoveCancel" style="width:auto;margin:0;">Annulla</button>
+        <button class="btn primary" id="libMoveOk" style="width:auto;margin:0;">Sposta</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="libraryModal" class="modal-overlay">
-  <div class="modal-box" style="width:760px;max-width:96vw;height:560px;max-height:88vh;">
+  <div class="modal-box" style="width:900px;max-width:96vw;height:600px;max-height:88vh;">
     <div class="modal-head">
       <h3>Libreria progetti</h3>
       <button class="iconbtn" id="libModalClose" title="Chiudi">✕</button>
     </div>
     <div class="modal-body" style="display:flex;flex-direction:column;flex:1;padding:0;overflow:hidden;">
-      <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--line-soft);flex-shrink:0;">
-        <button class="btn" id="libNewFolderBtn" style="width:auto;margin:0;">📁+ Nuova cartella</button>
+      <div id="libToolbar" class="lib-toolbar">
+        <div class="lib-tb-group lib-tb-files">
+          <button data-cmd="up" title="Cartella superiore (Backspace)">⬆<span>Su</span></button>
+          <button id="libNewFolderBtn" data-cmd="newfolder" title="Nuova cartella (Ctrl+Shift+N)">📁<span>Nuova cartella</span></button>
+          <i class="lib-tb-sep"></i>
+          <button data-cmd="open" title="Apri (Invio)">📂<span>Apri</span></button>
+          <button data-cmd="rename" title="Rinomina (F2)">✎<span>Rinomina</span></button>
+          <button data-cmd="duplicate" title="Duplica (Ctrl+D)">⧉<span>Duplica</span></button>
+          <button data-cmd="delete" title="Sposta nel Cestino (Canc) — Shift+Canc elimina definitivamente">🗑<span>Elimina</span></button>
+          <i class="lib-tb-sep"></i>
+          <button data-cmd="cut" title="Taglia (Ctrl+X)">✂<span>Taglia</span></button>
+          <button data-cmd="copy" title="Copia (Ctrl+C)">📋<span>Copia</span></button>
+          <button data-cmd="paste" title="Incolla qui (Ctrl+V)">📌<span>Incolla</span></button>
+          <i class="lib-tb-sep"></i>
+          <button data-cmd="moveto" title="Sposta in un'altra cartella…">➜<span>Sposta in…</span></button>
+          <button data-cmd="copyto" title="Copia in un'altra cartella…">⇉<span>Copia in…</span></button>
+          <i class="lib-tb-sep"></i>
+          <button data-cmd="props" title="Proprietà">ℹ<span>Proprietà</span></button>
+        </div>
+        <div class="lib-tb-group lib-tb-trash">
+          <button data-cmd="restore" title="Rimetti gli elementi selezionati dove erano">↺<span>Ripristina</span></button>
+          <button data-cmd="purge" title="Elimina per sempre gli elementi selezionati">✖<span>Elimina definitivamente</span></button>
+          <button data-cmd="emptytrash" title="Elimina per sempre tutto il contenuto del Cestino">🗑<span>Svuota Cestino</span></button>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 12px;border-bottom:1px solid var(--line-soft);flex-shrink:0;">
         <input type="search" id="libSearch" placeholder="🔍 Cerca in tutta la libreria (nome, cartella, autore)…" autocomplete="off" style="flex:1;min-width:120px;margin:0;">
         <div id="libOpenAllWrap"></div>
       </div>
@@ -2822,6 +2898,69 @@ const I18N = {
     "Rende più sottili i tratti delle lettere; utile per i font che hanno un solo spessore (es. Hammer Fat)": "Makes the letter strokes thinner; useful for fonts that have only one weight (e.g. Hammer Fat)",
     "Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter). Per i font con un solo spessore usa «Assottiglia».": "Bold works with every font; weights lighter than regular only show if the font contains them (for example Inter). For fonts with only one weight use \"Thin down\".",
     "Questo font personalizzato ha un solo spessore: i pesi sottili non cambiano nulla. Usa «Assottiglia» qui sotto.": "This custom font has only one weight: light weights change nothing. Use \"Thin down\" below.",
+    "Colora l'interno": "Fill the inside",
+    "Opacità del colore": "Colour opacity",
+    "Questa è una linea aperta: il colore riempie la zona tra il primo e l'ultimo punto. Per una figura vera chiudila.": "This is an open line: the colour fills the area between the first and last point. Close it for a real shape.",
+    "Chiudi la forma": "Close the shape",
+    "Il colore interno si vede sullo schermo e in stampa; non cambia il taglio né le pieghe.": "The inside colour shows on screen and in print; it does not change cutting or folding.",
+    "Su": "Up",
+    "Nuova cartella": "New folder",
+    "Apri": "Open",
+    "Rinomina": "Rename",
+    "Duplica": "Duplicate",
+    "Taglia": "Cut",
+    "Copia": "Copy",
+    "Incolla": "Paste",
+    "Sposta in…": "Move to…",
+    "Copia in…": "Copy to…",
+    "Elimina definitivamente": "Delete permanently",
+    "Svuota Cestino": "Empty Trash",
+    "Cestino": "Trash",
+    "Cartella superiore (Backspace)": "Parent folder (Backspace)",
+    "Nuova cartella (Ctrl+Shift+N)": "New folder (Ctrl+Shift+N)",
+    "Apri (Invio)": "Open (Enter)",
+    "Rinomina (F2)": "Rename (F2)",
+    "Duplica (Ctrl+D)": "Duplicate (Ctrl+D)",
+    "Sposta nel Cestino (Canc) — Shift+Canc elimina definitivamente": "Move to Trash (Del) — Shift+Del deletes permanently",
+    "Taglia (Ctrl+X)": "Cut (Ctrl+X)",
+    "Copia (Ctrl+C)": "Copy (Ctrl+C)",
+    "Incolla qui (Ctrl+V)": "Paste here (Ctrl+V)",
+    "Sposta in un'altra cartella…": "Move to another folder…",
+    "Copia in un'altra cartella…": "Copy to another folder…",
+    "Rimetti gli elementi selezionati dove erano": "Put the selected items back where they were",
+    "Elimina per sempre gli elementi selezionati": "Delete the selected items forever",
+    "Elimina per sempre tutto il contenuto del Cestino": "Delete everything in the Trash forever",
+    "Progetti eliminati: restano qui {d} giorni, poi vengono cancellati": "Deleted projects: they stay here {d} days, then are erased",
+    "gli elementi restano qui {d} giorni, poi vengono cancellati": "items stay here {d} days, then are erased",
+    "Il Cestino è vuoto.": "The Trash is empty.",
+    "Eliminato il": "Deleted on",
+    "Posizione originale": "Original location",
+    "↺ Ripristina": "↺ Restore",
+    "✖ Elimina definitivamente": "✖ Delete permanently",
+    "🗑 Svuota Cestino": "🗑 Empty Trash",
+    "Progetto ripristinato nella sua cartella.": "Project restored to its folder.",
+    "{n} progetti ripristinati nelle loro cartelle.": "{n} projects restored to their folders.",
+    "{n} progetto eliminato definitivamente.": "{n} project permanently deleted.",
+    "{n} progetti eliminati definitivamente.": "{n} projects permanently deleted.",
+    "Eliminare definitivamente «{name}»? Non si potrà più recuperare.": "Permanently delete \"{name}\"? It cannot be recovered.",
+    "Eliminare definitivamente {n} progetti? Non si potranno più recuperare.": "Permanently delete {n} projects? They cannot be recovered.",
+    "Svuotare il Cestino? {n} progetti verranno eliminati definitivamente.": "Empty the Trash? {n} projects will be permanently deleted.",
+    "Eliminare definitivamente «{name}»? Non passerà dal Cestino e non si potrà recuperare.": "Permanently delete \"{name}\"? It will not go to the Trash and cannot be recovered.",
+    "Eliminare definitivamente {n} progetti? Non passeranno dal Cestino e non si potranno recuperare.": "Permanently delete {n} projects? They will not go to the Trash and cannot be recovered.",
+    "«{name}» spostato nel Cestino.": "\"{name}\" moved to the Trash.",
+    "{n} progetti spostati nel Cestino.": "{n} projects moved to the Trash.",
+    "Eliminare {n} cartelle? Il loro contenuto verrà spostato nella cartella superiore, non verrà cancellato.": "Delete {n} folders? Their contents will be moved to the parent folder, not erased.",
+    "Spostare questo progetto nel Cestino della libreria? Potrai ripristinarlo per 30 giorni.": "Move this project to the library Trash? You can restore it for 30 days.",
+    "➜ Sposta in…": "➜ Move to…",
+    "⇉ Copia in…": "⇉ Copy to…",
+    "🗑 Sposta nel Cestino (Canc)": "🗑 Move to Trash (Del)",
+    "✖ Elimina definitivamente (Shift+Canc)": "✖ Delete permanently (Shift+Del)",
+    "🗑 Sposta {n} elementi nel Cestino (Canc)": "🗑 Move {n} items to Trash (Del)",
+    "Sposta": "Move",
+    "«{name}»: scegli la cartella di destinazione.": "\"{name}\": choose the destination folder.",
+    "{n} elementi: scegli la cartella di destinazione.": "{n} items: choose the destination folder.",
+    "Libreria (cartella principale)": "Library (main folder)",
+    "Non si può spostare una cartella dentro se stessa": "A folder cannot be moved into itself",
   },
   de: {
     "1 cm": "1 cm",
@@ -4013,6 +4152,69 @@ const I18N = {
     "Rende più sottili i tratti delle lettere; utile per i font che hanno un solo spessore (es. Hammer Fat)": "Macht die Striche der Buchstaben dünner; nützlich für Schriften mit nur einer Stärke (z. B. Hammer Fat)",
     "Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter). Per i font con un solo spessore usa «Assottiglia».": "Fett funktioniert mit jeder Schrift; dünnere Stärken erscheinen nur, wenn die Schrift sie enthält (z. B. Inter). Für Schriften mit nur einer Stärke „Verdünnen“ verwenden.",
     "Questo font personalizzato ha un solo spessore: i pesi sottili non cambiano nulla. Usa «Assottiglia» qui sotto.": "Diese eigene Schrift hat nur eine Stärke: dünne Stärken ändern nichts. Verwende unten „Verdünnen“.",
+    "Colora l'interno": "Innen füllen",
+    "Opacità del colore": "Farbdeckkraft",
+    "Questa è una linea aperta: il colore riempie la zona tra il primo e l'ultimo punto. Per una figura vera chiudila.": "Dies ist eine offene Linie: Die Farbe füllt den Bereich zwischen erstem und letztem Punkt. Schließe sie für eine echte Form.",
+    "Chiudi la forma": "Form schließen",
+    "Il colore interno si vede sullo schermo e in stampa; non cambia il taglio né le pieghe.": "Die Innenfarbe ist auf dem Bildschirm und im Druck sichtbar; Schnitt und Falz ändern sich nicht.",
+    "Su": "Nach oben",
+    "Nuova cartella": "Neuer Ordner",
+    "Apri": "Öffnen",
+    "Rinomina": "Umbenennen",
+    "Duplica": "Duplizieren",
+    "Taglia": "Ausschneiden",
+    "Copia": "Kopieren",
+    "Incolla": "Einfügen",
+    "Sposta in…": "Verschieben nach…",
+    "Copia in…": "Kopieren nach…",
+    "Elimina definitivamente": "Endgültig löschen",
+    "Svuota Cestino": "Papierkorb leeren",
+    "Cestino": "Papierkorb",
+    "Cartella superiore (Backspace)": "Übergeordneter Ordner (Rücktaste)",
+    "Nuova cartella (Ctrl+Shift+N)": "Neuer Ordner (Strg+Umschalt+N)",
+    "Apri (Invio)": "Öffnen (Eingabe)",
+    "Rinomina (F2)": "Umbenennen (F2)",
+    "Duplica (Ctrl+D)": "Duplizieren (Strg+D)",
+    "Sposta nel Cestino (Canc) — Shift+Canc elimina definitivamente": "In den Papierkorb (Entf) — Umschalt+Entf löscht endgültig",
+    "Taglia (Ctrl+X)": "Ausschneiden (Strg+X)",
+    "Copia (Ctrl+C)": "Kopieren (Strg+C)",
+    "Incolla qui (Ctrl+V)": "Hier einfügen (Strg+V)",
+    "Sposta in un'altra cartella…": "In einen anderen Ordner verschieben…",
+    "Copia in un'altra cartella…": "In einen anderen Ordner kopieren…",
+    "Rimetti gli elementi selezionati dove erano": "Ausgewählte Elemente an ihren Ort zurücklegen",
+    "Elimina per sempre gli elementi selezionati": "Ausgewählte Elemente endgültig löschen",
+    "Elimina per sempre tutto il contenuto del Cestino": "Gesamten Papierkorb endgültig löschen",
+    "Progetti eliminati: restano qui {d} giorni, poi vengono cancellati": "Gelöschte Projekte: Sie bleiben {d} Tage hier und werden dann gelöscht",
+    "gli elementi restano qui {d} giorni, poi vengono cancellati": "Elemente bleiben {d} Tage hier und werden dann gelöscht",
+    "Il Cestino è vuoto.": "Der Papierkorb ist leer.",
+    "Eliminato il": "Gelöscht am",
+    "Posizione originale": "Ursprünglicher Ort",
+    "↺ Ripristina": "↺ Wiederherstellen",
+    "✖ Elimina definitivamente": "✖ Endgültig löschen",
+    "🗑 Svuota Cestino": "🗑 Papierkorb leeren",
+    "Progetto ripristinato nella sua cartella.": "Projekt in seinen Ordner wiederhergestellt.",
+    "{n} progetti ripristinati nelle loro cartelle.": "{n} Projekte in ihre Ordner wiederhergestellt.",
+    "{n} progetto eliminato definitivamente.": "{n} Projekt endgültig gelöscht.",
+    "{n} progetti eliminati definitivamente.": "{n} Projekte endgültig gelöscht.",
+    "Eliminare definitivamente «{name}»? Non si potrà più recuperare.": "„{name}“ endgültig löschen? Es kann nicht wiederhergestellt werden.",
+    "Eliminare definitivamente {n} progetti? Non si potranno più recuperare.": "{n} Projekte endgültig löschen? Sie können nicht wiederhergestellt werden.",
+    "Svuotare il Cestino? {n} progetti verranno eliminati definitivamente.": "Papierkorb leeren? {n} Projekte werden endgültig gelöscht.",
+    "Eliminare definitivamente «{name}»? Non passerà dal Cestino e non si potrà recuperare.": "„{name}“ endgültig löschen? Es kommt nicht in den Papierkorb und kann nicht wiederhergestellt werden.",
+    "Eliminare definitivamente {n} progetti? Non passeranno dal Cestino e non si potranno recuperare.": "{n} Projekte endgültig löschen? Sie kommen nicht in den Papierkorb und können nicht wiederhergestellt werden.",
+    "«{name}» spostato nel Cestino.": "„{name}“ in den Papierkorb verschoben.",
+    "{n} progetti spostati nel Cestino.": "{n} Projekte in den Papierkorb verschoben.",
+    "Eliminare {n} cartelle? Il loro contenuto verrà spostato nella cartella superiore, non verrà cancellato.": "{n} Ordner löschen? Ihr Inhalt wird in den übergeordneten Ordner verschoben, nicht gelöscht.",
+    "Spostare questo progetto nel Cestino della libreria? Potrai ripristinarlo per 30 giorni.": "Dieses Projekt in den Papierkorb der Bibliothek verschieben? Du kannst es 30 Tage lang wiederherstellen.",
+    "➜ Sposta in…": "➜ Verschieben nach…",
+    "⇉ Copia in…": "⇉ Kopieren nach…",
+    "🗑 Sposta nel Cestino (Canc)": "🗑 In den Papierkorb (Entf)",
+    "✖ Elimina definitivamente (Shift+Canc)": "✖ Endgültig löschen (Umschalt+Entf)",
+    "🗑 Sposta {n} elementi nel Cestino (Canc)": "🗑 {n} Elemente in den Papierkorb (Entf)",
+    "Sposta": "Verschieben",
+    "«{name}»: scegli la cartella di destinazione.": "„{name}“: Wähle den Zielordner.",
+    "{n} elementi: scegli la cartella di destinazione.": "{n} Elemente: Wähle den Zielordner.",
+    "Libreria (cartella principale)": "Bibliothek (Hauptordner)",
+    "Non si può spostare una cartella dentro se stessa": "Ein Ordner kann nicht in sich selbst verschoben werden",
   },
   es: {
     "1 cm": "1 cm",
@@ -5204,6 +5406,69 @@ const I18N = {
     "Rende più sottili i tratti delle lettere; utile per i font che hanno un solo spessore (es. Hammer Fat)": "Hace más finos los trazos de las letras; útil para fuentes con un solo grosor (p. ej. Hammer Fat)",
     "Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter). Per i font con un solo spessore usa «Assottiglia».": "La negrita funciona con todas las fuentes; los pesos más finos solo se ven si la fuente los incluye (por ejemplo Inter). Para fuentes con un solo grosor usa «Adelgazar».",
     "Questo font personalizzato ha un solo spessore: i pesi sottili non cambiano nulla. Usa «Assottiglia» qui sotto.": "Esta fuente personalizada tiene un solo grosor: los pesos finos no cambian nada. Usa «Adelgazar» abajo.",
+    "Colora l'interno": "Rellenar el interior",
+    "Opacità del colore": "Opacidad del color",
+    "Questa è una linea aperta: il colore riempie la zona tra il primo e l'ultimo punto. Per una figura vera chiudila.": "Es una línea abierta: el color rellena la zona entre el primer y el último punto. Ciérrala para tener una figura real.",
+    "Chiudi la forma": "Cerrar la figura",
+    "Il colore interno si vede sullo schermo e in stampa; non cambia il taglio né le pieghe.": "El color interior se ve en pantalla y en la impresión; no cambia el corte ni los pliegues.",
+    "Su": "Arriba",
+    "Nuova cartella": "Nueva carpeta",
+    "Apri": "Abrir",
+    "Rinomina": "Renombrar",
+    "Duplica": "Duplicar",
+    "Taglia": "Cortar",
+    "Copia": "Copiar",
+    "Incolla": "Pegar",
+    "Sposta in…": "Mover a…",
+    "Copia in…": "Copiar a…",
+    "Elimina definitivamente": "Eliminar definitivamente",
+    "Svuota Cestino": "Vaciar papelera",
+    "Cestino": "Papelera",
+    "Cartella superiore (Backspace)": "Carpeta superior (Retroceso)",
+    "Nuova cartella (Ctrl+Shift+N)": "Nueva carpeta (Ctrl+Mayús+N)",
+    "Apri (Invio)": "Abrir (Intro)",
+    "Rinomina (F2)": "Renombrar (F2)",
+    "Duplica (Ctrl+D)": "Duplicar (Ctrl+D)",
+    "Sposta nel Cestino (Canc) — Shift+Canc elimina definitivamente": "Mover a la papelera (Supr) — Mayús+Supr elimina definitivamente",
+    "Taglia (Ctrl+X)": "Cortar (Ctrl+X)",
+    "Copia (Ctrl+C)": "Copiar (Ctrl+C)",
+    "Incolla qui (Ctrl+V)": "Pegar aquí (Ctrl+V)",
+    "Sposta in un'altra cartella…": "Mover a otra carpeta…",
+    "Copia in un'altra cartella…": "Copiar a otra carpeta…",
+    "Rimetti gli elementi selezionati dove erano": "Devolver los elementos seleccionados a su sitio",
+    "Elimina per sempre gli elementi selezionati": "Eliminar para siempre los elementos seleccionados",
+    "Elimina per sempre tutto il contenuto del Cestino": "Eliminar para siempre todo el contenido de la papelera",
+    "Progetti eliminati: restano qui {d} giorni, poi vengono cancellati": "Proyectos eliminados: se quedan aquí {d} días y luego se borran",
+    "gli elementi restano qui {d} giorni, poi vengono cancellati": "los elementos se quedan aquí {d} días y luego se borran",
+    "Il Cestino è vuoto.": "La papelera está vacía.",
+    "Eliminato il": "Eliminado el",
+    "Posizione originale": "Ubicación original",
+    "↺ Ripristina": "↺ Restaurar",
+    "✖ Elimina definitivamente": "✖ Eliminar definitivamente",
+    "🗑 Svuota Cestino": "🗑 Vaciar papelera",
+    "Progetto ripristinato nella sua cartella.": "Proyecto restaurado en su carpeta.",
+    "{n} progetti ripristinati nelle loro cartelle.": "{n} proyectos restaurados en sus carpetas.",
+    "{n} progetto eliminato definitivamente.": "{n} proyecto eliminado definitivamente.",
+    "{n} progetti eliminati definitivamente.": "{n} proyectos eliminados definitivamente.",
+    "Eliminare definitivamente «{name}»? Non si potrà più recuperare.": "¿Eliminar definitivamente «{name}»? No se podrá recuperar.",
+    "Eliminare definitivamente {n} progetti? Non si potranno più recuperare.": "¿Eliminar definitivamente {n} proyectos? No se podrán recuperar.",
+    "Svuotare il Cestino? {n} progetti verranno eliminati definitivamente.": "¿Vaciar la papelera? {n} proyectos se eliminarán definitivamente.",
+    "Eliminare definitivamente «{name}»? Non passerà dal Cestino e non si potrà recuperare.": "¿Eliminar definitivamente «{name}»? No pasará por la papelera y no se podrá recuperar.",
+    "Eliminare definitivamente {n} progetti? Non passeranno dal Cestino e non si potranno recuperare.": "¿Eliminar definitivamente {n} proyectos? No pasarán por la papelera y no se podrán recuperar.",
+    "«{name}» spostato nel Cestino.": "«{name}» movido a la papelera.",
+    "{n} progetti spostati nel Cestino.": "{n} proyectos movidos a la papelera.",
+    "Eliminare {n} cartelle? Il loro contenuto verrà spostato nella cartella superiore, non verrà cancellato.": "¿Eliminar {n} carpetas? Su contenido se moverá a la carpeta superior, no se borrará.",
+    "Spostare questo progetto nel Cestino della libreria? Potrai ripristinarlo per 30 giorni.": "¿Mover este proyecto a la papelera de la biblioteca? Podrás restaurarlo durante 30 días.",
+    "➜ Sposta in…": "➜ Mover a…",
+    "⇉ Copia in…": "⇉ Copiar a…",
+    "🗑 Sposta nel Cestino (Canc)": "🗑 Mover a la papelera (Supr)",
+    "✖ Elimina definitivamente (Shift+Canc)": "✖ Eliminar definitivamente (Mayús+Supr)",
+    "🗑 Sposta {n} elementi nel Cestino (Canc)": "🗑 Mover {n} elementos a la papelera (Supr)",
+    "Sposta": "Mover",
+    "«{name}»: scegli la cartella di destinazione.": "«{name}»: elige la carpeta de destino.",
+    "{n} elementi: scegli la cartella di destinazione.": "{n} elementos: elige la carpeta de destino.",
+    "Libreria (cartella principale)": "Biblioteca (carpeta principal)",
+    "Non si può spostare una cartella dentro se stessa": "Una carpeta no se puede mover dentro de sí misma",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -5421,7 +5686,7 @@ const I18N = {
     "Rimuovi immagine di riferimento": "移除参考图像",
     "Rinomina cartella": "重命名文件夹",
     "Ripeti (Ctrl+Shift+Z)": "重做 (Ctrl+Shift+Z)",
-    "Ripristina": "恢复",
+    "Ripristina": "还原",
     "Ripristinare questa versione come stato attuale del progetto? Lo stato di adesso viene comunque salvato nella cronologia, quindi resta recuperabile in seguito.": "是否将此版本恢复为项目的当前状态？无论如何，当前状态都会保存到历史记录中，因此以后仍可恢复。",
     "Salda punti": "焊接节点",
     "Salda punti vicini": "焊接邻近节点",
@@ -6395,6 +6660,69 @@ const I18N = {
     "Rende più sottili i tratti delle lettere; utile per i font che hanno un solo spessore (es. Hammer Fat)": "使字母笔画变细；适用于只有一种字重的字体（如 Hammer Fat）",
     "Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter). Per i font con un solo spessore usa «Assottiglia».": "粗体适用于所有字体；更细的字重只有字体包含时才会显示（例如 Inter）。只有一种字重的字体请使用\"变细\"。",
     "Questo font personalizzato ha un solo spessore: i pesi sottili non cambiano nulla. Usa «Assottiglia» qui sotto.": "此自定义字体只有一种字重：细字重不会有任何变化。请使用下方的\"变细\"。",
+    "Colora l'interno": "填充内部",
+    "Opacità del colore": "颜色不透明度",
+    "Questa è una linea aperta: il colore riempie la zona tra il primo e l'ultimo punto. Per una figura vera chiudila.": "这是一条开放线：颜色会填充首尾两点之间的区域。请闭合以形成真正的图形。",
+    "Chiudi la forma": "闭合图形",
+    "Il colore interno si vede sullo schermo e in stampa; non cambia il taglio né le pieghe.": "内部颜色会在屏幕和打印中显示；不会改变切割或折叠。",
+    "Su": "向上",
+    "Nuova cartella": "新建文件夹",
+    "Apri": "打开",
+    "Rinomina": "重命名",
+    "Duplica": "复制副本",
+    "Taglia": "剪切",
+    "Copia": "复制",
+    "Incolla": "粘贴",
+    "Sposta in…": "移动到…",
+    "Copia in…": "复制到…",
+    "Elimina definitivamente": "永久删除",
+    "Svuota Cestino": "清空回收站",
+    "Cestino": "回收站",
+    "Cartella superiore (Backspace)": "上级文件夹（Backspace）",
+    "Nuova cartella (Ctrl+Shift+N)": "新建文件夹（Ctrl+Shift+N）",
+    "Apri (Invio)": "打开（回车）",
+    "Rinomina (F2)": "重命名（F2）",
+    "Duplica (Ctrl+D)": "复制副本（Ctrl+D）",
+    "Sposta nel Cestino (Canc) — Shift+Canc elimina definitivamente": "移到回收站（Del）— Shift+Del 永久删除",
+    "Taglia (Ctrl+X)": "剪切（Ctrl+X）",
+    "Copia (Ctrl+C)": "复制（Ctrl+C）",
+    "Incolla qui (Ctrl+V)": "粘贴到此处（Ctrl+V）",
+    "Sposta in un'altra cartella…": "移动到其他文件夹…",
+    "Copia in un'altra cartella…": "复制到其他文件夹…",
+    "Rimetti gli elementi selezionati dove erano": "将所选项放回原位置",
+    "Elimina per sempre gli elementi selezionati": "永久删除所选项",
+    "Elimina per sempre tutto il contenuto del Cestino": "永久删除回收站中的所有内容",
+    "Progetti eliminati: restano qui {d} giorni, poi vengono cancellati": "已删除的项目：保留 {d} 天后永久删除",
+    "gli elementi restano qui {d} giorni, poi vengono cancellati": "项目保留 {d} 天后永久删除",
+    "Il Cestino è vuoto.": "回收站为空。",
+    "Eliminato il": "删除日期",
+    "Posizione originale": "原位置",
+    "↺ Ripristina": "↺ 还原",
+    "✖ Elimina definitivamente": "✖ 永久删除",
+    "🗑 Svuota Cestino": "🗑 清空回收站",
+    "Progetto ripristinato nella sua cartella.": "项目已还原到其文件夹。",
+    "{n} progetti ripristinati nelle loro cartelle.": "{n} 个项目已还原到各自文件夹。",
+    "{n} progetto eliminato definitivamente.": "已永久删除 {n} 个项目。",
+    "{n} progetti eliminati definitivamente.": "已永久删除 {n} 个项目。",
+    "Eliminare definitivamente «{name}»? Non si potrà più recuperare.": "永久删除\"{name}\"？将无法恢复。",
+    "Eliminare definitivamente {n} progetti? Non si potranno più recuperare.": "永久删除 {n} 个项目？将无法恢复。",
+    "Svuotare il Cestino? {n} progetti verranno eliminati definitivamente.": "清空回收站？将永久删除 {n} 个项目。",
+    "Eliminare definitivamente «{name}»? Non passerà dal Cestino e non si potrà recuperare.": "永久删除\"{name}\"？不会进入回收站，将无法恢复。",
+    "Eliminare definitivamente {n} progetti? Non passeranno dal Cestino e non si potranno recuperare.": "永久删除 {n} 个项目？不会进入回收站，将无法恢复。",
+    "«{name}» spostato nel Cestino.": "\"{name}\" 已移到回收站。",
+    "{n} progetti spostati nel Cestino.": "{n} 个项目已移到回收站。",
+    "Eliminare {n} cartelle? Il loro contenuto verrà spostato nella cartella superiore, non verrà cancellato.": "删除 {n} 个文件夹？其内容将移到上级文件夹，不会被删除。",
+    "Spostare questo progetto nel Cestino della libreria? Potrai ripristinarlo per 30 giorni.": "将此项目移到库的回收站？30 天内可还原。",
+    "➜ Sposta in…": "➜ 移动到…",
+    "⇉ Copia in…": "⇉ 复制到…",
+    "🗑 Sposta nel Cestino (Canc)": "🗑 移到回收站（Del）",
+    "✖ Elimina definitivamente (Shift+Canc)": "✖ 永久删除（Shift+Del）",
+    "🗑 Sposta {n} elementi nel Cestino (Canc)": "🗑 将 {n} 个项目移到回收站（Del）",
+    "Sposta": "移动",
+    "«{name}»: scegli la cartella di destinazione.": "\"{name}\"：选择目标文件夹。",
+    "{n} elementi: scegli la cartella di destinazione.": "{n} 个项目：选择目标文件夹。",
+    "Libreria (cartella principale)": "库（主文件夹）",
+    "Non si può spostare una cartella dentro se stessa": "文件夹不能移动到自身内部",
   },
   fr: {
     "1 cm": "1 cm",
@@ -7586,6 +7914,69 @@ const I18N = {
     "Rende più sottili i tratti delle lettere; utile per i font che hanno un solo spessore (es. Hammer Fat)": "Rend les traits des lettres plus fins ; utile pour les polices à une seule graisse (ex. Hammer Fat)",
     "Il grassetto funziona con tutti i font; i pesi più sottili del normale si vedono solo se il font li contiene (per esempio Inter). Per i font con un solo spessore usa «Assottiglia».": "Le gras fonctionne avec toutes les polices ; les graisses plus fines ne s’affichent que si la police les contient (par exemple Inter). Pour les polices à une seule graisse, utilise « Affiner ».",
     "Questo font personalizzato ha un solo spessore: i pesi sottili non cambiano nulla. Usa «Assottiglia» qui sotto.": "Cette police personnalisée n’a qu’une graisse : les graisses fines ne changent rien. Utilise « Affiner » ci-dessous.",
+    "Colora l'interno": "Remplir l’intérieur",
+    "Opacità del colore": "Opacité de la couleur",
+    "Questa è una linea aperta: il colore riempie la zona tra il primo e l'ultimo punto. Per una figura vera chiudila.": "C’est une ligne ouverte : la couleur remplit la zone entre le premier et le dernier point. Ferme-la pour obtenir une vraie forme.",
+    "Chiudi la forma": "Fermer la forme",
+    "Il colore interno si vede sullo schermo e in stampa; non cambia il taglio né le pieghe.": "La couleur intérieure s’affiche à l’écran et à l’impression ; elle ne change ni la découpe ni les plis.",
+    "Su": "Haut",
+    "Nuova cartella": "Nouveau dossier",
+    "Apri": "Ouvrir",
+    "Rinomina": "Renommer",
+    "Duplica": "Dupliquer",
+    "Taglia": "Couper",
+    "Copia": "Copier",
+    "Incolla": "Coller",
+    "Sposta in…": "Déplacer vers…",
+    "Copia in…": "Copier vers…",
+    "Elimina definitivamente": "Supprimer définitivement",
+    "Svuota Cestino": "Vider la corbeille",
+    "Cestino": "Corbeille",
+    "Cartella superiore (Backspace)": "Dossier parent (Retour arrière)",
+    "Nuova cartella (Ctrl+Shift+N)": "Nouveau dossier (Ctrl+Maj+N)",
+    "Apri (Invio)": "Ouvrir (Entrée)",
+    "Rinomina (F2)": "Renommer (F2)",
+    "Duplica (Ctrl+D)": "Dupliquer (Ctrl+D)",
+    "Sposta nel Cestino (Canc) — Shift+Canc elimina definitivamente": "Mettre à la corbeille (Suppr) — Maj+Suppr supprime définitivement",
+    "Taglia (Ctrl+X)": "Couper (Ctrl+X)",
+    "Copia (Ctrl+C)": "Copier (Ctrl+C)",
+    "Incolla qui (Ctrl+V)": "Coller ici (Ctrl+V)",
+    "Sposta in un'altra cartella…": "Déplacer vers un autre dossier…",
+    "Copia in un'altra cartella…": "Copier vers un autre dossier…",
+    "Rimetti gli elementi selezionati dove erano": "Remettre les éléments sélectionnés à leur place",
+    "Elimina per sempre gli elementi selezionati": "Supprimer définitivement les éléments sélectionnés",
+    "Elimina per sempre tutto il contenuto del Cestino": "Supprimer définitivement tout le contenu de la corbeille",
+    "Progetti eliminati: restano qui {d} giorni, poi vengono cancellati": "Projets supprimés : ils restent ici {d} jours, puis sont effacés",
+    "gli elementi restano qui {d} giorni, poi vengono cancellati": "les éléments restent ici {d} jours, puis sont effacés",
+    "Il Cestino è vuoto.": "La corbeille est vide.",
+    "Eliminato il": "Supprimé le",
+    "Posizione originale": "Emplacement d’origine",
+    "↺ Ripristina": "↺ Restaurer",
+    "✖ Elimina definitivamente": "✖ Supprimer définitivement",
+    "🗑 Svuota Cestino": "🗑 Vider la corbeille",
+    "Progetto ripristinato nella sua cartella.": "Projet restauré dans son dossier.",
+    "{n} progetti ripristinati nelle loro cartelle.": "{n} projets restaurés dans leurs dossiers.",
+    "{n} progetto eliminato definitivamente.": "{n} projet supprimé définitivement.",
+    "{n} progetti eliminati definitivamente.": "{n} projets supprimés définitivement.",
+    "Eliminare definitivamente «{name}»? Non si potrà più recuperare.": "Supprimer définitivement « {name} » ? Il ne pourra plus être récupéré.",
+    "Eliminare definitivamente {n} progetti? Non si potranno più recuperare.": "Supprimer définitivement {n} projets ? Ils ne pourront plus être récupérés.",
+    "Svuotare il Cestino? {n} progetti verranno eliminati definitivamente.": "Vider la corbeille ? {n} projets seront supprimés définitivement.",
+    "Eliminare definitivamente «{name}»? Non passerà dal Cestino e non si potrà recuperare.": "Supprimer définitivement « {name} » ? Il ne passera pas par la corbeille et ne pourra pas être récupéré.",
+    "Eliminare definitivamente {n} progetti? Non passeranno dal Cestino e non si potranno recuperare.": "Supprimer définitivement {n} projets ? Ils ne passeront pas par la corbeille et ne pourront pas être récupérés.",
+    "«{name}» spostato nel Cestino.": "« {name} » placé dans la corbeille.",
+    "{n} progetti spostati nel Cestino.": "{n} projets placés dans la corbeille.",
+    "Eliminare {n} cartelle? Il loro contenuto verrà spostato nella cartella superiore, non verrà cancellato.": "Supprimer {n} dossiers ? Leur contenu sera déplacé dans le dossier parent, pas effacé.",
+    "Spostare questo progetto nel Cestino della libreria? Potrai ripristinarlo per 30 giorni.": "Mettre ce projet dans la corbeille de la bibliothèque ? Tu pourras le restaurer pendant 30 jours.",
+    "➜ Sposta in…": "➜ Déplacer vers…",
+    "⇉ Copia in…": "⇉ Copier vers…",
+    "🗑 Sposta nel Cestino (Canc)": "🗑 Mettre à la corbeille (Suppr)",
+    "✖ Elimina definitivamente (Shift+Canc)": "✖ Supprimer définitivement (Maj+Suppr)",
+    "🗑 Sposta {n} elementi nel Cestino (Canc)": "🗑 Mettre {n} éléments à la corbeille (Suppr)",
+    "Sposta": "Déplacer",
+    "«{name}»: scegli la cartella di destinazione.": "« {name} » : choisis le dossier de destination.",
+    "{n} elementi: scegli la cartella di destinazione.": "{n} éléments : choisis le dossier de destination.",
+    "Libreria (cartella principale)": "Bibliothèque (dossier principal)",
+    "Non si può spostare una cartella dentro se stessa": "Un dossier ne peut pas être déplacé dans lui-même",
   },
 };
 let currentLang = 'it';
@@ -11370,7 +11761,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.43.2';
+const GUIDE_VERSION = '2.45.0';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -11614,6 +12005,13 @@ html:`<p>Con il pulsante <b>⇪</b> in alto, trascinando il file sul foglio o <b
 <li><b>Solo immagine di riferimento</b>: resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti; opacità, filtri e rimozione sono nella scheda Immagine.</li></ul>
 <p>Con <b>Tieni l'immagine sotto il disegno</b> l'originale resta visibile in trasparenza per confrontarlo con le linee ottenute. Le scelte vengono ricordate per la volta successiva.</p>` },
 
+{ id:'colore-interno', cat:'Modificare', title:'Colorare l\'interno di una forma', keys:'colore interno riempimento riempire colorare forma chiusa figura percorso sfondo trasparenza opacità fill',
+html:`<p>Seleziona una o più forme chiuse (rettangoli, ellissi, figure disegnate con la penna, tracciati importati) e nel pannello Proprietà attiva <b>Colora l'interno</b>:</p>
+<ul><li>scegli il colore con il selettore o con uno dei <b>12 colori rapidi</b>;</li>
+<li>il cursore <b>Opacità del colore</b> lo rende trasparente, per vedere quello che c'è sotto;</li>
+<li>togliendo la spunta la forma torna senza colore.</li></ul>
+<p>Se la forma è una <b>linea aperta</b>, il pannello lo segnala e il pulsante <b>Chiudi la forma</b> la trasforma in una figura chiusa. Sulle linee di taglio e di piega il colore interno è solo visivo: si vede sullo schermo e in stampa, ma non cambia il taglio né le pieghe. Il colore vale anche nelle esportazioni SVG e PDF.</p>` },
+
 { id:'componenti', cat:'Disegnare', title:'Forme pronte e componenti condivisi', keys:'forme pronte galleria componenti condivisi community trascinare triangolo quadrato esagono pentagono ottagono poligono stella cerchio ellisse cuore freccia croce ingranaggio asola foro europeo maniglia linguetta gancio finestra sombrero tasto f',
 html:`<p><b>Forme pronte</b>: nella barra a sinistra, sezione <b>Forme pronte</b> (o tasto <b>F</b>), si apre accanto alla barra una galleria con anteprima, divisa per categorie: triangoli e quadrilateri, poligoni regolari (dal pentagono al dodecagono), curve (cerchio, ellisse, semicerchio, spicchio, corona, cuore, mezzaluna…), stelle, frecce e simboli (croce, fumetto, cartellino, ingranaggio…) e pezzi di <b>packaging</b> (aletta, foro europeo, maniglia, linguetta, gancio, foro tondo, asola, finestra, foro a sombrero, tacca a V).</p>
 <ul><li><b>Trascina</b> una forma sul foglio per inserirla in quel punto, oppure <b>fai clic</b> per metterla al centro (sui tablet si usa il clic). La galleria resta aperta per inserirne altre; si chiude con ✕, Esc o di nuovo con F.</li>
@@ -11680,7 +12078,9 @@ html:`<ul><li><b>Salvataggio automatico nel browser</b>: a ogni modifica, dopo c
 <li><b>☁ Libreria</b>: salvataggio sul server, vedi <a data-topic="libreria">Libreria</a>.</li></ul>` },
 
 { id:'libreria', cat:'Salvare ed esportare', title:'Account e libreria online', keys:'account accesso registrazione libreria server cartelle condividere privato versioni nuvola password cercare ricerca trovare file progetto',
-html:`<ul><li><b>Account</b>: registrazione, accesso (anche "ricordami"), recupero della password via email. Il pulsante in alto mostra il tuo nome quando sei collegato, "Accedi" quando non lo sei. Uscendo dall'account (o se l'accesso scade) tutto ciò che era stato scaricato dalla libreria viene cancellato dal browser e le finestre della libreria, delle versioni e del salvataggio si chiudono, anche se erano ridotte a icona. I progetti già aperti nelle schede restano: sono il tuo lavoro in corso.</li>
+html:`<p>La finestra della libreria funziona come Esplora file. In alto c'è la <b>barra dei comandi</b>: Su, Nuova cartella, Apri, Rinomina, Duplica, Elimina, Taglia, Copia, Incolla, <b>Sposta in…</b>, <b>Copia in…</b> e Proprietà; i pulsanti si attivano secondo quello che è selezionato. Gli stessi comandi sono nel tasto destro e sulla tastiera: Invio apri, F2 rinomina, Ctrl+D duplica, Ctrl+C / Ctrl+X / Ctrl+V copia, taglia e incolla, Ctrl+A seleziona tutto, Ctrl+Shift+N nuova cartella, Backspace cartella superiore, F5 aggiorna; clic, Ctrl+clic e Shift+clic per selezionare più elementi; trascinamento sulle cartelle per spostare.</p>
+<p><b>Cestino</b>: <b>Canc</b> sposta i progetti nel Cestino (in fondo all'albero delle cartelle), da cui si possono <b>ripristinare</b> nella loro cartella per 30 giorni; poi vengono cancellati. <b>Shift+Canc</b> elimina definitivamente, senza passare dal Cestino. Nel Cestino ci sono anche "Elimina definitivamente" e "Svuota Cestino". Le cartelle non vanno nel Cestino: eliminandole, il loro contenuto sale nella cartella superiore e non si perde nulla.</p>
+<ul><li><b>Account</b>: registrazione, accesso (anche "ricordami"), recupero della password via email. Il pulsante in alto mostra il tuo nome quando sei collegato, "Accedi" quando non lo sei. Uscendo dall'account (o se l'accesso scade) tutto ciò che era stato scaricato dalla libreria viene cancellato dal browser e le finestre della libreria, delle versioni e del salvataggio si chiudono, anche se erano ridotte a icona. I progetti già aperti nelle schede restano: sono il tuo lavoro in corso.</li>
 <li><b>☁ Libreria</b>: se il progetto è già collegato alla libreria, un clic lo sovrascrive subito; la prima volta chiede nome, cartella e condivisione. File → "Salva in libreria (server)" riapre sempre la finestra completa (per salvare con un altro nome).</li>
 <li><b>Libreria progetti</b> in stile Esplora risorse: cartelle annidate, trascinamento, tasto destro con copia, taglia, incolla, rinomina, elimina.</li>
 <li><b>🔍 Ricerca</b>: la casella in alto nella finestra della libreria cerca in <b>tutte le cartelle</b> insieme, anche nella libreria comune, senza sapere dove si trova il file. Cerca nel nome del progetto, nei nomi delle cartelle e nell'autore dei progetti condivisi; ignora maiuscole e accenti e trova i progetti che contengono tutte le parole scritte (anche solo una parte: "scatol" trova "scatola" e "scatole"). Sotto ogni risultato c'è il suo percorso: un clic porta nella cartella. Esc o "✕ Annulla ricerca" tornano all'elenco normale.</li>
@@ -11737,6 +12137,8 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.45</b> — Libreria come Esplora file: barra dei comandi, Sposta in… / Copia in…, Cestino con ripristino (Canc) ed eliminazione definitiva (Shift+Canc).</li>
+<li><b>2.44</b> — <a data-topic="colore-interno">Colore interno</a> delle forme più chiaro: interruttore, colori rapidi, opacità e "Chiudi la forma".</li>
 <li><b>2.43.2</b> — L'anteprima 3D usa i font personalizzati; anteprime, stampa di prova e PDF aspettano che i font siano caricati prima di disegnare il testo.</li>
 <li><b>2.43.1</b> — «Assottiglia» per i testi: tratti più sottili anche con i font che hanno un solo spessore.</li>
 <li><b>2.43</b> — Testo su più righe con allineamento, spessore, spaziatura, larghezza caratteri e interlinea; Shift mantiene le proporzioni ridimensionando (anche più forme e gruppi); gli SVG importati diventano un gruppo e le toppe bianche diventano fori.</li>
@@ -14308,6 +14710,7 @@ async function loadLibraryList(){
     const data = await apiFetch('list.php', {method:'GET'});
     libCacheItems = data.items || [];
     libCacheFolders = data.folders || [];
+    libCacheTrash = data.trash || []; libTrashDays = data.trashDays || 30;
     if(libCurrentFolderId && !libCacheFolders.some(f=>f.id===libCurrentFolderId)) libCurrentFolderId = null;
     renderLibraryView();
   }catch(err){
@@ -14326,7 +14729,9 @@ function folderPath(folderId){
   }
   return path;
 }
+let libCacheTrash = [], libTrashDays = 30, libInTrash = false;
 function navigateToFolder(folderId){
+  libInTrash = false;
   libCurrentFolderId = folderId;
   if(libSearchQuery){ libSearchQuery = ''; document.getElementById('libSearch').value = ''; } // andando in una cartella la ricerca si chiude
   renderLibraryView();
@@ -14354,7 +14759,7 @@ function formatFileSize(bytes){
 // sia un'altra cartella (riparentata con move_folder.php).
 function wireFolderDropTarget(rowEl, folderId){
   rowEl.addEventListener('dragover', (e)=>{
-    if(e.dataTransfer.types.includes('text/spikecut-project') || e.dataTransfer.types.includes('text/spikecut-folder')){
+    if(e.dataTransfer.types.includes('text/spikecut-project') || e.dataTransfer.types.includes('text/spikecut-folder') || e.dataTransfer.types.includes('text/spikecut-multi')){
       e.preventDefault();
       rowEl.classList.add('dragover');
     }
@@ -14365,6 +14770,21 @@ function wireFolderDropTarget(rowEl, folderId){
     rowEl.classList.remove('dragover');
     const projId = e.dataTransfer.getData('text/spikecut-project');
     const srcFolderId = e.dataTransfer.getData('text/spikecut-folder');
+    const multi = e.dataTransfer.getData('text/spikecut-multi');
+    if(multi){ // più elementi trascinati insieme
+      let moved = 0, skipped = 0;
+      for(const k of JSON.parse(multi)){
+        const x = libItemByKey(k); if(!x) continue;
+        try{
+          if(x.type==='project'){ await apiFetch('move_project.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:x.id, folderId})}); moved++; }
+          else if(folder_is_descendant_or_self_client(x.id, folderId)) skipped++;
+          else { await apiFetch('move_folder.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:x.id, parentId:folderId})}); moved++; }
+        }catch(err){ skipped++; }
+      }
+      await loadLibraryList();
+      showToast(tpl('{n} elementi spostati.', {n: moved}) + (skipped ? ' ' + tpl('{s} non spostati.', {s: skipped}) : ''), !!skipped);
+      return;
+    }
     if(projId){
       await moveProjectAction(projId, folderId);
     } else if(srcFolderId && srcFolderId !== (folderId||'')){
@@ -14379,7 +14799,7 @@ function renderFolderTree(){
   const host = document.getElementById('libTree');
   host.innerHTML = '';
   const rootRow = document.createElement('div');
-  rootRow.className = 'libtree-row' + (libCurrentFolderId===null ? ' active' : '');
+  rootRow.className = 'libtree-row' + (!libInTrash && libCurrentFolderId===null ? ' active' : '');
   rootRow.textContent = '📚 Libreria';
   rootRow.onclick = ()=> navigateToFolder(null);
   rootRow.oncontextmenu = (e)=>{ e.preventDefault(); e.stopPropagation(); showContextMenu(e.clientX, e.clientY, libEmptyAreaContextItems(null)); };
@@ -14391,7 +14811,7 @@ function renderFolderTree(){
       .sort((a,b)=> a.name.localeCompare(b.name))
       .forEach(f=>{
         const row = document.createElement('div');
-        row.className = 'libtree-row' + (libCurrentFolderId===f.id ? ' active' : '');
+        row.className = 'libtree-row' + (!libInTrash && libCurrentFolderId===f.id ? ' active' : '');
         row.style.paddingLeft = (8 + depth*14) + 'px';
         row.textContent = '📁 ' + f.name;
         row.title = f.name;
@@ -14405,6 +14825,20 @@ function renderFolderTree(){
       });
   }
   walk(null, 0);
+  // Cestino in fondo all'albero
+  const tr = document.createElement('div');
+  tr.className = 'libtree-row trash-row' + (libInTrash ? ' active' : '');
+  tr.textContent = '🗑 ' + translate('Cestino') + (libCacheTrash.length ? ` (${libCacheTrash.length})` : '');
+  tr.title = tpl('Progetti eliminati: restano qui {d} giorni, poi vengono cancellati', {d: libTrashDays});
+  tr.onclick = ()=>{ libInTrash = true; libSel = new Set(); if(libSearchQuery){ libSearchQuery=''; document.getElementById('libSearch').value=''; } renderLibraryView(); };
+  // trascinare progetti sul Cestino li elimina
+  tr.addEventListener('dragover', e=>{ const ty=[...e.dataTransfer.types]; if(ty.includes('text/spikecut-project') || ty.includes('text/spikecut-multi')){ e.preventDefault(); tr.classList.add('drop-target'); } });
+  tr.addEventListener('dragleave', ()=> tr.classList.remove('drop-target'));
+  tr.addEventListener('drop', e=>{ e.preventDefault(); tr.classList.remove('drop-target');
+    const multi = e.dataTransfer.getData('text/spikecut-multi'), one = e.dataTransfer.getData('text/spikecut-project');
+    const keys = multi ? JSON.parse(multi) : (one ? ['p:'+one] : []);
+    libSel = new Set(keys.filter(k=>k.startsWith('p:'))); libDeleteSelected(false); });
+  host.appendChild(tr);
 }
 function renderLibraryView(){
   renderLibraryViewInner();
@@ -14419,8 +14853,12 @@ function renderLibraryViewInner(){
   renderFolderTree();
   const host = document.getElementById('libList');
   const crumb = document.getElementById('libBreadcrumb');
-  host.innerHTML = '';
-  if(libSearchQuery.trim()){ renderLibrarySearch(host, crumb); return; }
+  host.innerHTML = ''; host.tabIndex = 0;
+  libOrder = [];
+  document.getElementById('libToolbar').classList.toggle('in-trash', libInTrash);
+  if(libInTrash){ renderTrashView(host, crumb); libFinishView(host); return; }
+  host.onclick = (e)=>{ if(e.target===host){ libSel = new Set(); libRefreshSelection(); host.focus({preventScroll:true}); } }; // clic sull'area vuota: nessuna selezione
+  if(libSearchQuery.trim()){ renderLibrarySearch(host, crumb); libFinishView(host); return; }
 
   // breadcrumb: Libreria > cartella > sottocartella...
   crumb.innerHTML = '';
@@ -14434,8 +14872,8 @@ function renderLibraryViewInner(){
     crumb.appendChild(a);
   });
 
-  const subFolders = libCacheFolders.filter(f=> (f.parentId||null) === (libCurrentFolderId||null)).sort((a,b)=>a.name.localeCompare(b.name));
-  const myItemsHere = libCacheItems.filter(it=> it.mine && (it.folderId||null) === (libCurrentFolderId||null)).sort((a,b)=> (b.updated||'').localeCompare(a.updated||''));
+  const subFolders = libCacheFolders.filter(f=> (f.parentId||null) === (libCurrentFolderId||null)).sort((a,b)=> a.name.localeCompare(b.name) * (libSort.key==='name' ? libSort.dir : 1));
+  const myItemsHere = libSortItems(libCacheItems.filter(it=> it.mine && (it.folderId||null) === (libCurrentFolderId||null)));
   const sharedItems = libCurrentFolderId===null ? libCacheItems.filter(it=>!it.mine) : [];
 
   const openAllWrap = document.getElementById('libOpenAllWrap');
@@ -14460,27 +14898,32 @@ function renderLibraryViewInner(){
   }
 
   const head = document.createElement('div'); head.className='libitem-row libitem-head';
-  head.innerHTML = '<div>Nome</div><div>Ultima modifica</div><div style="text-align:right;">Dimensione</div><div></div>';
+  const arrow = k=> libSort.key===k ? (libSort.dir>0 ? ' ▲' : ' ▼') : '';
+  head.innerHTML = `<div class="sortable" data-sort="name">${escapeHTML(translate('Nome'))}${arrow('name')}</div><div class="sortable" data-sort="updated">${escapeHTML(translate('Ultima modifica'))}${arrow('updated')}</div><div class="sortable" data-sort="size" style="text-align:right;">${escapeHTML(translate('Dimensione'))}${arrow('size')}</div><div></div>`;
+  head.querySelectorAll('.sortable').forEach(h=> h.onclick = ()=> libSetSort(h.dataset.sort));
   host.appendChild(head);
 
   subFolders.forEach(f=>{
     const row = document.createElement('div'); row.className='libitem-row';
+    const fkey = libKeyOf('folder', f.id); row.dataset.key = fkey; libOrder.push(fkey);
+    if(libClipboard && libClipboard.mode==='cut' && (libClipboard.items||[]).some(x=>x.type==='folder' && x.id===f.id)) row.classList.add('cut-pending');
+    row.onclick = (e)=> libRowClick(e, fkey);
+    row.ondblclick = ()=> navigateToFolder(f.id); // doppio clic: apri, come in Esplora Risorse
     const nameDiv = document.createElement('div'); nameDiv.className='libitem-name';
     nameDiv.innerHTML = `📁 ${escapeHTML(f.name)}`;
-    nameDiv.onclick = ()=> navigateToFolder(f.id);
     row.appendChild(nameDiv);
     row.appendChild(document.createElement('div'));
     row.appendChild(document.createElement('div'));
     const actions = document.createElement('div'); actions.className='libitem-actions';
-    const renBtn = document.createElement('button'); renBtn.textContent='✎'; renBtn.title='Rinomina cartella';
-    renBtn.onclick = (e)=>{ e.stopPropagation(); renameFolderAction(f); };
+    const renBtn = document.createElement('button'); renBtn.textContent='✎'; renBtn.title='Rinomina cartella (F2)';
+    renBtn.onclick = (e)=>{ e.stopPropagation(); libStartRename(fkey); };
     const delBtn = document.createElement('button'); delBtn.textContent='🗑'; delBtn.title='Elimina cartella';
     delBtn.onclick = (e)=>{ e.stopPropagation(); deleteFolderAction(f); };
     actions.appendChild(renBtn); actions.appendChild(delBtn);
     row.appendChild(actions);
     row.draggable = true;
-    row.addEventListener('dragstart', (e)=> e.dataTransfer.setData('text/spikecut-folder', f.id));
-    row.oncontextmenu = (e)=>{ e.preventDefault(); e.stopPropagation(); showContextMenu(e.clientX, e.clientY, libFolderContextItems(f)); };
+    row.addEventListener('dragstart', (e)=> libDragStart(e, fkey, ()=> e.dataTransfer.setData('text/spikecut-folder', f.id)));
+    row.oncontextmenu = (e)=> libRowContextMenu(e, fkey, ()=> libFolderContextItems(f));
     wireFolderDropTarget(row, f.id);
     host.appendChild(row);
   });
@@ -14488,15 +14931,18 @@ function renderLibraryViewInner(){
   libRenderProjectRow = renderProjectRow;
   function renderProjectRow(it, pathInfo, terms){
     const row = document.createElement('div'); row.className='libitem-row';
+    const pkey = libKeyOf('project', it.id); row.dataset.key = pkey; libOrder.push(pkey);
+    if(libClipboard && libClipboard.mode==='cut' && (libClipboard.items||[]).some(x=>x.type==='project' && x.id===it.id)) row.classList.add('cut-pending');
+    row.onclick = (e)=> libRowClick(e, pkey);
+    row.ondblclick = ()=> loadFromLibrary(it.id); // doppio clic: apri
     if(it.mine){
       row.draggable = true;
-      row.addEventListener('dragstart', (e)=> e.dataTransfer.setData('text/spikecut-project', it.id));
+      row.addEventListener('dragstart', (e)=> libDragStart(e, pkey, ()=> e.dataTransfer.setData('text/spikecut-project', it.id)));
     }
-    row.oncontextmenu = (e)=>{ e.preventDefault(); e.stopPropagation(); showContextMenu(e.clientX, e.clientY, libProjectContextItems(it)); };
+    row.oncontextmenu = (e)=> libRowContextMenu(e, pkey, ()=> libProjectContextItems(it));
     const nameDiv = document.createElement('div'); nameDiv.className='libitem-name';
     const ownerNote = (it.mine || it.generic) ? '' : ` <span style="color:var(--ink-dim);">${tpl('· di {name}', {name: escapeHTML(it.ownerName||'?')})}</span>`;
     nameDiv.innerHTML = `📄 ${terms ? libHighlight(it.name, terms) : escapeHTML(it.name)}${libVisibilityBadge(it)}${ownerNote}`;
-    nameDiv.onclick = ()=> loadFromLibrary(it.id);
     if(pathInfo){ // nei risultati della ricerca: dove si trova, cliccabile
       const pth = document.createElement('div'); pth.className = 'libitem-path';
       pth.innerHTML = pathInfo.html; pth.title = translate('Vai alla cartella');
@@ -14526,13 +14972,28 @@ function renderLibraryViewInner(){
     host.appendChild(row);
   }
 
-  myItemsHere.forEach(renderProjectRow);
+  myItemsHere.forEach(it=> renderProjectRow(it)); // (non passare l'indice come "percorso": comparirebbe "undefined")
   if(sharedItems.length){
     const h = document.createElement('div'); h.style.cssText='margin:10px 0 4px;font-weight:600;font-size:12px;';
     h.textContent = 'Libreria comune (condivisi da tutti gli utenti)';
     host.appendChild(h);
-    sharedItems.forEach(renderProjectRow);
+    libSortItems(sharedItems).forEach(it=> renderProjectRow(it));
   }
+  libFinishView(host);
+}
+// barra di stato in fondo all'elenco e selezione ancora valida dopo un aggiornamento
+function libFinishView(host){
+  libSel = new Set([...libSel].filter(k=> libOrder.includes(k)));
+  const st = document.createElement('div'); st.className='lib-status'; st.id='libStatus'; host.appendChild(st);
+  libRefreshSelection();
+}
+// trascinamento: se la riga fa parte di una selezione multipla si trascinano tutti gli elementi selezionati
+function libDragStart(e, key, single){
+  if(libSel.has(key) && libSel.size > 1){
+    const keys = libSelected().filter(x=> x.type==='folder' || x.mine).map(x=> libKeyOf(x.type, x.id));
+    e.dataTransfer.setData('text/spikecut-multi', JSON.stringify(keys));
+  }
+  single();
 }
 
 /* ---------- ricerca in tutta la libreria ---------- */
@@ -14577,7 +15038,9 @@ function renderLibrarySearch(host, crumb){
     return;
   }
   const head = document.createElement('div'); head.className='libitem-row libitem-head';
-  head.innerHTML = '<div>Nome</div><div>Ultima modifica</div><div style="text-align:right;">Dimensione</div><div></div>';
+  const arrow = k=> libSort.key===k ? (libSort.dir>0 ? ' ▲' : ' ▼') : '';
+  head.innerHTML = `<div class="sortable" data-sort="name">${escapeHTML(translate('Nome'))}${arrow('name')}</div><div class="sortable" data-sort="updated">${escapeHTML(translate('Ultima modifica'))}${arrow('updated')}</div><div class="sortable" data-sort="size" style="text-align:right;">${escapeHTML(translate('Dimensione'))}${arrow('size')}</div><div></div>`;
+  head.querySelectorAll('.sortable').forEach(h=> h.onclick = ()=> libSetSort(h.dataset.sort));
   host.appendChild(head);
   folders.forEach(({f})=>{
     const row = document.createElement('div'); row.className='libitem-row';
@@ -14600,12 +15063,18 @@ document.getElementById('libSearch').addEventListener('keydown', e=>{
   e.stopPropagation(); // i tasti della ricerca non attivano gli strumenti di disegno
   if(e.key==='Escape'){ e.preventDefault(); libSearchQuery = ''; e.target.value = ''; renderLibraryView(); }
 });
-document.getElementById('libNewFolderBtn').onclick = async ()=>{
-  const name = await showPrompt('Nome della nuova cartella');
-  if(!name) return;
+// barra dei comandi della libreria (anche "Nuova cartella")
+document.getElementById('libToolbar').addEventListener('click', e=>{ const b = e.target.closest('button[data-cmd]'); if(b && !b.disabled) libToolbarCmd(b.dataset.cmd); });
+document.getElementById('libMoveClose').onclick = ()=> document.getElementById('libMoveModal').classList.remove('open');
+document.getElementById('libMoveCancel').onclick = ()=> document.getElementById('libMoveModal').classList.remove('open');
+setupOverlayClickClose(document.getElementById('libMoveModal'), ()=> document.getElementById('libMoveModal').classList.remove('open'));
+document.getElementById('libMoveOk').onclick = libMoveApply;
+document.getElementById('libMoveNewFolder').onclick = async ()=>{
+  const name = await showPrompt('Nome della nuova cartella'); if(!name) return;
   try{
-    await apiFetch('create_folder.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name, parentId:libCurrentFolderId})});
-    loadLibraryList();
+    const parent = libMove.target===undefined ? null : libMove.target;
+    const r = await apiFetch('create_folder.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name, parentId: parent})});
+    await loadLibraryList(); libMove.target = r.folder ? r.folder.id : parent; renderLibMoveTree();
   }catch(err){ showToast('Errore nella creazione della cartella: ' + err.message, true); }
 };
 async function renameFolderAction(f){
@@ -14639,40 +15108,184 @@ async function renameProjectAction(it){
   }catch(err){ showToast('Errore nel rinominare: ' + err.message, true); }
 }
 
+
+/* ---------- Cestino ---------- */
+function renderTrashView(host, crumb){
+  crumb.innerHTML = '';
+  crumb.appendChild(document.createTextNode('🗑 ' + translate('Cestino') + ' — ' + tpl('gli elementi restano qui {d} giorni, poi vengono cancellati', {d: libTrashDays})));
+  document.getElementById('libOpenAllWrap').innerHTML = '';
+  host.onclick = (e)=>{ if(e.target===host){ libSel = new Set(); libRefreshSelection(); } };
+  host.oncontextmenu = (e)=>{ if(e.target!==host) return; e.preventDefault();
+    showContextMenu(e.clientX, e.clientY, [{label:'🗑 Svuota Cestino', disabled: !libCacheTrash.length, action:()=> libEmptyTrash()}]); };
+  if(!libCacheTrash.length){ host.innerHTML = `<div class="emptystate">${escapeHTML(translate('Il Cestino è vuoto.'))}</div>`; return; }
+  const head = document.createElement('div'); head.className='libitem-row libitem-head';
+  head.innerHTML = `<div>${escapeHTML(translate('Nome'))}</div><div>${escapeHTML(translate('Eliminato il'))}</div><div>${escapeHTML(translate('Posizione originale'))}</div><div></div>`;
+  host.appendChild(head);
+  libCacheTrash.slice().sort((a,b)=> String(b.trashedAt||'').localeCompare(String(a.trashedAt||''))).forEach(it=>{
+    const key = 't:' + it.id; libOrder.push(key);
+    const row = document.createElement('div'); row.className='libitem-row'; row.dataset.key = key;
+    row.onclick = (e)=> libRowClick(e, key);
+    row.ondblclick = ()=>{ libSel = new Set([key]); libRestoreSelected(); };
+    row.oncontextmenu = (e)=> libRowContextMenu(e, key, ()=> [
+      {label:'↺ Ripristina', action:()=> libRestoreSelected()},
+      {label:'✖ Elimina definitivamente', action:()=> libPurgeSelected()},
+    ]);
+    const n = document.createElement('div'); n.className='libitem-name'; n.textContent = '📄 ' + it.name;
+    const d = document.createElement('div'); d.className='libitem-date'; d.textContent = it.trashedAt ? new Date(it.trashedAt).toLocaleDateString() : '';
+    const w = document.createElement('div'); w.className='libitem-size'; w.style.textAlign='left';
+    const from = it.trashedFrom!==undefined ? it.trashedFrom : it.folderId;
+    w.textContent = libPathText(from && libCacheFolders.some(f=>f.id===from) ? from : null);
+    const a = document.createElement('div'); a.className='libitem-actions';
+    const rb = document.createElement('button'); rb.textContent='↺'; rb.title = translate('Ripristina');
+    rb.onclick = (e)=>{ e.stopPropagation(); libSel = new Set([key]); libRestoreSelected(); };
+    a.appendChild(rb);
+    row.append(n, d, w, a); host.appendChild(row);
+  });
+}
+async function libRestoreSelected(){
+  const ids = [...libSel].filter(k=>k.startsWith('t:')).map(k=>k.slice(2)); if(!ids.length) return;
+  try{
+    await apiFetch('restore.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ids})});
+    libSel = new Set(); await loadLibraryList();
+    showToast(ids.length===1 ? translate('Progetto ripristinato nella sua cartella.') : tpl('{n} progetti ripristinati nelle loro cartelle.', {n: ids.length}), false);
+  }catch(err){ showToast('Errore nel ripristino: ' + err.message, true); }
+}
+async function libPurgeIds(ids, confirmMsg){
+  if(!ids.length) return;
+  if(!(await showConfirm(confirmMsg, 'Elimina definitivamente'))) return;
+  let ok = 0;
+  for(const id of ids){ try{ await apiFetch('delete.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, permanent:true})}); ok++; if(state.libraryId===id) state.libraryId = null; }catch(err){ showToast('Errore: ' + err.message, true); } }
+  libSel = new Set(); await loadLibraryList();
+  showToast(tpl(ok===1 ? '{n} progetto eliminato definitivamente.' : '{n} progetti eliminati definitivamente.', {n: ok}), false);
+}
+function libPurgeSelected(){
+  const ids = [...libSel].filter(k=>k.startsWith('t:')).map(k=>k.slice(2));
+  return libPurgeIds(ids, ids.length===1 ? tpl('Eliminare definitivamente «{name}»? Non si potrà più recuperare.', {name: (libCacheTrash.find(x=>x.id===ids[0])||{}).name||''})
+                                         : tpl('Eliminare definitivamente {n} progetti? Non si potranno più recuperare.', {n: ids.length}));
+}
+function libEmptyTrash(){
+  return libPurgeIds(libCacheTrash.map(x=>x.id), tpl('Svuotare il Cestino? {n} progetti verranno eliminati definitivamente.', {n: libCacheTrash.length}));
+}
+/* ---------- barra dei comandi ---------- */
+function libUpdateToolbar(){
+  const tb = document.getElementById('libToolbar'); if(!tb) return;
+  const sel = libSelected(), mine = sel.filter(x=>x.mine), one = sel.length===1;
+  const en = (cmd, on)=>{ const b = tb.querySelector(`[data-cmd="${cmd}"]`); if(b) b.disabled = !on; };
+  en('up', !libInTrash && libCurrentFolderId!=null);
+  en('newfolder', !libInTrash);
+  en('open', sel.length>0 && sel.every(x=>x.type!=='trash'));
+  en('rename', one && mine.length===1 && sel[0].type!=='trash');
+  en('duplicate', mine.length>0);
+  en('delete', mine.length>0);
+  en('cut', mine.length>0);
+  en('copy', sel.length>0);
+  en('paste', !!libClipboard && !libInTrash);
+  en('moveto', mine.length>0);
+  en('copyto', sel.length>0);
+  en('props', one);
+  const trashSel = [...libSel].some(k=>k.startsWith('t:'));
+  en('restore', trashSel); en('purge', trashSel); en('emptytrash', libCacheTrash.length>0);
+}
+function libToolbarCmd(cmd){
+  switch(cmd){
+    case 'up': { const f = libCacheFolders.find(x=>x.id===libCurrentFolderId); navigateToFolder(f ? (f.parentId||null) : null); break; }
+    case 'newfolder': libNewFolderHere(); break;
+    case 'open': libOpenSelected(); break;
+    case 'rename': if(libSel.size===1) libStartRename([...libSel][0]); break;
+    case 'duplicate': libDuplicateSelected(); break;
+    case 'delete': libDeleteSelected(false); break;
+    case 'cut': libClipSelected('cut'); break;
+    case 'copy': libClipSelected('copy'); break;
+    case 'paste': pasteClipboardInto(libCurrentFolderId); break;
+    case 'moveto': openLibMoveDialog('move'); break;
+    case 'copyto': openLibMoveDialog('copy'); break;
+    case 'props': if(libSel.size===1) libShowProperties([...libSel][0]); break;
+    case 'restore': libRestoreSelected(); break;
+    case 'purge': libPurgeSelected(); break;
+    case 'emptytrash': libEmptyTrash(); break;
+  }
+}
+async function libNewFolderHere(){
+  const name = await showPrompt('Nome della nuova cartella');
+  if(!name) return;
+  try{
+    await apiFetch('create_folder.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name, parentId:libCurrentFolderId})});
+    await loadLibraryList();
+  }catch(err){ showToast('Errore nella creazione della cartella: ' + err.message, true); }
+}
+/* ---------- Sposta in… / Copia in… ---------- */
+const libMove = { mode:'move', items:[], target:null };
+function openLibMoveDialog(mode){
+  const sel = libSelected().filter(x=> x.type!=='trash' && (mode==='copy' || x.mine));
+  if(!sel.length) return;
+  libMove.mode = mode; libMove.items = sel.map(x=>({type:x.type, id:x.id, name:x.name})); libMove.target = undefined;
+  document.getElementById('libMoveTitle').textContent = translate(mode==='move' ? 'Sposta in…' : 'Copia in…');
+  document.getElementById('libMoveOk').textContent = translate(mode==='move' ? 'Sposta' : 'Copia');
+  document.getElementById('libMoveInfo').textContent = sel.length===1 ? tpl('«{name}»: scegli la cartella di destinazione.', {name: sel[0].name}) : tpl('{n} elementi: scegli la cartella di destinazione.', {n: sel.length});
+  renderLibMoveTree();
+  openModal('libMoveModal');
+}
+function renderLibMoveTree(){
+  const host = document.getElementById('libMoveTree'); host.innerHTML = '';
+  const movingFolders = libMove.items.filter(x=>x.type==='folder').map(x=>x.id);
+  const blocked = fid=> libMove.mode==='move' && movingFolders.some(m=> folder_is_descendant_or_self_client(m, fid));
+  const add = (fid, label, depth)=>{
+    const r = document.createElement('div'); r.className='mv-row'; r.style.paddingLeft = (8 + depth*16) + 'px'; r.textContent = label;
+    if(fid!==null && blocked(fid)){ r.classList.add('disabled'); r.title = translate('Non si può spostare una cartella dentro se stessa'); }
+    else r.onclick = ()=>{ libMove.target = fid; renderLibMoveTree(); };
+    if(libMove.target===fid) r.classList.add('sel');
+    r.ondblclick = ()=>{ if(!r.classList.contains('disabled')){ libMove.target = fid; libMoveApply(); } };
+    host.appendChild(r);
+  };
+  add(null, '📚 ' + translate('Libreria (cartella principale)'), 0);
+  (function walk(pid, depth){ libCacheFolders.filter(f=>(f.parentId||null)===(pid||null)).sort((a,b)=>a.name.localeCompare(b.name)).forEach(f=>{ add(f.id, '📁 ' + f.name, depth); walk(f.id, depth+1); }); })(null, 1);
+  document.getElementById('libMoveOk').disabled = libMove.target===undefined;
+}
+async function libMoveApply(){
+  if(libMove.target===undefined) return;
+  document.getElementById('libMoveModal').classList.remove('open');
+  await libTransfer(libMove.items, libMove.mode==='move' ? 'cut' : 'copy', libMove.target);
+}
+
 /* ============================================================
    APPUNTI DELLA LIBRERIA — copia/taglia/incolla di progetti e
    cartelle, come nel tasto destro di Esplora Risorse.
 ============================================================ */
-function setClipboard(mode, type, id, name){
-  libClipboard = {mode, type, id, name};
-  showToast(translate(mode==='copy' ? 'Copiato: ' : 'Tagliato: ') + name, false);
+function setClipboard(mode, type, id, name){ setClipboardItems(mode, [{type, id, name}]); }
+function setClipboardItems(mode, items){
+  if(!items.length) return;
+  libClipboard = {mode, items};
+  showToast(items.length===1 ? translate(mode==='copy' ? 'Copiato: ' : 'Tagliato: ') + items[0].name
+                             : tpl(mode==='copy' ? '{n} elementi copiati.' : '{n} elementi tagliati.', {n: items.length}), false);
+  if(document.getElementById('libraryModal').classList.contains('open')) renderLibraryView(); // i tagliati appaiono attenuati
 }
 async function pasteClipboardInto(targetFolderId){
   if(!libClipboard) return;
-  const { mode, type, id } = libClipboard;
+  const { mode } = libClipboard, items = libClipboard.items || [{type:libClipboard.type, id:libClipboard.id, name:libClipboard.name}];
+  const ok = await libTransfer(items, mode, targetFolderId);
+  if(ok && mode==='cut'){ libClipboard = null; renderLibraryView(); }
+}
+// sposta ('cut') o copia ('copy') elementi in una cartella: usato da Incolla, Sposta in…, Copia in…
+async function libTransfer(items, mode, targetFolderId){
+  let done = 0, skipped = 0;
   try{
-    if(type==='project'){
-      if(mode==='cut'){
-        await apiFetch('move_project.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, folderId:targetFolderId})});
-        libClipboard = null;
-      } else {
-        await duplicateProjectInto(id, targetFolderId);
+    for(const {type, id} of items){
+      if(type==='project'){
+        if(mode==='cut') await apiFetch('move_project.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, folderId:targetFolderId})});
+        else await duplicateProjectInto(id, targetFolderId);
+        done++;
+      } else if(type==='folder'){
+        if(folder_is_descendant_or_self_client(id, targetFolderId)){ skipped++; continue; }
+        if(mode==='cut') await apiFetch('move_folder.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, parentId:targetFolderId})});
+        else await deepCopyFolder(id, targetFolderId);
+        done++;
       }
-    } else if(type==='folder'){
-      if(folder_is_descendant_or_self_client(id, targetFolderId)){
-        showToast('Non puoi spostare/copiare una cartella dentro se stessa o in una sua sottocartella.', true);
-        return;
-      }
-      if(mode==='cut'){
-        await apiFetch('move_folder.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, parentId:targetFolderId})});
-        libClipboard = null;
-      } else {
-        await deepCopyFolder(id, targetFolderId);
-      }
+      if(mode==='copy') await loadLibraryList(); // i nomi dei duplicati tengono conto dei precedenti
     }
     await loadLibraryList();
-    showToast('Operazione completata.', false);
-  }catch(err){ showToast('Errore: ' + err.message, true); }
+    showToast(skipped ? tpl('{n} elementi incollati; {s} cartelle non spostate: non si può mettere una cartella dentro se stessa.', {n:done, s:skipped}) : translate('Operazione completata.'), !!skipped);
+    return true;
+  }catch(err){ showToast('Errore: ' + err.message, true); await loadLibraryList(); return false; }
 }
 // Replica lato client lo stesso controllo del server, per un errore subito
 // chiaro senza dover attendere la risposta dell'API in questo caso specifico.
@@ -14687,10 +15300,13 @@ function folder_is_descendant_or_self_client(candidateId, ancestorId){
   }
   return false;
 }
-function uniqueNameIn(items, baseName){
-  const names = items.map(it=>it.name.trim().toLowerCase());
-  if(!names.includes(baseName.trim().toLowerCase())) return baseName;
-  return baseName + ' - copia';
+function uniqueNameIn(items, baseName){ // "Nome", "Nome - copia", "Nome - copia 2"… come in Esplora Risorse
+  const names = new Set(items.map(it=>it.name.trim().toLowerCase()));
+  if(!names.has(baseName.trim().toLowerCase())) return baseName;
+  const root = baseName.replace(/ - copia( \d+)?$/i, '');
+  let cand = root + ' - copia', n = 2;
+  while(names.has(cand.toLowerCase())) cand = root + ' - copia ' + (n++);
+  return cand;
 }
 async function duplicateProjectInto(id, targetFolderId){
   const data = await apiFetch('load.php?id=' + encodeURIComponent(id), {method:'GET'});
@@ -14720,9 +15336,240 @@ async function deepCopyFolder(folderId, targetParentId){
     await deepCopyFolder(sf.id, newFolderId);
   }
 }
-function libFolderContextItems(f){
+
+/* ============================================================
+   LIBRERIA COME ESPLORA RISORSE — selezione (clic, Ctrl+clic, Shift+clic,
+   Ctrl+A), doppio clic / Invio per aprire, rinomina sulla riga (F2),
+   Canc, Ctrl+C / X / V, Ctrl+D, Backspace, frecce, ordinamento per colonna,
+   operazioni su più elementi, Proprietà, Scarica, Apri in una nuova scheda.
+============================================================ */
+let libSel = new Set(), libAnchor = null, libOrder = [];
+let libSort = { key:'updated', dir:-1 };
+try{ Object.assign(libSort, JSON.parse(localStorage.getItem('spikecut-libsort') || '{}')); }catch(e){}
+const libKeyOf = (type, id)=> (type==='folder' ? 'f:' : 'p:') + id;
+function libItemByKey(key){
+  if(!key) return null;
+  const id = key.slice(2);
+  if(key[0]==='f'){ const f = libCacheFolders.find(x=>x.id===id); return f ? {type:'folder', id, obj:f, name:f.name, mine:true} : null; }
+  if(key[0]==='t'){ const t = libCacheTrash.find(x=>x.id===id); return t ? {type:'trash', id, obj:t, name:t.name, mine:true} : null; }
+  const it = libCacheItems.find(x=>x.id===id); return it ? {type:'project', id, obj:it, name:it.name, mine:!!it.mine} : null;
+}
+function libSelected(){ return [...libSel].map(libItemByKey).filter(Boolean); }
+function libRefreshSelection(){
+  libUpdateToolbar();
+  document.querySelectorAll('#libList .libitem-row[data-key]').forEach(r=> r.classList.toggle('selected', libSel.has(r.dataset.key)));
+  const st = document.getElementById('libStatus');
+  if(st){ const n = libOrder.length, s = libSel.size;
+    st.textContent = tpl(n===1 ? '{n} elemento' : '{n} elementi', {n}) + (s ? ' · ' + tpl(s===1 ? '{s} selezionato' : '{s} selezionati', {s}) : '')
+      + (libClipboard ? ' · ' + tpl(libClipboard.mode==='copy' ? 'negli appunti: {c} da copiare' : 'negli appunti: {c} da spostare', {c:(libClipboard.items||[1]).length}) : ''); }
+}
+function libRowClick(e, key){
+  if(e.shiftKey && libAnchor && libOrder.includes(libAnchor)){
+    const a = libOrder.indexOf(libAnchor), b = libOrder.indexOf(key);
+    if(!(e.ctrlKey || e.metaKey)) libSel = new Set();
+    libOrder.slice(Math.min(a,b), Math.max(a,b)+1).forEach(k=> libSel.add(k));
+  } else if(e.ctrlKey || e.metaKey){
+    if(libSel.has(key)) libSel.delete(key); else libSel.add(key);
+    libAnchor = key;
+  } else { libSel = new Set([key]); libAnchor = key; }
+  libRefreshSelection();
+  document.getElementById('libList').focus({preventScroll:true});
+}
+function libOpenKey(key){
+  const x = libItemByKey(key); if(!x) return;
+  if(x.type==='folder') navigateToFolder(x.id); else loadFromLibrary(x.id);
+}
+function libOpenSelected(){
+  const sel = libSelected(); if(!sel.length) return;
+  if(sel.length===1){ libOpenKey(libKeyOf(sel[0].type, sel[0].id)); return; }
+  const projs = sel.filter(x=>x.type==='project').map(x=>x.obj);
+  if(projs.length) openFolderAsTabs(projs);
+}
+async function libOpenInNewTab(id){ addNewDocumentTab(); await loadFromLibrary(id); }
+// rinomina direttamente sulla riga (F2 o menu)
+function libStartRename(key){
+  const x = libItemByKey(key); if(!x || !x.mine) return;
+  const row = document.querySelector(`#libList .libitem-row[data-key="${key}"]`); if(!row) return;
+  const nameDiv = row.querySelector('.libitem-name'); if(!nameDiv) return;
+  const inp = document.createElement('input'); inp.type='text'; inp.className='lib-rename'; inp.value = x.name;
+  nameDiv.innerHTML = ''; nameDiv.appendChild(inp); inp.focus(); inp.select();
+  let done = false;
+  const finish = async (commit)=>{
+    if(done) return; done = true;
+    const name = inp.value.trim();
+    if(!commit || !name || name===x.name){ renderLibraryView(); return; }
+    try{
+      await apiFetch(x.type==='folder' ? 'rename_folder.php' : 'rename_project.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:x.id, name})});
+      if(x.type==='project'){ documents.forEach(d=>{ if(d.libraryId===x.id){ d.name = name; } }); if(state.libraryId===x.id) renameActiveTab(name); renderTabBar(); }
+      await loadLibraryList();
+    }catch(err){ showToast('Errore nel rinominare: ' + err.message, true); renderLibraryView(); }
+  };
+  inp.addEventListener('keydown', e=>{ e.stopPropagation(); if(e.key==='Enter'){ e.preventDefault(); finish(true); } if(e.key==='Escape'){ e.preventDefault(); finish(false); } });
+  inp.addEventListener('blur', ()=> finish(true));
+  inp.addEventListener('click', e=> e.stopPropagation());
+  inp.addEventListener('dblclick', e=> e.stopPropagation());
+}
+async function libDeleteSelected(permanent){
+  if(libInTrash){ return libPurgeSelected(); }
+  const sel = libSelected(), mine = sel.filter(x=>x.mine && x.type!=='trash'), others = sel.length - mine.length;
+  if(!mine.length){ if(others) showToast('Puoi eliminare solo i tuoi progetti e le tue cartelle.', true); return; }
+  const projs = mine.filter(x=>x.type==='project'), folders = mine.filter(x=>x.type==='folder');
+  if(permanent && projs.length){ // Shift+Canc: eliminazione definitiva, come in Esplora file
+    await libPurgeIds(projs.map(x=>x.id), projs.length===1 ? tpl('Eliminare definitivamente «{name}»? Non passerà dal Cestino e non si potrà recuperare.', {name: projs[0].name})
+                                                           : tpl('Eliminare definitivamente {n} progetti? Non passeranno dal Cestino e non si potranno recuperare.', {n: projs.length}));
+  } else {
+    let n = 0;
+    for(const x of projs){ try{ await apiFetch('delete.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:x.id})}); if(state.libraryId===x.id) state.libraryId = null; n++; }catch(err){ showToast('Errore nell\'eliminazione: ' + err.message, true); } }
+    if(n) showToast(n===1 ? tpl('«{name}» spostato nel Cestino.', {name: projs[0].name}) : tpl('{n} progetti spostati nel Cestino.', {n}), false);
+  }
+  if(folders.length){ // le cartelle non vanno nel Cestino: si tolgono e il contenuto sale di un livello (niente si perde)
+    const ok = await showConfirm(folders.length===1 ? tpl('Eliminare la cartella «{name}»? Il suo contenuto (sottocartelle e progetti) verrà spostato nella cartella superiore, non verrà cancellato.', {name: folders[0].name})
+                                                    : tpl('Eliminare {n} cartelle? Il loro contenuto verrà spostato nella cartella superiore, non verrà cancellato.', {n: folders.length}), 'Elimina');
+    if(ok) for(const f of folders){ try{ await apiFetch('delete_folder.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:f.id})}); }catch(err){ showToast('Errore: ' + err.message, true); } }
+  }
+  libSel = new Set();
+  await loadLibraryList();
+  if(others) showToast(tpl('{n} elementi di altri utenti non sono stati eliminati.', {n: others}), true);
+}
+async function libDuplicateSelected(){
+  const sel = libSelected().filter(x=> x.type==='folder' || x.mine);
+  if(!sel.length) return;
+  try{
+    for(const x of sel){
+      if(x.type==='project') await duplicateProjectInto(x.id, x.obj.folderId || null);
+      else await deepCopyFolder(x.id, x.obj.parentId || null);
+      await loadLibraryList(); // i nomi dei duplicati successivi tengono conto dei precedenti
+    }
+    showToast(sel.length===1 ? tpl('Duplicato: «{name}».', {name: sel[0].name}) : tpl('{n} elementi duplicati.', {n: sel.length}), false);
+  }catch(err){ showToast('Errore: ' + err.message, true); await loadLibraryList(); }
+}
+function libClipSelected(mode){
+  const sel = libSelected().filter(x=> x.type==='folder' || x.mine || mode==='copy');
+  setClipboardItems(mode, sel.map(x=>({type:x.type, id:x.id, name:x.name})));
+}
+async function libSetSharedSelected(shared){
+  const projs = libSelected().filter(x=>x.type==='project' && x.mine && !x.obj.generic);
+  for(const x of projs){ try{ await apiFetch('set_shared.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:x.id, shared})}); }catch(e){} }
+  await loadLibraryList();
+  showToast(tpl(shared ? '{n} progetti resi pubblici.' : '{n} progetti resi privati.', {n: projs.length}), false);
+}
+async function libDownloadProject(id){
+  try{
+    const data = await apiFetch('load.php?id=' + encodeURIComponent(id), {method:'GET'});
+    const proj = data.project || {};
+    const blob = new Blob([JSON.stringify(proj)], {type:'application/json'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = (proj.name || 'progetto').replace(/[\\/:*?"<>|]+/g, '_') + '.json';
+    document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }catch(err){ showToast('Errore nello scaricamento: ' + err.message, true); }
+}
+function libFolderStats(folderId){
+  let projects = 0, folders = 0, size = 0;
+  const walk = fid=>{
+    libCacheItems.filter(it=> it.mine && (it.folderId||null)===fid).forEach(it=>{ projects++; size += it.size||0; });
+    libCacheFolders.filter(f=> (f.parentId||null)===fid).forEach(f=>{ folders++; walk(f.id); });
+  };
+  walk(folderId);
+  return {projects, folders, size};
+}
+async function libShowProperties(key){
+  const x = libItemByKey(key); if(!x) return;
+  const rows = [];
+  const dt = v=> v ? new Date(v).toLocaleString(currentLang==='zh'?'zh-CN':currentLang) : '—';
+  if(x.type==='folder'){
+    const st = libFolderStats(x.id);
+    rows.push(['Nome', x.name], ['Tipo', translate('Cartella')], ['Posizione', libPathText(x.obj.parentId||null)],
+      ['Contenuto', tpl('{p} progetti, {f} sottocartelle', {p: st.projects, f: st.folders})], ['Dimensione', formatFileSize(st.size)]);
+  } else {
+    const it = x.obj;
+    rows.push(['Nome', it.name], ['Tipo', translate('Progetto SpikeCut')], ['Posizione', it.mine ? libPathText(it.folderId||null) : translate('Libreria comune')],
+      ['Dimensione', formatFileSize(it.size)], ['Creato', dt(it.created)], ['Ultima modifica', dt(it.updated)],
+      ['Visibilità', it.generic ? translate('generico (sempre pubblico)') : (it.shared ? translate('pubblico') : translate('privato'))]);
+    if(!it.mine) rows.push(['Proprietario', it.ownerName || '—']);
+    try{
+      const data = await apiFetch('load.php?id=' + encodeURIComponent(it.id), {method:'GET'});
+      const pj = data.project || {};
+      if(pj.page) rows.push(['Formato del foglio', fmtUnit(pj.page.w) + ' × ' + fmtUnit(pj.page.h)]);
+      rows.push(['Forme', String((pj.shapes||[]).length)], ['Livelli', String((pj.layers||[]).length || 1)]);
+    }catch(e){}
+  }
+  document.getElementById('libPropsTitle').textContent = tpl('Proprietà di «{name}»', {name: x.name});
+  document.getElementById('libPropsTable').innerHTML = rows.map(([k,v])=> `<tr><td style="color:var(--ink-dim);white-space:nowrap;">${escapeHTML(translate(k))}</td><td style="white-space:normal;">${escapeHTML(String(v))}</td></tr>`).join('');
+  openModal('libPropsModal');
+}
+function libMultiContextItems(){
+  const sel = libSelected(), projs = sel.filter(x=>x.type==='project'), mineP = projs.filter(x=>x.mine && !x.obj.generic);
   return [
-    {label:'📂 Apri', action:()=> navigateToFolder(f.id)},
+    ...(projs.length ? [{label: tpl('📂 Apri in {n} schede', {n: projs.length}), action:()=> openFolderAsTabs(projs.map(x=>x.obj))}] : []),
+    'sep',
+    {label:'✂ Taglia (Ctrl+X)', action:()=> libClipSelected('cut')},
+    {label:'📋 Copia (Ctrl+C)', action:()=> libClipSelected('copy')},
+    {label:'⧉ Duplica (Ctrl+D)', action:()=> libDuplicateSelected()},
+    ...(mineP.length ? ['sep', {label:'🌐 Rendi pubblici', action:()=> libSetSharedSelected(true)}, {label:'🔒 Rendi privati', action:()=> libSetSharedSelected(false)}] : []),
+    'sep',
+    {label:'➜ Sposta in…', action:()=> openLibMoveDialog('move')},
+    {label:'⇉ Copia in…', action:()=> openLibMoveDialog('copy')},
+    'sep',
+    {label: tpl('🗑 Sposta {n} elementi nel Cestino (Canc)', {n: sel.length}), action:()=> libDeleteSelected(false)},
+  ];
+}
+function libRowContextMenu(e, key, singleItemsFn){
+  e.preventDefault(); e.stopPropagation();
+  if(!libSel.has(key)){ libSel = new Set([key]); libAnchor = key; libRefreshSelection(); }
+  showContextMenu(e.clientX, e.clientY, libSel.size > 1 ? libMultiContextItems() : singleItemsFn());
+}
+function libMoveSelection(dir, extend){
+  if(!libOrder.length) return;
+  const cur = libAnchor && libOrder.includes(libAnchor) ? libOrder.indexOf(libAnchor) : (dir>0 ? -1 : libOrder.length);
+  const next = Math.max(0, Math.min(libOrder.length-1, cur + dir)), key = libOrder[next];
+  if(extend){ libSel.add(key); } else libSel = new Set([key]);
+  libAnchor = key; libRefreshSelection();
+  const row = document.querySelector(`#libList .libitem-row[data-key="${key}"]`); if(row) row.scrollIntoView({block:'nearest'});
+}
+// tastiera della libreria (solo con la finestra aperta e senza scrivere in un campo)
+window.addEventListener('keydown', e=>{
+  const modal = document.getElementById('libraryModal');
+  if(!modal || !modal.classList.contains('open')) return;
+  if(document.querySelector('.modal-overlay.open:not(#libraryModal)')) return; // un'altra finestra sopra (conferma, proprietà…)
+  const t = e.target; if(t && (t.tagName==='INPUT' || t.tagName==='TEXTAREA' || t.tagName==='SELECT' || t.isContentEditable)) return;
+  const k = e.key, ctrl = e.ctrlKey || e.metaKey;
+  let handled = true;
+  if(ctrl && k.toLowerCase()==='a'){ libSel = new Set(libOrder); libRefreshSelection(); }
+  else if(ctrl && k.toLowerCase()==='c'){ if(!libInTrash) libClipSelected('copy'); }
+  else if(ctrl && k.toLowerCase()==='x'){ if(!libInTrash) libClipSelected('cut'); }
+  else if(ctrl && k.toLowerCase()==='v'){ if(!libInTrash) pasteClipboardInto(libCurrentFolderId); }
+  else if(ctrl && k.toLowerCase()==='d'){ if(!libInTrash) libDuplicateSelected(); }
+  else if(k==='Delete'){ libDeleteSelected(e.shiftKey); }            // Canc: Cestino · Shift+Canc: definitivo
+  else if(ctrl && e.shiftKey && k.toLowerCase()==='n'){ if(!libInTrash) libNewFolderHere(); }
+  else if(k==='F5'){ loadLibraryList(); }
+  else if(k==='F2'){ if(libSel.size===1 && !libInTrash) libStartRename([...libSel][0]); }
+  else if(k==='Enter'){ if(libInTrash) libRestoreSelected(); else libOpenSelected(); }
+  else if(k==='Backspace' || (e.altKey && k==='ArrowUp')){ if(libCurrentFolderId!=null){ const f = libCacheFolders.find(x=>x.id===libCurrentFolderId); navigateToFolder(f ? (f.parentId||null) : null); } }
+  else if(k==='ArrowDown'){ libMoveSelection(1, e.shiftKey); }
+  else if(k==='ArrowUp'){ libMoveSelection(-1, e.shiftKey); }
+  else if(k==='Escape' && libSel.size){ libSel = new Set(); libRefreshSelection(); }
+  else handled = false;
+  if(handled){ e.preventDefault(); e.stopPropagation(); }
+}, true);
+document.getElementById('libPropsClose').onclick = ()=> document.getElementById('libPropsModal').classList.remove('open');
+setupOverlayClickClose(document.getElementById('libPropsModal'), ()=> document.getElementById('libPropsModal').classList.remove('open'));
+function libSortItems(list){
+  const k = libSort.key, d = libSort.dir;
+  return list.slice().sort((a,b)=>{
+    const va = k==='name' ? (a.name||'').toLowerCase() : k==='size' ? (a.size||0) : (a.updated||''), vb = k==='name' ? (b.name||'').toLowerCase() : k==='size' ? (b.size||0) : (b.updated||'');
+    return (typeof va==='number' ? va-vb : String(va).localeCompare(String(vb))) * d;
+  });
+}
+function libSetSort(key){
+  if(libSort.key===key) libSort.dir = -libSort.dir; else { libSort.key = key; libSort.dir = key==='name' ? 1 : -1; }
+  try{ localStorage.setItem('spikecut-libsort', JSON.stringify(libSort)); }catch(e){}
+  renderLibraryView();
+}
+
+function libFolderContextItems(f){
+  const key = libKeyOf('folder', f.id);
+  return [
+    {label:'📂 Apri (Invio)', action:()=> navigateToFolder(f.id)},
     {label:'📁+ Nuova cartella qui', action: async ()=>{
       const name = await showPrompt('Nome della nuova cartella');
       if(!name) return;
@@ -14732,32 +15579,50 @@ function libFolderContextItems(f){
       }catch(err){ showToast('Errore nella creazione della cartella: ' + err.message, true); }
     }},
     'sep',
-    {label:'📋 Copia', action:()=> setClipboard('copy','folder', f.id, f.name)},
-    {label:'✂ Taglia', action:()=> setClipboard('cut','folder', f.id, f.name)},
+    {label:'✂ Taglia (Ctrl+X)', action:()=> setClipboard('cut','folder', f.id, f.name)},
+    {label:'📋 Copia (Ctrl+C)', action:()=> setClipboard('copy','folder', f.id, f.name)},
     {label:'📌 Incolla qui', disabled:!libClipboard, action:()=> pasteClipboardInto(f.id)},
+    {label:'⧉ Duplica (Ctrl+D)', action:()=> libDuplicateSelected()},
     'sep',
-    {label:'✎ Rinomina', action:()=> renameFolderAction(f)},
-    {label:'🗑 Elimina', action:()=> deleteFolderAction(f)},
+    {label:'➜ Sposta in…', action:()=>{ libSel = new Set([key]); openLibMoveDialog('move'); }},
+    {label:'⇉ Copia in…', action:()=>{ libSel = new Set([key]); openLibMoveDialog('copy'); }},
+    {label:'✎ Rinomina (F2)', action:()=> libStartRename(key)},
+    {label:'ℹ Proprietà', action:()=> libShowProperties(key)},
+    'sep',
+    {label:'🗑 Elimina (Canc)', action:()=> deleteFolderAction(f)},
   ];
 }
 function libProjectContextItems(it){
+  const key = libKeyOf('project', it.id);
   const items = [
-    {label:'📂 Apri', action:()=> loadFromLibrary(it.id)},
+    {label:'📂 Apri (Invio)', action:()=> loadFromLibrary(it.id)},
+    {label:'🗂 Apri in una nuova scheda', action:()=> libOpenInNewTab(it.id)},
     {label:'🕐 Versioni', action:()=> openVersionsModal(it.id)},
   ];
   if(it.mine){
     items.push('sep',
-      {label:'📋 Copia', action:()=> setClipboard('copy','project', it.id, it.name)},
-      {label:'✂ Taglia', action:()=> setClipboard('cut','project', it.id, it.name)},
+      {label:'✂ Taglia (Ctrl+X)', action:()=> setClipboard('cut','project', it.id, it.name)},
+      {label:'📋 Copia (Ctrl+C)', action:()=> setClipboard('copy','project', it.id, it.name)},
+      {label:'⧉ Duplica (Ctrl+D)', action:()=> libDuplicateSelected()},
       'sep',
-      {label:'✎ Rinomina', action:()=> renameProjectAction(it)},
+      {label:'➜ Sposta in…', action:()=>{ libSel = new Set([key]); openLibMoveDialog('move'); }},
+      {label:'⇉ Copia in…', action:()=>{ libSel = new Set([key]); openLibMoveDialog('copy'); }},
+      {label:'✎ Rinomina (F2)', action:()=> libStartRename(key)},
       it.shared ? {label:'🔒 Rendi privato', action:()=> setProjectShared(it, false)}
                 : {label:'🌐 Rendi pubblico', action:()=> setProjectShared(it, true)},
-      {label:'🗑 Elimina', action:()=> deleteFromLibrary(it.id)}
+      {label:'⬇ Scarica (.json)', action:()=> libDownloadProject(it.id)},
+      {label:'ℹ Proprietà', action:()=> libShowProperties(key)},
+      'sep',
+      {label:'🗑 Sposta nel Cestino (Canc)', action:()=> deleteFromLibrary(it.id)},
+      {label:'✖ Elimina definitivamente (Shift+Canc)', action:()=>{ libSel = new Set([key]); libDeleteSelected(true); }}
     );
-  } else if(it.generic){
+  } else {
+    items.push('sep', {label:'📋 Copia nella mia libreria (Ctrl+C)', action:()=> setClipboard('copy','project', it.id, it.name)},
+      {label:'⬇ Scarica (.json)', action:()=> libDownloadProject(it.id)}, {label:'ℹ Proprietà', action:()=> libShowProperties(key)});
+  }
+  if(it.generic){
     items.push('sep', {label: translate('🌐 Progetto generico: sempre pubblico'), disabled:true, action:()=>{}});
-  } else if(currentUser && currentUser.isAdmin){
+  } else if(!it.mine && currentUser && currentUser.isAdmin){
     items.push('sep', it.shared ? {label: translate('🔒 Rendi privato (amministratore)'), action:()=> adminSetSharedFromLibrary(it, false)}
                                 : {label: translate('🌐 Rendi pubblico (amministratore)'), action:()=> adminSetSharedFromLibrary(it, true)});
   }
@@ -14857,7 +15722,8 @@ async function loadFromLibrary(id, opts){
   }catch(err){ showToast('Errore nel caricamento dalla libreria: ' + err.message, true); }
 }
 async function deleteFromLibrary(id){
-  const ok = await showConfirm('Eliminare definitivamente questo progetto dalla libreria del server?', 'Elimina dalla libreria');
+  if(document.getElementById('libraryModal').classList.contains('open')){ libSel = new Set(['p:' + id]); return libDeleteSelected(false); } // nel Cestino
+  const ok = await showConfirm('Spostare questo progetto nel Cestino della libreria? Potrai ripristinarlo per 30 giorni.', 'Elimina dalla libreria');
   if(!ok) return;
   try{
     await apiFetch('delete.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id})});
@@ -15108,13 +15974,14 @@ async function restoreSpecificVersion(id, file){
 ============================================================ */
 let currentUser = null;
 // Finestre che mostrano dati privati della libreria (nomi di progetti e cartelle, versioni)
-const PRIVATE_MODALS = ['libraryModal','versionsModal','saveLibraryModal','saveConflictModal','adminModal'];
+const PRIVATE_MODALS = ['libraryModal','versionsModal','saveLibraryModal','saveConflictModal','adminModal','libMoveModal'];
 // Cancella dal browser tutto ciò che è stato scaricato dalla libreria dell'utente e chiude le finestre
 // che lo mostrano (anche se ridotte a icona): va fatto all'uscita, allo scadere dell'accesso e al cambio utente.
 function clearPrivateLibraryData(){
   libCacheItems = []; libCacheFolders = []; libCurrentFolderId = null; libSearchQuery = ''; libClipboard = null;
   ['libList','libTree','libBreadcrumb','libOpenAllWrap','versionsList','sharedComponentsList','adminDbInfo','adminUsersTable','adminUsersSummary','adminProjectsTable','adminProjectsSummary'].forEach(id=>{ const e = document.getElementById(id); if(e) e.innerHTML = ''; });
   if(typeof adminState !== 'undefined') adminState.users = [];
+  if(typeof libCacheTrash !== 'undefined'){ libCacheTrash = []; libInTrash = false; }
   if(typeof adminProj !== 'undefined') adminProj.list = [];
   const ls = document.getElementById('libSearch'); if(ls) ls.value = '';
   const sf = document.getElementById('saveLibFolder'); if(sf) sf.innerHTML = '';
@@ -15822,7 +16689,7 @@ function renderPropPanelInner(){
   const s = state.shapes.find(x=>x.id===ids[0]);
 
   addColorField(host, 'Colore linea', s.style.stroke, v=>{ withSelection(sh=>sh.style.stroke=v); });
-  addColorField(host, 'Riempimento', s.style.fill==='none'?'#ffffff':s.style.fill, v=>{ withSelection(sh=>{ sh.style.fill=v; sh.style.fillOpacity=1; }); }, s.style.fill==='none');
+  renderFillSection(host, ids);
 
   const row = document.createElement('div'); row.className='row';
   const f1 = document.createElement('div'); f1.className='field';
@@ -16492,6 +17359,59 @@ function renderGeometrySection(host, s){
 function allSelectedHaveRole(ids, role){
   return ids.every(id=>{ const s=state.shapes.find(x=>x.id===id); return s && s.style.role===role; });
 }
+
+/* ---------- colore interno delle forme (riempimento), anche con trasparenza ---------- */
+const FILL_SWATCHES = ['#111111','#ffffff','#d1402c','#e8732a','#f2c230','#3fa34d','#2f9e9a','#3572d6','#6b4fbf','#c2477d','#8b5a2b','#9aa0a6'];
+function shapeCanFill(s){ return s && (s.type==='rect' || s.type==='ellipse' || s.type==='tracedpath' || (s.type==='path' && s.points && s.points.length>=3)); }
+function renderFillSection(host, ids){
+  const sel = ids.map(id=>state.shapes.find(x=>x.id===id)).filter(shapeCanFill);
+  if(!sel.length) return;
+  const s = sel[0], on = sel.some(x=> x.style.fill && x.style.fill!=='none');
+  const apply = (fn, history)=>{ sel.forEach(fn); if(history) pushHistory(); renderAll(); };
+  const f = document.createElement('div'); f.className='field fill-field';
+  const head = document.createElement('label'); head.style.cssText='display:flex;align-items:center;gap:8px;cursor:pointer;text-transform:none;letter-spacing:0;';
+  const chk = document.createElement('input'); chk.type='checkbox'; chk.checked = on; chk.style.cssText='width:auto;margin:0;';
+  head.appendChild(chk); head.appendChild(document.createTextNode(translate('Colora l\'interno')));
+  f.appendChild(head);
+  chk.onchange = ()=> apply(x=>{ if(chk.checked){ x.style.fill = (x.style.fill && x.style.fill!=='none') ? x.style.fill : (state.lastFill || '#f2c230'); if(x.style.fillOpacity==null) x.style.fillOpacity = 1; } else x.style.fill = 'none'; }, true);
+  if(on){
+    const cur = s.style.fill && s.style.fill!=='none' ? s.style.fill : '#f2c230';
+    const row = document.createElement('div'); row.style.cssText='display:flex;gap:8px;align-items:center;margin-top:6px;';
+    const inp = document.createElement('input'); inp.type='color'; inp.value = cur.startsWith('#') && cur.length===7 ? cur : '#f2c230'; inp.style.cssText='width:46px;height:32px;padding:2px;flex:none;';
+    inp.oninput = ()=>{ state.lastFill = inp.value; sel.forEach(x=> x.style.fill = inp.value); renderCanvasOnly(); };
+    inp.onchange = ()=>{ pushHistory(); renderPropPanel(); };
+    const sw = document.createElement('div'); sw.className='fill-swatches';
+    FILL_SWATCHES.forEach(col=>{ const b = document.createElement('button'); b.type='button'; b.style.background = col; b.title = col;
+      if(col.toLowerCase()===String(cur).toLowerCase()) b.classList.add('active');
+      b.onclick = ()=>{ state.lastFill = col; apply(x=> x.style.fill = col, true); }; sw.appendChild(b); });
+    row.append(inp, sw); f.appendChild(row);
+    // trasparenza
+    const op = Math.round((s.style.fillOpacity!=null ? s.style.fillOpacity : 1)*100);
+    const ol = document.createElement('label'); ol.style.cssText='margin-top:8px;display:flex;justify-content:space-between;';
+    ol.innerHTML = `<span>${escapeHTML(translate('Opacità del colore'))}</span><span class="fillOpVal" style="color:var(--ink-dim);">${op}%</span>`;
+    const rg = document.createElement('input'); rg.type='range'; rg.min='5'; rg.max='100'; rg.step='5'; rg.value = op; rg.style.width='100%';
+    rg.oninput = ()=>{ sel.forEach(x=> x.style.fillOpacity = parseInt(rg.value,10)/100); ol.querySelector('.fillOpVal').textContent = rg.value + '%'; renderCanvasOnly(); };
+    rg.onchange = ()=> pushHistory();
+    f.appendChild(ol); f.appendChild(rg);
+  }
+  // linea aperta: il colore ha senso su una figura chiusa
+  const open = sel.filter(x=> x.type==='path' && !x.closed);
+  if(open.length){
+    const h = document.createElement('div'); h.className='hint'; h.style.marginTop='6px';
+    h.textContent = translate('Questa è una linea aperta: il colore riempie la zona tra il primo e l\'ultimo punto. Per una figura vera chiudila.');
+    f.appendChild(h);
+    const cb = document.createElement('button'); cb.className='btn'; cb.style.marginTop='4px'; cb.textContent = translate('Chiudi la forma');
+    cb.onclick = ()=>{ open.forEach(x=>{ x.closed = true; if(x.points.length>3 && pointsEqual(x.points[0], x.points[x.points.length-1])){ x.points.pop(); if(x.smooth) x.smooth.pop(); } }); pushHistory(); renderAll(); };
+    f.appendChild(cb);
+  }
+  if(sel.some(x=> x.style.role==='cut' || x.style.role==='fold' || x.style.role==='diecut')){
+    const h2 = document.createElement('div'); h2.className='hint'; h2.style.marginTop='4px';
+    h2.textContent = translate('Il colore interno si vede sullo schermo e in stampa; non cambia il taglio né le pieghe.');
+    f.appendChild(h2);
+  }
+  host.appendChild(f);
+}
+
 function addColorField(host, label, value, onChange, disabled){
   const f = document.createElement('div'); f.className='field';
   f.innerHTML = `<label>${label}</label>`;

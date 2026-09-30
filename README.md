@@ -354,6 +354,19 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   bianche disegnate sopra una forma colorata diventano fori veri di quella forma
   (`mergeWhiteKnockouts`), così le lettere (A, R, O…) restano aperte anche
   ridimensionando.
+- **Libreria come Esplora file (2.45)**: barra dei comandi (`#libToolbar`,
+  pulsanti attivi secondo la selezione), "Sposta in… / Copia in…"
+  (`openLibMoveDialog`, stessa logica di Incolla: `libTransfer`), Cestino:
+  `delete.php` di norma segna `trashed/trashedAt/trashedFrom` (con
+  `permanent:true` cancella file e versioni: `purge_project_files`),
+  `restore.php` ripristina nella cartella d'origine, `list.php` restituisce
+  `trash` a parte e cancella gli elementi nel Cestino da più di `TRASH_DAYS`
+  (30) giorni; un progetto nel Cestino non è visibile agli altri utenti.
+  Tasti: Canc = Cestino, Shift+Canc = definitivo, Ctrl+Shift+N, F5.
+- **Colore interno (2.44)**: sezione "Colora l'interno" nel pannello Proprietà
+  (`renderFillSection`): interruttore, selettore, 12 colori rapidi, opacità
+  (`style.fillOpacity`), pulsante "Chiudi la forma" per le linee aperte; vale per
+  tutta la selezione. Sulle linee di taglio/piega è solo visivo.
 - **Font nelle anteprime (2.43.2)**: la grafica dell'anteprima 3D include i font
   personalizzati (`buildFontFaceCSS`, prima mancava e si vedeva il carattere di
   riserva). Anteprima 3D, stampa di prova, PDF e PDF multi-pagina trasformano il

@@ -113,6 +113,17 @@ function write_index($items) {
 // Visibilità: un progetto è pubblico se il proprietario l'ha condiviso, oppure
 // se è "generico" (senza proprietario): i progetti generici sono sempre pubblici.
 function project_is_generic($p) { return empty($p['ownerId']); }
+
+// Cestino: un progetto eliminato resta recuperabile per TRASH_DAYS giorni, poi viene cancellato davvero
+define('TRASH_DAYS', 30);
+function project_is_trashed($p) { return !empty($p['trashed']); }
+// cancellazione definitiva: file del progetto e tutte le sue versioni salvate
+function purge_project_files($id) {
+    $path = project_path($id);
+    if (file_exists($path)) @unlink($path);
+    $vd = versions_dir($id);
+    if (is_dir($vd)) { foreach (glob($vd . '/*') ?: [] as $f) @unlink($f); @rmdir($vd); }
+}
 function project_is_public($p) { return !empty($p['shared']) || project_is_generic($p); }
 
 // Accetta solo id generati dal server (esadecimali): evita path traversal

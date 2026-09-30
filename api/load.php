@@ -25,6 +25,8 @@ if (!is_array($project)) {
 
 $isOwner  = ($project['ownerId'] ?? null) === $user['id'];
 $isShared = project_is_public($project);
+// un progetto nel Cestino non è più visibile agli altri utenti (il proprietario può ancora aprirlo)
+foreach (read_index() as $e) { if (($e['id'] ?? null) === $id && project_is_trashed($e)) { $isShared = false; break; } }
 if (!$isOwner && !$isShared) {
     json_error('Non hai accesso a questo progetto.', 403);
 }
