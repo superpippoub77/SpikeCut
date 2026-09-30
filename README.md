@@ -354,6 +354,12 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   bianche disegnate sopra una forma colorata diventano fori veri di quella forma
   (`mergeWhiteKnockouts`), così le lettere (A, R, O…) restano aperte anche
   ridimensionando.
+- **Punti sui tratti (2.48)**: tasto destro su un tratto (o doppio clic) →
+  "Aggiungi un punto qui" (`addPointAt`, proiettato esattamente sulla linea),
+  "Spezza la linea qui" (`splitLineAt` → `splitPathAtVertex`: due linee unite nel
+  punto; una figura chiusa si apre lì), "Dividi il tratto in parti uguali…"
+  (`divideSegmentPrompt`). Tasto destro su un punto: "Spezza la linea nel punto".
+  `s.smooth` e `s.detached` restano allineati; sugli archi non si inseriscono punti.
 - **Versioni fissate (2.47)**: `versions/<id>/pins.json` registra le versioni
   fissate (`label`, `note`, `pinnedAt`, `pinnedBy`); `snapshot_version()` pota
   solo le versioni NON fissate oltre `MAX_VERSIONS_PER_PROJECT`.

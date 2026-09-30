@@ -911,7 +911,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.47.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.48.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -3049,6 +3049,21 @@ const I18N = {
     "Ripristinata «{l}».": "Restored \"{l}\".",
     "Versioni fissate ({n})": "Pinned versions ({n})",
     "Cronologia completa": "Full history",
+    "➕ Aggiungi un punto qui": "➕ Add a point here",
+    "✂ Spezza la linea qui": "✂ Split the line here",
+    "⋯ Dividi il tratto in parti uguali…": "⋯ Divide the segment into equal parts…",
+    "⋯ Dividi in parti uguali…": "⋯ Divide into equal parts…",
+    "✂ Spezza la linea nel punto {n}": "✂ Split the line at point {n}",
+    "Sugli archi non si aggiungono punti: si modificano con il rombo al centro. Per trasformarlo in una linea spezzata usa «Dividi in segmenti».": "Points cannot be added to arcs: they are edited with the diamond in the middle. To turn one into a polyline use \"Split into segments\".",
+    "Qui c'è già un punto: fai clic un po' più lontano dalle estremità del tratto.": "There is already a point here: click a little further from the ends of the segment.",
+    "Punto {n} aggiunto: trascinalo per modificare la forma.": "Point {n} added: drag it to change the shape.",
+    "Un arco non si spezza direttamente: trasformalo prima con «Dividi in segmenti».": "An arc cannot be split directly: first convert it with \"Split into segments\".",
+    "Questo è un estremo della linea: non c'è niente da spezzare.": "This is an end of the line: there is nothing to split.",
+    "Linea spezzata in due linee unite nel punto.": "Line split into two lines joined at the point.",
+    "Figura aperta nel punto: ora è una linea con le estremità unite; spezzala di nuovo per ottenere due pezzi.": "Shape opened at the point: it is now a line whose ends are joined; split it again to get two pieces.",
+    "In quante parti uguali dividere il tratto?": "Into how many equal parts should the segment be divided?",
+    "Scrivi un numero da 2 a 100.": "Enter a number from 2 to 100.",
+    "Tratto diviso in {n} parti uguali ({m} punti aggiunti).": "Segment divided into {n} equal parts ({m} points added).",
   },
   de: {
     "1 cm": "1 cm",
@@ -4357,6 +4372,21 @@ const I18N = {
     "Ripristinata «{l}».": "„{l}“ wiederhergestellt.",
     "Versioni fissate ({n})": "Festgehaltene Versionen ({n})",
     "Cronologia completa": "Vollständiger Verlauf",
+    "➕ Aggiungi un punto qui": "➕ Hier einen Punkt hinzufügen",
+    "✂ Spezza la linea qui": "✂ Linie hier teilen",
+    "⋯ Dividi il tratto in parti uguali…": "⋯ Abschnitt in gleiche Teile teilen…",
+    "⋯ Dividi in parti uguali…": "⋯ In gleiche Teile teilen…",
+    "✂ Spezza la linea nel punto {n}": "✂ Linie an Punkt {n} teilen",
+    "Sugli archi non si aggiungono punti: si modificano con il rombo al centro. Per trasformarlo in una linea spezzata usa «Dividi in segmenti».": "Auf Bögen werden keine Punkte hinzugefügt: Sie werden mit der Raute in der Mitte bearbeitet. Um ihn in eine Linie umzuwandeln, nutze „In Segmente teilen“.",
+    "Qui c'è già un punto: fai clic un po' più lontano dalle estremità del tratto.": "Hier ist bereits ein Punkt: Klicke etwas weiter von den Enden des Abschnitts entfernt.",
+    "Punto {n} aggiunto: trascinalo per modificare la forma.": "Punkt {n} hinzugefügt: Ziehe ihn, um die Form zu ändern.",
+    "Un arco non si spezza direttamente: trasformalo prima con «Dividi in segmenti».": "Ein Bogen kann nicht direkt geteilt werden: Wandle ihn zuerst mit „In Segmente teilen“ um.",
+    "Questo è un estremo della linea: non c'è niente da spezzare.": "Das ist ein Ende der Linie: Hier gibt es nichts zu teilen.",
+    "Linea spezzata in due linee unite nel punto.": "Linie in zwei am Punkt verbundene Linien geteilt.",
+    "Figura aperta nel punto: ora è una linea con le estremità unite; spezzala di nuovo per ottenere due pezzi.": "Form am Punkt geöffnet: Sie ist jetzt eine Linie mit verbundenen Enden; teile sie erneut, um zwei Teile zu erhalten.",
+    "In quante parti uguali dividere il tratto?": "In wie viele gleiche Teile soll der Abschnitt geteilt werden?",
+    "Scrivi un numero da 2 a 100.": "Gib eine Zahl von 2 bis 100 ein.",
+    "Tratto diviso in {n} parti uguali ({m} punti aggiunti).": "Abschnitt in {n} gleiche Teile geteilt ({m} Punkte hinzugefügt).",
   },
   es: {
     "1 cm": "1 cm",
@@ -5665,6 +5695,21 @@ const I18N = {
     "Ripristinata «{l}».": "Restaurada «{l}».",
     "Versioni fissate ({n})": "Versiones fijadas ({n})",
     "Cronologia completa": "Historial completo",
+    "➕ Aggiungi un punto qui": "➕ Añadir un punto aquí",
+    "✂ Spezza la linea qui": "✂ Partir la línea aquí",
+    "⋯ Dividi il tratto in parti uguali…": "⋯ Dividir el tramo en partes iguales…",
+    "⋯ Dividi in parti uguali…": "⋯ Dividir en partes iguales…",
+    "✂ Spezza la linea nel punto {n}": "✂ Partir la línea en el punto {n}",
+    "Sugli archi non si aggiungono punti: si modificano con il rombo al centro. Per trasformarlo in una linea spezzata usa «Dividi in segmenti».": "En los arcos no se añaden puntos: se editan con el rombo central. Para convertirlo en una polilínea usa «Dividir en segmentos».",
+    "Qui c'è già un punto: fai clic un po' più lontano dalle estremità del tratto.": "Aquí ya hay un punto: haz clic un poco más lejos de los extremos del tramo.",
+    "Punto {n} aggiunto: trascinalo per modificare la forma.": "Punto {n} añadido: arrástralo para cambiar la forma.",
+    "Un arco non si spezza direttamente: trasformalo prima con «Dividi in segmenti».": "Un arco no se parte directamente: conviértelo antes con «Dividir en segmentos».",
+    "Questo è un estremo della linea: non c'è niente da spezzare.": "Es un extremo de la línea: no hay nada que partir.",
+    "Linea spezzata in due linee unite nel punto.": "Línea partida en dos líneas unidas en el punto.",
+    "Figura aperta nel punto: ora è una linea con le estremità unite; spezzala di nuovo per ottenere due pezzi.": "Figura abierta en el punto: ahora es una línea con los extremos unidos; pártela de nuevo para obtener dos piezas.",
+    "In quante parti uguali dividere il tratto?": "¿En cuántas partes iguales dividir el tramo?",
+    "Scrivi un numero da 2 a 100.": "Escribe un número del 2 al 100.",
+    "Tratto diviso in {n} parti uguali ({m} punti aggiunti).": "Tramo dividido en {n} partes iguales ({m} puntos añadidos).",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -6973,6 +7018,21 @@ const I18N = {
     "Ripristinata «{l}».": "已还原\"{l}\"。",
     "Versioni fissate ({n})": "已固定版本（{n}）",
     "Cronologia completa": "完整历史",
+    "➕ Aggiungi un punto qui": "➕ 在此添加点",
+    "✂ Spezza la linea qui": "✂ 在此断开线条",
+    "⋯ Dividi il tratto in parti uguali…": "⋯ 将线段等分…",
+    "⋯ Dividi in parti uguali…": "⋯ 等分…",
+    "✂ Spezza la linea nel punto {n}": "✂ 在点 {n} 处断开线条",
+    "Sugli archi non si aggiungono punti: si modificano con il rombo al centro. Per trasformarlo in una linea spezzata usa «Dividi in segmenti».": "圆弧上不能添加点：请用中间的菱形编辑。要转换为折线，请使用\"拆分为线段\"。",
+    "Qui c'è già un punto: fai clic un po' più lontano dalle estremità del tratto.": "此处已有一个点：请在离线段端点稍远处点击。",
+    "Punto {n} aggiunto: trascinalo per modificare la forma.": "已添加点 {n}：拖动它来修改形状。",
+    "Un arco non si spezza direttamente: trasformalo prima con «Dividi in segmenti».": "圆弧不能直接断开：请先用\"拆分为线段\"转换。",
+    "Questo è un estremo della linea: non c'è niente da spezzare.": "这是线条的端点：没有可断开的地方。",
+    "Linea spezzata in due linee unite nel punto.": "线条已断开为两条在该点相连的线。",
+    "Figura aperta nel punto: ora è una linea con le estremità unite; spezzala di nuovo per ottenere due pezzi.": "图形已在该点打开：现在是一条两端相连的线；再次断开可得到两段。",
+    "In quante parti uguali dividere il tratto?": "将线段分成几等份？",
+    "Scrivi un numero da 2 a 100.": "请输入 2 到 100 之间的数字。",
+    "Tratto diviso in {n} parti uguali ({m} punti aggiunti).": "线段已分成 {n} 等份（添加了 {m} 个点）。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -8281,6 +8341,21 @@ const I18N = {
     "Ripristinata «{l}».": "« {l} » restaurée.",
     "Versioni fissate ({n})": "Versions épinglées ({n})",
     "Cronologia completa": "Historique complet",
+    "➕ Aggiungi un punto qui": "➕ Ajouter un point ici",
+    "✂ Spezza la linea qui": "✂ Couper la ligne ici",
+    "⋯ Dividi il tratto in parti uguali…": "⋯ Diviser le segment en parties égales…",
+    "⋯ Dividi in parti uguali…": "⋯ Diviser en parties égales…",
+    "✂ Spezza la linea nel punto {n}": "✂ Couper la ligne au point {n}",
+    "Sugli archi non si aggiungono punti: si modificano con il rombo al centro. Per trasformarlo in una linea spezzata usa «Dividi in segmenti».": "On n’ajoute pas de points sur les arcs : ils se modifient avec le losange au centre. Pour le transformer en ligne brisée, utilise « Diviser en segments ».",
+    "Qui c'è già un punto: fai clic un po' più lontano dalle estremità del tratto.": "Il y a déjà un point ici : clique un peu plus loin des extrémités du segment.",
+    "Punto {n} aggiunto: trascinalo per modificare la forma.": "Point {n} ajouté : fais-le glisser pour modifier la forme.",
+    "Un arco non si spezza direttamente: trasformalo prima con «Dividi in segmenti».": "Un arc ne se coupe pas directement : transforme-le d’abord avec « Diviser en segments ».",
+    "Questo è un estremo della linea: non c'è niente da spezzare.": "C’est une extrémité de la ligne : il n’y a rien à couper.",
+    "Linea spezzata in due linee unite nel punto.": "Ligne coupée en deux lignes reliées au point.",
+    "Figura aperta nel punto: ora è una linea con le estremità unite; spezzala di nuovo per ottenere due pezzi.": "Forme ouverte au point : c’est maintenant une ligne aux extrémités reliées ; coupe-la à nouveau pour obtenir deux morceaux.",
+    "In quante parti uguali dividere il tratto?": "En combien de parties égales diviser le segment ?",
+    "Scrivi un numero da 2 a 100.": "Écris un nombre de 2 à 100.",
+    "Tratto diviso in {n} parti uguali ({m} punti aggiunti).": "Segment divisé en {n} parties égales ({m} points ajoutés).",
   },
 };
 let currentLang = 'it';
@@ -12066,7 +12141,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.47.0';
+const GUIDE_VERSION = '2.48.0';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -12310,6 +12385,13 @@ html:`<p>Con il pulsante <b>⇪</b> in alto, trascinando il file sul foglio o <b
 <li><b>Solo immagine di riferimento</b>: resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti; opacità, filtri e rimozione sono nella scheda Immagine.</li></ul>
 <p>Con <b>Tieni l'immagine sotto il disegno</b> l'originale resta visibile in trasparenza per confrontarlo con le linee ottenute. Le scelte vengono ricordate per la volta successiva.</p>` },
 
+{ id:'punti-tratti', cat:'Modificare', title:'Aggiungere punti e spezzare le linee', keys:'aggiungi punto vertice nodo spezza spezzare dividi tratto segmento linea parti uguali taglia linea in due unite apri figura',
+html:`<p>Fai clic col <b>tasto destro su un tratto</b> di una linea o di una figura (oppure <b>doppio clic</b> sul tratto):</p>
+<ul><li><b>➕ Aggiungi un punto qui</b>: il tratto diventa due tratti uniti nel nuovo punto, che si trova esattamente sulla linea (anche se hai fatto clic un po' di lato); poi puoi trascinarlo.</li>
+<li><b>✂ Spezza la linea qui</b>: la linea diventa <b>due linee separate unite nel punto</b> (ognuna può avere un ruolo diverso: taglio, piega…). Su una figura chiusa la "apre" in quel punto; spezzandola di nuovo ottieni due pezzi.</li>
+<li><b>⋯ Dividi il tratto in parti uguali…</b>: mette punti equidistanti (2, 3, 4… parti).</li></ul>
+<p>Col tasto destro su un <b>punto</b> esistente c'è anche <b>✂ Spezza la linea nel punto</b>. Per dividere un'intera forma in tutti i suoi lati c'è <b>Dividi in segmenti</b> nella barra a sinistra. Gli archi si modificano con il rombo al centro: per mettere punti su un arco trasformalo prima con Dividi in segmenti.</p>` },
+
 { id:'colore-interno', cat:'Modificare', title:'Colorare l\'interno di una forma', keys:'colore interno riempimento riempire colorare forma chiusa figura percorso sfondo trasparenza opacità fill secchiello zona linee separate pannello',
 html:`<p><b>Secchiello (K)</b>: per colorare una zona chiusa <b>formata da più linee separate</b> (per esempio un pannello di una fustella, chiuso da tagli e pieghe, o una sagoma disegnata a pezzi) scegli il secchiello nella barra a sinistra e fai clic dentro la zona. Viene creata una forma colorata esattamente di quella zona, messa sotto le linee; le figure chiuse al suo interno restano vuote (fori). Se il contorno ha una piccola apertura (fino a circa 1 mm) si chiude da sola; se è più grande l'app lo segnala. Il colore del secchiello si sceglie nel pannello quando lo strumento è attivo.</p>
 <p>Per una forma singola già chiusa: selezionala (rettangoli, ellissi, figure disegnate con la penna, tracciati importati) e nel pannello Proprietà attiva <b>Colora l'interno</b>:</p>
@@ -12452,6 +12534,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.48</b> — <a data-topic="punti-tratti">Punti sui tratti</a>: aggiungi un punto esattamente sulla linea, spezza la linea in due linee unite, dividi un tratto in parti uguali (tasto destro o doppio clic).</li>
 <li><b>2.47</b> — <a data-topic="versioni">Versioni fissate</a>: un nome e una nota per un punto della storia del progetto, mai cancellato; ripristino senza perdere la cronologia (ora anche della descrizione del progetto).</li>
 <li><b>2.46</b> — <a data-topic="colore-interno">Secchiello</a> (K): colora una zona chiusa anche se formata da più linee, lasciando vuoti i fori.</li>
 <li><b>2.45</b> — Libreria come Esplora file: barra dei comandi, Sposta in… / Copia in…, Cestino con ripristino (Canc) ed eliminazione definitiva (Shift+Canc).</li>
@@ -12628,6 +12711,97 @@ function renderVertexBar(){
 
 
 /* ---------- dividi in segmenti ---------- */
+
+/* ============================================================
+   PUNTI SUI TRATTI — aggiungere un punto esattamente sulla linea, spezzare la
+   linea in due linee unite nel punto, dividere un tratto in parti uguali.
+   Angoli arrotondati (s.smooth) e punti scollegati (s.detached) restano allineati.
+============================================================ */
+function segEnds(s, idx){ const n = s.points.length, closing = s.closed && idx===n-1; return {a: s.points[idx], b: s.points[closing ? 0 : idx+1], closing}; }
+// tratto più vicino al punto e proiezione sul tratto
+function nearestSegmentOf(s, mm){
+  if(!s || !s.points || s.points.length < 2) return null;
+  const n = s.points.length, segN = s.closed ? n : n-1;
+  let best = null;
+  for(let i=0;i<segN;i++){
+    const {a, b} = segEnds(s, i), dx = b[0]-a[0], dy = b[1]-a[1], L2 = dx*dx + dy*dy;
+    const t = L2 ? Math.max(0, Math.min(1, ((mm[0]-a[0])*dx + (mm[1]-a[1])*dy) / L2)) : 0;
+    const P = [a[0] + dx*t, a[1] + dy*t], d = dist(P, mm);
+    if(!best || d < best.d) best = {idx:i, t, P, d, len: Math.sqrt(L2)};
+  }
+  return best;
+}
+// inserisce un punto sul tratto idx (P già sulla linea); restituisce l'indice del nuovo punto
+function insertPointOnSegment(s, idx, P){
+  const n = s.points.length, insertAt = (s.closed && idx===n-1) ? n : idx+1;
+  s.points.splice(insertAt, 0, [P[0], P[1]]);
+  shiftDetachedIndices(s, insertAt, +1);
+  if(!s.smooth) s.smooth = s.points.map(()=>0); else s.smooth.splice(insertAt, 0, 0);
+  delete s.arc;
+  return insertAt;
+}
+function addPointAt(s, mm){
+  if(s.arc){ showToast('Sugli archi non si aggiungono punti: si modificano con il rombo al centro. Per trasformarlo in una linea spezzata usa «Dividi in segmenti».', true); return; }
+  const h = nearestSegmentOf(s, mm); if(!h) return;
+  const tol = Math.min(0.5, h.len*0.02);
+  if(h.t*h.len < tol || (1-h.t)*h.len < tol){ showToast('Qui c\'è già un punto: fai clic un po\' più lontano dalle estremità del tratto.', true); return; }
+  const k = insertPointOnSegment(s, h.idx, h.P);
+  state.selection = new Set([s.id]); state.activeVertex = {shapeId:s.id, idx:k};
+  pushHistory(); renderAll();
+  showToast(tpl('Punto {n} aggiunto: trascinalo per modificare la forma.', {n: k+1}), false);
+}
+// spezza la linea nel punto di indice k: due linee unite in quel punto (una figura chiusa si "apre" lì)
+function splitPathAtVertex(s, k){
+  const n = s.points.length, sm = s.smooth || s.points.map(()=>0), det = s.detached || [];
+  if(s.closed){
+    const order = []; for(let i=0;i<=n;i++) order.push((k+i)%n); // parte e finisce nel punto k
+    s.points = order.map(i=> s.points[i].slice());
+    s.smooth = order.map((i,j)=> (j===0 || j===n) ? 0 : sm[i]);
+    const nd = []; order.forEach((i,j)=>{ if(det.includes(i) && j<n) nd.push(j); }); if(nd.length) s.detached = nd; else delete s.detached;
+    s.closed = false; delete s.arc;
+    if(s.style.fill && s.style.fill!=='none'){ s.style.fill = 'none'; }
+    return [s];
+  }
+  if(k<=0 || k>=n-1) return null; // agli estremi non c'è niente da spezzare
+  const B = JSON.parse(JSON.stringify(s)); B.id = uid();
+  const mapDet = (from, to)=> det.filter(i=> i>=from && i<=to).map(i=> i-from);
+  B.points = s.points.slice(k).map(p=>p.slice()); B.smooth = sm.slice(k); B.smooth[0] = 0; B.smooth[B.smooth.length-1] = 0;
+  const bd = mapDet(k, n-1); if(bd.length) B.detached = bd; else delete B.detached;
+  s.points = s.points.slice(0, k+1); s.smooth = sm.slice(0, k+1); s.smooth[0] = 0; s.smooth[s.smooth.length-1] = 0;
+  const ad = mapDet(0, k); if(ad.length) s.detached = ad; else delete s.detached;
+  delete s.arc; delete B.arc;
+  state.shapes.splice(state.shapes.indexOf(s)+1, 0, B);
+  return [s, B];
+}
+function splitLineAt(s, mm, vertexIdx){
+  if(s.arc){ showToast('Un arco non si spezza direttamente: trasformalo prima con «Dividi in segmenti».', true); return; }
+  let k = vertexIdx;
+  if(k==null){
+    const h = nearestSegmentOf(s, mm); if(!h) return;
+    const tol = Math.min(0.5, h.len*0.02);
+    if(h.t*h.len < tol) k = h.idx;
+    else if((1-h.t)*h.len < tol) k = segEnds(s, h.idx).closing ? 0 : h.idx+1;
+    else k = insertPointOnSegment(s, h.idx, h.P);
+  }
+  const res = splitPathAtVertex(s, k);
+  if(!res){ showToast('Questo è un estremo della linea: non c\'è niente da spezzare.', true); return; }
+  state.selection = new Set(res.map(x=>x.id)); state.activeVertex = null;
+  pushHistory(); renderAll();
+  showToast(res.length===2 ? translate('Linea spezzata in due linee unite nel punto.') : translate('Figura aperta nel punto: ora è una linea con le estremità unite; spezzala di nuovo per ottenere due pezzi.'), false);
+}
+async function divideSegmentPrompt(s, mm, idxOpt){
+  if(s.arc){ showToast('Sugli archi non si aggiungono punti: si modificano con il rombo al centro.', true); return; }
+  const h = idxOpt!=null ? {idx: idxOpt} : nearestSegmentOf(s, mm); if(!h) return;
+  const v = await showPrompt('In quante parti uguali dividere il tratto?', '2');
+  const parts = parseInt(v, 10); if(!(parts >= 2 && parts <= 100)){ if(v!=null) showToast('Scrivi un numero da 2 a 100.', true); return; }
+  const {a, b} = segEnds(s, h.idx);
+  const pts = []; for(let i=1;i<parts;i++) pts.push([a[0] + (b[0]-a[0])*i/parts, a[1] + (b[1]-a[1])*i/parts]);
+  let at = h.idx; pts.forEach(P=>{ const k = insertPointOnSegment(s, at, P); at = k; }); // ogni punto sul tratto successivo
+  state.selection = new Set([s.id]);
+  pushHistory(); renderAll();
+  showToast(tpl('Tratto diviso in {n} parti uguali ({m} punti aggiunti).', {n: parts, m: parts-1}), false);
+}
+
 function explodeSelectionToSegments(){
   const sel = state.shapes.filter(s=> state.selection.has(s.id) && !s.locked);
   if(!sel.length){ showToast('Seleziona prima uno o più poligoni o linee da dividere in segmenti.', true); return; }
@@ -13571,6 +13745,7 @@ stage.addEventListener('contextmenu', (e)=>{
         if(linked) items.push({label: tpl('⛓ Scollega il punto {n}', {n:idx+1}), action:()=> setPointLink(s, idx, false)});
         if(det) items.push({label: tpl('🔗 Ricollega il punto {n}', {n:idx+1}), action:()=> setPointLink(s, idx, true)});
         if(!linked && !det) items.push({label: tpl('Il punto {n} non è unito ad altre linee', {n:idx+1}), disabled:true, action:()=>{}});
+        if(!s.arc && (s.closed || (idx>0 && idx<s.points.length-1))) items.push('sep', {label: tpl('✂ Spezza la linea nel punto {n}', {n:idx+1}), action:()=> splitLineAt(s, null, idx)});
         if(s.points.length>2) items.push('sep', {label: tpl('🗑 Elimina il punto {n}', {n:idx+1}), action:()=> deletePointFromShape(s, idx)});
         showContextMenu(e.clientX, e.clientY, items);
         return;
@@ -13579,7 +13754,7 @@ stage.addEventListener('contextmenu', (e)=>{
     const hit = topShapeAt(mm);
     if(hit){
       if(!state.selection.has(hit.id)){ state.selection.clear(); state.selection.add(hit.id); renderAll(); }
-      showContextMenu(e.clientX, e.clientY, shapeContextItems(hit));
+      showContextMenu(e.clientX, e.clientY, shapeContextItems(hit, mm));
     } else {
       const items = [];
       if(computeJoinCandidates().length>=2) items.push({label:'🔗 Unisci punti…', action:()=> openJoinDialog()});
@@ -13591,12 +13766,19 @@ stage.addEventListener('contextmenu', (e)=>{
     console.error(err);
   }
 });
-function shapeContextItems(s){
+function shapeContextItems(s, mm){
   const joinItem = computeJoinCandidates().length>=2 ? [{label:'🔗 Unisci punti…', action:()=> openJoinDialog()}] : [];
+  // linee e poligoni: punti sul tratto cliccato
+  const pointItems = (mm && s.type==='path' && s.points && s.points.length>=2 && !s.arc && !s.locked) ? [
+    {label:'➕ Aggiungi un punto qui', action:()=> addPointAt(s, mm)},
+    {label:'✂ Spezza la linea qui', action:()=> splitLineAt(s, mm)},
+    {label:'⋯ Dividi il tratto in parti uguali…', action:()=> divideSegmentPrompt(s, mm)},
+    'sep'] : [];
   const linkItems = linkContextItems([...state.selection]);
   const boolItems = state.selection.size>1 ? Object.keys(BOOL_OPS).map(op=>({label: BOOL_OPS[op].label, action:()=> booleanOp(op)})) : [];
   const top = [...joinItem, ...linkItems, ...(boolItems.length && (joinItem.length || linkItems.length) ? ['sep'] : []), ...boolItems];
   return [
+    ...pointItems,
     ...top, ...(top.length ? ['sep'] : []),
     {label: state.selection.size>1 ? tpl('📋 Copia ({n})', {n: state.selection.size}) : '📋 Copia', action:()=> copySelectionToClipboard()},
     {label:'⧉ Duplica', action:()=> duplicateShape(s)},
@@ -14154,7 +14336,9 @@ function openSegmentInlineEditor(s, idx, clickMM, clientX, clientY){
     </div>
     <div class="field"><label>Lunghezza (${u.label})</label><input type="number" id="segEditLen" step="${u.step}"></div>
     <div class="field" id="segEditCurvWrap" style="display:none;"><label>Curvatura (${u.label})</label><input type="number" id="segEditCurv" step="${u.step}" min="0"></div>
-    <button class="btn" id="segEditAddVertex" style="margin-top:2px;">+ Aggiungi vertice qui</button>
+    <button class="btn" id="segEditAddVertex" style="margin-top:2px;">➕ Aggiungi un punto qui</button>
+    <button class="btn" id="segEditSplit" style="margin-top:4px;">✂ Spezza la linea qui</button>
+    <button class="btn" id="segEditDivide" style="margin-top:4px;">⋯ Dividi in parti uguali…</button>
   `;
   document.body.appendChild(box);
   segEditorEl = box;
@@ -14190,16 +14374,11 @@ function openSegmentInlineEditor(s, idx, clickMM, clientX, clientY){
   }
 
   box.querySelector('#segEditClose').onclick = closeSegmentInlineEditor;
-  box.querySelector('#segEditAddVertex').onclick = ()=>{
-    const insertAt = isClosingSeg ? n : idx+1;
-    s.points.splice(insertAt, 0, clickMM);
-    shiftDetachedIndices(s, insertAt, +1);
-    delete s.arc;
-    if(!s.smooth) s.smooth = s.points.map(()=>0);
-    else s.smooth.splice(insertAt, 0, 0);
-    pushHistory(); renderAll();
-    closeSegmentInlineEditor();
-  };
+  // il punto va SULLA linea (il clic è accettato anche un po' di lato: lo proietto sul tratto)
+  box.querySelector('#segEditAddVertex').onclick = ()=>{ closeSegmentInlineEditor(); addPointAt(s, clickMM); };
+  box.querySelector('#segEditSplit').onclick = ()=>{ closeSegmentInlineEditor(); splitLineAt(s, clickMM); };
+  box.querySelector('#segEditDivide').onclick = ()=>{ closeSegmentInlineEditor(); divideSegmentPrompt(s, clickMM, idx); };
+  if(s.arc) ['segEditAddVertex','segEditSplit','segEditDivide'].forEach(id=> box.querySelector('#'+id).style.display = 'none');
 
   state.hoverSegment = {shapeId:s.id, idx:idx};
   renderSelectionHandles();
