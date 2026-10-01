@@ -918,7 +918,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.49.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.49.1</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -3100,6 +3100,13 @@ const I18N = {
     "Elimina la selezione (Canc)": "Delete the selection (Del)",
     "{n} forme duplicate (spostate di 5 mm).": "{n} shapes duplicated (offset by 5 mm).",
     "Forma duplicata (spostata di 5 mm).": "Shape duplicated (offset by 5 mm).",
+    "Inserisci punto": "Insert point",
+    "Inserisci punto: clic su una linea per aggiungere un punto (Shift+clic per spezzarla lì)": "Insert point: click on a line to add a point (Shift+click to split it there)",
+    "Fai clic su una linea per aggiungere un punto esattamente lì (il segnaposto mostra dove). Shift+clic la spezza in due linee unite nel punto. Lo strumento resta attivo: per spostare i punti torna alla Selezione (V).": "Click on a line to add a point exactly there (the marker shows where). Shift+click splits it into two lines joined at the point. The tool stays active: to move points go back to Selection (V).",
+    "Punto {n} aggiunto. Per spostarlo usa la Selezione (V).": "Point {n} added. To move it use Selection (V).",
+    "Fai clic su una linea per inserire un punto.": "Click on a line to insert a point.",
+    "Su questo oggetto non si inseriscono punti: funziona su linee e figure disegnate con la penna, le linee o importate (rettangoli ed ellissi diventano linee con «Dividi in segmenti»).": "Points cannot be inserted on this object: it works on lines and shapes drawn with the pen, the line tool or imported (rectangles and ellipses become lines with \"Split into segments\").",
+    "L'oggetto è bloccato: sbloccalo per modificarlo.": "The object is locked: unlock it to edit it.",
   },
   de: {
     "1 cm": "1 cm",
@@ -4452,6 +4459,13 @@ const I18N = {
     "Elimina la selezione (Canc)": "Auswahl löschen (Entf)",
     "{n} forme duplicate (spostate di 5 mm).": "{n} Formen dupliziert (um 5 mm versetzt).",
     "Forma duplicata (spostata di 5 mm).": "Form dupliziert (um 5 mm versetzt).",
+    "Inserisci punto": "Punkt einfügen",
+    "Inserisci punto: clic su una linea per aggiungere un punto (Shift+clic per spezzarla lì)": "Punkt einfügen: Klicke auf eine Linie, um einen Punkt hinzuzufügen (Umschalt+Klick teilt sie dort)",
+    "Fai clic su una linea per aggiungere un punto esattamente lì (il segnaposto mostra dove). Shift+clic la spezza in due linee unite nel punto. Lo strumento resta attivo: per spostare i punti torna alla Selezione (V).": "Klicke auf eine Linie, um genau dort einen Punkt hinzuzufügen (die Markierung zeigt wo). Umschalt+Klick teilt sie in zwei am Punkt verbundene Linien. Das Werkzeug bleibt aktiv: Zum Verschieben der Punkte zurück zur Auswahl (V).",
+    "Punto {n} aggiunto. Per spostarlo usa la Selezione (V).": "Punkt {n} hinzugefügt. Zum Verschieben die Auswahl (V) verwenden.",
+    "Fai clic su una linea per inserire un punto.": "Klicke auf eine Linie, um einen Punkt einzufügen.",
+    "Su questo oggetto non si inseriscono punti: funziona su linee e figure disegnate con la penna, le linee o importate (rettangoli ed ellissi diventano linee con «Dividi in segmenti»).": "Auf diesem Objekt können keine Punkte eingefügt werden: Es funktioniert bei Linien und Formen aus Stift, Linienwerkzeug oder Import (Rechtecke und Ellipsen werden mit „In Segmente teilen“ zu Linien).",
+    "L'oggetto è bloccato: sbloccalo per modificarlo.": "Das Objekt ist gesperrt: Entsperre es zum Bearbeiten.",
   },
   es: {
     "1 cm": "1 cm",
@@ -5804,6 +5818,13 @@ const I18N = {
     "Elimina la selezione (Canc)": "Eliminar la selección (Supr)",
     "{n} forme duplicate (spostate di 5 mm).": "{n} formas duplicadas (desplazadas 5 mm).",
     "Forma duplicata (spostata di 5 mm).": "Forma duplicada (desplazada 5 mm).",
+    "Inserisci punto": "Insertar punto",
+    "Inserisci punto: clic su una linea per aggiungere un punto (Shift+clic per spezzarla lì)": "Insertar punto: haz clic en una línea para añadir un punto (Mayús+clic para partirla ahí)",
+    "Fai clic su una linea per aggiungere un punto esattamente lì (il segnaposto mostra dove). Shift+clic la spezza in due linee unite nel punto. Lo strumento resta attivo: per spostare i punti torna alla Selezione (V).": "Haz clic en una línea para añadir un punto justo ahí (la marca muestra dónde). Mayús+clic la parte en dos líneas unidas en el punto. La herramienta sigue activa: para mover los puntos vuelve a Selección (V).",
+    "Punto {n} aggiunto. Per spostarlo usa la Selezione (V).": "Punto {n} añadido. Para moverlo usa Selección (V).",
+    "Fai clic su una linea per inserire un punto.": "Haz clic en una línea para insertar un punto.",
+    "Su questo oggetto non si inseriscono punti: funziona su linee e figure disegnate con la penna, le linee o importate (rettangoli ed ellissi diventano linee con «Dividi in segmenti»).": "En este objeto no se insertan puntos: funciona en líneas y figuras hechas con la pluma, la herramienta línea o importadas (rectángulos y elipses se convierten en líneas con «Dividir en segmentos»).",
+    "L'oggetto è bloccato: sbloccalo per modificarlo.": "El objeto está bloqueado: desbloquéalo para editarlo.",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -7156,6 +7177,13 @@ const I18N = {
     "Elimina la selezione (Canc)": "删除所选内容（Del）",
     "{n} forme duplicate (spostate di 5 mm).": "已复制 {n} 个形状（偏移 5 mm）。",
     "Forma duplicata (spostata di 5 mm).": "已复制形状（偏移 5 mm）。",
+    "Inserisci punto": "插入点",
+    "Inserisci punto: clic su una linea per aggiungere un punto (Shift+clic per spezzarla lì)": "插入点：点击线条添加点（Shift+点击在此断开）",
+    "Fai clic su una linea per aggiungere un punto esattamente lì (il segnaposto mostra dove). Shift+clic la spezza in due linee unite nel punto. Lo strumento resta attivo: per spostare i punti torna alla Selezione (V).": "点击线条，在该处精确添加点（标记会显示位置）。Shift+点击会将其断开为两条在该点相连的线。工具保持激活：移动点请切回选择工具（V）。",
+    "Punto {n} aggiunto. Per spostarlo usa la Selezione (V).": "已添加点 {n}。要移动它请使用选择工具（V）。",
+    "Fai clic su una linea per inserire un punto.": "请点击线条以插入点。",
+    "Su questo oggetto non si inseriscono punti: funziona su linee e figure disegnate con la penna, le linee o importate (rettangoli ed ellissi diventano linee con «Dividi in segmenti»).": "此对象不能插入点：适用于用钢笔、直线工具绘制或导入的线条和图形（矩形和椭圆可用\"拆分为线段\"转为线条）。",
+    "L'oggetto è bloccato: sbloccalo per modificarlo.": "对象已锁定：解锁后才能编辑。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -8508,6 +8536,13 @@ const I18N = {
     "Elimina la selezione (Canc)": "Supprimer la sélection (Suppr)",
     "{n} forme duplicate (spostate di 5 mm).": "{n} formes dupliquées (décalées de 5 mm).",
     "Forma duplicata (spostata di 5 mm).": "Forme dupliquée (décalée de 5 mm).",
+    "Inserisci punto": "Insérer un point",
+    "Inserisci punto: clic su una linea per aggiungere un punto (Shift+clic per spezzarla lì)": "Insérer un point : clique sur une ligne pour ajouter un point (Maj+clic pour la couper là)",
+    "Fai clic su una linea per aggiungere un punto esattamente lì (il segnaposto mostra dove). Shift+clic la spezza in due linee unite nel punto. Lo strumento resta attivo: per spostare i punti torna alla Selezione (V).": "Clique sur une ligne pour ajouter un point exactement là (le repère montre où). Maj+clic la coupe en deux lignes reliées au point. L’outil reste actif : pour déplacer les points, reviens à la Sélection (V).",
+    "Punto {n} aggiunto. Per spostarlo usa la Selezione (V).": "Point {n} ajouté. Pour le déplacer, utilise la Sélection (V).",
+    "Fai clic su una linea per inserire un punto.": "Clique sur une ligne pour insérer un point.",
+    "Su questo oggetto non si inseriscono punti: funziona su linee e figure disegnate con la penna, le linee o importate (rettangoli ed ellissi diventano linee con «Dividi in segmenti»).": "On ne peut pas insérer de points sur cet objet : cela fonctionne sur les lignes et formes tracées à la plume, à l’outil ligne ou importées (rectangles et ellipses deviennent des lignes avec « Diviser en segments »).",
+    "L'oggetto è bloccato: sbloccalo per modificarlo.": "L’objet est verrouillé : déverrouille-le pour le modifier.",
   },
 };
 let currentLang = 'it';
@@ -9409,6 +9444,14 @@ function renderShapes(){
 function renderSelectionHandles(){
   layerOverlay.innerHTML = '';
   drawMeasureOverlay(); // righello: la misura resta visibile finché non se ne fa un'altra
+  if(state.tool==='addpoint' && state.addPointHover){ // dove verrà inserito il punto
+    const P = state.addPointHover.P, sc = state.scale, sp = state.addPointHover.shift;
+    const g = el('g', {'pointer-events':'none'});
+    g.appendChild(el('circle', {cx:P[0]*sc, cy:P[1]*sc, r:6, fill:'#fff', stroke: sp ? '#d1402c' : 'var(--brass)', 'stroke-width':2}));
+    g.appendChild(el('path', {d: sp ? `M ${P[0]*sc-3.5} ${P[1]*sc-3.5} L ${P[0]*sc+3.5} ${P[1]*sc+3.5} M ${P[0]*sc+3.5} ${P[1]*sc-3.5} L ${P[0]*sc-3.5} ${P[1]*sc+3.5}`
+                                    : `M ${P[0]*sc-3.5} ${P[1]*sc} L ${P[0]*sc+3.5} ${P[1]*sc} M ${P[0]*sc} ${P[1]*sc-3.5} L ${P[0]*sc} ${P[1]*sc+3.5}`, stroke: sp ? '#d1402c' : 'var(--brass)', 'stroke-width':1.8}));
+    layerOverlay.appendChild(g);
+  }
   if(state.refImageSelected && state.refImage){
     const r = state.refImage;
     const cx=r.x+r.w/2, cy=r.y+r.h/2, rot=r.rotation||0;
@@ -10109,6 +10152,7 @@ const TOOLS = [
   {id:'ellipse', key:'o', short:'Ellisse', label:'Ellisse', icon:'M4 11a7 4 0 1014 0 7 4 0 10-14 0z'},
   {id:'arc', key:'a', short:'Curva / arco', label:'Curva / Arco (3 clic: inizio, fine, curvatura)', icon:'M4 18C4 9 9 4 18 4'},
   {id:'freehand', key:'b', short:'Matita libera', label:'Matita libera', icon:'M4 17c3-8 5-3 8-9 2 4 4-1 6 2'},
+  {id:'addpoint', key:'i', short:'Inserisci punto', label:'Inserisci punto: clic su una linea per aggiungere un punto (Shift+clic per spezzarla lì)', icon:'M3 18L21 6 M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0 M18 15v6 M15 18h6'},
   {id:'measure', key:'m', short:'Righello', label:'Righello: misura distanza, dimensioni e angolo tra due punti qualsiasi', icon:'M3 15l12-12 6 6-12 12z M7 11l2 2 M10 8l2 2 M13 5l2 2'},
   {id:'bucket', key:'k', short:'Secchiello', label:'Secchiello: colora una zona chiusa (anche formata da più linee)', icon:'M5 11l6-6 7 7-6 6z M11 5l-2-2 M4 12c-1 2-1 4 0 5 1 1 2 1 2-1 0-1-1-2-2-4z'},
   {id:'text', key:'t', short:'Testo', label:'Testo', icon:'M5 4h12M11 4v14'},
@@ -12295,7 +12339,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.49.0';
+const GUIDE_VERSION = '2.49.1';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -12547,7 +12591,8 @@ html:`<p>Il <b>Righello (M)</b>, nella sezione Controlla della barra a sinistra,
 <li>La misura resta visibile finché non ne fai un'altra; un clic semplice, Esc o un altro strumento la cancellano. Non finisce in stampa né nel taglio.</li></ul>` },
 
 { id:'punti-tratti', cat:'Modificare', title:'Aggiungere punti e spezzare le linee', keys:'aggiungi punto vertice nodo spezza spezzare dividi tratto segmento linea parti uguali taglia linea in due unite apri figura',
-html:`<p>Fai clic col <b>tasto destro su un tratto</b> di una linea o di una figura (oppure <b>doppio clic</b> sul tratto):</p>
+html:`<p>Lo strumento <b>Inserisci punto (I)</b>, nella sezione Modifica della barra a sinistra: passando su una linea un segnaposto ⊕ mostra dove andrà il punto; un <b>clic</b> lo aggiunge esattamente sulla linea, <b>Shift+clic</b> spezza lì la linea in due linee unite. Lo strumento resta attivo per aggiungere più punti; per spostarli torna alla Selezione (V).</p>
+<p>Gli stessi comandi ci sono col <b>tasto destro su un tratto</b> di una linea o di una figura (oppure col <b>doppio clic</b> sul tratto):</p>
 <ul><li><b>➕ Aggiungi un punto qui</b>: il tratto diventa due tratti uniti nel nuovo punto, che si trova esattamente sulla linea (anche se hai fatto clic un po' di lato); poi puoi trascinarlo.</li>
 <li><b>✂ Spezza la linea qui</b>: la linea diventa <b>due linee separate unite nel punto</b> (ognuna può avere un ruolo diverso: taglio, piega…). Su una figura chiusa la "apre" in quel punto; spezzandola di nuovo ottieni due pezzi.</li>
 <li><b>⋯ Dividi il tratto in parti uguali…</b>: mette punti equidistanti (2, 3, 4… parti).</li></ul>
@@ -12695,6 +12740,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.49.1</b> — Pulsante <a data-topic="punti-tratti">Inserisci punto</a> (I) nella barra a sinistra.</li>
 <li><b>2.49</b> — <a data-topic="righello">Righello</a> (M); i blocchi di più oggetti si spostano insieme; barra Azioni in cima al pannello; copia e incolla tra schede senza confondersi con le immagini negli appunti.</li>
 <li><b>2.48</b> — <a data-topic="punti-tratti">Punti sui tratti</a>: aggiungi un punto esattamente sulla linea, spezza la linea in due linee unite, dividi un tratto in parti uguali (tasto destro o doppio clic).</li>
 <li><b>2.47</b> — <a data-topic="versioni">Versioni fissate</a>: un nome e una nota per un punto della storia del progetto, mai cancellato; ripristino senza perdere la cronologia (ora anche della descrizione del progetto).</li>
@@ -12902,7 +12948,7 @@ function insertPointOnSegment(s, idx, P){
   delete s.arc;
   return insertAt;
 }
-function addPointAt(s, mm){
+function addPointAt(s, mm, fromTool){
   if(s.arc){ showToast('Sugli archi non si aggiungono punti: si modificano con il rombo al centro. Per trasformarlo in una linea spezzata usa «Dividi in segmenti».', true); return; }
   const h = nearestSegmentOf(s, mm); if(!h) return;
   const tol = Math.min(0.5, h.len*0.02);
@@ -12910,7 +12956,7 @@ function addPointAt(s, mm){
   const k = insertPointOnSegment(s, h.idx, h.P);
   state.selection = new Set([s.id]); state.activeVertex = {shapeId:s.id, idx:k};
   pushHistory(); renderAll();
-  showToast(tpl('Punto {n} aggiunto: trascinalo per modificare la forma.', {n: k+1}), false);
+  showToast(fromTool ? tpl('Punto {n} aggiunto. Per spostarlo usa la Selezione (V).', {n: k+1}) : tpl('Punto {n} aggiunto: trascinalo per modificare la forma.', {n: k+1}), false);
 }
 // spezza la linea nel punto di indice k: due linee unite in quel punto (una figura chiusa si "apre" lì)
 function splitPathAtVertex(s, k){
@@ -13767,6 +13813,7 @@ function buildRail(){
   rail.appendChild(railButton({id:'railShapes', label:'Forme pronte…', key:'F', icon:RAIL_ICONS.shapes, onclick:()=> toggleShapesFlyout(),
     title:'Galleria di forme pronte (triangoli, poligoni, curve, stelle, simboli, fori e pezzi di packaging) da trascinare sul foglio'}));
   railSection(rail, 'Modifica');
+  rail.appendChild(toolBtn('addpoint'));
   rail.appendChild(railButton({id:'railMove', label:'Sposta di…', key:'Invio', icon:RAIL_ICONS.move, onclick:()=> openMoveModal(),
     title:'Sposta la selezione di una distanza precisa in qualsiasi direzione, o crea copie in serie'}));
   rail.appendChild(railButton({id:'railExplode', label:'Dividi in segmenti', icon:RAIL_ICONS.explode, onclick:explodeSelectionToSegments,
@@ -13804,6 +13851,7 @@ function setTool(id){
   state.tool = id;
   state.draft = null;
   if(id!=='measure') state.measure = null;
+  state.addPointHover = null;
   state.refImageSelected = false;
   const activeBtn = state.lassoMode ? 'lasso' : id;
   document.querySelectorAll('.tool[data-tool]').forEach(b=>b.classList.toggle('active', b.dataset.tool===activeBtn));
@@ -14233,6 +14281,7 @@ function handleMouseDown(mm, e){
     return;
   }
   if(state.tool==='bucket'){ bucketFillAt(mm); return; }
+  if(state.tool==='addpoint'){ insertPointToolClick(mm, e); return; }
   if(state.tool==='measure'){ const p0 = snapPoint(mm, null); dragMode='measure'; state.measure = {a:p0, b:p0, live:true}; renderSelectionHandles(); renderMeasurePanel(); return; }
   if(state.tool==='text'){
     placeTextInput(mm);
@@ -14241,6 +14290,13 @@ function handleMouseDown(mm, e){
 }
 
 function handleMouseMove(mm, e){
+  if(state.tool==='addpoint' && !dragMode){
+    const s = topShapeAt(mm), h = (s && s.type==='path' && s.points && !s.arc && !s.locked) ? nearestSegmentOf(s, mm) : null;
+    const prev = state.addPointHover;
+    state.addPointHover = h ? {P: h.P, shift: !!(e && e.shiftKey)} : null;
+    if(prev || state.addPointHover){ renderSelectionHandles(); stage.style.cursor = h ? 'copy' : 'crosshair'; }
+    return;
+  }
   if(dragMode==='measure' && state.measure){
     let p1 = snapPoint(mm, null);
     if(e && e.shiftKey){ // Shift: orizzontale, verticale o a 45°
@@ -14886,7 +14942,7 @@ window.addEventListener('keydown', (e)=>{
     return;
   }
   if((e.ctrlKey||e.metaKey)) return; // avoid clobbering other browser shortcuts
-  const map = {v:'select',q:'lasso',p:'pen',l:'line',r:'rect',o:'ellipse',a:'arc',b:'freehand',t:'text',k:'bucket',m:'measure'};
+  const map = {v:'select',q:'lasso',p:'pen',l:'line',r:'rect',o:'ellipse',a:'arc',b:'freehand',t:'text',k:'bucket',m:'measure',i:'addpoint'};
   if(map[k]){ setTool(map[k]); return; }
   if(k==='delete' || k==='backspace'){
     e.preventDefault();
@@ -17513,6 +17569,7 @@ function renderPropPanelInner(){
   if(ids.length===0){
     if(state.tool==='bucket'){ renderBucketColorField(host); host.appendChild(document.createElement('hr')).className='sep'; }
     if(state.tool==='measure'){ renderMeasureSection(host); host.appendChild(document.createElement('hr')).className='sep'; }
+    if(state.tool==='addpoint'){ renderAddPointHint(host); host.appendChild(document.createElement('hr')).className='sep'; }
     renderNewTextFontField(host);
     host.appendChild(document.createElement('hr')).className='sep';
     renderProjectInfoSection(host);
@@ -18385,6 +18442,21 @@ function renderMeasureSection(host){
   const f = document.createElement('div'); f.className='field fill-field';
   f.innerHTML = `<label>📏 ${escapeHTML(translate('Righello'))}</label><div id="measurePanelBox"></div>`;
   host.appendChild(f); renderMeasurePanel();
+}
+
+
+// strumento "Inserisci punto": clic = aggiunge un punto sulla linea, Shift+clic = la spezza lì
+function insertPointToolClick(mm, e){
+  const s = topShapeAt(mm);
+  if(!s || !s.points || s.type!=='path'){ showToast(s ? 'Su questo oggetto non si inseriscono punti: funziona su linee e figure disegnate con la penna, le linee o importate (rettangoli ed ellissi diventano linee con «Dividi in segmenti»).' : 'Fai clic su una linea per inserire un punto.', true); return; }
+  if(s.locked){ showToast('L\'oggetto è bloccato: sbloccalo per modificarlo.', true); return; }
+  if(e && e.shiftKey) splitLineAt(s, mm); else addPointAt(s, mm, true);
+  state.addPointHover = null; renderSelectionHandles();
+}
+function renderAddPointHint(host){
+  const f = document.createElement('div'); f.className='field fill-field';
+  f.innerHTML = `<label>➕ ${escapeHTML(translate('Inserisci punto'))}</label><div class="hint">${escapeHTML(translate('Fai clic su una linea per aggiungere un punto esattamente lì (il segnaposto mostra dove). Shift+clic la spezza in due linee unite nel punto. Lo strumento resta attivo: per spostare i punti torna alla Selezione (V).'))}</div>`;
+  host.appendChild(f);
 }
 
 function renderBucketColorField(host){

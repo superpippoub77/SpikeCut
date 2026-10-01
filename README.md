@@ -354,6 +354,9 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   bianche disegnate sopra una forma colorata diventano fori veri di quella forma
   (`mergeWhiteKnockouts`), così le lettere (A, R, O…) restano aperte anche
   ridimensionando.
+- **2.49.1**: strumento `addpoint` (tasto I, sezione Modifica): segnaposto
+  sulla linea al passaggio (`state.addPointHover`), clic = `addPointAt`,
+  Shift+clic = `splitLineAt`.
 - **2.49**: Righello (strumento `measure`, tasto M: `state.measure`,
   `drawMeasureOverlay`, valori nel pannello; aggancio con `snapPoint`, Shift a
   45°). Copia: le forme vanno anche negli appunti del sistema con il prefisso
