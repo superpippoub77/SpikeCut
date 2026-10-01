@@ -354,6 +354,14 @@ viene salvata insieme al resto del progetto (libreria, file .json, copie).
   bianche disegnate sopra una forma colorata diventano fori veri di quella forma
   (`mergeWhiteKnockouts`), così le lettere (A, R, O…) restano aperte anche
   ridimensionando.
+- **2.49**: Righello (strumento `measure`, tasto M: `state.measure`,
+  `drawMeasureOverlay`, valori nel pannello; aggancio con `snapPoint`, Shift a
+  45°). Copia: le forme vanno anche negli appunti del sistema con il prefisso
+  `SPIKECUT-SHAPES:` (evento `copy`), così l'incolla le riconosce e non apre
+  "Importa immagine" per un'immagine copiata prima altrove. Blocchi: trascinando
+  un oggetto già selezionato (o lo spazio vuoto nel riquadro della selezione)
+  si sposta tutta la selezione; un clic semplice seleziona solo l'oggetto.
+  Barra "Azioni" in cima al pannello Proprietà (`renderSelectionActions`).
 - **Punti sui tratti (2.48)**: tasto destro su un tratto (o doppio clic) →
   "Aggiungi un punto qui" (`addPointAt`, proiettato esattamente sulla linea),
   "Spezza la linea qui" (`splitLineAt` → `splitPathAtVertex`: due linee unite nel

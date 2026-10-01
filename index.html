@@ -476,6 +476,13 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 .move-compass button{ border:1px solid var(--line); background:rgba(128,128,128,.08); color:var(--ink); border-radius:6px; cursor:pointer; font-size:14px; padding:0; }
 .move-compass button:hover{ border-color:var(--brass); }
 .move-compass button.active{ background:var(--brass); color:#1a1300; border-color:var(--brass); }
+.sel-actions{ margin-bottom:10px; padding:8px; border:1px solid var(--line); border-radius:8px; }
+.sel-actions-head{ font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-dim); margin-bottom:6px; }
+.sel-actions-grid{ display:grid; grid-template-columns:repeat(5, 1fr); gap:4px; }
+.sel-actions-grid button{ display:flex; flex-direction:column; align-items:center; gap:1px; padding:5px 2px; border:1px solid transparent; border-radius:6px; background:transparent; color:var(--ink); cursor:pointer; font-size:10px; line-height:1.15; }
+.sel-actions-grid button .ic{ font-size:15px; }
+.sel-actions-grid button:hover:not(:disabled){ background:rgba(128,128,128,.14); border-color:var(--line); }
+.sel-actions-grid button:disabled{ opacity:.3; cursor:default; }
 .fill-swatches{ display:grid; grid-template-columns:repeat(6, 1fr); gap:4px; flex:1; }
 .fill-swatches button{ height:15px; border-radius:4px; border:1px solid rgba(128,128,128,.45); cursor:pointer; padding:0; }
 .fill-swatches button:hover{ transform:scale(1.12); }
@@ -911,7 +918,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.48.0</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.49.0</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -3064,6 +3071,35 @@ const I18N = {
     "In quante parti uguali dividere il tratto?": "Into how many equal parts should the segment be divided?",
     "Scrivi un numero da 2 a 100.": "Enter a number from 2 to 100.",
     "Tratto diviso in {n} parti uguali ({m} punti aggiunti).": "Segment divided into {n} equal parts ({m} points added).",
+    "Righello": "Ruler",
+    "Righello: misura distanza, dimensioni e angolo tra due punti qualsiasi": "Ruler: measure distance, size and angle between any two points",
+    "Trascina sul foglio da un punto all'altro per misurare. Gli estremi si agganciano a punti, linee e griglia (con la calamita attiva); con Shift la misura resta orizzontale, verticale o a 45°. Clic semplice o Esc per cancellare.": "Drag on the sheet from one point to another to measure. The ends snap to points, lines and grid (with the magnet on); with Shift the measurement stays horizontal, vertical or at 45°. Single click or Esc to clear.",
+    "Orizzontale (ΔX)": "Horizontal (ΔX)",
+    "Verticale (ΔY)": "Vertical (ΔY)",
+    "Angolo": "Angle",
+    "A": "To",
+    "Azioni": "Actions",
+    "Azioni · {n} oggetti selezionati": "Actions · {n} objects selected",
+    "Raggruppa": "Group",
+    "Separa": "Ungroup",
+    "Rifletti ↔": "Flip ↔",
+    "Rifletti ↕": "Flip ↕",
+    "Primo piano": "Bring to front",
+    "Secondo piano": "Send to back",
+    "Blocca": "Lock",
+    "Sblocca": "Unlock",
+    "Separa il gruppo (Ctrl+Shift+G)": "Ungroup (Ctrl+Shift+G)",
+    "Duplica la selezione, spostata di 5 mm": "Duplicate the selection, offset by 5 mm",
+    "Rifletti in orizzontale": "Flip horizontally",
+    "Rifletti in verticale": "Flip vertically",
+    "Porta in primo piano": "Bring to front",
+    "Porta in secondo piano": "Send to back",
+    "Sposta di una distanza precisa o crea copie in serie (Invio)": "Move by a precise distance or create a series of copies (Enter)",
+    "Sblocca: si potrà di nuovo modificare": "Unlock: it can be edited again",
+    "Blocca: non si potrà spostare né modificare per sbaglio": "Lock: it cannot be moved or edited by mistake",
+    "Elimina la selezione (Canc)": "Delete the selection (Del)",
+    "{n} forme duplicate (spostate di 5 mm).": "{n} shapes duplicated (offset by 5 mm).",
+    "Forma duplicata (spostata di 5 mm).": "Shape duplicated (offset by 5 mm).",
   },
   de: {
     "1 cm": "1 cm",
@@ -4387,6 +4423,35 @@ const I18N = {
     "In quante parti uguali dividere il tratto?": "In wie viele gleiche Teile soll der Abschnitt geteilt werden?",
     "Scrivi un numero da 2 a 100.": "Gib eine Zahl von 2 bis 100 ein.",
     "Tratto diviso in {n} parti uguali ({m} punti aggiunti).": "Abschnitt in {n} gleiche Teile geteilt ({m} Punkte hinzugefügt).",
+    "Righello": "Lineal",
+    "Righello: misura distanza, dimensioni e angolo tra due punti qualsiasi": "Lineal: Abstand, Maße und Winkel zwischen zwei beliebigen Punkten messen",
+    "Trascina sul foglio da un punto all'altro per misurare. Gli estremi si agganciano a punti, linee e griglia (con la calamita attiva); con Shift la misura resta orizzontale, verticale o a 45°. Clic semplice o Esc per cancellare.": "Ziehe auf dem Blatt von einem Punkt zum anderen, um zu messen. Die Enden rasten an Punkten, Linien und Raster ein (mit aktivem Magneten); mit Umschalt bleibt die Messung waagerecht, senkrecht oder bei 45°. Einfacher Klick oder Esc zum Löschen.",
+    "Orizzontale (ΔX)": "Waagerecht (ΔX)",
+    "Verticale (ΔY)": "Senkrecht (ΔY)",
+    "Angolo": "Winkel",
+    "A": "Bis",
+    "Azioni": "Aktionen",
+    "Azioni · {n} oggetti selezionati": "Aktionen · {n} Objekte ausgewählt",
+    "Raggruppa": "Gruppieren",
+    "Separa": "Trennen",
+    "Rifletti ↔": "Spiegeln ↔",
+    "Rifletti ↕": "Spiegeln ↕",
+    "Primo piano": "In den Vordergrund",
+    "Secondo piano": "In den Hintergrund",
+    "Blocca": "Sperren",
+    "Sblocca": "Entsperren",
+    "Separa il gruppo (Ctrl+Shift+G)": "Gruppe trennen (Strg+Umschalt+G)",
+    "Duplica la selezione, spostata di 5 mm": "Auswahl duplizieren, um 5 mm versetzt",
+    "Rifletti in orizzontale": "Horizontal spiegeln",
+    "Rifletti in verticale": "Vertikal spiegeln",
+    "Porta in primo piano": "In den Vordergrund",
+    "Porta in secondo piano": "In den Hintergrund",
+    "Sposta di una distanza precisa o crea copie in serie (Invio)": "Um eine genaue Strecke verschieben oder Kopien in Serie erstellen (Eingabe)",
+    "Sblocca: si potrà di nuovo modificare": "Entsperren: wieder bearbeitbar",
+    "Blocca: non si potrà spostare né modificare per sbaglio": "Sperren: kann nicht versehentlich verschoben oder bearbeitet werden",
+    "Elimina la selezione (Canc)": "Auswahl löschen (Entf)",
+    "{n} forme duplicate (spostate di 5 mm).": "{n} Formen dupliziert (um 5 mm versetzt).",
+    "Forma duplicata (spostata di 5 mm).": "Form dupliziert (um 5 mm versetzt).",
   },
   es: {
     "1 cm": "1 cm",
@@ -4929,7 +4994,7 @@ const I18N = {
     "🔗 Unisci punti…": "🔗 Unir puntos…",
     "{n} punti liberi nell'area selezionata, numerati sul disegno.": "{n} puntos libres en el área seleccionada, numerados en el dibujo.",
     "Servono almeno 2 punti liberi nell'area selezionata per unirli.": "Se necesitan al menos 2 puntos libres en el área seleccionada para unirlos.",
-    "Da": "De",
+    "Da": "Desde",
     "a": "a",
     "Inverti il verso della coppia": "Invertir el sentido del par",
     "Rimuovi coppia": "Quitar par",
@@ -5710,6 +5775,35 @@ const I18N = {
     "In quante parti uguali dividere il tratto?": "¿En cuántas partes iguales dividir el tramo?",
     "Scrivi un numero da 2 a 100.": "Escribe un número del 2 al 100.",
     "Tratto diviso in {n} parti uguali ({m} punti aggiunti).": "Tramo dividido en {n} partes iguales ({m} puntos añadidos).",
+    "Righello": "Regla",
+    "Righello: misura distanza, dimensioni e angolo tra due punti qualsiasi": "Regla: mide distancia, dimensiones y ángulo entre dos puntos cualesquiera",
+    "Trascina sul foglio da un punto all'altro per misurare. Gli estremi si agganciano a punti, linee e griglia (con la calamita attiva); con Shift la misura resta orizzontale, verticale o a 45°. Clic semplice o Esc per cancellare.": "Arrastra en la hoja de un punto a otro para medir. Los extremos se ajustan a puntos, líneas y cuadrícula (con el imán activo); con Mayús la medida queda horizontal, vertical o a 45°. Clic simple o Esc para borrar.",
+    "Orizzontale (ΔX)": "Horizontal (ΔX)",
+    "Verticale (ΔY)": "Vertical (ΔY)",
+    "Angolo": "Ángulo",
+    "A": "Hasta",
+    "Azioni": "Acciones",
+    "Azioni · {n} oggetti selezionati": "Acciones · {n} objetos seleccionados",
+    "Raggruppa": "Agrupar",
+    "Separa": "Separar",
+    "Rifletti ↔": "Reflejar ↔",
+    "Rifletti ↕": "Reflejar ↕",
+    "Primo piano": "Traer al frente",
+    "Secondo piano": "Enviar al fondo",
+    "Blocca": "Bloquear",
+    "Sblocca": "Desbloquear",
+    "Separa il gruppo (Ctrl+Shift+G)": "Separar el grupo (Ctrl+Mayús+G)",
+    "Duplica la selezione, spostata di 5 mm": "Duplicar la selección, desplazada 5 mm",
+    "Rifletti in orizzontale": "Reflejar horizontalmente",
+    "Rifletti in verticale": "Reflejar verticalmente",
+    "Porta in primo piano": "Traer al frente",
+    "Porta in secondo piano": "Enviar al fondo",
+    "Sposta di una distanza precisa o crea copie in serie (Invio)": "Mover una distancia precisa o crear copias en serie (Intro)",
+    "Sblocca: si potrà di nuovo modificare": "Desbloquear: se podrá volver a editar",
+    "Blocca: non si potrà spostare né modificare per sbaglio": "Bloquear: no se podrá mover ni editar por error",
+    "Elimina la selezione (Canc)": "Eliminar la selección (Supr)",
+    "{n} forme duplicate (spostate di 5 mm).": "{n} formas duplicadas (desplazadas 5 mm).",
+    "Forma duplicata (spostata di 5 mm).": "Forma duplicada (desplazada 5 mm).",
   },
   zh: {
     "1 cm": "1 厘米",
@@ -6252,7 +6346,7 @@ const I18N = {
     "🔗 Unisci punti…": "🔗 连接点…",
     "{n} punti liberi nell'area selezionata, numerati sul disegno.": "所选区域内有 {n} 个空闲点，已在图纸上编号。",
     "Servono almeno 2 punti liberi nell'area selezionata per unirli.": "所选区域内至少需要 2 个空闲点才能连接。",
-    "Da": "从",
+    "Da": "起点",
     "a": "到",
     "Inverti il verso della coppia": "反转配对方向",
     "Rimuovi coppia": "删除配对",
@@ -7033,6 +7127,35 @@ const I18N = {
     "In quante parti uguali dividere il tratto?": "将线段分成几等份？",
     "Scrivi un numero da 2 a 100.": "请输入 2 到 100 之间的数字。",
     "Tratto diviso in {n} parti uguali ({m} punti aggiunti).": "线段已分成 {n} 等份（添加了 {m} 个点）。",
+    "Righello": "标尺",
+    "Righello: misura distanza, dimensioni e angolo tra due punti qualsiasi": "标尺：测量任意两点之间的距离、尺寸和角度",
+    "Trascina sul foglio da un punto all'altro per misurare. Gli estremi si agganciano a punti, linee e griglia (con la calamita attiva); con Shift la misura resta orizzontale, verticale o a 45°. Clic semplice o Esc per cancellare.": "在画布上从一点拖到另一点进行测量。端点会吸附到点、线和网格（开启磁铁时）；按住 Shift 测量保持水平、垂直或 45°。单击或按 Esc 清除。",
+    "Orizzontale (ΔX)": "水平（ΔX）",
+    "Verticale (ΔY)": "垂直（ΔY）",
+    "Angolo": "角度",
+    "A": "终点",
+    "Azioni": "操作",
+    "Azioni · {n} oggetti selezionati": "操作 · 已选 {n} 个对象",
+    "Raggruppa": "编组",
+    "Separa": "取消编组",
+    "Rifletti ↔": "翻转 ↔",
+    "Rifletti ↕": "翻转 ↕",
+    "Primo piano": "置于顶层",
+    "Secondo piano": "置于底层",
+    "Blocca": "锁定",
+    "Sblocca": "解锁",
+    "Separa il gruppo (Ctrl+Shift+G)": "取消编组（Ctrl+Shift+G）",
+    "Duplica la selezione, spostata di 5 mm": "复制所选内容，偏移 5 mm",
+    "Rifletti in orizzontale": "水平翻转",
+    "Rifletti in verticale": "垂直翻转",
+    "Porta in primo piano": "置于顶层",
+    "Porta in secondo piano": "置于底层",
+    "Sposta di una distanza precisa o crea copie in serie (Invio)": "按精确距离移动或批量复制（回车）",
+    "Sblocca: si potrà di nuovo modificare": "解锁：可再次编辑",
+    "Blocca: non si potrà spostare né modificare per sbaglio": "锁定：防止误移动或误编辑",
+    "Elimina la selezione (Canc)": "删除所选内容（Del）",
+    "{n} forme duplicate (spostate di 5 mm).": "已复制 {n} 个形状（偏移 5 mm）。",
+    "Forma duplicata (spostata di 5 mm).": "已复制形状（偏移 5 mm）。",
   },
   fr: {
     "1 cm": "1 cm",
@@ -8356,6 +8479,35 @@ const I18N = {
     "In quante parti uguali dividere il tratto?": "En combien de parties égales diviser le segment ?",
     "Scrivi un numero da 2 a 100.": "Écris un nombre de 2 à 100.",
     "Tratto diviso in {n} parti uguali ({m} punti aggiunti).": "Segment divisé en {n} parties égales ({m} points ajoutés).",
+    "Righello": "Règle",
+    "Righello: misura distanza, dimensioni e angolo tra due punti qualsiasi": "Règle : mesure distance, dimensions et angle entre deux points quelconques",
+    "Trascina sul foglio da un punto all'altro per misurare. Gli estremi si agganciano a punti, linee e griglia (con la calamita attiva); con Shift la misura resta orizzontale, verticale o a 45°. Clic semplice o Esc per cancellare.": "Fais glisser sur la feuille d’un point à l’autre pour mesurer. Les extrémités s’accrochent aux points, lignes et grille (aimant activé) ; avec Maj la mesure reste horizontale, verticale ou à 45°. Clic simple ou Échap pour effacer.",
+    "Orizzontale (ΔX)": "Horizontal (ΔX)",
+    "Verticale (ΔY)": "Vertical (ΔY)",
+    "Angolo": "Angle",
+    "A": "À",
+    "Azioni": "Actions",
+    "Azioni · {n} oggetti selezionati": "Actions · {n} objets sélectionnés",
+    "Raggruppa": "Grouper",
+    "Separa": "Dissocier",
+    "Rifletti ↔": "Retourner ↔",
+    "Rifletti ↕": "Retourner ↕",
+    "Primo piano": "Premier plan",
+    "Secondo piano": "Arrière-plan",
+    "Blocca": "Verrouiller",
+    "Sblocca": "Déverrouiller",
+    "Separa il gruppo (Ctrl+Shift+G)": "Dissocier le groupe (Ctrl+Maj+G)",
+    "Duplica la selezione, spostata di 5 mm": "Dupliquer la sélection, décalée de 5 mm",
+    "Rifletti in orizzontale": "Retourner horizontalement",
+    "Rifletti in verticale": "Retourner verticalement",
+    "Porta in primo piano": "Mettre au premier plan",
+    "Porta in secondo piano": "Mettre à l’arrière-plan",
+    "Sposta di una distanza precisa o crea copie in serie (Invio)": "Déplacer d’une distance précise ou créer des copies en série (Entrée)",
+    "Sblocca: si potrà di nuovo modificare": "Déverrouiller : il sera de nouveau modifiable",
+    "Blocca: non si potrà spostare né modificare per sbaglio": "Verrouiller : il ne pourra pas être déplacé ni modifié par erreur",
+    "Elimina la selezione (Canc)": "Supprimer la sélection (Suppr)",
+    "{n} forme duplicate (spostate di 5 mm).": "{n} formes dupliquées (décalées de 5 mm).",
+    "Forma duplicata (spostata di 5 mm).": "Forme dupliquée (décalée de 5 mm).",
   },
 };
 let currentLang = 'it';
@@ -9256,6 +9408,7 @@ function renderShapes(){
 
 function renderSelectionHandles(){
   layerOverlay.innerHTML = '';
+  drawMeasureOverlay(); // righello: la misura resta visibile finché non se ne fa un'altra
   if(state.refImageSelected && state.refImage){
     const r = state.refImage;
     const cx=r.x+r.w/2, cy=r.y+r.h/2, rot=r.rotation||0;
@@ -9956,6 +10109,7 @@ const TOOLS = [
   {id:'ellipse', key:'o', short:'Ellisse', label:'Ellisse', icon:'M4 11a7 4 0 1014 0 7 4 0 10-14 0z'},
   {id:'arc', key:'a', short:'Curva / arco', label:'Curva / Arco (3 clic: inizio, fine, curvatura)', icon:'M4 18C4 9 9 4 18 4'},
   {id:'freehand', key:'b', short:'Matita libera', label:'Matita libera', icon:'M4 17c3-8 5-3 8-9 2 4 4-1 6 2'},
+  {id:'measure', key:'m', short:'Righello', label:'Righello: misura distanza, dimensioni e angolo tra due punti qualsiasi', icon:'M3 15l12-12 6 6-12 12z M7 11l2 2 M10 8l2 2 M13 5l2 2'},
   {id:'bucket', key:'k', short:'Secchiello', label:'Secchiello: colora una zona chiusa (anche formata da più linee)', icon:'M5 11l6-6 7 7-6 6z M11 5l-2-2 M4 12c-1 2-1 4 0 5 1 1 2 1 2-1 0-1-1-2-2-4z'},
   {id:'text', key:'t', short:'Testo', label:'Testo', icon:'M5 4h12M11 4v14'},
 ];
@@ -12141,7 +12295,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.48.0';
+const GUIDE_VERSION = '2.49.0';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -12324,7 +12478,8 @@ html:`<p>I punti che coincidono sono uniti: spostandone uno si trascina l'altro.
 <p>I punti scollegati hanno la maniglia <b>viola tratteggiata</b> e contano come punti liberi. Si ricollegano con "🔗 Ricollega", o unendoli con <a data-topic="unisci">Unisci punti</a>.</p>` },
 
 { id:'sposta', cat:'Modificare', title:'Spostare di una distanza precisa', keys:'spostare sposta distanza precisa mm cm direzione angolo frecce tastiera copie serie ripeti passo invio nudge',
-html:`<p><b>Ridimensionare con le maniglie</b>: trascina un angolo; tenendo premuto <b>Shift</b> larghezza e altezza cambiano nella stessa proporzione (vale per le forme singole, per l'immagine di riferimento e per più forme selezionate o un gruppo, che hanno le maniglie sul riquadro complessivo).</p>
+html:`<p><b>Spostare un blocco</b>: con più oggetti selezionati (riquadro, Shift+clic o un gruppo) trascina uno qualsiasi di essi, oppure lo spazio vuoto dentro il riquadro della selezione: si sposta tutto il blocco. Un clic semplice, senza trascinare, su un oggetto del blocco seleziona solo quello. In cima al pannello Proprietà la barra <b>Azioni</b> raccoglie i comandi per la selezione: Raggruppa, Separa, Duplica, Rifletti, Primo e Secondo piano, Sposta di…, Blocca ed Elimina.</p>
+<p><b>Ridimensionare con le maniglie</b>: trascina un angolo; tenendo premuto <b>Shift</b> larghezza e altezza cambiano nella stessa proporzione (vale per le forme singole, per l'immagine di riferimento e per più forme selezionate o un gruppo, che hanno le maniglie sul riquadro complessivo).</p>
 <p><b>Sposta di…</b>: seleziona uno o più oggetti e premi <b>Invio</b> (oppure menu Strumenti, tasto destro sull'oggetto o il pulsante nel pannello Proprietà). Nella finestra indichi lo spostamento in uno dei due modi, che si aggiornano a vicenda:</p>
 <ul><li><b>Orizzontale / Verticale</b> nell'unità di misura scelta (positivo = verso destra / verso il basso);</li>
 <li><b>Distanza e Angolo</b> (0° = destra, 90° = su, 180° = sinistra, 270° = giù), oppure i pulsanti delle <b>8 direzioni</b>.</li></ul>
@@ -12384,6 +12539,12 @@ html:`<p>Con il pulsante <b>⇪</b> in alto, trascinando il file sul foglio o <b
 <li><b>Vettorizza la grafica</b>: per loghi e disegni, i contorni delle zone di colore diventano grafica vettoriale nel livello di disegno (scegli il numero di colori e il dettaglio). Richiede la connessione a Internet la prima volta.</li>
 <li><b>Solo immagine di riferimento</b>: resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti; opacità, filtri e rimozione sono nella scheda Immagine.</li></ul>
 <p>Con <b>Tieni l'immagine sotto il disegno</b> l'originale resta visibile in trasparenza per confrontarlo con le linee ottenute. Le scelte vengono ricordate per la volta successiva.</p>` },
+
+{ id:'righello', cat:'Disegnare', title:'Righello: misurare sul foglio', keys:'righello misura misurare distanza lunghezza angolo dx dy metro quota misurazione',
+html:`<p>Il <b>Righello (M)</b>, nella sezione Controlla della barra a sinistra, misura qualsiasi cosa sul foglio senza aggiungere nulla al disegno: trascina da un punto all'altro e vedi <b>distanza</b>, <b>ΔX</b>, <b>ΔY</b> e <b>angolo</b>, sia sul foglio sia nel pannello (con le coordinate dei due estremi).</p>
+<ul><li>Gli estremi si agganciano a punti, linee e griglia come gli altri strumenti (con la calamita attiva), così misuri esattamente tra due punti del disegno.</li>
+<li>Con <b>Shift</b> la misura resta orizzontale, verticale o a 45°.</li>
+<li>La misura resta visibile finché non ne fai un'altra; un clic semplice, Esc o un altro strumento la cancellano. Non finisce in stampa né nel taglio.</li></ul>` },
 
 { id:'punti-tratti', cat:'Modificare', title:'Aggiungere punti e spezzare le linee', keys:'aggiungi punto vertice nodo spezza spezzare dividi tratto segmento linea parti uguali taglia linea in due unite apri figura',
 html:`<p>Fai clic col <b>tasto destro su un tratto</b> di una linea o di una figura (oppure <b>doppio clic</b> sul tratto):</p>
@@ -12534,6 +12695,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.49</b> — <a data-topic="righello">Righello</a> (M); i blocchi di più oggetti si spostano insieme; barra Azioni in cima al pannello; copia e incolla tra schede senza confondersi con le immagini negli appunti.</li>
 <li><b>2.48</b> — <a data-topic="punti-tratti">Punti sui tratti</a>: aggiungi un punto esattamente sulla linea, spezza la linea in due linee unite, dividi un tratto in parti uguali (tasto destro o doppio clic).</li>
 <li><b>2.47</b> — <a data-topic="versioni">Versioni fissate</a>: un nome e una nota per un punto della storia del progetto, mai cancellato; ripristino senza perdere la cronologia (ora anche della descrizione del progetto).</li>
 <li><b>2.46</b> — <a data-topic="colore-interno">Secchiello</a> (K): colora una zona chiusa anche se formata da più linee, lasciando vuoti i fori.</li>
@@ -13611,6 +13773,7 @@ function buildRail(){
     title:'Dividi in segmenti: ogni lato della forma selezionata diventa una linea a sé, unita alle altre nei punti'}));
   rail.appendChild(railButton({id:'railDelete', label:'Elimina', key:'Canc', icon:RAIL_ICONS.del, onclick:deleteSelection, title:'Elimina la selezione'}));
   railSection(rail, 'Controlla');
+  rail.appendChild(toolBtn('measure'));
   rail.appendChild(railButton({id:'railFold3D', label:'Anteprima 3D', icon:RAIL_ICONS.fold3d, onclick:openFold3D,
     title:'Anteprima 3D piegata: crea il modello 3D della fustella e simula la piegatura'}));
   rail.appendChild(railButton({id:'railCheck', label:'Verifica chiusure', icon:RAIL_ICONS.check, onclick:checkClosures,
@@ -13640,6 +13803,7 @@ function setTool(id){
   if(id==='lasso') id = 'select';
   state.tool = id;
   state.draft = null;
+  if(id!=='measure') state.measure = null;
   state.refImageSelected = false;
   const activeBtn = state.lassoMode ? 'lasso' : id;
   document.querySelectorAll('.tool[data-tool]').forEach(b=>b.classList.toggle('active', b.dataset.tool===activeBtn));
@@ -13832,6 +13996,19 @@ function duplicateShape(s){
 }
 // Copia (Ctrl+C, o dal menu contestuale) l'intera selezione corrente, non solo
 // una singola forma: così Ctrl+A seguito da Ctrl+C copia davvero tutto il disegno.
+// Le forme copiate vanno anche negli appunti del SISTEMA, con un contrassegno: così, incollando, l'app
+// riconosce le proprie forme e non le confonde con un'immagine copiata prima altrove (che altrimenti
+// aprirebbe "Importa immagine"). Funziona anche tra due finestre di SpikeCut.
+const SPK_CLIP_PREFIX = 'SPIKECUT-SHAPES:';
+let pendingSystemCopy = null;
+function writeShapesToSystemClipboard(){
+  const text = SPK_CLIP_PREFIX + JSON.stringify({v:1, shapes: canvasClipboardShapes});
+  pendingSystemCopy = text;
+  let ok = false; try{ ok = document.execCommand('copy'); }catch(e){} // fa scattare l'evento "copy" qui sotto
+  pendingSystemCopy = null;
+  if(!ok && navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).catch(()=>{});
+}
+document.addEventListener('copy', e=>{ if(pendingSystemCopy && e.clipboardData){ e.clipboardData.setData('text/plain', pendingSystemCopy); e.preventDefault(); } });
 function copySelectionToClipboard(){
   if(state.selection.size===0) return;
   canvasClipboardShapes = [...state.selection]
@@ -13839,6 +14016,7 @@ function copySelectionToClipboard(){
     .filter(Boolean)
     .map(s => JSON.parse(JSON.stringify(s)));
   if(!canvasClipboardShapes.length){ canvasClipboardShapes=null; return; }
+  writeShapesToSystemClipboard();
   showToast(canvasClipboardShapes.length>1 ? tpl('{n} forme copiate.', {n: canvasClipboardShapes.length}) : 'Forma copiata.', false);
 }
 // Incolla tutto ciò che è negli appunti, mantenendo le posizioni RELATIVE tra
@@ -13989,7 +14167,17 @@ function handleMouseDown(mm, e){
       return;
     }
     const hit = topShapeAt(mm);
-    if(hit){
+    // blocco di più forme già selezionate: trascinando una di esse (o lo spazio vuoto dentro il riquadro
+    // della selezione) si sposta tutto il blocco; un clic semplice su una forma poi seleziona solo quella
+    const multi = state.selection.size > 1 && !e.shiftKey && !(e.ctrlKey || e.metaKey) && !e.altKey;
+    const insideSel = multi && !hit && (()=>{ const bb = [...state.selection].map(id=>state.shapes.find(x=>x.id===id)).filter(Boolean).map(shapeBBox).filter(Boolean);
+      if(!bb.length) return false; const pad = 6/state.scale;
+      return mm[0] >= Math.min(...bb.map(b=>b.x))-pad && mm[0] <= Math.max(...bb.map(b=>b.x+b.w))+pad && mm[1] >= Math.min(...bb.map(b=>b.y))-pad && mm[1] <= Math.max(...bb.map(b=>b.y+b.h))+pad; })();
+    if((hit && multi && state.selection.has(hit.id)) || insideSel){
+      state.refImageSelected = false;
+      dragMode='move-shape';
+      state.drag = {ids:[...state.selection], lastPt:mm, startPt:mm, applied:[0,0], pendingSingle: hit ? hit.id : null};
+    } else if(hit){
       state.refImageSelected = false;
       if(!e.shiftKey){ state.selection.clear(); state.joinRegion = null; }
       state.selection.add(hit.id);
@@ -14045,6 +14233,7 @@ function handleMouseDown(mm, e){
     return;
   }
   if(state.tool==='bucket'){ bucketFillAt(mm); return; }
+  if(state.tool==='measure'){ const p0 = snapPoint(mm, null); dragMode='measure'; state.measure = {a:p0, b:p0, live:true}; renderSelectionHandles(); renderMeasurePanel(); return; }
   if(state.tool==='text'){
     placeTextInput(mm);
     return;
@@ -14052,6 +14241,15 @@ function handleMouseDown(mm, e){
 }
 
 function handleMouseMove(mm, e){
+  if(dragMode==='measure' && state.measure){
+    let p1 = snapPoint(mm, null);
+    if(e && e.shiftKey){ // Shift: orizzontale, verticale o a 45°
+      const a = state.measure.a, dx = p1[0]-a[0], dy = p1[1]-a[1], L = Math.hypot(dx, dy), ang = Math.round(Math.atan2(dy, dx)/(Math.PI/4))*(Math.PI/4);
+      p1 = [a[0] + Math.cos(ang)*L, a[1] + Math.sin(ang)*L];
+    }
+    state.measure.b = p1; updateSnapBadge(); renderSelectionHandles(); renderMeasurePanel();
+    return;
+  }
   if(state.tool==='arc' && state.draft){
     state.draft.preview = snapPoint(mm, null);
     updateSnapBadge();
@@ -14226,6 +14424,13 @@ function handleMouseMove(mm, e){
 
 function handleMouseUp(mm, e){
   if(!dragMode) return; // nessuna operazione in corso sul canvas (es. clic su un controllo del pannello) — non toccare il DOM del pannello
+  if(dragMode==='measure'){
+    dragMode = null;
+    if(state.measure && dist(state.measure.a, state.measure.b) < 0.05) state.measure = null; // clic senza trascinare: cancella la misura
+    else if(state.measure) state.measure.live = false;
+    renderSelectionHandles(); renderMeasurePanel();
+    return;
+  }
   if(dragMode==='freehand-draw' && state.draft){
     commitDraft();
   } else if(dragMode==='shape-draw' && state.draft){
@@ -14236,6 +14441,12 @@ function handleMouseUp(mm, e){
     state.draft=null;
   } else if(dragMode==='move-shape' || dragMode==='move-vertex' || dragMode==='resize' || dragMode==='resize-sel' || dragMode==='resize-text' || dragMode==='rotate-shape' || dragMode==='arc-bulge'){
     state.guides = null; state.arcEditLabel = null;
+    if(dragMode==='move-shape' && state.drag && state.drag.pendingSingle!==undefined && Math.hypot(state.drag.applied[0], state.drag.applied[1]) < 1e-6){
+      // clic semplice (senza trascinare) dentro un blocco selezionato: resta selezionata solo la forma cliccata
+      const s1 = state.drag.pendingSingle ? state.shapes.find(x=>x.id===state.drag.pendingSingle) : null;
+      state.selection = new Set(s1 ? [s1.id] : []); if(s1) expandGroupOf(s1);
+      dragMode = null; state.drag = null; renderAll(); renderPropPanel(); return;
+    }
     if(dragMode==='move-vertex' && state.drag){
       // un punto staccato lasciato su un altro punto si riattacca lì (nuova unione)
       const s = state.shapes.find(x=>x.id===state.drag.shapeId), i = state.drag.vertex;
@@ -14675,7 +14886,7 @@ window.addEventListener('keydown', (e)=>{
     return;
   }
   if((e.ctrlKey||e.metaKey)) return; // avoid clobbering other browser shortcuts
-  const map = {v:'select',q:'lasso',p:'pen',l:'line',r:'rect',o:'ellipse',a:'arc',b:'freehand',t:'text',k:'bucket'};
+  const map = {v:'select',q:'lasso',p:'pen',l:'line',r:'rect',o:'ellipse',a:'arc',b:'freehand',t:'text',k:'bucket',m:'measure'};
   if(map[k]){ setTool(map[k]); return; }
   if(k==='delete' || k==='backspace'){
     e.preventDefault();
@@ -14684,7 +14895,7 @@ window.addEventListener('keydown', (e)=>{
     } else deleteSelection();
     return;
   }
-  if(k==='escape'){ state.draft=null; state.selection.clear(); state.refImageSelected=false; renderAll(); return; }
+  if(k==='escape'){ state.draft=null; state.measure=null; state.selection.clear(); state.refImageSelected=false; renderAll(); return; }
   if(k==='enter' && state.tool==='pen' && state.draft){ finishPenDraft(false); return; }
   if(k==='c' && state.tool==='pen' && state.draft){ finishPenDraft(true); return; }
   if(k==='g'){ toggleGrid(); return; }
@@ -17216,6 +17427,44 @@ function renderNewTextFontField(host){
   sel.onchange = ()=>{ setTextFontDefault(sel.value); showToast(tpl('I nuovi testi useranno «{f}».', {f: fontLabel(sel.value)}), false); };
   ff.appendChild(sel); host.appendChild(ff);
 }
+
+/* ---------- barra "Azioni" in cima al pannello: i comandi più usati sulla selezione ---------- */
+function duplicateSelectionOffset(){
+  const sel = state.shapes.filter(s=> state.selection.has(s.id));
+  if(!sel.length) return;
+  const copies = sel.map(s=>{ const cp = JSON.parse(JSON.stringify(s)); cp.id = uid(); translateShapeCopy(cp, 5, 5); return cp; });
+  remapGroupIds(copies);
+  state.shapes.push(...copies); state.selection = new Set(copies.map(x=>x.id));
+  pushHistory(); renderAll();
+  showToast(copies.length>1 ? tpl('{n} forme duplicate (spostate di 5 mm).', {n: copies.length}) : translate('Forma duplicata (spostata di 5 mm).'), false);
+}
+function renderSelectionActions(host, ids){
+  const sel = ids.map(id=>state.shapes.find(x=>x.id===id)).filter(Boolean);
+  if(!sel.length) return;
+  const gids = selectedGroupIds(), unlocked = sel.filter(s=>!s.locked), allLocked = sel.every(s=>s.locked);
+  const allSameGroup = gids.length===1 && sel.every(s=> s.groupId===gids[0]);
+  const wrap = document.createElement('div'); wrap.className='sel-actions';
+  const head = document.createElement('div'); head.className='sel-actions-head';
+  head.textContent = sel.length>1 ? tpl('Azioni · {n} oggetti selezionati', {n: sel.length}) : translate('Azioni');
+  wrap.appendChild(head);
+  const grid = document.createElement('div'); grid.className='sel-actions-grid';
+  const add = (icon, label, title, on, fn)=>{ const b = document.createElement('button'); b.type='button'; b.disabled = !on;
+    b.innerHTML = `<span class="ic">${icon}</span><span>${escapeHTML(translate(label))}</span>`; b.title = translate(title);
+    b.onclick = ()=>{ fn(); renderPropPanel(); }; grid.appendChild(b); };
+  add('⧉', 'Raggruppa', 'Raggruppa gli oggetti selezionati (Ctrl+G)', unlocked.length>1 && !allSameGroup, groupSelection);
+  add('⧈', 'Separa', 'Separa il gruppo (Ctrl+Shift+G)', gids.length>0, ungroupSelection);
+  add('⎘', 'Duplica', 'Duplica la selezione, spostata di 5 mm', unlocked.length>0, duplicateSelectionOffset);
+  add('⇋', 'Rifletti ↔', 'Rifletti in orizzontale', unlocked.length>0, ()=> flipSelection('h'));
+  add('⇵', 'Rifletti ↕', 'Rifletti in verticale', unlocked.length>0, ()=> flipSelection('v'));
+  add('⤒', 'Primo piano', 'Porta in primo piano', unlocked.length>0, ()=>{ shapesInZOrder().filter(s=>state.selection.has(s.id)).forEach(s=> bringToFront(s.id)); });
+  add('⤓', 'Secondo piano', 'Porta in secondo piano', unlocked.length>0, ()=>{ shapesInZOrder().filter(s=>state.selection.has(s.id)).reverse().forEach(s=> sendToBack(s.id)); });
+  add('↔', 'Sposta di…', 'Sposta di una distanza precisa o crea copie in serie (Invio)', unlocked.length>0, ()=> openMoveModal());
+  add(allLocked ? '🔓' : '🔒', allLocked ? 'Sblocca' : 'Blocca', allLocked ? 'Sblocca: si potrà di nuovo modificare' : 'Blocca: non si potrà spostare né modificare per sbaglio', true, ()=>{ const v = !allLocked; sel.forEach(s=> s.locked = v); pushHistory(); renderAll(); });
+  add('🗑', 'Elimina', 'Elimina la selezione (Canc)', unlocked.length>0, deleteSelection);
+  wrap.appendChild(grid);
+  host.appendChild(wrap);
+}
+
 function renderPropPanelInner(){
   const host = document.getElementById('tab-prop');
   const ids = [...state.selection];
@@ -17263,11 +17512,13 @@ function renderPropPanelInner(){
 
   if(ids.length===0){
     if(state.tool==='bucket'){ renderBucketColorField(host); host.appendChild(document.createElement('hr')).className='sep'; }
+    if(state.tool==='measure'){ renderMeasureSection(host); host.appendChild(document.createElement('hr')).className='sep'; }
     renderNewTextFontField(host);
     host.appendChild(document.createElement('hr')).className='sep';
     renderProjectInfoSection(host);
     return;
   }
+  renderSelectionActions(host, ids); // comandi della selezione sempre in cima
   const s = state.shapes.find(x=>x.id===ids[0]);
 
   addColorField(host, 'Colore linea', s.style.stroke, v=>{ withSelection(sh=>sh.style.stroke=v); });
@@ -18084,6 +18335,58 @@ function bucketFillAt(mm){
   }
   showToast('Questa zona non è chiusa: il contorno ha un\'apertura più grande di 1 mm. Usa "Verifica chiusure" per trovarla, oppure chiudila con la penna.', true);
 }
+
+/* ============================================================
+   RIGHELLO — misura tra due punti qualsiasi del foglio (si aggancia a punti,
+   linee e griglia come gli altri strumenti). Non aggiunge nulla al disegno.
+============================================================ */
+function measureValues(m){
+  const dx = m.b[0]-m.a[0], dy = m.b[1]-m.a[1];
+  let ang = Math.atan2(-dy, dx) * 180 / Math.PI; if(ang < 0) ang += 360; // angolo come sul goniometro (0° = verso destra, in senso antiorario)
+  return {len: Math.hypot(dx, dy), dx: Math.abs(dx), dy: Math.abs(dy), ang};
+}
+function fmtAngle(a){ return (Math.round(a*10)/10).toFixed(1) + '°'; } // stesso separatore decimale delle misure
+function drawMeasureOverlay(){
+  const m = state.measure; if(!m) return;
+  const sc = state.scale, a = [m.a[0]*sc, m.a[1]*sc], b = [m.b[0]*sc, m.b[1]*sc];
+  const v = measureValues(m);
+  const g = el('g', {'pointer-events':'none'});
+  // proiezioni ΔX e ΔY
+  if(v.dx > 0.05 && v.dy > 0.05){
+    g.appendChild(el('path', {d:`M ${a[0]} ${a[1]} L ${b[0]} ${a[1]} L ${b[0]} ${b[1]}`, fill:'none', stroke:'#2f9e9a', 'stroke-width':1, 'stroke-dasharray':'3,3', opacity:.8}));
+  }
+  g.appendChild(el('line', {x1:a[0], y1:a[1], x2:b[0], y2:b[1], stroke:'#fff', 'stroke-width':4, opacity:.7}));
+  g.appendChild(el('line', {x1:a[0], y1:a[1], x2:b[0], y2:b[1], stroke:'#e8732a', 'stroke-width':1.6}));
+  // tacche perpendicolari agli estremi
+  const L = Math.hypot(b[0]-a[0], b[1]-a[1]) || 1, nx = -(b[1]-a[1])/L*7, ny = (b[0]-a[0])/L*7;
+  [a, b].forEach(p=>{ g.appendChild(el('line', {x1:p[0]-nx, y1:p[1]-ny, x2:p[0]+nx, y2:p[1]+ny, stroke:'#e8732a', 'stroke-width':1.6}));
+                      g.appendChild(el('circle', {cx:p[0], cy:p[1], r:2.6, fill:'#fff', stroke:'#e8732a', 'stroke-width':1.4})); });
+  // etichetta al centro
+  if(v.len > 0.01){
+    const txt = fmtUnit(v.len) + '  ·  ' + fmtAngle(v.ang), sub = 'ΔX ' + fmtUnit(v.dx) + '   ΔY ' + fmtUnit(v.dy);
+    const cx = (a[0]+b[0])/2, cy = (a[1]+b[1])/2 - 18;
+    const w = Math.max(txt.length, sub.length) * 6.6 + 16;
+    g.appendChild(el('rect', {x:cx-w/2, y:cy-14, width:w, height:32, rx:6, fill:'#1d1f22', opacity:.92, stroke:'#e8732a', 'stroke-width':1}));
+    const t1 = el('text', {x:cx, y:cy, 'text-anchor':'middle', 'font-size':12, 'font-weight':700, fill:'#ffffff', 'font-family':'Inter, Arial, sans-serif'}); t1.textContent = txt; g.appendChild(t1);
+    const t2 = el('text', {x:cx, y:cy+13, 'text-anchor':'middle', 'font-size':10.5, fill:'#9fd3d1', 'font-family':'Inter, Arial, sans-serif'}); t2.textContent = sub; g.appendChild(t2);
+  }
+  layerOverlay.appendChild(g);
+}
+function renderMeasurePanel(){
+  const host = document.getElementById('measurePanelBox'); if(!host) return;
+  const m = state.measure;
+  if(!m || dist(m.a, m.b) < 0.05){ host.innerHTML = `<div class="hint">${escapeHTML(translate('Trascina sul foglio da un punto all\'altro per misurare. Gli estremi si agganciano a punti, linee e griglia (con la calamita attiva); con Shift la misura resta orizzontale, verticale o a 45°. Clic semplice o Esc per cancellare.'))}</div>`; return; }
+  const v = measureValues(m);
+  const row = (l, val)=> `<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--line-soft);"><span style="color:var(--ink-dim);">${escapeHTML(translate(l))}</span><b>${escapeHTML(val)}</b></div>`;
+  host.innerHTML = row('Distanza', fmtUnit(v.len)) + row('Orizzontale (ΔX)', fmtUnit(v.dx)) + row('Verticale (ΔY)', fmtUnit(v.dy)) + row('Angolo', fmtAngle(v.ang))
+    + row('Da', fmtUnit(m.a[0]) + ' ; ' + fmtUnit(m.a[1])) + row('A', fmtUnit(m.b[0]) + ' ; ' + fmtUnit(m.b[1]));
+}
+function renderMeasureSection(host){
+  const f = document.createElement('div'); f.className='field fill-field';
+  f.innerHTML = `<label>📏 ${escapeHTML(translate('Righello'))}</label><div id="measurePanelBox"></div>`;
+  host.appendChild(f); renderMeasurePanel();
+}
+
 function renderBucketColorField(host){
   const f = document.createElement('div'); f.className='field fill-field';
   f.innerHTML = `<label>${escapeHTML(translate('Colore del secchiello'))}</label>`;
@@ -18964,6 +19267,13 @@ document.addEventListener('paste', async e=>{
   if(t && (t.tagName==='INPUT' || t.tagName==='TEXTAREA' || t.isContentEditable)) return; // nei campi l'incolla è quello normale
   pasteWaiting = false;
   const cd = e.clipboardData;
+  // forme copiate da SpikeCut (anche da un'altra scheda o finestra): si incollano come forme
+  const plain = cd ? (cd.getData('text/plain') || '') : '';
+  if(plain.startsWith(SPK_CLIP_PREFIX)){
+    e.preventDefault();
+    try{ const d = JSON.parse(plain.slice(SPK_CLIP_PREFIX.length)); if(d && Array.isArray(d.shapes) && d.shapes.length){ canvasClipboardShapes = d.shapes; ensureDocumentOpen(); pasteClipboardShapesAt(null); return; } }catch(err){}
+    pasteClipboardShapesAt(null); return;
+  }
   const files = cd ? [...cd.items].filter(it=>it.kind==='file').map(it=>it.getAsFile()).filter(Boolean) : [];
   const img = files.find(f=> /^image\//.test(f.type));
   if(img){ e.preventDefault(); importClipboardBlob(img, img.name && !/^image\.\w+$/.test(img.name) ? img.name : null); return; }
