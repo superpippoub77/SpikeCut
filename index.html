@@ -820,6 +820,9 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
       <button data-action="export-pdf">Esporta PDF</button>
       <button data-action="export-pdf-tiled">Esporta PDF multi-pagina (disegno grande)…</button>
       <div class="menu-sep"></div>
+      <button data-action="export-image">🖼 Esporta immagine (PNG/JPG)…</button>
+      <button data-action="export-cad">📐 Esporta per CAD, plotter e fustellatore (DXF, PLT, CF2)…</button>
+      <button data-action="blade-report">📏 Metri di lama (preventivo della fustella)…</button>
       <button data-action="export-silhouette">✂ Esporta per Silhouette Cameo (DXF)…</button>
       <div class="menu-sep"></div>
       <button data-action="print-proof">Stampa di prova (A3/A4/A5)…</button>
@@ -1319,6 +1322,45 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   </div>
 </div>
 
+<div id="imgExpModal" class="modal-overlay">
+  <div class="modal-box" style="width:420px;">
+    <div class="modal-head"><h3>Esporta immagine</h3><button class="iconbtn" data-close="imgExpModal" title="Chiudi">✕</button></div>
+    <div class="modal-body">
+      <div class="hint" style="margin-bottom:10px;">Il foglio in scala reale, con grafica e linee: per anteprime, cataloghi, e-commerce o per mandarlo a chi non ha programmi vettoriali. La risoluzione viene scritta nel file, così stampandolo esce della misura giusta.</div>
+      <div class="row">
+        <div class="field"><label>Formato</label><select id="imgExpFmt"><option value="png">PNG</option><option value="jpg">JPG</option></select></div>
+        <div class="field"><label>Risoluzione</label><select id="imgExpDpi"><option value="96">96 DPI (schermo)</option><option value="150">150 DPI</option><option value="300" selected>300 DPI (stampa)</option><option value="600">600 DPI</option></select></div>
+      </div>
+      <label style="display:flex;gap:6px;align-items:center;font-size:12.5px;cursor:pointer;margin-top:6px;"><input type="checkbox" id="imgExpLines" checked style="width:auto;margin:0;"><span>Includi le linee di taglio, piega e incollaggio</span></label>
+      <div class="hint" id="imgExpInfo" style="margin-top:8px;"></div>
+      <button class="btn primary" id="imgExpGo" style="width:100%;margin-top:12px;">Esporta</button>
+    </div>
+  </div>
+</div>
+
+<div id="cadModal" class="modal-overlay">
+  <div class="modal-box" style="width:560px;max-width:96vw;">
+    <div class="modal-head"><h3>CAD, plotter e fustellatore</h3><button class="iconbtn" data-close="cadModal" title="Chiudi">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Metri di lama</label><div id="cadLengths"></div></div>
+      <div class="hint" style="margin:4px 0 10px;">È il dato con cui il fustellatore fa il preventivo: lame di taglio, cordonatori (pieghe) e lame speciali (perforazione, mezzo taglio). Contano le linee visibili.</div>
+      <div class="row">
+        <div class="field"><label>Origine (0,0)</label><select id="cadOrigin"><option value="page">Angolo in basso a sinistra del foglio</option><option value="drawing">Angolo in basso a sinistra della fustella</option></select></div>
+      </div>
+      <label style="display:flex;gap:6px;align-items:center;font-size:12.5px;cursor:pointer;margin-top:4px;"><input type="checkbox" id="cadGraphic" style="width:auto;margin:0;"><span>Includi anche le linee di grafica (livello GRAPHIC)</span></label>
+      <label style="display:flex;gap:6px;align-items:center;font-size:12.5px;cursor:pointer;margin-top:4px;"><input type="checkbox" id="cadGlue" checked style="width:auto;margin:0;"><span>Includi le zone di incollaggio (livello GLUE, solo come riferimento)</span></label>
+      <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px;">
+        <button class="btn primary" id="cadDxf" style="margin:0;">DXF per CAD (AutoCAD, ArtiosCAD, LibreCAD, LightBurn…)</button>
+        <div class="hint" style="margin-top:-4px;">Millimetri, livelli CUT (rosso), CREASE (blu), PERF (verde), GLUE, GRAPHIC; archi e cerchi veri.</div>
+        <button class="btn" id="cadPlt" style="margin:0;">HPGL / PLT per plotter da taglio</button>
+        <div class="hint" style="margin-top:-4px;">Penna 1 taglio, penna 2 pieghe, penna 3 lame speciali, penna 4 incollaggio.</div>
+        <button class="btn" id="cadCf2" style="margin:0;">CF2 per fustellatori (ArtiosCAD, Kongsberg, Elitron…)</button>
+        <div class="hint" style="margin-top:-4px;">Formato comune nei programmi delle fustelle: linee e archi con tipo (taglio, cordonatura, perforazione) e spessore della lama 2 punti.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="fold3dModal" class="modal-overlay">
   <div class="modal-box" style="width:880px;max-width:96vw;">
     <div class="modal-head">
@@ -1343,6 +1385,8 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
         <select id="fold3dAutoOrder" style="flex:1;"></select>
         <button class="btn" id="fold3dAutoOrderApply" style="width:auto;margin:0;">Applica e simula</button>
         <button class="btn" id="fold3dSeq" style="width:auto;margin:0;">📋 Sequenza…</button>
+        <button class="btn" id="fold3dShot" style="width:auto;margin:0;" title="Salva la vista attuale come immagine PNG ad alta risoluzione">📷 Immagine</button>
+        <button class="btn" id="fold3dVideo" style="width:auto;margin:0;" title="Registra un video: la scatola si piega e poi gira su se stessa">🎬 Video</button>
       </div>
       <div class="hint" id="fold3dInfo" style="margin-top:8px;"></div>
       <div id="fold3dCheck" style="max-height:190px;overflow:auto;"></div>
@@ -11437,7 +11481,7 @@ function sortFold3DFaces(items, model, E, proj, eps){
 function renderFold3D(){
   const cv = document.getElementById('fold3dCanvas');
   if(!fold3d.model || !cv) return;
-  const w = cv.clientWidth || 800, h = cv.clientHeight || 460, dpr = window.devicePixelRatio || 1;
+  const w = cv.clientWidth || 800, h = cv.clientHeight || 460, dpr = (window.devicePixelRatio || 1) * (fold3d.exportScale || 1);
   if(cv.width!==Math.round(w*dpr) || cv.height!==Math.round(h*dpr)){ cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr); }
   const ctx = cv.getContext('2d'); if(!ctx) return;
   ctx.setTransform(dpr,0,0,dpr,0,0);
@@ -15654,6 +15698,8 @@ function handleMenuAction(e){
   ensureDocumentOpen(); // con tutte le schede chiuse, un comando apre prima un disegno nuovo
   if(action==='export-svg') exportSVG();
   else if(action==='export-silhouette') openSilhouetteExport();
+  else if(action==='export-image'){ openModal('imgExpModal'); imgExpRefresh(); }
+  else if(action==='export-cad' || action==='blade-report') openCadExport();
   else if(action==='export-pdf') exportPDF();
   else if(action==='export-pdf-tiled') openTilePrintModal();
   else if(action==='print-proof') openPrintProofModal();
@@ -16992,6 +17038,14 @@ document.getElementById('fold3dXray').onchange = e=>{
 };
 document.getElementById('fold3dXrayOpacity').oninput = e=>{ fold3d.xrayOpacity = parseInt(e.target.value,10)/100; renderFold3D(); };
 document.getElementById('fold3dSeq').onclick = openFoldSequence;
+document.getElementById('fold3dShot').onclick = fold3DShot;
+document.getElementById('fold3dVideo').onclick = fold3DVideo;
+['imgExpModal','cadModal'].forEach(id=>{ const m = document.getElementById(id); setupOverlayClickClose(m, ()=> m.classList.remove('open')); m.querySelector('[data-close]').onclick = ()=> m.classList.remove('open'); m.addEventListener('keydown', e=> e.stopPropagation()); });
+['imgExpFmt','imgExpDpi'].forEach(id=> document.getElementById(id).onchange = imgExpRefresh);
+document.getElementById('imgExpGo').onclick = doImageExport;
+document.getElementById('cadDxf').onclick = ()=> doCadExport('dxf');
+document.getElementById('cadPlt').onclick = ()=> doCadExport('plt');
+document.getElementById('cadCf2').onclick = ()=> doCadExport('cf2');
 document.getElementById('seqModalClose').onclick = closeFoldSequence;
 setupOverlayClickClose(document.getElementById('seqModal'), closeFoldSequence);
 document.getElementById('seqSimulate').onclick = ()=>{ closeFoldSequence(); const f3=document.getElementById('fold3dModal'); if(!f3.classList.contains('open')) openFold3D(); };
@@ -22016,6 +22070,241 @@ document.getElementById('tilePreviewBtn').onclick = ()=>{
 };
 document.getElementById('tileGenerate').onclick = exportTiledPDF;
 
+/* ============================================================
+   ESPORTAZIONI PER CAD, PLOTTER, FUSTELLATORI E IMMAGINI
+============================================================ */
+const TECH_LAYERS = {cut:{name:'CUT', aci:1, pen:1, cf2:1}, fold:{name:'CREASE', aci:5, pen:2, cf2:2}, diecut:{name:'PERF', aci:3, pen:3, cf2:3}, glue:{name:'GLUE', aci:30, pen:4, cf2:4}, design:{name:'GRAPHIC', aci:7, pen:5, cf2:0}};
+function exportBaseName(){ return (document.getElementById('filename').value || 'disegno').replace(/[\\/:*?"<>|]+/g,'_'); }
+function downloadBlob(blob, name){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=> URL.revokeObjectURL(url), 4000);
+}
+// geometria delle linee visibili per ruolo: segmenti (polilinee) e, quando la forma lo è davvero, archi e cerchi
+function techGeometry(roles){
+  const out = [];
+  state.shapes.forEach(s=>{
+    if(!isShapeEffVisible(s) || !s.style || !roles.includes(s.style.role)) return;
+    if(s.type==='text' || s.type==='image' || s.type==='tracedpath') return;
+    const role = s.style.role;
+    if(s.arc && s.points && s.points.length>=3 && !(s.smooth && s.smooth.some(v=>v>0))){
+      const n = s.points.length, S = s.points[0], E = s.points[n-1], M = s.points[Math.floor(n/2)];
+      const c = circleFrom3Points(S, M, E);
+      if(c){
+        const a = p=> Math.atan2(p[1]-c.center[1], p[0]-c.center[0]), norm = x=> ((x % (2*Math.PI)) + 2*Math.PI) % (2*Math.PI);
+        let span = norm(a(E)-a(S)); if(norm(a(M)-a(S)) > span) span -= 2*Math.PI;
+        out.push({role, kind:'arc', center:c.center, r:c.r, a0:a(S), span, S, E, pts:s.points.map(p=>[p[0],p[1]]), closed:false});
+        return;
+      }
+    }
+    if(s.type==='ellipse' && Math.abs(Math.abs(s.w)-Math.abs(s.h)) < 1e-6){
+      out.push({role, kind:'circle', center:[s.x+s.w/2, s.y+s.h/2], r:Math.abs(s.w)/2, pts:(shapeToRing(s)||[]).slice(0,-1), closed:true});
+      return;
+    }
+    shapeToPolylines(s).forEach(pl=> out.push({role, kind:'poly', pts:pl.pts, closed:pl.closed}));
+  });
+  return out;
+}
+function geomLength(g){
+  if(g.kind==='arc') return Math.abs(g.span)*g.r;
+  if(g.kind==='circle') return 2*Math.PI*g.r;
+  let L = 0; for(let i=1;i<g.pts.length;i++) L += dist(g.pts[i-1], g.pts[i]);
+  if(g.closed && g.pts.length>2) L += dist(g.pts[g.pts.length-1], g.pts[0]);
+  return L;
+}
+function bladeLengths(){
+  const res = {cut:0, fold:0, diecut:0, glue:0, n:{cut:0, fold:0, diecut:0, glue:0}};
+  techGeometry(['cut','fold','diecut','glue']).forEach(g=>{ res[g.role] += geomLength(g); res.n[g.role]++; });
+  return res;
+}
+function openCadExport(){
+  const L = bladeLengths(), m = v=> (v/1000).toLocaleString(undefined, {minimumFractionDigits:3, maximumFractionDigits:3}) + ' m';
+  const row = (lab, v, n, col)=> `<tr><td style="padding:3px 8px 3px 0;"><span style="display:inline-block;width:18px;border-top:2px solid ${col};vertical-align:middle;margin-right:6px;"></span>${escapeHTML(translate(lab))}</td><td style="text-align:right;font-family:var(--mono);">${m(v)}</td><td style="text-align:right;color:var(--ink-dim);padding-left:10px;">${escapeHTML(tpl('{n} linee', {n}))}</td></tr>`;
+  document.getElementById('cadLengths').innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:12.5px;">`
+    + row('Taglio', L.cut, L.n.cut, ROLE_STYLE.cut.stroke) + row('Piega (cordonatura)', L.fold, L.n.fold, ROLE_STYLE.fold.stroke)
+    + row('Fustella speciale', L.diecut, L.n.diecut, ROLE_STYLE.diecut.stroke) + row('Incollaggio', L.glue, L.n.glue, ROLE_STYLE.glue.stroke)
+    + `<tr><td style="padding-top:6px;border-top:1px solid var(--line);font-weight:700;">${escapeHTML(translate('Totale lame (taglio + piega + speciale)'))}</td><td style="padding-top:6px;border-top:1px solid var(--line);text-align:right;font-family:var(--mono);font-weight:700;">${m(L.cut+L.fold+L.diecut)}</td><td style="border-top:1px solid var(--line);"></td></tr></table>`;
+  openModal('cadModal');
+}
+function cadRoles(){ const r = ['cut','fold','diecut']; if(document.getElementById('cadGlue').checked) r.push('glue'); if(document.getElementById('cadGraphic').checked) r.push('design'); return r; }
+// trasformazione verso coordinate CAD: millimetri, asse Y verso l'alto, origine scelta
+function cadTransform(geo){
+  let ox = 0, oy = state.page.h;
+  if(document.getElementById('cadOrigin').value==='drawing'){
+    const all = geo.flatMap(g=> g.pts); if(all.length){ ox = Math.min(...all.map(p=>p[0])); oy = Math.max(...all.map(p=>p[1])); }
+  }
+  return p=> [p[0]-ox, oy-p[1]];
+}
+function buildCadDXF(geo){
+  const T = cadTransform(geo), L = [], g = (c,v)=>{ L.push(String(c)); L.push(String(v)); }, f = v=> (Math.round(v*10000)/10000).toString();
+  const used = [...new Set(geo.map(x=>x.role))].map(r=> TECH_LAYERS[r]);
+  const all = geo.flatMap(x=> x.pts.map(T));
+  g(0,'SECTION'); g(2,'HEADER'); g(9,'$ACADVER'); g(1,'AC1009'); g(9,'$INSUNITS'); g(70,4); g(9,'$MEASUREMENT'); g(70,1);
+  if(all.length){ g(9,'$EXTMIN'); g(10,f(Math.min(...all.map(p=>p[0])))); g(20,f(Math.min(...all.map(p=>p[1])))); g(9,'$EXTMAX'); g(10,f(Math.max(...all.map(p=>p[0])))); g(20,f(Math.max(...all.map(p=>p[1])))); }
+  g(0,'ENDSEC');
+  g(0,'SECTION'); g(2,'TABLES');
+  g(0,'TABLE'); g(2,'LTYPE'); g(70,1); g(0,'LTYPE'); g(2,'CONTINUOUS'); g(70,0); g(3,'Solid line'); g(72,65); g(73,0); g(40,0.0); g(0,'ENDTAB');
+  g(0,'TABLE'); g(2,'LAYER'); g(70, used.length);
+  used.forEach(ly=>{ g(0,'LAYER'); g(2,ly.name); g(70,0); g(62,ly.aci); g(6,'CONTINUOUS'); });
+  g(0,'ENDTAB'); g(0,'ENDSEC');
+  g(0,'SECTION'); g(2,'ENTITIES');
+  geo.forEach(x=>{
+    const ly = TECH_LAYERS[x.role];
+    if(x.kind==='circle'){ const c = T(x.center); g(0,'CIRCLE'); g(8,ly.name); g(10,f(c[0])); g(20,f(c[1])); g(30,'0.0'); g(40,f(x.r)); return; }
+    if(x.kind==='arc'){
+      // nel CAD l'asse Y è capovolto: gli angoli cambiano segno e l'arco va sempre in senso antiorario
+      const c = T(x.center), s0 = -x.a0*180/Math.PI, s1 = -(x.a0 + x.span)*180/Math.PI;
+      const [a, b] = x.span > 0 ? [s1, s0] : [s0, s1];
+      g(0,'ARC'); g(8,ly.name); g(10,f(c[0])); g(20,f(c[1])); g(30,'0.0'); g(40,f(x.r)); g(50,f(((a%360)+360)%360)); g(51,f(((b%360)+360)%360));
+      return;
+    }
+    g(0,'POLYLINE'); g(8,ly.name); g(66,1); g(10,'0.0'); g(20,'0.0'); g(30,'0.0'); g(70, x.closed ? 1 : 0);
+    x.pts.forEach(q=>{ const p = T(q); g(0,'VERTEX'); g(8,ly.name); g(10,f(p[0])); g(20,f(p[1])); g(30,'0.0'); });
+    g(0,'SEQEND'); g(8,ly.name);
+  });
+  g(0,'ENDSEC'); g(0,'EOF');
+  return L.join('\r\n') + '\r\n';
+}
+function buildHPGL(geo){
+  const T = cadTransform(geo), U = v=> Math.round(v*40); // 1 unità HPGL = 0,025 mm
+  let out = 'IN;PA;';
+  [...new Set(geo.map(x=>x.role))].forEach(role=>{
+    out += 'SP' + TECH_LAYERS[role].pen + ';';
+    geo.filter(x=>x.role===role).forEach(x=>{
+      const pts = (x.closed ? x.pts.concat([x.pts[0]]) : x.pts).map(T);
+      if(pts.length<2) return;
+      out += 'PU' + U(pts[0][0]) + ',' + U(pts[0][1]) + ';PD' + pts.slice(1).map(p=> U(p[0]) + ',' + U(p[1])).join(',') + ';';
+    });
+  });
+  return out + 'PU;SP0;\n';
+}
+function buildCF2(geo){
+  const T = cadTransform(geo), f = v=> (Math.round(v*1000)/1000).toString();
+  const all = geo.flatMap(x=> x.pts.map(T));
+  const minX = all.length ? Math.min(...all.map(p=>p[0])) : 0, minY = all.length ? Math.min(...all.map(p=>p[1])) : 0;
+  const maxX = all.length ? Math.max(...all.map(p=>p[0])) : 0, maxY = all.length ? Math.max(...all.map(p=>p[1])) : 0;
+  const L = ['$BOF','V2','ORDER','MAIN,' + exportBaseName(),'END','MAIN,' + exportBaseName(),'UM','LL,' + f(minX) + ',' + f(minY),'UR,' + f(maxX) + ',' + f(maxY),'SCALE,1,1'];
+  geo.forEach(x=>{
+    const type = TECH_LAYERS[x.role].cf2 || 1;
+    if(x.kind==='arc' || x.kind==='circle'){
+      const c = T(x.center);
+      if(x.kind==='circle'){ // due semicerchi
+        const p0 = [c[0]+x.r, c[1]], p1 = [c[0]-x.r, c[1]];
+        L.push(`A,2,${type},0,${f(p0[0])},${f(p0[1])},${f(p1[0])},${f(p1[1])},${f(c[0])},${f(c[1])},1,0,0`);
+        L.push(`A,2,${type},0,${f(p1[0])},${f(p1[1])},${f(p0[0])},${f(p0[1])},${f(c[0])},${f(c[1])},1,0,0`);
+      } else {
+        const S = T(x.S), E = T(x.E); // senso: con l'asse Y capovolto, span > 0 diventa orario (-1)
+        L.push(`A,2,${type},0,${f(S[0])},${f(S[1])},${f(E[0])},${f(E[1])},${f(c[0])},${f(c[1])},${x.span > 0 ? -1 : 1},0,0`);
+      }
+      return;
+    }
+    const pts = (x.closed ? x.pts.concat([x.pts[0]]) : x.pts).map(T);
+    for(let i=1;i<pts.length;i++) if(dist(pts[i-1], pts[i]) > 1e-6) L.push(`L,2,${type},0,${f(pts[i-1][0])},${f(pts[i-1][1])},${f(pts[i][0])},${f(pts[i][1])},0,0`);
+  });
+  L.push('END','$EOF');
+  return L.join('\r\n') + '\r\n';
+}
+function doCadExport(fmt){
+  const geo = techGeometry(cadRoles());
+  if(!geo.length){ showToast('Niente da esportare: non ci sono linee di taglio o piega visibili.', true); return; }
+  const base = exportBaseName();
+  if(fmt==='dxf') downloadText(buildCadDXF(geo), base + '.dxf', 'application/dxf');
+  if(fmt==='plt') downloadText(buildHPGL(geo), base + '.plt', 'application/vnd.hp-hpgl');
+  if(fmt==='cf2') downloadText(buildCF2(geo), base + '.cf2', 'text/plain');
+  showToast(tpl('File {f} esportato ({n} elementi).', {f: fmt.toUpperCase(), n: geo.length}), false);
+}
+// immagine del foglio: la risoluzione viene scritta nel file (PNG pHYs, JPEG JFIF) per stampare alla misura giusta
+function crc32(bytes){ let c, crc = 0xFFFFFFFF; for(let n=0;n<bytes.length;n++){ c = (crc ^ bytes[n]) & 0xFF; for(let k=0;k<8;k++) c = c & 1 ? (c >>> 1) ^ 0xEDB88320 : c >>> 1; crc = (crc >>> 8) ^ c; } return (crc ^ 0xFFFFFFFF) >>> 0; }
+async function blobWithDPI(blob, dpi, fmt){
+  const b = new Uint8Array(await blob.arrayBuffer());
+  if(fmt==='png'){
+    const ppm = Math.round(dpi/0.0254), chunk = new Uint8Array(21), dv = new DataView(chunk.buffer);
+    dv.setUint32(0, 9); chunk.set([0x70,0x48,0x59,0x73], 4); dv.setUint32(8, ppm); dv.setUint32(12, ppm); chunk[16] = 1;
+    dv.setUint32(17, crc32(chunk.subarray(4, 17)));
+    const out = new Uint8Array(b.length + 21); out.set(b.subarray(0, 33)); out.set(chunk, 33); out.set(b.subarray(33), 54); // subito dopo IHDR
+    return new Blob([out], {type:'image/png'});
+  }
+  if(b[2]===0xFF && b[3]===0xE0 && b[6]===0x4A){ b[13] = 1; b[14] = dpi>>8; b[15] = dpi&255; b[16] = dpi>>8; b[17] = dpi&255; } // JFIF: unità pollici
+  return new Blob([b], {type:'image/jpeg'});
+}
+function exportImageSVG(withLines){
+  const w = state.page.w, h = state.page.h;
+  const keep = withLines ? null : new Set(['design']);
+  const saved = state.shapes;
+  let groups = '';
+  try{
+    if(keep) state.shapes = saved.filter(x=> !x.style || keep.has(x.style.role));
+    groups = buildDrawingGroupsSVG().body;
+  }finally{ state.shapes = saved; }
+  const bg = exportPageBg();
+  return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="${w}mm" height="${h}mm" viewBox="0 0 ${w} ${h}">`
+    + (bg ? `<rect x="0" y="0" width="${w}" height="${h}" fill="${bg}"${exportPageBgOpacity()}/>` : '') + groups + `</svg>`;
+}
+function imgExpRefresh(){
+  const dpi = parseInt(document.getElementById('imgExpDpi').value, 10), k = dpi/25.4;
+  let W = Math.round(state.page.w*k), H = Math.round(state.page.h*k);
+  const MAX = 14000, r = Math.min(1, MAX/Math.max(W, H));
+  document.getElementById('imgExpInfo').textContent = r < 1 ? tpl('Il foglio è grande: a questa risoluzione l\'immagine supererebbe i limiti del browser, verrà esportata a {d} DPI ({w} × {h} pixel).', {d: Math.floor(dpi*r), w: Math.round(W*r), h: Math.round(H*r)})
+    : tpl('{w} × {h} pixel.', {w: W, h: H});
+}
+function doImageExport(){
+  const fmt = document.getElementById('imgExpFmt').value;
+  let dpi = parseInt(document.getElementById('imgExpDpi').value, 10);
+  const maxSide = Math.max(state.page.w, state.page.h)/25.4*dpi;
+  if(maxSide > 14000) dpi = Math.floor(dpi*14000/maxSide);
+  const k = dpi/25.4, W = Math.max(1, Math.round(state.page.w*k)), H = Math.max(1, Math.round(state.page.h*k));
+  const svg = exportImageSVG(document.getElementById('imgExpLines').checked);
+  const img = new Image();
+  img.onload = ()=> afterSVGFonts(svg, ()=>{
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+    const g = cv.getContext('2d');
+    if(fmt==='jpg'){ g.fillStyle = '#ffffff'; g.fillRect(0, 0, W, H); } // il JPG non ha trasparenza
+    g.drawImage(img, 0, 0, W, H);
+    cv.toBlob(async blob=>{
+      if(!blob){ showToast('Immagine troppo grande per il browser: scegli una risoluzione più bassa.', true); return; }
+      downloadBlob(await blobWithDPI(blob, dpi, fmt), exportBaseName() + '.' + fmt);
+      document.getElementById('imgExpModal').classList.remove('open');
+    }, fmt==='jpg' ? 'image/jpeg' : 'image/png', 0.92);
+  });
+  img.onerror = ()=> showToast('Impossibile creare l\'immagine.', true);
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+// vista 3D: immagine ad alta risoluzione e video della piegatura
+function fold3DShot(){
+  fold3d.exportScale = 3; renderFold3D();
+  const cv = document.getElementById('fold3dCanvas');
+  cv.toBlob(b=>{ fold3d.exportScale = 1; renderFold3D(); if(b) downloadBlob(b, exportBaseName() + '_3D.png'); }, 'image/png');
+}
+function fold3DVideo(){
+  const cv = document.getElementById('fold3dCanvas');
+  if(!cv.captureStream || typeof MediaRecorder==='undefined'){ showToast('Questo browser non può registrare video dalla pagina: usa Chrome, Edge o Firefox aggiornati.', true); return; }
+  const types = ['video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm'];
+  const mime = types.find(t=> MediaRecorder.isTypeSupported(t)) || '';
+  const btn = document.getElementById('fold3dVideo'); btn.disabled = true; btn.textContent = translate('⏺ Registrazione…');
+  stopFold3D();
+  fold3d.exportScale = 1.5;
+  const stream = cv.captureStream(30), rec = new MediaRecorder(stream, mime ? {mimeType: mime, videoBitsPerSecond: 6e6} : undefined), chunks = [];
+  rec.ondataavailable = e=>{ if(e.data && e.data.size) chunks.push(e.data); };
+  rec.onstop = ()=>{
+    fold3d.exportScale = 1; renderFold3D();
+    btn.disabled = false; btn.textContent = translate('🎬 Video');
+    const type = rec.mimeType || mime || 'video/webm';
+    downloadBlob(new Blob(chunks, {type}), exportBaseName() + '_piegatura.' + (/mp4/.test(type) ? 'mp4' : 'webm'));
+  };
+  const yaw0 = fold3d.yaw, K = fold3d.model ? Math.max(1, foldSteps(fold3d.model).length) : 1;
+  const FOLD = Math.max(2400, 1400*K), HOLD = 600, SPIN = 4000, t0 = performance.now();
+  const ease = x=> x<0.5 ? 2*x*x : 1-Math.pow(-2*x+2,2)/2;
+  rec.start(200);
+  const step = now=>{
+    const t = now - t0;
+    if(t < HOLD){ setFold3DFrac(0); }
+    else if(t < HOLD + FOLD){ const k = (t-HOLD)/FOLD, s2 = k*K, i = Math.min(K-1, Math.floor(s2)); setFold3DFrac((i + ease(s2 - i))/K); }
+    else if(t < HOLD + FOLD + SPIN){ fold3d.yaw = yaw0 + 2*Math.PI*ease((t-HOLD-FOLD)/SPIN); setFold3DFrac(1); }
+    else { fold3d.yaw = yaw0; setFold3DFrac(1); rec.stop(); return; }
+    requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
 function exportSVG(){
   const svgStr = buildExportSVG();
   const blob = new Blob([svgStr], {type:'image/svg+xml'});
