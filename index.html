@@ -817,7 +817,8 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
     <button class="btn primary" style="width:auto;margin:0;padding:7px 14px;" id="btnPrintMenu">Stampa ▾</button>
     <div class="dropdown-menu" id="printMenu">
       <button data-action="export-svg">Esporta SVG (taglio/stampa)</button>
-      <button data-action="export-pdf">Esporta PDF</button>
+      <button data-action="export-pdf-print">📄 Esporta PDF per la stampa (vettoriale, CutContour)…</button>
+      <button data-action="export-pdf">Esporta PDF (anteprima, immagine)</button>
       <button data-action="export-pdf-tiled">Esporta PDF multi-pagina (disegno grande)…</button>
       <div class="menu-sep"></div>
       <button data-action="export-image">🖼 Esporta immagine (PNG/JPG)…</button>
@@ -1334,6 +1335,29 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
       <label style="display:flex;gap:6px;align-items:center;font-size:12.5px;cursor:pointer;margin-top:6px;"><input type="checkbox" id="imgExpLines" checked style="width:auto;margin:0;"><span>Includi le linee di taglio, piega e incollaggio</span></label>
       <div class="hint" id="imgExpInfo" style="margin-top:8px;"></div>
       <button class="btn primary" id="imgExpGo" style="width:100%;margin-top:12px;">Esporta</button>
+    </div>
+  </div>
+</div>
+
+<div id="pdfPrintModal" class="modal-overlay">
+  <div class="modal-box" style="width:520px;max-width:96vw;">
+    <div class="modal-head"><h3>PDF per la stampa</h3><button class="iconbtn" data-close="pdfPrintModal" title="Chiudi">✕</button></div>
+    <div class="modal-body">
+      <div class="hint" style="margin-bottom:10px;">Per tipografie, plotter print&amp;cut (Roland, Mimaki, Summa, HP…) e fustellatori: la grafica è un'immagine ad alta risoluzione, le linee tecniche sono vettoriali in <b>tinta piatta</b> e in <b>sovrastampa</b>, così non bucano la stampa e la macchina le riconosce dal nome. Misura reale, un foglio.</div>
+      <table style="width:100%;font-size:12.5px;border-collapse:collapse;" id="pdfSpotTable">
+        <tr><th style="text-align:left;font-weight:600;color:var(--ink-dim);">Linee</th><th style="text-align:left;font-weight:600;color:var(--ink-dim);">Nome della tinta piatta</th></tr>
+        <tr><td><label style="display:flex;gap:6px;align-items:center;cursor:pointer;"><input type="checkbox" data-role="cut" checked style="width:auto;margin:0;"><span>Taglio</span></label></td><td><input type="text" data-spot="cut" value="CutContour"></td></tr>
+        <tr><td><label style="display:flex;gap:6px;align-items:center;cursor:pointer;"><input type="checkbox" data-role="fold" checked style="width:auto;margin:0;"><span>Piega (cordonatura)</span></label></td><td><input type="text" data-spot="fold" value="Crease"></td></tr>
+        <tr><td><label style="display:flex;gap:6px;align-items:center;cursor:pointer;"><input type="checkbox" data-role="diecut" checked style="width:auto;margin:0;"><span>Fustella speciale</span></label></td><td><input type="text" data-spot="diecut" value="Perf"></td></tr>
+        <tr><td><label style="display:flex;gap:6px;align-items:center;cursor:pointer;"><input type="checkbox" data-role="glue" style="width:auto;margin:0;"><span>Incollaggio</span></label></td><td><input type="text" data-spot="glue" value="Glue"></td></tr>
+      </table>
+      <div class="row" style="margin-top:8px;">
+        <div class="field"><label>Spessore linee (pt)</label><input type="number" id="pdfLineW" value="0.25" min="0.05" max="5" step="0.05"></div>
+        <div class="field"><label>Risoluzione della grafica</label><select id="pdfArtDpi"><option value="150">150 DPI</option><option value="300" selected>300 DPI</option><option value="450">450 DPI</option></select></div>
+      </div>
+      <label style="display:flex;gap:6px;align-items:center;font-size:12.5px;cursor:pointer;margin-top:4px;"><input type="checkbox" id="pdfIncludeArt" checked style="width:auto;margin:0;"><span>Includi la grafica (sfondo, immagini, testi)</span></label>
+      <div class="hint" style="margin-top:6px;">Nomi più usati: <b>CutContour</b> (Roland, Summa, Mimaki, HP), <b>Thru-cut</b> / <b>Kiss-cut</b>, <b>Crease</b> o <b>Creasing</b> per le pieghe. Chiedi alla tipografia quali usa.</div>
+      <button class="btn primary" id="pdfPrintGo" style="width:100%;margin-top:12px;">Esporta PDF</button>
     </div>
   </div>
 </div>
@@ -15698,6 +15722,7 @@ function handleMenuAction(e){
   ensureDocumentOpen(); // con tutte le schede chiuse, un comando apre prima un disegno nuovo
   if(action==='export-svg') exportSVG();
   else if(action==='export-silhouette') openSilhouetteExport();
+  else if(action==='export-pdf-print') openModal('pdfPrintModal');
   else if(action==='export-image'){ openModal('imgExpModal'); imgExpRefresh(); }
   else if(action==='export-cad' || action==='blade-report') openCadExport();
   else if(action==='export-pdf') exportPDF();
@@ -17040,7 +17065,9 @@ document.getElementById('fold3dXrayOpacity').oninput = e=>{ fold3d.xrayOpacity =
 document.getElementById('fold3dSeq').onclick = openFoldSequence;
 document.getElementById('fold3dShot').onclick = fold3DShot;
 document.getElementById('fold3dVideo').onclick = fold3DVideo;
-['imgExpModal','cadModal'].forEach(id=>{ const m = document.getElementById(id); setupOverlayClickClose(m, ()=> m.classList.remove('open')); m.querySelector('[data-close]').onclick = ()=> m.classList.remove('open'); m.addEventListener('keydown', e=> e.stopPropagation()); });
+try{ const sv = JSON.parse(localStorage.getItem('spikecut-pdfspots') || 'null'); if(Array.isArray(sv)) [...document.querySelectorAll('#pdfSpotTable input')].forEach((i, k)=>{ if(sv[k]==null) return; if(i.type==='checkbox') i.checked = !!sv[k]; else i.value = sv[k]; }); }catch(e){}
+document.getElementById('pdfPrintGo').onclick = doPrintPDF;
+['imgExpModal','cadModal','pdfPrintModal'].forEach(id=>{ const m = document.getElementById(id); setupOverlayClickClose(m, ()=> m.classList.remove('open')); m.querySelector('[data-close]').onclick = ()=> m.classList.remove('open'); m.addEventListener('keydown', e=> e.stopPropagation()); });
 ['imgExpFmt','imgExpDpi'].forEach(id=> document.getElementById(id).onchange = imgExpRefresh);
 document.getElementById('imgExpGo').onclick = doImageExport;
 document.getElementById('cadDxf').onclick = ()=> doCadExport('dxf');
@@ -22268,6 +22295,85 @@ function doImageExport(){
   });
   img.onerror = ()=> showToast('Impossibile creare l\'immagine.', true);
   img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+/* ---------- PDF per la stampa: grafica raster + linee tecniche vettoriali in tinta piatta, in sovrastampa ----------
+   Il PDF è scritto direttamente (la libreria PDF usata per l'anteprima non gestisce le tinte piatte). */
+const PDF_SPOT_ALT = {cut:[0,1,0,0], fold:[1,0,0,0], diecut:[0.7,0,1,0], glue:[0,0.45,1,0]}; // colore CMYK con cui le tinte si vedono a schermo
+function pdfName(n){ return '/' + String(n||'Spot').replace(/[^A-Za-z0-9_.\-]/g, c=> '#' + c.charCodeAt(0).toString(16).padStart(2,'0')); }
+function renderArtJPEG(dpi){
+  return new Promise((resolve)=>{
+    const hasArt = !!exportPageBg() || state.shapes.some(x=> isShapeEffVisible(x) && x.style && x.style.role==='design');
+    if(!hasArt){ resolve(null); return; }
+    const maxSide = Math.max(state.page.w, state.page.h)/25.4*dpi; if(maxSide > 14000) dpi = Math.floor(dpi*14000/maxSide);
+    const k = dpi/25.4, W = Math.max(1, Math.round(state.page.w*k)), H = Math.max(1, Math.round(state.page.h*k));
+    const svg = exportImageSVG(false), img = new Image();
+    img.onload = ()=> afterSVGFonts(svg, ()=>{
+      const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+      const g = cv.getContext('2d'); g.fillStyle = '#ffffff'; g.fillRect(0, 0, W, H); g.drawImage(img, 0, 0, W, H);
+      cv.toBlob(async b=> resolve(b ? {bytes: new Uint8Array(await b.arrayBuffer()), W, H} : null), 'image/jpeg', 0.95);
+    });
+    img.onerror = ()=> resolve(null);
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  });
+}
+function buildPrintPDF(art, spots, lineW){
+  const enc = new TextEncoder(), K = 72/25.4, Wpt = state.page.w*K, Hpt = state.page.h*K, n = v=> (Math.round(v*1000)/1000).toString();
+  const objs = []; // [numero, contenuto (stringa o Uint8Array[])]
+  let content = '';
+  const res = {cs:[], gs:false, img:false};
+  if(art){ content += `q ${n(Wpt)} 0 0 ${n(Hpt)} 0 0 cm /Im0 Do Q\n`; res.img = true; }
+  spots.forEach((sp, i)=>{
+    if(!sp.geo.length) return;
+    res.cs.push(sp); res.gs = true;
+    content += `q /GS0 gs /CS${i} CS 1 SCN ${n(lineW)} w 1 J 1 j\n`;
+    sp.geo.forEach(g=>{
+      const pts = g.pts; if(pts.length < 2) return;
+      content += pts.map((p, j)=> `${n(p[0]*K)} ${n((state.page.h - p[1])*K)} ${j ? 'l' : 'm'}`).join('\n') + (g.closed ? '\nh' : '') + '\nS\n';
+    });
+    content += 'Q\n';
+  });
+  // oggetti
+  const cs = res.cs.map((sp, i)=> `/CS${spots.indexOf(sp)} [/Separation ${pdfName(sp.name)} /DeviceCMYK << /FunctionType 2 /Domain [0 1] /C0 [0 0 0 0] /C1 [${sp.alt.join(' ')}] /N 1 >>]`).join(' ');
+  const resources = `<< ${res.img ? '/XObject << /Im0 6 0 R >> ' : ''}${cs ? `/ColorSpace << ${cs} >> ` : ''}${res.gs ? '/ExtGState << /GS0 << /Type /ExtGState /OP true /op true /OPM 1 >> >> ' : ''}>>`;
+  const contentBytes = enc.encode(content);
+  objs.push([1, `<< /Type /Catalog /Pages 2 0 R >>`]);
+  objs.push([2, `<< /Type /Pages /Kids [3 0 R] /Count 1 >>`]);
+  objs.push([3, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${n(Wpt)} ${n(Hpt)}] /TrimBox [0 0 ${n(Wpt)} ${n(Hpt)}] /Resources ${resources} /Contents 4 0 R >>`]);
+  objs.push([4, [enc.encode(`<< /Length ${contentBytes.length} >>\nstream\n`), contentBytes, enc.encode('\nendstream')]]);
+  objs.push([5, `<< /Producer (SpikeCut) /Title <FEFF${[...exportBaseName()].map(ch=>{ const c = ch.codePointAt(0); return c > 0xFFFF ? '' : c.toString(16).padStart(4,'0'); }).join('')}> /CreationDate (D:${new Date().toISOString().replace(/[-:T]/g,'').slice(0,14)}) >>`]);
+  if(art) objs.push([6, [enc.encode(`<< /Type /XObject /Subtype /Image /Width ${art.W} /Height ${art.H} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${art.bytes.length} >>\nstream\n`), art.bytes, enc.encode('\nendstream')]]);
+  const parts = [enc.encode('%PDF-1.6\n%\xE2\xE3\xCF\xD3\n')], offsets = [];
+  let pos = parts[0].length;
+  objs.sort((a,b)=> a[0]-b[0]).forEach(([num, body])=>{
+    offsets[num] = pos;
+    const chunks = [enc.encode(`${num} 0 obj\n`)].concat(typeof body==='string' ? [enc.encode(body)] : body, [enc.encode('\nendobj\n')]);
+    chunks.forEach(c=>{ parts.push(c); pos += c.length; });
+  });
+  const maxNum = Math.max(...objs.map(o=>o[0]));
+  let xref = `xref\n0 ${maxNum+1}\n0000000000 65535 f \n`;
+  for(let i=1;i<=maxNum;i++) xref += offsets[i]!=null ? String(offsets[i]).padStart(10,'0') + ' 00000 n \n' : '0000000000 65535 f \n';
+  parts.push(enc.encode(xref + `trailer\n<< /Size ${maxNum+1} /Root 1 0 R /Info 5 0 R >>\nstartxref\n${pos}\n%%EOF\n`));
+  return new Blob(parts, {type:'application/pdf'});
+}
+async function doPrintPDF(){
+  const btn = document.getElementById('pdfPrintGo'), label = btn.textContent;
+  const spots = [];
+  document.querySelectorAll('#pdfSpotTable input[data-role]').forEach(cb=>{
+    if(!cb.checked) return;
+    const role = cb.dataset.role, name = (document.querySelector(`#pdfSpotTable input[data-spot="${role}"]`).value || '').trim() || role;
+    spots.push({role, name, alt: PDF_SPOT_ALT[role], geo: techGeometry([role])});
+  });
+  if(!spots.some(sp=> sp.geo.length) && !document.getElementById('pdfIncludeArt').checked){ showToast('Niente da esportare: non ci sono linee di taglio o piega visibili.', true); return; }
+  btn.disabled = true; btn.textContent = translate('Preparazione del PDF…');
+  try{
+    const art = document.getElementById('pdfIncludeArt').checked ? await renderArtJPEG(parseInt(document.getElementById('pdfArtDpi').value, 10)) : null;
+    const lw = Math.max(0.05, parseFloat(document.getElementById('pdfLineW').value) || 0.25);
+    downloadBlob(buildPrintPDF(art, spots, lw), exportBaseName() + '_stampa.pdf');
+    try{ localStorage.setItem('spikecut-pdfspots', JSON.stringify([...document.querySelectorAll('#pdfSpotTable input')].map(i=> i.type==='checkbox' ? i.checked : i.value))); }catch(e){}
+    document.getElementById('pdfPrintModal').classList.remove('open');
+    showToast(tpl('PDF per la stampa esportato: {n} tinte piatte in sovrastampa.', {n: spots.filter(sp=> sp.geo.length).length}), false);
+  }catch(err){ showToast('Errore: ' + err.message, true); }
+  finally{ btn.disabled = false; btn.textContent = label; }
 }
 // vista 3D: immagine ad alta risoluzione e video della piegatura
 function fold3DShot(){
