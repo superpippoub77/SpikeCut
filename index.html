@@ -743,6 +743,9 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
     <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--ink-dim);cursor:pointer;white-space:nowrap;" title="Sfondo trasparente (nessun colore) invece di un colore pieno">
       <input type="checkbox" id="pageBgTransparent" style="width:auto;"><span>Trasp.</span>
     </label>
+    <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--ink-dim);cursor:pointer;white-space:nowrap;" title="Applica lo sfondo anche a esportazioni (SVG, PDF) e stampe. Se non è spuntato, il colore si vede solo mentre disegni.">
+      <input type="checkbox" id="pageBgApply" style="width:auto;" checked><span>Applica</span>
+    </label>
   </div>
   <div class="grp">
     <select id="unitSelect" title="Unità di misura visualizzata">
@@ -2130,6 +2133,7 @@ const I18N = {
     "Il disegno ({w}×{h} mm) verrà diviso in {total} fogli formato {sw}×{sh} mm ({rows} righe × {cols} colonne), con {overlap}mm di sovrapposizione tra fogli adiacenti.{marginNote}": "The drawing ({w}×{h} mm) will be split across {total} sheets of {sw}×{sh} mm ({rows} rows × {cols} columns), with {overlap}mm overlap between adjacent sheets.{marginNote}",
     "· di {name}": "· by {name}",
     "Trasp.": "Transp.",
+    "Applica lo sfondo anche a esportazioni (SVG, PDF) e stampe. Se non è spuntato, il colore si vede solo mentre disegni.": "Apply the background to exports (SVG, PDF) and prints too. If unchecked, the colour is only shown while you draw.",
     "x: 0.0  y: 0.0 mm": "x: 0.0  y: 0.0 mm",
     "▦ griglia": "▦ grid",
     "🧲 calamita": "🧲 snap",
@@ -3494,6 +3498,7 @@ const I18N = {
     "Il disegno ({w}×{h} mm) verrà diviso in {total} fogli formato {sw}×{sh} mm ({rows} righe × {cols} colonne), con {overlap}mm di sovrapposizione tra fogli adiacenti.{marginNote}": "Die Zeichnung ({w}×{h} mm) wird auf {total} Blätter im Format {sw}×{sh} mm aufgeteilt ({rows} Zeilen × {cols} Spalten), mit {overlap}mm Überlappung zwischen benachbarten Blättern.{marginNote}",
     "· di {name}": "· von {name}",
     "Trasp.": "Transp.",
+    "Applica lo sfondo anche a esportazioni (SVG, PDF) e stampe. Se non è spuntato, il colore si vede solo mentre disegni.": "Den Hintergrund auch auf Exporte (SVG, PDF) und Ausdrucke anwenden. Ohne Häkchen ist die Farbe nur beim Zeichnen sichtbar.",
     "x: 0.0  y: 0.0 mm": "x: 0.0  y: 0.0 mm",
     "▦ griglia": "▦ Raster",
     "🧲 calamita": "🧲 Fangen",
@@ -4858,6 +4863,7 @@ const I18N = {
     "Il disegno ({w}×{h} mm) verrà diviso in {total} fogli formato {sw}×{sh} mm ({rows} righe × {cols} colonne), con {overlap}mm di sovrapposizione tra fogli adiacenti.{marginNote}": "El dibujo ({w}×{h} mm) se dividirá en {total} hojas de {sw}×{sh} mm ({rows} filas × {cols} columnas), con {overlap}mm de solapamiento entre hojas adyacentes.{marginNote}",
     "· di {name}": "· de {name}",
     "Trasp.": "Transp.",
+    "Applica lo sfondo anche a esportazioni (SVG, PDF) e stampe. Se non è spuntato, il colore si vede solo mentre disegni.": "Aplicar el fondo también a las exportaciones (SVG, PDF) y a las impresiones. Si no está marcado, el color solo se ve mientras dibujas.",
     "x: 0.0  y: 0.0 mm": "x: 0.0  y: 0.0 mm",
     "▦ griglia": "▦ cuadrícula",
     "🧲 calamita": "🧲 imán",
@@ -6222,6 +6228,7 @@ const I18N = {
     "Il disegno ({w}×{h} mm) verrà diviso in {total} fogli formato {sw}×{sh} mm ({rows} righe × {cols} colonne), con {overlap}mm di sovrapposizione tra fogli adiacenti.{marginNote}": "图纸（{w}×{h} 毫米）将被分割为 {total} 张 {sw}×{sh} 毫米的图纸（{rows} 行 × {cols} 列），相邻图纸间重叠 {overlap}毫米。{marginNote}",
     "· di {name}": "· 来自 {name}",
     "Trasp.": "透明",
+    "Applica lo sfondo anche a esportazioni (SVG, PDF) e stampe. Se non è spuntato, il colore si vede solo mentre disegni.": "将背景也应用到导出（SVG、PDF）和打印。未勾选时，颜色仅在绘图时显示。",
     "x: 0.0  y: 0.0 mm": "x: 0.0  y: 0.0 mm",
     "▦ griglia": "▦ 网格",
     "🧲 calamita": "🧲 磁性吸附",
@@ -7586,6 +7593,7 @@ const I18N = {
     "Il disegno ({w}×{h} mm) verrà diviso in {total} fogli formato {sw}×{sh} mm ({rows} righe × {cols} colonne), con {overlap}mm di sovrapposizione tra fogli adiacenti.{marginNote}": "Le dessin ({w}×{h} mm) sera réparti sur {total} feuilles de {sw}×{sh} mm ({rows} lignes × {cols} colonnes), avec un chevauchement de {overlap}mm entre feuilles adjacentes.{marginNote}",
     "· di {name}": "· par {name}",
     "Trasp.": "Transp.",
+    "Applica lo sfondo anche a esportazioni (SVG, PDF) e stampe. Se non è spuntato, il colore si vede solo mentre disegni.": "Appliquer le fond aussi aux exports (SVG, PDF) et aux impressions. Si la case n’est pas cochée, la couleur ne s’affiche que pendant le dessin.",
     "x: 0.0  y: 0.0 mm": "x : 0.0  y : 0.0 mm",
     "▦ griglia": "▦ grille",
     "🧲 calamita": "🧲 aimant",
@@ -13902,7 +13910,7 @@ window.addEventListener('mousemove', (e)=>{
   state.page = {
     w: Math.max(5, Math.min(5000, pageResizeDrag.startW + dxMM)),
     h: Math.max(5, Math.min(5000, pageResizeDrag.startH + dyMM)),
-    bg: state.page.bg
+    bg: state.page.bg, bgExport: state.page.bgExport
   };
   renderAll();
 });
@@ -17200,7 +17208,7 @@ function updateProofInfo(){
 function buildProofSVG(l){
   const offX = (l.pw - l.dw*l.scale)/2;
   const offY = (l.ph - 6 - l.dh*l.scale)/2;
-  const pageBg = (state.page.bg && state.page.bg!=='transparent') ? state.page.bg : '#ffffff'; // la carta stampata non può essere "trasparente"
+  const pageBg = exportPageBg() || '#ffffff'; // la carta stampata non può essere "trasparente"
   let body = `<style>${buildFontFaceCSS()}</style><rect x="0" y="0" width="${sN(l.pw)}" height="${sN(l.ph)}" fill="#ffffff"/>`;
   body += `<g transform="translate(${sN(offX)},${sN(offY)}) scale(${sN(l.scale)})">`;
   body += `<rect x="0" y="0" width="${sN(l.dw)}" height="${sN(l.dh)}" fill="${pageBg}" stroke="#cfcfcf" stroke-width="${sN(0.4/l.scale)}"/>`;
@@ -17274,13 +17282,24 @@ function syncPageSizeSelect(){
   sel.value = match ? key : 'custom';
   syncPageBgControls();
 }
+// colore di sfondo da usare in esportazioni e stampe: null se è trasparente o se "Applica" non è spuntato
+function exportPageBg(){
+  const bg = state.page.bg || '#ffffff';
+  return state.page.bgExport===false || bg==='transparent' ? null : bg;
+}
 function syncPageBgControls(){
   const bg = state.page.bg || '#ffffff';
   const isTransparent = bg === 'transparent';
   document.getElementById('pageBgTransparent').checked = isTransparent;
   document.getElementById('pageBgColor').value = isTransparent ? '#ffffff' : bg;
   document.getElementById('pageBgColor').disabled = isTransparent;
+  document.getElementById('pageBgApply').checked = state.page.bgExport!==false;
+  document.getElementById('pageBgApply').disabled = isTransparent;
 }
+document.getElementById('pageBgApply').addEventListener('change', (e)=>{
+  state.page.bgExport = e.target.checked;
+  pushHistory();
+});
 document.getElementById('pageBgColor').addEventListener('input', (e)=>{
   document.getElementById('pageBgTransparent').checked = false;
   state.page.bg = e.target.value;
@@ -17290,6 +17309,7 @@ document.getElementById('pageBgColor').addEventListener('change', ()=> pushHisto
 document.getElementById('pageBgTransparent').addEventListener('change', (e)=>{
   state.page.bg = e.target.checked ? 'transparent' : document.getElementById('pageBgColor').value;
   document.getElementById('pageBgColor').disabled = e.target.checked;
+  document.getElementById('pageBgApply').disabled = e.target.checked;
   pushHistory();
   renderCanvasOnly();
 });
@@ -17297,7 +17317,7 @@ document.getElementById('pageSize').addEventListener('change', (e)=>{
   const v = e.target.value;
   if(v==='custom'){ openCustomPageModal(); return; }
   const [w,h] = v.split('x').map(Number);
-  state.page = {w,h,bg:state.page.bg};
+  state.page = {w,h,bg:state.page.bg,bgExport:state.page.bgExport};
   renderAll();
 });
 function openCustomPageModal(){
@@ -17328,7 +17348,7 @@ function applyCustomPage(){
     err.style.display = 'block';
     return;
   }
-  state.page = {w,h,bg:state.page.bg};
+  state.page = {w,h,bg:state.page.bg,bgExport:state.page.bgExport};
   document.getElementById('pageSizeModal').classList.remove('open');
   syncPageSizeSelect();
   renderAll();
@@ -20239,7 +20259,7 @@ async function autoFitImportedShapes(newShapes, opts){
         'Disegno più grande della pagina'
       );
       if(ok){
-        state.page = {w: Math.ceil(bw+4), h: Math.ceil(bh+4), bg: state.page.bg};
+        state.page = {w: Math.ceil(bw+4), h: Math.ceil(bh+4), bg: state.page.bg, bgExport: state.page.bgExport};
         syncPageSizeSelect();
       }
     }
@@ -21190,8 +21210,8 @@ function buildDrawingGroupsSVG(){
 function buildExportSVG(){
   const w = state.page.w, h = state.page.h;
   const { body: groupsBody, groups } = buildDrawingGroupsSVG();
-  const pageBg = state.page.bg || '#ffffff';
-  const bgRect = pageBg==='transparent' ? '' : `<rect x="0" y="0" width="${w}" height="${h}" fill="${pageBg}"/>\n`;
+  const pageBg = exportPageBg();
+  const bgRect = !pageBg ? '' : `<rect x="0" y="0" width="${w}" height="${h}" fill="${pageBg}"/>\n`;
   let body = bgRect + groupsBody;
   // legend
   const legendItems = Object.keys(ROLE_STYLE).filter(k=>groups[k].length);
@@ -21371,7 +21391,7 @@ function buildTileSVG(l, r, c, direction){
   // dell'area stampabile (subito dopo il margine di sicurezza), sui 4 lati di QUESTO foglio
   const dx = l.margin - tileX, dy = l.margin - tileY;
   const clipId = 'tileclip-' + (r*l.cols+c+1);
-  const tileBg = (state.page.bg && state.page.bg!=='transparent') ? state.page.bg : '#ffffff'; // un foglio stampato non può essere "trasparente"
+  const tileBg = exportPageBg() || '#ffffff'; // un foglio stampato non può essere "trasparente"
   let extra = `<defs><clipPath id="${clipId}"><rect x="${sN(l.margin)}" y="${sN(l.margin)}" width="${sN(l.usableW)}" height="${sN(l.usableH)}"/></clipPath></defs>`;
   extra += `<rect x="0" y="0" width="${sN(l.sheetW)}" height="${sN(l.sheetH)}" fill="${tileBg}"/>\n`;
   // linee tratteggiate nella zona di sovrapposizione, solo verso un foglio successivo esistente
