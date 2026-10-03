@@ -11216,6 +11216,23 @@ function triangulatePolygon(pts){
   return tris;
 }
 
+// trasformazione affine che porta al meglio (minimi quadrati) i punti T nei punti P: per un pannello piano
+// con la prospettiva leggera della vista 3D è praticamente esatta su tutto il pannello
+function affineFit(T, P){
+  const n = Math.min(T.length, P.length); if(n < 3) return null;
+  let sxx=0, sxy=0, syy=0, sx=0, sy=0, bx=[0,0,0], by=[0,0,0];
+  for(let i=0;i<n;i++){
+    const [x,y] = T[i], [u,v] = P[i];
+    sxx+=x*x; sxy+=x*y; syy+=y*y; sx+=x; sy+=y;
+    bx[0]+=x*u; bx[1]+=y*u; bx[2]+=u; by[0]+=x*v; by[1]+=y*v; by[2]+=v;
+  }
+  const M = [[sxx,sxy,sx],[sxy,syy,sy],[sx,sy,n]];
+  const det3 = m=> m[0][0]*(m[1][1]*m[2][2]-m[1][2]*m[2][1]) - m[0][1]*(m[1][0]*m[2][2]-m[1][2]*m[2][0]) + m[0][2]*(m[1][0]*m[2][1]-m[1][1]*m[2][0]);
+  const D = det3(M); if(Math.abs(D) < 1e-12) return null;
+  const solve = b=> [0,1,2].map(c=> det3(M.map((row,r)=> row.map((val,k)=> k===c ? b[r] : val))) / D);
+  const [a, c, e] = solve(bx), [b, d, f] = solve(by);
+  return [a, b, c, d, e, f];
+}
 // trasformazione affine (per canvas.setTransform) che porta i 3 punti T nei 3 punti P
 function affineFrom(T, P){
   const dx1=T[1][0]-T[0][0], dy1=T[1][1]-T[0][1], dx2=T[2][0]-T[0][0], dy2=T[2][1]-T[0][1];
@@ -11459,18 +11476,27 @@ function renderFold3D(){
     ctx.beginPath();
     it.vs.forEach((v,k)=>{ const p = proj(v); if(k) ctx.lineTo(p[0],p[1]); else ctx.moveTo(p[0],p[1]); });
     ctx.closePath(); ctx.fill();
-    if(front && fold3d.art && !it.bad && it.tris.length){ // grafica stampata sul lato esterno del pannello
+    if(front && fold3d.art && !it.bad && it.flat && it.flat.length>=3){ // grafica stampata sul lato esterno del pannello
       const A = fold3d.art, sp = it.vs.map(proj);
-      it.tris.forEach(([a,b,c2])=>{
-        const P = [sp[a], sp[b], sp[c2]], T = [it.flat[a], it.flat[b], it.flat[c2]].map(q=>[q[0]*A.k, q[1]*A.k]);
-        const m = affineFrom(T, P); if(!m) return;
-        const cx=(P[0][0]+P[1][0]+P[2][0])/3, cy=(P[0][1]+P[1][1]+P[2][1])/3; // triangolo appena allargato: niente fessure tra i triangoli
-        const E = P.map(q=>{ const dx=q[0]-cx, dy=q[1]-cy, l=Math.hypot(dx,dy)||1; return [q[0]+dx/l*0.7, q[1]+dy/l*0.7]; });
+      // 1) tutta la grafica del pannello con una sola trasformazione (approssimata), ritagliata sul contorno:
+      //    copre le giunture tra i triangoli e i bordi, che altrimenti lasciavano vedere il pannello chiaro sotto
+      //    (sui contorni con archi, tanti triangoli sottili a ventaglio formavano una raggiera)
+      const T = it.flat.map(q=>[q[0]*A.k, q[1]*A.k]);
+      const drawArt = (m, clipPts)=>{
         ctx.save();
-        ctx.beginPath(); ctx.moveTo(E[0][0],E[0][1]); ctx.lineTo(E[1][0],E[1][1]); ctx.lineTo(E[2][0],E[2][1]); ctx.closePath(); ctx.clip();
+        ctx.beginPath(); clipPts.forEach((q,k2)=>{ if(k2) ctx.lineTo(q[0],q[1]); else ctx.moveTo(q[0],q[1]); }); ctx.closePath(); ctx.clip();
         ctx.setTransform(dpr*m[0], dpr*m[1], dpr*m[2], dpr*m[3], dpr*m[4], dpr*m[5]);
         ctx.drawImage(A.canvas, 0, 0);
         ctx.restore();
+      };
+      const mAll = affineFit(T, sp);
+      if(mAll) drawArt(mAll, sp);
+      // 2) sopra, triangolo per triangolo con la trasformazione esatta (la prospettiva resta corretta)
+      (it.tris || []).forEach(([a,b,c2])=>{
+        const P = [sp[a], sp[b], sp[c2]], m = affineFrom([T[a], T[b], T[c2]], P); if(!m) return;
+        const area = Math.abs((P[1][0]-P[0][0])*(P[2][1]-P[0][1]) - (P[2][0]-P[0][0])*(P[1][1]-P[0][1]));
+        if(area < 4) return; // triangoli quasi senza area: basta lo strato sotto
+        drawArt(m, P);
       });
       ctx.fillStyle = `rgba(0,0,0,${((1-shade)*0.85).toFixed(3)})`; // luce e ombra anche sopra la grafica
       ctx.beginPath(); it.vs.forEach((v,k2)=>{ const q = proj(v); if(k2) ctx.lineTo(q[0],q[1]); else ctx.moveTo(q[0],q[1]); }); ctx.closePath(); ctx.fill();
