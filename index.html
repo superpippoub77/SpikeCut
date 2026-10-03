@@ -847,6 +847,11 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
       <button data-action="scale-drawing">Scala / Proporziona disegno…</button>
       <div class="menu-sep"></div>
       <button data-action="manage-fonts">Gestisci font personalizzati…</button>
+      <button data-action="text-to-paths">🔤 Converti testo in tracciati</button>
+      <div class="menu-sep"></div>
+      <button data-action="preflight">✅ Controllo prima della stampa…</button>
+      <button data-action="bleed">⬚ Abbondanza e zona sicura…</button>
+      <button data-action="imposition">▦ Imposizione e nesting sul foglio di stampa…</button>
     </div>
   </div>
 </div>
@@ -1362,6 +1367,50 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   </div>
 </div>
 
+<div id="bleedModal" class="modal-overlay">
+  <div class="modal-box" style="width:440px;">
+    <div class="modal-head"><h3>Abbondanza e zona sicura</h3><button class="iconbtn" data-close="bleedModal" title="Chiudi">✕</button></div>
+    <div class="modal-body">
+      <div class="hint" style="margin-bottom:10px;">Aggiunge due guide attorno al contorno di taglio, in un livello a parte: <b>abbondanza</b> (fuori, fin dove la grafica deve arrivare perché dopo il taglio non restino bordi bianchi) e <b>zona sicura</b> (dentro, dove tenere testi e loghi). Le guide si vedono solo nel programma: non vengono esportate né stampate.</div>
+      <div class="row">
+        <div class="field"><label>Abbondanza (mm)</label><input type="number" id="bleedOut" value="3" min="0" step="0.5"></div>
+        <div class="field"><label>Zona sicura (mm)</label><input type="number" id="bleedIn" value="3" min="0" step="0.5"></div>
+      </div>
+      <button class="btn primary" id="bleedGo" style="width:100%;margin-top:12px;">Crea le guide</button>
+      <button class="btn" id="bleedRemove" style="width:100%;margin-top:6px;">Togli le guide</button>
+    </div>
+  </div>
+</div>
+
+<div id="preflightModal" class="modal-overlay">
+  <div class="modal-box" style="width:600px;max-width:96vw;">
+    <div class="modal-head"><h3>Controllo prima della stampa</h3><button class="iconbtn" data-close="preflightModal" title="Chiudi">✕</button></div>
+    <div class="modal-body"><div id="preflightList"></div><button class="btn" id="preflightAgain" style="width:100%;margin-top:12px;">Ricontrolla</button></div>
+  </div>
+</div>
+
+<div id="impModal" class="modal-overlay">
+  <div class="modal-box" style="width:820px;max-width:97vw;">
+    <div class="modal-head"><h3>Imposizione e nesting</h3><button class="iconbtn" data-close="impModal" title="Chiudi">✕</button></div>
+    <div class="modal-body">
+      <div style="display:flex;gap:14px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:250px;">
+          <div class="field"><label>Foglio di stampa / cartone</label><select id="impSheet">
+            <option value="700x1000">70 × 100 cm</option><option value="720x1020">72 × 102 cm</option><option value="500x700">50 × 70 cm</option>
+            <option value="1000x1400">100 × 140 cm</option><option value="320x450">SRA3 32 × 45 cm</option><option value="297x420">A3</option><option value="custom">Personalizzato…</option></select></div>
+          <div class="row"><div class="field"><label>Larghezza (mm)</label><input type="number" id="impW" value="700"></div><div class="field"><label>Altezza (mm)</label><input type="number" id="impH" value="1000"></div></div>
+          <div class="row"><div class="field"><label>Margine (mm)</label><input type="number" id="impMargin" value="10" min="0"></div><div class="field"><label>Distanza tra le copie (mm)</label><input type="number" id="impGap" value="3" min="0" step="0.5"></div></div>
+          <div class="field"><label>Orientamento</label><select id="impRot"><option value="auto">Automatico (prova 0° e 90°)</option><option value="0">Solo 0°</option><option value="90">Solo 90°</option></select></div>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12.5px;cursor:pointer;"><input type="checkbox" id="impNest" checked style="width:auto;margin:0;"><span>Incastra le copie (file sfalsate e alternate a 180°)</span></label>
+          <div class="hint" id="impSummary" style="margin-top:10px;padding:8px;border-radius:6px;background:rgba(201,151,63,0.12);font-weight:600;"></div>
+          <button class="btn primary" id="impGo" style="width:100%;margin-top:10px;">Crea il foglio in una nuova scheda</button>
+        </div>
+        <canvas id="impCanvas" style="width:400px;height:440px;background:#2a2b2e;border-radius:6px;flex:none;max-width:100%;"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="cadModal" class="modal-overlay">
   <div class="modal-box" style="width:560px;max-width:96vw;">
     <div class="modal-head"><h3>CAD, plotter e fustellatore</h3><button class="iconbtn" data-close="cadModal" title="Chiudi">✕</button></div>
@@ -1439,6 +1488,8 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
       <div class="field"><label>Profondità P (mm)</label><input type="number" id="boxGenW" value="150" min="10"></div>
       <div class="field"><label>Altezza H (mm)</label><input type="number" id="boxGenH" value="100" min="10"></div>
       <div class="field"><label>Aletta di incollaggio (mm) — lascia vuoto per un valore automatico</label><input type="number" id="boxGenGlue" placeholder="automatica" min="0"></div>
+      <div class="field"><label>Spessore del cartone (mm) — misure qui sopra = interne</label><input type="number" id="boxGenT" value="0" min="0" max="15" step="0.1"></div>
+      <div class="hint">Con uno spessore, i pannelli vengono allargati perché le misure <b>interne</b> restino quelle scritte (es. cartoncino 0,5 mm, ondulato onda B 3 mm, onda C 4 mm). Con 0 le misure sono quelle delle linee.</div>
       <div class="hint" id="boxGenError" style="color:var(--cut);display:none;margin-top:6px;"></div>
       <button class="btn primary" id="boxGenApply" style="width:100%;margin-top:12px;">Genera in una nuova scheda</button>
     </div>
@@ -11314,7 +11365,7 @@ function affineFrom(T, P){
 // Grafica da riportare sui pannelli: tutte le forme visibili che non sono linee tecniche
 // (taglio, piega, fustella speciale, incollaggio), su qualunque livello visibile.
 function artShapesForFold3D(){
-  return state.shapes.filter(s=> isShapeEffVisible(s) && !(s.style && ['cut','diecut','fold','glue'].includes(s.style.role)));
+  return state.shapes.filter(s=> isShapeEffVisible(s) && !s.guide && !(s.style && ['cut','diecut','fold','glue'].includes(s.style.role)));
 }
 // "Stampa" la grafica su un'immagine del foglio piatto (stesso aspetto dell'esportazione SVG)
 // Un SVG caricato come immagine carica i font incorporati (@font-face) DOPO l'evento "load": disegnandolo
@@ -13831,6 +13882,11 @@ function boxPolyShape(points, role){
 // Scatola americana (RSC — Regular Slotted Container): 4 pareti in fila
 // (L,P,L,P) più aletta di incollaggio sull'altezza del corpo; sopra e sotto
 // ogni parete un'aletta alta P/2, separata dalle vicine da un taglio.
+function generateBoxOfType(type, L, W, H, glueW, t){
+  if(BOX_TEMPLATES[type]) return BOX_TEMPLATES[type].gen(L, W, H, glueW, t);
+  return type==='tuck' ? generateTuckBox(L,W,H,glueW) : generateAmericanBox(L,W,H,glueW);
+}
+const BOX_TEMPLATES = {}; // modelli aggiuntivi (vedi più avanti)
 function generateAmericanBox(L, W, H, glueW){
   glueW = glueW || Math.round(Math.max(20, Math.min(L,W)*0.5));
   const flapH = W/2;
@@ -15725,6 +15781,10 @@ function handleMenuAction(e){
   if(action==='export-svg') exportSVG();
   else if(action==='export-silhouette') openSilhouetteExport();
   else if(action==='export-pdf-print') openModal('pdfPrintModal');
+  else if(action==='text-to-paths') textToPaths();
+  else if(action==='preflight') openPreflight();
+  else if(action==='bleed') openModal('bleedModal');
+  else if(action==='imposition') openImposition();
   else if(action==='export-image'){ openModal('imgExpModal'); imgExpRefresh(); }
   else if(action==='export-cad' || action==='blade-report') openCadExport();
   else if(action==='export-pdf') exportPDF();
@@ -17071,7 +17131,13 @@ document.getElementById('fold3dGlb').onclick = exportFold3DGLB;
 document.getElementById('fold3dObj').onclick = exportFold3DOBJ;
 try{ const sv = JSON.parse(localStorage.getItem('spikecut-pdfspots') || 'null'); if(Array.isArray(sv)) [...document.querySelectorAll('#pdfSpotTable input')].forEach((i, k)=>{ if(sv[k]==null) return; if(i.type==='checkbox') i.checked = !!sv[k]; else i.value = sv[k]; }); }catch(e){}
 document.getElementById('pdfPrintGo').onclick = doPrintPDF;
-['imgExpModal','cadModal','pdfPrintModal'].forEach(id=>{ const m = document.getElementById(id); setupOverlayClickClose(m, ()=> m.classList.remove('open')); m.querySelector('[data-close]').onclick = ()=> m.classList.remove('open'); m.addEventListener('keydown', e=> e.stopPropagation()); });
+document.getElementById('bleedGo').onclick = ()=> makeBleedGuides(false);
+document.getElementById('bleedRemove').onclick = ()=> makeBleedGuides(true);
+document.getElementById('preflightAgain').onclick = runPreflight;
+document.getElementById('impSheet').onchange = ()=>{ const v = document.getElementById('impSheet').value; if(v!=='custom'){ const [w,h] = v.split('x'); document.getElementById('impW').value = w; document.getElementById('impH').value = h; } impRefresh(); };
+['impW','impH','impMargin','impGap','impRot','impNest'].forEach(id=>{ const e = document.getElementById(id); e.addEventListener('change', impRefresh); });
+document.getElementById('impGo').onclick = impCreate;
+['imgExpModal','cadModal','pdfPrintModal','bleedModal','preflightModal','impModal'].forEach(id=>{ const m = document.getElementById(id); setupOverlayClickClose(m, ()=> m.classList.remove('open')); m.querySelector('[data-close]').onclick = ()=> m.classList.remove('open'); m.addEventListener('keydown', e=> e.stopPropagation()); });
 ['imgExpFmt','imgExpDpi'].forEach(id=> document.getElementById(id).onchange = imgExpRefresh);
 document.getElementById('imgExpGo').onclick = doImageExport;
 document.getElementById('cadDxf').onclick = ()=> doCadExport('dxf');
@@ -17115,7 +17181,10 @@ document.getElementById('boxGenApply').onclick = ()=>{
     return;
   }
   const type = document.getElementById('boxGenType').value;
-  const result = type==='tuck' ? generateTuckBox(L,W,H,glueW) : generateAmericanBox(L,W,H,glueW);
+  // spessore del cartone: le misure scritte sono interne, i pannelli crescono di uno spessore per ogni piega
+  // (lunghezza e profondità) e l'altezza di due (le alette sopra e sotto si appoggiano sullo spessore)
+  const t = Math.max(0, parseFloat(document.getElementById('boxGenT').value) || 0);
+  const result = generateBoxOfType(type, L + t, W + t, H + 2*t, glueW, t);
 
   snapshotActiveDocument();
   const label = type==='tuck' ? 'Astuccio' : 'Scatola americana';
@@ -21821,7 +21890,7 @@ setupOverlayClickClose(document.getElementById('cutPreviewModal'), ()=> document
 function buildDrawingGroupsSVG(){
   let body = `<style>${buildFontFaceCSS()}</style>\n`;
   const groups = {design:[],cut:[],fold:[],diecut:[],glue:[]};
-  state.shapes.forEach(s=>{ if(isShapeEffVisible(s)) (groups[s.style.role]||groups.design).push(s); });
+  state.shapes.forEach(s=>{ if(isShapeEffVisible(s) && !s.guide) (groups[s.style.role]||groups.design).push(s); }); // le guide (abbondanza, zona sicura) non escono
   Object.keys(ROLE_STYLE).forEach(roleKey=>{
     const list = groups[roleKey];
     if(!list.length) return;
@@ -22115,7 +22184,7 @@ function downloadBlob(blob, name){
 function techGeometry(roles){
   const out = [];
   state.shapes.forEach(s=>{
-    if(!isShapeEffVisible(s) || !s.style || !roles.includes(s.style.role)) return;
+    if(!isShapeEffVisible(s) || s.guide || !s.style || !roles.includes(s.style.role)) return;
     if(s.type==='text' || s.type==='image' || s.type==='tracedpath') return;
     const role = s.style.role;
     if(s.arc && s.points && s.points.length>=3 && !(s.smooth && s.smooth.some(v=>v>0))){
@@ -22465,6 +22534,291 @@ async function exportFold3DOBJ(){
   setTimeout(()=> downloadText(mtl, base + '.mtl', 'text/plain'), 300);
   if(png) setTimeout(()=> downloadBlob(new Blob([png], {type:'image/png'}), base + '_grafica.png'), 600);
   showToast(png ? 'Modello OBJ esportato: tre file (OBJ, MTL e immagine della grafica), tienili nella stessa cartella.' : 'Modello OBJ esportato: due file (OBJ e MTL), tienili nella stessa cartella.', false);
+}
+/* ============================================================
+   PRODUZIONE: contorno della fustella, imposizione, abbondanza, controllo
+============================================================ */
+// contorno esterno della fustella: la linea di taglio chiusa più grande (o il riquadro di tutto il disegno)
+function dieOutline(){
+  // prima scelta: l'unione dei pannelli ricostruiti per la vista 3D (funziona anche quando il contorno
+  // di taglio è fatto di tante linee separate); poi la linea di taglio chiusa più grande
+  try{
+    const model = buildFoldModel(state.shapes.filter(x=> !x.guide));
+    if(model && model.faces.length && typeof polygonClipping!=='undefined'){
+      const polys = model.faces.map(f=>{ const r = f.nodes.map(v=> [model.nodes[v][0], model.nodes[v][1]]); r.push(r[0].slice()); return [r]; });
+      const u = polygonClipping.union(...polys);
+      let bestR = null, bestRA = 0;
+      u.forEach(poly=>{ const ring = poly[0].slice(0, -1), a = Math.abs(polygonArea(ring)); if(a > bestRA){ bestRA = a; bestR = ring; } });
+      if(bestR && bestR.length >= 3) return {pts: bestR, area: bestRA, real: true};
+    }
+  }catch(e){}
+  const rings = techGeometry(['cut','diecut']).filter(g=> g.closed && g.pts.length>=3);
+  let best = null, bestA = 0;
+  rings.forEach(g=>{ const a = Math.abs(polygonArea(g.pts)); if(a > bestA){ bestA = a; best = g.pts; } });
+  if(best) return {pts: best.map(p=>[p[0],p[1]]), area: bestA, real: true};
+  const bb = state.shapes.filter(x=> isShapeEffVisible(x) && !x.guide).map(shapeBBox).filter(Boolean);
+  if(!bb.length) return null;
+  const x0 = Math.min(...bb.map(b=>b.x)), y0 = Math.min(...bb.map(b=>b.y)), x1 = Math.max(...bb.map(b=>b.x+b.w)), y1 = Math.max(...bb.map(b=>b.y+b.h));
+  return {pts:[[x0,y0],[x1,y0],[x1,y1],[x0,y1]], area:(x1-x0)*(y1-y0), real:false};
+}
+function densifyRing(pts, step){
+  const out = [];
+  for(let i=0;i<pts.length;i++){
+    const a = pts[i], b = pts[(i+1)%pts.length], L = dist(a,b), n = Math.max(1, Math.ceil(L/step));
+    for(let k=0;k<n;k++) out.push([a[0]+(b[0]-a[0])*k/n, a[1]+(b[1]-a[1])*k/n]);
+  }
+  return out;
+}
+function segSegDist(a, b, c, d){
+  const o = (p,q,r)=> (q[0]-p[0])*(r[1]-p[1]) - (q[1]-p[1])*(r[0]-p[0]);
+  const d1 = o(c,d,a), d2 = o(c,d,b), d3 = o(a,b,c), d4 = o(a,b,d);
+  if(((d1>0 && d2<0) || (d1<0 && d2>0)) && ((d3>0 && d4<0) || (d3<0 && d4>0))) return 0;
+  const ps = (p,q,r)=>{ const vx = r[0]-q[0], vy = r[1]-q[1], L2 = vx*vx+vy*vy; let t = L2 ? ((p[0]-q[0])*vx + (p[1]-q[1])*vy)/L2 : 0; t = Math.max(0, Math.min(1, t)); return Math.hypot(p[0]-q[0]-t*vx, p[1]-q[1]-t*vy); };
+  return Math.min(ps(a,c,d), ps(b,c,d), ps(c,a,b), ps(d,a,b));
+}
+// due copie (anello + bbox) troppo vicine o sovrapposte?
+function ringsCollide(A, B, ox, oy, gap){
+  if(B.x0+ox >= A.x1+gap || A.x0 >= B.x1+ox+gap || B.y0+oy >= A.y1+gap || A.y0 >= B.y1+oy+gap) return false;
+  const g = Math.max(gap, 0.01), Bp = B.pts.map(p=>[p[0]+ox, p[1]+oy]);
+  if(pointInPoly(Bp[0], A.pts) || pointInPoly(A.pts[0], Bp)) return true;
+  const na = A.pts.length, nb = Bp.length;
+  for(let i=0;i<na;i++){
+    const a = A.pts[i], b = A.pts[(i+1)%na];
+    const sx0 = Math.min(a[0],b[0])-g, sx1 = Math.max(a[0],b[0])+g, sy0 = Math.min(a[1],b[1])-g, sy1 = Math.max(a[1],b[1])+g;
+    for(let j=0;j<nb;j++){
+      const c = Bp[j], d = Bp[(j+1)%nb];
+      if(Math.max(c[0],d[0]) < sx0 || Math.min(c[0],d[0]) > sx1 || Math.max(c[1],d[1]) < sy0 || Math.min(c[1],d[1]) > sy1) continue;
+      if(segSegDist(a,b,c,d) < g) return true;
+    }
+  }
+  return false;
+}
+function makeRing(pts){ const xs = pts.map(p=>p[0]), ys = pts.map(p=>p[1]); return {pts, x0:Math.min(...xs), y0:Math.min(...ys), x1:Math.max(...xs), y1:Math.max(...ys)}; }
+function rotRing(R, deg){ // ruota attorno al centro e riporta l'angolo del riquadro in (0,0)
+  const cx = (R.x0+R.x1)/2, cy = (R.y0+R.y1)/2, a = deg*Math.PI/180, c = Math.cos(a), sn = Math.sin(a);
+  const pts = R.pts.map(p=>[cx + (p[0]-cx)*c - (p[1]-cy)*sn, cy + (p[0]-cx)*sn + (p[1]-cy)*c]);
+  const r = makeRing(pts); return makeRing(r.pts.map(p=>[p[0]-r.x0, p[1]-r.y0]));
+}
+// spostamento minimo lungo una direzione perché B (in base + t·dir) non tocchi nessuna delle copie "others"
+function minShift(others, B, base, dir, gap, hi){
+  const hit = t=> others.some(o=> ringsCollide(o.R, B, base[0]+dir[0]*t - o.x, base[1]+dir[1]*t - o.y, gap));
+  let lo = 0; if(!hit(0)) return 0;
+  while(hit(hi)) hi *= 1.5;
+  for(let k=0;k<22;k++){ const m = (lo+hi)/2; if(hit(m)) lo = m; else hi = m; }
+  return hi;
+}
+function nestLayouts(R0, SW, SH, margin, gap, rotOpt, nest){
+  const results = [], uw = SW-2*margin, uh = SH-2*margin;
+  (rotOpt==='auto' ? [0,90] : [parseInt(rotOpt,10)]).forEach(base=>{
+    const A = rotRing(R0, base), B = rotRing(R0, base+180), w = A.x1, h = A.y1;
+    if(w > uw+1e-6 || h > uh+1e-6) return;
+    const dx = Math.max(w*0.05, minShift([{R:A,x:0,y:0}], A, [0,0], [1,0], gap, w+gap+1));
+    const rowOf = (R, ox)=> [-1,0,1,2].map(k=>({R, x: ox + k*dx, y: 0}));
+    const variants = [{alt:false, ox:0}];
+    if(nest){ [0.25,0.5,0.75].forEach(f=> variants.push({alt:false, ox:f*dx})); [0,0.25,0.5,0.75].forEach(f=> variants.push({alt:true, ox:f*dx})); }
+    variants.forEach(v=>{
+      // riga 2 rispetto alla riga 1, poi (se alternate) riga 3 rispetto alla riga 2
+      const R2 = v.alt ? B : A;
+      const dy1 = minShift(rowOf(A, 0), R2, [v.ox, 0], [0,1], gap, h+gap+1);
+      let dy2 = dy1;
+      if(v.alt){
+        dy2 = minShift(rowOf(B, v.ox), A, [0, 0], [0,1], gap, h+gap+1);
+        const same = minShift(rowOf(A, 0), A, [0,0], [0,1], gap, h+gap+1); // righe uguali a due di distanza
+        if(dy1 + dy2 < same){ const k = same/(dy1+dy2); dy2 *= k; }
+      }
+      // posa le copie nel foglio
+      const place = [];
+      let y = 0, r = 0;
+      while(y + h <= uh + 1e-6){
+        const alt = v.alt && r%2===1, Rr = alt ? B : A;
+        let ox = v.alt ? (alt ? v.ox : 0) : ((r*v.ox) % dx);
+        for(let x = ox; x + w <= uw + 1e-6; x += dx) place.push({x: margin + x, y: margin + y, rot: alt ? base+180 : base});
+        y += (v.alt ? (r%2===0 ? dy1 : dy2) : dy1); r++;
+        if(r > 2000) break;
+      }
+      results.push({base, alt:v.alt, ox:v.ox, n: place.length, place, w, h, usedH: place.length ? Math.max(...place.map(q=>q.y+h)) : 0});
+    });
+  });
+  results.sort((a,b)=> b.n - a.n || a.usedH - b.usedH);
+  return results[0] || null;
+}
+let impState = null;
+function openImposition(){
+  const o = dieOutline();
+  if(!o){ showToast('Il disegno è vuoto.', true); return; }
+  const pts = densifyRing(o.pts, 4), step = Math.max(1, Math.ceil(pts.length/160));
+  impState = {outline:o, R0: makeRing(pts.filter((_,i)=> i%step===0)), best:null};
+  openModal('impModal'); impRefresh();
+}
+function impRefresh(){
+  if(!impState) return;
+  const SW = parseFloat(document.getElementById('impW').value)||700, SH = parseFloat(document.getElementById('impH').value)||1000;
+  const margin = Math.max(0, parseFloat(document.getElementById('impMargin').value)||0), gap = Math.max(0, parseFloat(document.getElementById('impGap').value)||0);
+  const best = nestLayouts(impState.R0, SW, SH, margin, gap, document.getElementById('impRot').value, document.getElementById('impNest').checked);
+  impState.best = best; impState.SW = SW; impState.SH = SH;
+  const sum = document.getElementById('impSummary');
+  if(!best || !best.n){ sum.textContent = translate('La fustella non entra nel foglio: scegli un foglio più grande o riduci il margine.'); }
+  else {
+    const used = impState.outline.area * best.n / (SW*SH) * 100;
+    sum.textContent = tpl('{n} copie per foglio ({how}). Resa del materiale {u}%, scarto {s}%.', {n: best.n,
+      how: translate(best.alt ? 'file alternate a 180°, incastrate' : (best.ox ? 'file sfalsate' : 'griglia')) + (best.base ? ', ' + translate('ruotate di 90°') : ''),
+      u: used.toFixed(1), s: (100-used).toFixed(1)})
+      + (impState.outline.real ? '' : ' ' + translate('(Non c\'è un contorno di taglio chiuso: uso il riquadro del disegno.)'));
+  }
+  // anteprima
+  const cv = document.getElementById('impCanvas'), dpr = window.devicePixelRatio||1, cw = cv.clientWidth||400, ch = cv.clientHeight||440;
+  cv.width = cw*dpr; cv.height = ch*dpr; const g = cv.getContext('2d'); g.setTransform(dpr,0,0,dpr,0,0);
+  g.fillStyle = '#2a2b2e'; g.fillRect(0,0,cw,ch);
+  const k = Math.min((cw-20)/SW, (ch-20)/SH), ox = (cw - SW*k)/2, oy = (ch - SH*k)/2;
+  g.fillStyle = '#f4efe4'; g.fillRect(ox, oy, SW*k, SH*k);
+  g.strokeStyle = 'rgba(0,0,0,.25)'; g.setLineDash([3,3]); g.strokeRect(ox+margin*k, oy+margin*k, (SW-2*margin)*k, (SH-2*margin)*k); g.setLineDash([]);
+  if(best) best.place.forEach(q=>{
+    const R = rotRing(impState.R0, q.rot);
+    g.beginPath(); R.pts.forEach((p,i)=>{ const X = ox + (q.x+p[0])*k, Y = oy + (q.y+p[1])*k; if(i) g.lineTo(X,Y); else g.moveTo(X,Y); }); g.closePath();
+    g.fillStyle = q.rot%360===best.base%360 ? 'rgba(201,151,63,.55)' : 'rgba(53,114,214,.45)'; g.fill(); g.strokeStyle = '#d1402c'; g.lineWidth = 0.8; g.stroke();
+  });
+}
+function rotateShapeCopy(s, c, deg){ // ruota una copia attorno al punto c
+  if(!deg) return;
+  if(s.points){ s.points = s.points.map(p=> rotatePointAround(p, c, deg)); return; }
+  if(s.x==null) return;
+  const b = shapeBBox(s), m = [b.x+b.w/2, b.y+b.h/2], m2 = rotatePointAround(m, c, deg);
+  s.x += m2[0]-m[0]; s.y += m2[1]-m[1]; s.rotation = (((s.rotation||0) + deg) % 360 + 360) % 360;
+}
+function impCreate(){
+  const st = impState; if(!st || !st.best || !st.best.n){ showToast('La fustella non entra nel foglio: scegli un foglio più grande o riduci il margine.', true); return; }
+  const src = state.shapes.filter(x=> isShapeEffVisible(x) && !x.guide);
+  const R0 = st.R0, C = [(R0.x0+R0.x1)/2, (R0.y0+R0.y1)/2];
+  const out = [];
+  st.best.place.forEach(q=>{
+    const copies = JSON.parse(JSON.stringify(src));
+    copies.forEach(cp=>{ cp.id = uid(); rotateShapeCopy(cp, C, q.rot); });
+    // dopo la rotazione attorno al centro, l'angolo del riquadro del contorno va nella posizione calcolata
+    const a = q.rot*Math.PI/180, hw = (R0.x1-R0.x0)/2, hh = (R0.y1-R0.y0)/2;
+    const rw = Math.abs(hw*Math.cos(a)) + Math.abs(hh*Math.sin(a)), rh = Math.abs(hw*Math.sin(a)) + Math.abs(hh*Math.cos(a));
+    copies.forEach(cp=> translateShapeCopy(cp, q.x - (C[0]-rw), q.y - (C[1]-rh)));
+    remapGroupIds(copies); out.push(...copies);
+  });
+  snapshotActiveDocument();
+  const doc = makeNewDocument(tpl('Imposizione {n} copie', {n: st.best.n}));
+  doc.layers = JSON.parse(JSON.stringify(state.layers)); doc.activeLayerId = state.activeLayerId;
+  doc.customFonts = state.customFonts;
+  doc.shapes = out;
+  doc.page = {w: st.SW, h: st.SH, bg: state.page.bg, bgExport: state.page.bgExport, bgOpacity: state.page.bgOpacity};
+  doc.history = [JSON.stringify({shapes:doc.shapes, layers:doc.layers})]; doc.historyTimes = [Date.now()]; doc.histIndex = 0;
+  documents.push(doc); activeDocId = doc.id; loadDocumentIntoState(doc); renderTabBar();
+  document.getElementById('impModal').classList.remove('open');
+  showToast(tpl('Foglio imposto creato in una nuova scheda: {n} copie.', {n: st.best.n}), false);
+}
+// abbondanza e zona sicura: guide ai lati del contorno di taglio, in un livello dedicato
+function makeBleedGuides(removeOnly){
+  const before = state.shapes.length;
+  state.shapes = state.shapes.filter(x=> !x.guide);
+  if(removeOnly){ document.getElementById('bleedModal').classList.remove('open'); pushHistory(); renderAll(); showToast(state.shapes.length < before ? 'Guide tolte.' : 'Non ci sono guide da togliere.', false); return; }
+  const o = dieOutline();
+  if(!o || !o.real){ showToast('Serve un contorno di taglio chiuso per creare le guide.', true); return; }
+  let layer = state.layers.find(l=> l.guideLayer);
+  if(!layer){ layer = {id:uid(), name:translate('Guide di stampa'), visible:true, locked:true, guideLayer:true}; state.layers.push(layer); }
+  const out = Math.max(0, parseFloat(document.getElementById('bleedOut').value)||0), inn = Math.max(0, parseFloat(document.getElementById('bleedIn').value)||0);
+  const sign = polygonArea(o.pts) > 0 ? 1 : -1;
+  const mk = (d, color, name)=>{ // provo i due versi dell'offset e tengo quello che allarga (o stringe) davvero
+    let pts = offsetShapePoints(o.pts, true, d*sign);
+    if((Math.abs(polygonArea(pts)) > o.area) !== (d > 0)) pts = offsetShapePoints(o.pts, true, -d*sign);
+    const sh = makeShape('path', {points: pts, closed: true, guide: true, guideName: name, locked: true, layerId: layer.id});
+    Object.assign(sh.style, {role:'design', stroke: color, strokeWidth: 0.3, dash: '2,1.5', fill: 'none'});
+    state.shapes.push(sh);
+  };
+  if(out > 0) mk(out, '#e0218a', 'abbondanza');
+  if(inn > 0) mk(-inn, '#2f9e5a', 'zona sicura');
+  document.getElementById('bleedModal').classList.remove('open');
+  pushHistory(); renderAll();
+  showToast(tpl('Guide create nel livello «{l}»: magenta = abbondanza, verde = zona sicura. Non vengono esportate.', {l: layer.name}), false);
+}
+// controllo prima della stampa
+function openPreflight(){ openModal('preflightModal'); runPreflight(); }
+async function runPreflight(){
+  const host = document.getElementById('preflightList'); host.innerHTML = '<div class="hint">' + escapeHTML(translate('Controllo in corso…')) + '</div>';
+  const items = []; // {level:'err'|'warn'|'ok', text, ids}
+  const vis = state.shapes.filter(x=> isShapeEffVisible(x) && !x.guide);
+  const tech = techGeometry(['cut','fold','diecut']);
+  // immagini
+  for(const im of vis.filter(x=> x.type==='image')){
+    if(/^https?:/i.test(im.href||'')) items.push({level:'err', text: translate('Immagine collegata a un sito, non incorporata: potrebbe mancare in stampa. Salvala sul computer e importala.'), ids:[im.id]});
+    let nat = null; try{ nat = await loadImageEl(im.href); }catch(e){}
+    if(nat){
+      const c = imgCrop(im), dpi = (nat.naturalWidth*(1-c.l-c.r)) / (im.w/25.4);
+      if(dpi < 150) items.push({level:'err', text: tpl('Immagine a bassa risoluzione: {d} DPI alla misura attuale (servono almeno 250–300 DPI per la stampa).', {d: Math.round(dpi)}), ids:[im.id]});
+      else if(dpi < 250) items.push({level:'warn', text: tpl('Immagine a {d} DPI: accettabile, ma per una stampa nitida ne servono 300.', {d: Math.round(dpi)}), ids:[im.id]});
+    }
+  }
+  // testi
+  vis.filter(x=> x.type==='text').forEach(t=>{
+    if((t.fontSize||6) < 1.8) items.push({level:'warn', text: tpl('Testo molto piccolo ({s} mm, circa {p} pt): potrebbe non leggersi in stampa.', {s: (t.fontSize||6).toFixed(1), p: Math.round((t.fontSize||6)/0.3528)}), ids:[t.id]});
+    const b = shapeBBox(t), box = [[b.x,b.y],[b.x+b.w,b.y],[b.x+b.w,b.y+b.h],[b.x,b.y+b.h]];
+    let dmin = Infinity;
+    tech.forEach(g=>{ const pts = g.closed ? g.pts.concat([g.pts[0]]) : g.pts; for(let i=1;i<pts.length;i++) for(let j=0;j<4;j++) dmin = Math.min(dmin, segSegDist(pts[i-1], pts[i], box[j], box[(j+1)%4])); });
+    if(dmin < 2) items.push({level: dmin===0 ? 'err' : 'warn', text: dmin===0 ? translate('Testo attraversato da una linea di taglio o piega.') : tpl('Testo a {d} mm da una linea di taglio o piega: tienilo ad almeno 2–3 mm.', {d: dmin.toFixed(1)}), ids:[t.id]});
+  });
+  // linee sottili di grafica
+  const thin = vis.filter(x=> x.style && x.style.role==='design' && x.type!=='text' && x.type!=='image' && x.style.stroke && x.style.stroke!=='none' && (x.style.strokeWidth||0) < 0.1);
+  if(thin.length) items.push({level:'warn', text: tpl('{n} linee di grafica più sottili di 0,1 mm: in stampa potrebbero sparire.', {n: thin.length}), ids: thin.map(x=>x.id)});
+  // contorno di taglio
+  const cuts = techGeometry(['cut']);
+  if(!cuts.length) items.push({level:'err', text: translate('Non ci sono linee di taglio visibili.'), ids:[]});
+  else if(!cuts.some(g=> g.closed)) items.push({level:'warn', text: translate('Nessun contorno di taglio chiuso: controlla con «Verifica chiusure percorsi».'), ids:[]});
+  // grafica che non arriva all'abbondanza
+  const o = dieOutline();
+  if(o && o.real && !exportPageBg()){
+    const art = vis.filter(x=> x.style && x.style.role==='design' && (x.type==='image' || (x.style.fill && x.style.fill!=='none')));
+    if(art.length){
+      const bb = art.map(shapeBBox), ax0 = Math.min(...bb.map(b=>b.x)), ay0 = Math.min(...bb.map(b=>b.y)), ax1 = Math.max(...bb.map(b=>b.x+b.w)), ay1 = Math.max(...bb.map(b=>b.y+b.h));
+      const R = makeRing(o.pts);
+      if(ax0 > R.x0-2 || ay0 > R.y0-2 || ax1 < R.x1+2 || ay1 < R.y1+2) items.push({level:'warn', text: translate('La grafica di sfondo non supera il contorno di taglio di almeno 2–3 mm (abbondanza): dopo il taglio potrebbero restare bordi bianchi.'), ids:[]});
+    }
+  }
+  if(state.layers.some(l=> l.visible===false) && state.shapes.some(x=> x.style && ['cut','fold'].includes(x.style.role) && !isLayerVisible(x.layerId))) items.push({level:'warn', text: translate('Ci sono linee di taglio o piega su livelli nascosti: non verranno esportate.'), ids:[]});
+  host.innerHTML = '';
+  if(!items.length){ host.innerHTML = '<div style="padding:10px;border-radius:6px;background:rgba(47,158,90,.15);font-weight:600;">✅ ' + escapeHTML(translate('Nessun problema trovato: il disegno è pronto per la stampa.')) + '</div>'; return; }
+  items.sort((a,b)=> (a.level==='err'?0:1) - (b.level==='err'?0:1)).forEach(it=>{
+    const row = document.createElement('div'); row.style.cssText = 'display:flex;gap:8px;align-items:flex-start;padding:7px 4px;border-bottom:1px solid var(--line);font-size:12.5px;';
+    row.innerHTML = `<span>${it.level==='err' ? '⛔' : '⚠️'}</span><span style="flex:1;">${escapeHTML(it.text)}</span>`;
+    if(it.ids.length){ const b = document.createElement('button'); b.className='btn'; b.style.cssText='width:auto;margin:0;'; b.textContent = translate('Mostra'); b.onclick = ()=>{ state.selection = new Set(it.ids); document.getElementById('preflightModal').classList.remove('open'); renderAll(); }; row.appendChild(b); }
+    host.appendChild(row);
+  });
+}
+// testo in tracciati: il browser disegna il testo ad alta risoluzione (con il suo font) e lo si vettorizza
+async function textToPaths(){
+  const texts = [...state.selection].map(id=> state.shapes.find(x=>x.id===id)).filter(x=> x && x.type==='text');
+  const list = texts.length ? texts : state.shapes.filter(x=> x.type==='text' && isShapeEffVisible(x) && !x.locked);
+  if(!list.length){ showToast('Non ci sono testi da convertire.', true); return; }
+  if(typeof ImageTracer==='undefined'){ showToast('Libreria di vettorizzazione non disponibile (verifica la connessione a Internet).', true); return; }
+  showToast(tpl('Conversione di {n} testi in corso…', {n: list.length}), false);
+  let done = 0;
+  for(const t of list){
+    const b = shapeBBox(t), pad = Math.max(1, (t.fontSize||6)*0.3);
+    const X = b.x - pad, Y = b.y - pad, W = b.w + 2*pad, H = b.h + 2*pad;
+    const k = Math.min(40, 4000/Math.max(W, H)); // pixel per mm
+    const clone = JSON.parse(JSON.stringify(t)); clone.style = Object.assign({}, clone.style, {stroke:'#000000', strokeOpacity:1});
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${Math.round(W*k)}" height="${Math.round(H*k)}" viewBox="${X} ${Y} ${W} ${H}"><style>${buildFontFaceCSS()}</style><rect x="${X}" y="${Y}" width="${W}" height="${H}" fill="#fff"/>${exportNode(clone)}</svg>`;
+    const img = await loadImageEl('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg)).catch(()=> null);
+    if(!img) continue;
+    if(/@font-face/.test(svg)) await new Promise(r=> setTimeout(r, 450));
+    const cv = document.createElement('canvas'); cv.width = Math.round(W*k); cv.height = Math.round(H*k);
+    const g = cv.getContext('2d'); g.drawImage(img, 0, 0, cv.width, cv.height);
+    const data = g.getImageData(0, 0, cv.width, cv.height);
+    const td = ImageTracer.imagedataToTracedata(data, {colorsampling:0, numberofcolors:2, pal:[{r:255,g:255,b:255,a:255},{r:0,g:0,b:0,a:255}], ltres:0.5, qtres:0.5, pathomit:6, blurradius:0, rightangleenhance:false, linefilter:false, scale:1, roundcoords:2});
+    const svgOut = ImageTracer.getsvgstring(td, {scale:1, roundcoords:2, strokewidth:0, linefilter:false, desc:false, viewbox:false});
+    const doc = new DOMParser().parseFromString(svgOut, 'image/svg+xml');
+    const dark = f=>{ const m = /rgb\((\d+),(\d+),(\d+)\)/.exec(f||''); return m && (+m[1] + +m[2] + +m[3]) < 384; }; // ImageTracer ritocca i colori della tavolozza
+    const paths = [...doc.querySelectorAll('path')].filter(p=> dark(p.getAttribute('fill'))).map(p=>({d: p.getAttribute('d'), fill: t.style.stroke || '#111111'}));
+    if(!paths.length) continue;
+    const shape = makeShape('tracedpath', {x: X, y: Y, w: W, h: H, srcW: cv.width, srcH: cv.height, paths, layerId: t.layerId, fromText: t.text});
+    Object.assign(shape.style, {role: t.style.role || 'design', stroke:'none', fill: t.style.stroke || '#111111', fillOpacity: t.style.strokeOpacity!=null ? t.style.strokeOpacity : 1});
+    const i = state.shapes.indexOf(t); state.shapes.splice(i, 1, shape); state.selection.delete(t.id); state.selection.add(shape.id);
+    done++;
+  }
+  pushHistory(); renderAll();
+  showToast(done ? tpl('{n} testi convertiti in tracciati: ora non dipendono più dal font.', {n: done}) : 'Non è stato possibile convertire i testi.', !done);
 }
 // vista 3D: immagine ad alta risoluzione e video della piegatura
 function fold3DShot(){
