@@ -2081,6 +2081,7 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Sfondo del foglio applicato ai pannelli.": "Sheet background applied to the panels.",
     "Sposta gli oggetti selezionati ({n}) nel livello:": "Move the selected objects ({n}) to layer:",
     "Sposta qui gli oggetti selezionati": "Move the selected objects here",
     "📑 Sposta nel livello «{name}»": "📑 Move to layer “{name}”",
@@ -3453,6 +3454,7 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Sfondo del foglio applicato ai pannelli.": "Blatthintergrund auf die Platten angewendet.",
     "Sposta gli oggetti selezionati ({n}) nel livello:": "Ausgewählte Objekte ({n}) in Ebene verschieben:",
     "Sposta qui gli oggetti selezionati": "Ausgewählte Objekte hierher verschieben",
     "📑 Sposta nel livello «{name}»": "📑 In Ebene „{name}“ verschieben",
@@ -4825,6 +4827,7 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Sfondo del foglio applicato ai pannelli.": "Fondo de la hoja aplicado a los paneles.",
     "Sposta gli oggetti selezionati ({n}) nel livello:": "Mover los objetos seleccionados ({n}) a la capa:",
     "Sposta qui gli oggetti selezionati": "Mover aquí los objetos seleccionados",
     "📑 Sposta nel livello «{name}»": "📑 Mover a la capa «{name}»",
@@ -6197,6 +6200,7 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Sfondo del foglio applicato ai pannelli.": "已将页面背景应用到面板。",
     "Sposta gli oggetti selezionati ({n}) nel livello:": "将所选对象（{n}）移动到图层：",
     "Sposta qui gli oggetti selezionati": "将所选对象移到此处",
     "📑 Sposta nel livello «{name}»": "📑 移动到图层“{name}”",
@@ -7569,6 +7573,7 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Sfondo del foglio applicato ai pannelli.": "Fond de la feuille appliqué aux panneaux.",
     "Sposta gli oggetti selezionati ({n}) nel livello:": "Déplacer les objets sélectionnés ({n}) vers le calque :",
     "Sposta qui gli oggetti selezionati": "Déplacer ici les objets sélectionnés",
     "📑 Sposta nel livello «{name}»": "📑 Déplacer vers le calque « {name} »",
@@ -11037,10 +11042,14 @@ function buildArtTexture(){
   const art = artShapesForFold3D();
   fold3d.artCount = art.length;
   const box = document.getElementById('fold3dShowArt');
-  if(!art.length || (box && !box.checked)) return;
+  // sfondo del foglio stampato sui pannelli, come nelle esportazioni (casella "Applica"); il bianco di partenza
+  // non lo copre: i pannelli restano color carta
+  const bg = exportPageBg(), bgOn = !!bg && bg.toLowerCase()!=='#ffffff';
+  fold3d.artBg = bgOn;
+  if((!art.length && !bgOn) || (box && !box.checked)) return;
   const W = state.page.w, H = state.page.h, k = Math.max(1, Math.min(6, 4096/Math.max(W,H)));
   const set = new Set(art);
-  const body = `<style>${buildFontFaceCSS()}</style>` + shapesInZOrder().filter(s=>set.has(s)).map(exportNode).join('\n'); // anche i font personalizzati
+  const body = `<style>${buildFontFaceCSS()}</style>` + (bgOn ? `<rect x="0" y="0" width="${W}" height="${H}" fill="${bg}"/>` : '') + shapesInZOrder().filter(s=>set.has(s)).map(exportNode).join('\n'); // anche i font personalizzati
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${Math.round(W*k)}" height="${Math.round(H*k)}" viewBox="0 0 ${W} ${H}">${body}</svg>`;
   const img = new Image();
   img.onload = ()=> afterSVGFonts(svg, ()=>{
@@ -11126,6 +11135,7 @@ function refreshFold3D(){
   buildArtTexture();
   document.getElementById('fold3dInfo').textContent = tpl('{p} pannelli, {h} pieghe collegate.', {p:model.faces.length, h:model.hinges.length})
     + (K>1 ? ' ' + tpl('Piegatura in {k} passi (ordine impostato sulle pieghe).', {k:K}) : '')
+    + (fold3d.artBg ? ' ' + translate('Sfondo del foglio applicato ai pannelli.') : '')
     + ' ' + (fold3d.artCount ? tpl('Grafica sui pannelli: {n} elementi dei livelli visibili.', {n:fold3d.artCount})
                              : translate('Nessuna grafica da mostrare: è grafica tutto ciò che non ha ruolo Taglio, Piega, Fustella speciale o Incollaggio, sui livelli visibili.'));
   renderFold3DCheck(checkFoldModel(model));
