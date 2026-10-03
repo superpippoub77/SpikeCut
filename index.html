@@ -307,6 +307,7 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   display:flex;align-items:center;gap:5px;padding:7px 6px;border-radius:6px;
   border:1px solid transparent;margin-bottom:2px;cursor:pointer;background:var(--bg-2);
 }
+.layer-movesel{padding:8px;margin-bottom:10px;border:1px solid var(--brass);border-radius:8px;background:rgba(201,151,63,.10);}
 .layerhead.active{border-color:rgba(201,151,63,.5);}
 .layerhead.dragover{border-top:2px solid var(--brass);}
 .layerhead .drag{cursor:grab;color:var(--ink-dim);flex:none;font-size:11px;letter-spacing:-2px;}
@@ -2080,6 +2081,13 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Sposta gli oggetti selezionati ({n}) nel livello:": "Move the selected objects ({n}) to layer:",
+    "Sposta qui gli oggetti selezionati": "Move the selected objects here",
+    "📑 Sposta nel livello «{name}»": "📑 Move to layer “{name}”",
+    "{n} oggetti spostati nel livello «{name}».": "{n} objects moved to layer “{name}”.",
+    "Il livello «{name}» è nascosto o bloccato: gli oggetti spostati sono stati tolti dalla selezione.": "Layer “{name}” is hidden or locked: the moved objects have been deselected.",
+    "Ctrl o Maiusc + clic per selezionare più oggetti": "Ctrl or Shift + click to select several objects",
+    "Seleziona prima gli oggetti da spostare (clic sul foglio o nell'elenco del livello).": "First select the objects to move (click on the sheet or in the layer list).",
     "Monospace (Courier)": "Monospace (Courier)",
     "Muovi il mouse e clic per definire quanto si curva…": "Move the mouse and click to set how much it curves…",
     "Nascondi password": "Hide password",
@@ -3445,6 +3453,13 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Sposta gli oggetti selezionati ({n}) nel livello:": "Ausgewählte Objekte ({n}) in Ebene verschieben:",
+    "Sposta qui gli oggetti selezionati": "Ausgewählte Objekte hierher verschieben",
+    "📑 Sposta nel livello «{name}»": "📑 In Ebene „{name}“ verschieben",
+    "{n} oggetti spostati nel livello «{name}».": "{n} Objekte in Ebene „{name}“ verschoben.",
+    "Il livello «{name}» è nascosto o bloccato: gli oggetti spostati sono stati tolti dalla selezione.": "Ebene „{name}“ ist ausgeblendet oder gesperrt: Die verschobenen Objekte wurden abgewählt.",
+    "Ctrl o Maiusc + clic per selezionare più oggetti": "Strg oder Umschalt + Klick, um mehrere Objekte auszuwählen",
+    "Seleziona prima gli oggetti da spostare (clic sul foglio o nell'elenco del livello).": "Wähle zuerst die zu verschiebenden Objekte aus (Klick auf das Blatt oder in die Ebenenliste).",
     "Monospace (Courier)": "Monospace (Courier)",
     "Muovi il mouse e clic per definire quanto si curva…": "Bewege die Maus und klicke, um die Krümmung festzulegen…",
     "Nascondi password": "Passwort ausblenden",
@@ -4810,6 +4825,13 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Sposta gli oggetti selezionati ({n}) nel livello:": "Mover los objetos seleccionados ({n}) a la capa:",
+    "Sposta qui gli oggetti selezionati": "Mover aquí los objetos seleccionados",
+    "📑 Sposta nel livello «{name}»": "📑 Mover a la capa «{name}»",
+    "{n} oggetti spostati nel livello «{name}».": "{n} objetos movidos a la capa «{name}».",
+    "Il livello «{name}» è nascosto o bloccato: gli oggetti spostati sono stati tolti dalla selezione.": "La capa «{name}» está oculta o bloqueada: los objetos movidos se han deseleccionado.",
+    "Ctrl o Maiusc + clic per selezionare più oggetti": "Ctrl o Mayús + clic para seleccionar varios objetos",
+    "Seleziona prima gli oggetti da spostare (clic sul foglio o nell'elenco del livello).": "Primero selecciona los objetos que quieres mover (clic en la hoja o en la lista de la capa).",
     "Monospace (Courier)": "Monoespaciada (Courier)",
     "Muovi il mouse e clic per definire quanto si curva…": "Mueve el ratón y haz clic para definir cuánto se curva…",
     "Nascondi password": "Ocultar contraseña",
@@ -6175,6 +6197,13 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Sposta gli oggetti selezionati ({n}) nel livello:": "将所选对象（{n}）移动到图层：",
+    "Sposta qui gli oggetti selezionati": "将所选对象移到此处",
+    "📑 Sposta nel livello «{name}»": "📑 移动到图层“{name}”",
+    "{n} oggetti spostati nel livello «{name}».": "已将 {n} 个对象移动到图层“{name}”。",
+    "Il livello «{name}» è nascosto o bloccato: gli oggetti spostati sono stati tolti dalla selezione.": "图层“{name}”已隐藏或锁定：已取消选择移动的对象。",
+    "Ctrl o Maiusc + clic per selezionare più oggetti": "按 Ctrl 或 Shift + 点击可选择多个对象",
+    "Seleziona prima gli oggetti da spostare (clic sul foglio o nell'elenco del livello).": "请先选择要移动的对象（在画布上或图层列表中点击）。",
     "Monospace (Courier)": "等宽字体（Courier）",
     "Muovi il mouse e clic per definire quanto si curva…": "移动鼠标并点击以设定曲率…",
     "Nascondi password": "隐藏密码",
@@ -7540,6 +7569,13 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Sposta gli oggetti selezionati ({n}) nel livello:": "Déplacer les objets sélectionnés ({n}) vers le calque :",
+    "Sposta qui gli oggetti selezionati": "Déplacer ici les objets sélectionnés",
+    "📑 Sposta nel livello «{name}»": "📑 Déplacer vers le calque « {name} »",
+    "{n} oggetti spostati nel livello «{name}».": "{n} objets déplacés vers le calque « {name} ».",
+    "Il livello «{name}» è nascosto o bloccato: gli oggetti spostati sono stati tolti dalla selezione.": "Le calque « {name} » est masqué ou verrouillé : les objets déplacés ont été désélectionnés.",
+    "Ctrl o Maiusc + clic per selezionare più oggetti": "Ctrl ou Maj + clic pour sélectionner plusieurs objets",
+    "Seleziona prima gli oggetti da spostare (clic sul foglio o nell'elenco del livello).": "Sélectionne d’abord les objets à déplacer (clic sur la feuille ou dans la liste du calque).",
     "Monospace (Courier)": "Monospace (Courier)",
     "Muovi il mouse e clic per definire quanto si curva…": "Déplace la souris et clique pour définir la courbure…",
     "Nascondi password": "Masquer le mot de passe",
@@ -14036,6 +14072,8 @@ function shapeContextItems(s, mm){
     {label:'▲ Avanti di uno', action:()=> bringForward(s.id)},
     {label:'▼ Indietro di uno', action:()=> sendBackward(s.id)},
     'sep',
+    ...(state.layers.length>1 ? state.layers.slice().reverse().filter(l=> [...state.selection].some(id=>{ const x = state.shapes.find(y=>y.id===id); return x && x.layerId!==l.id; }))
+      .map(l=>({label: tpl('📑 Sposta nel livello «{name}»', {name: l.name}), action:()=> moveSelectionToLayer(l.id)})).concat(['sep']) : []),
     {label:'Seleziona stesso colore', action:()=> selectSameColor(s)},
     {label:'Seleziona stesso ruolo', action:()=> selectSameRole(s)},
     {label:'✂ Dividi in segmenti', action:()=>{ if(!state.selection.has(s.id)) state.selection = new Set([s.id]); explodeSelectionToSegments(); }},
@@ -18617,6 +18655,20 @@ function renderLayersPanelInner(){
   };
   host.appendChild(addBtn);
 
+  const selN = state.shapes.filter(s=> state.selection.has(s.id)).length;
+  if(selN && state.layers.length>1){
+    const bar = document.createElement('div'); bar.className = 'layer-movesel';
+    const lbl = document.createElement('div'); lbl.className = 'hint'; lbl.textContent = tpl('Sposta gli oggetti selezionati ({n}) nel livello:', {n: selN});
+    const row = document.createElement('div'); row.style.cssText = 'display:flex;gap:6px;margin-top:4px;';
+    const sel = document.createElement('select'); sel.style.flex = '1';
+    state.layers.slice().reverse().forEach(l=>{ const o = document.createElement('option'); o.value = l.id; o.textContent = l.name; sel.appendChild(o); });
+    sel.value = state.activeLayerId;
+    const go = document.createElement('button'); go.className = 'btn'; go.style.cssText = 'width:auto;margin:0;'; go.textContent = 'Sposta';
+    go.onclick = ()=> moveSelectionToLayer(sel.value);
+    row.appendChild(sel); row.appendChild(go); bar.appendChild(lbl); bar.appendChild(row);
+    host.appendChild(bar);
+  }
+
   const orderedLayers = state.layers.slice().reverse(); // in cima alla lista = in cima alla pila
 
   orderedLayers.forEach((layer)=>{
@@ -18660,10 +18712,15 @@ function renderLayersPanelInner(){
     });
     const renBtn = document.createElement('button'); renBtn.textContent='✎'; renBtn.title='Rinomina il livello'; renBtn.className='layer-rename';
     renBtn.onclick = (e)=>{ e.stopPropagation(); startRename(); };
+    const canMoveHere = state.shapes.some(s=> state.selection.has(s.id) && s.layerId!==layer.id);
     head.addEventListener('contextmenu', (e)=>{
       e.preventDefault(); e.stopPropagation();
-      showContextMenu(e.clientX, e.clientY, [{label:'✎ Rinomina livello', action:()=> startRename()}]);
+      showContextMenu(e.clientX, e.clientY, [{label:'✎ Rinomina livello', action:()=> startRename()},
+        {label:'⤵ Sposta qui gli oggetti selezionati', disabled: !canMoveHere, action:()=> moveSelectionToLayer(layer.id)}]);
     });
+    const hereBtn = document.createElement('button'); hereBtn.textContent='⤵'; hereBtn.title='Sposta qui gli oggetti selezionati';
+    hereBtn.style.display = canMoveHere ? '' : 'none';
+    hereBtn.onclick = (e)=>{ e.stopPropagation(); moveSelectionToLayer(layer.id); };
 
     const realIdx = state.layers.findIndex(l=>l.id===layer.id);
     const upBtn = document.createElement('button'); upBtn.textContent='▲'; upBtn.title='Sposta più in alto (in cima alla pila)';
@@ -18683,7 +18740,7 @@ function renderLayersPanelInner(){
     const count = document.createElement('span'); count.className='layer-count'; count.textContent = nObj; count.title = tpl('{n} oggetti in questo livello', {n:nObj});
     head.appendChild(arrow);
     head.appendChild(drag); head.appendChild(eyeBtn); head.appendChild(lockBtn);
-    head.appendChild(nameEl); head.appendChild(count); head.appendChild(renBtn);
+    head.appendChild(nameEl); head.appendChild(count); head.appendChild(hereBtn); head.appendChild(renBtn);
     head.appendChild(upBtn); head.appendChild(downBtn); head.appendChild(delBtn);
     // accordion: il clic sul titolo apre questo livello e chiude gli altri; sul livello già aperto lo richiude
     head.onclick = ()=>{
@@ -18728,7 +18785,13 @@ function renderLayersPanelInner(){
       const row = document.createElement('div');
       row.className = 'layerrow' + (state.selection.has(s.id) ? ' selected' : '');
       row.innerHTML = `<span class="sw" style="background:${s.style.stroke}"></span><span class="lbl">${labelFor(s)}</span>`;
-      row.onclick = (ev)=>{ if(ev.target.tagName==='BUTTON') return; state.selection = new Set([s.id]); renderAll(); };
+      row.title = 'Ctrl o Maiusc + clic per selezionare più oggetti';
+      row.onclick = (ev)=>{
+        if(ev.target.tagName==='BUTTON') return;
+        if(ev.ctrlKey || ev.metaKey || ev.shiftKey){ if(state.selection.has(s.id)) state.selection.delete(s.id); else state.selection.add(s.id); }
+        else state.selection = new Set([s.id]);
+        renderAll();
+      };
       const visBtn = document.createElement('button'); visBtn.textContent = s.visible===false ? '○' : '●';
       visBtn.title = 'Mostra/nascondi';
       visBtn.onclick = ()=>{ s.visible = s.visible===false; renderAll(); };
@@ -18745,6 +18808,20 @@ function renderLayersPanelInner(){
     }
     host.appendChild(shapesWrap);
   });
+}
+// sposta gli oggetti selezionati in un altro livello (restano nella stessa posizione sul foglio)
+function moveSelectionToLayer(layerId){
+  const layer = state.layers.find(l=>l.id===layerId); if(!layer) return;
+  const moved = state.shapes.filter(s=> state.selection.has(s.id) && s.layerId!==layerId);
+  if(!state.selection.size){ showToast('Seleziona prima gli oggetti da spostare (clic sul foglio o nell\'elenco del livello).', true); return; }
+  if(!moved.length) return;
+  moved.forEach(s=> s.layerId = layerId);
+  state.openLayerId = layerId;
+  if(layer.visible===false || layer.locked){
+    state.selection.clear();
+    showToast(tpl('Il livello «{name}» è nascosto o bloccato: gli oggetti spostati sono stati tolti dalla selezione.', {name: layer.name}), false);
+  } else showToast(tpl('{n} oggetti spostati nel livello «{name}».', {n: moved.length, name: layer.name}), false);
+  pushHistory(); renderAll();
 }
 function moveLayer(id, dir){
   const idx = state.layers.findIndex(l=>l.id===id);
