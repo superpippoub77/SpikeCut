@@ -915,6 +915,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
     <option value="1">1 mm</option>
     <option value="10" selected>1 cm</option>
   </select>
+  <input type="color" id="gridColor" value="#ffffff" title="Colore della griglia" style="width:22px;height:18px;padding:0 1px;margin-left:-4px;cursor:pointer;">
   <span class="toggle on" id="toggleMagnet" title="Calamita (M)">🧲 calamita</span>
   <span class="toggle on" id="toggleEndpoints" title="Mostra i punti liberi (arancio) e collegati (verde) di ogni percorso aperto">● punti</span>
   <span class="toggle" id="toggleDimensions" title="Mostra/nascondi le quote del disegno e del foglio">📐 quote</span>
@@ -1178,7 +1179,9 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
               <span class="field"><label>Dettaglio</label><select id="imgImpDetail"><option value="low">Basso</option><option value="mid" selected>Medio</option><option value="high">Alto</option></select></span>
             </span>
           </label>
-          <label class="imgimp-mode"><input type="radio" name="imgImpMode" value="image"><span class="t">Inserisci l'immagine così com'è</span><span class="d">Per foto, sfondi e decorazioni: l'immagine entra nel disegno senza essere vettorizzata e si sposta, ruota e ridimensiona come le altre forme.</span></label>
+          <label class="imgimp-mode"><input type="radio" name="imgImpMode" value="image"><span class="t">Inserisci l'immagine così com'è</span><span class="d">Per foto, sfondi e decorazioni: l'immagine entra nel disegno senza essere vettorizzata e si sposta, ruota e ridimensiona come le altre forme.</span>
+            <span class="row" id="imgImpImageOpts" style="margin-top:6px;"><label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;text-transform:none;letter-spacing:0;"><input type="checkbox" id="imgImpCropNow" style="width:auto;margin:0;"><span>Ritaglia subito dopo l'inserimento</span></label></span>
+          </label>
           <label class="imgimp-mode"><input type="radio" name="imgImpMode" value="ref"><span class="t">Solo immagine di riferimento</span><span class="d">L'immagine resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti.</span></label>
         </div>
       </div>
@@ -2081,6 +2084,28 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "✔ Fine ritaglio": "✔ Done cropping",
+    "✂ Ritaglia": "✂ Crop",
+    "Trascina le maniglie per tagliare i bordi: la parte tolta resta visibile in trasparenza e si può rimettere. Per ridimensionare l'immagine torna con «Fine ritaglio».": "Drag the handles to cut the edges: the removed part stays visible, faded, and can be brought back. To resize the image, click “Done cropping” first.",
+    "Togli il ritaglio": "Remove crop",
+    "Opacità": "Opacity",
+    "Luminosità": "Brightness",
+    "Contrasto": "Contrast",
+    "Saturazione": "Saturation",
+    "Tonalità": "Hue",
+    "Bianco e nero": "Black and white",
+    "Seppia": "Sepia",
+    "Inversione": "Invert",
+    "Sfocatura (mm)": "Blur (mm)",
+    "Bilanciamento del colore": "Colour balance",
+    "Rosso": "Red",
+    "Verde": "Green",
+    "Blu": "Blue",
+    "Ricolora con": "Recolour with",
+    "Ripristina gli effetti": "Reset effects",
+    "Doppio clic su un cursore per riportarlo al valore iniziale. Ritaglio ed effetti valgono anche nelle esportazioni e nelle stampe.": "Double-click a slider to reset it. Crop and effects also apply to exports and prints.",
+    "Ritaglia subito dopo l'inserimento": "Crop right after inserting",
+    "Colore della griglia": "Grid colour",
     "Sfondo del foglio applicato ai pannelli.": "Sheet background applied to the panels.",
     "Sposta gli oggetti selezionati ({n}) nel livello:": "Move the selected objects ({n}) to layer:",
     "Sposta qui gli oggetti selezionati": "Move the selected objects here",
@@ -3454,6 +3479,28 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "✔ Fine ritaglio": "✔ Zuschneiden fertig",
+    "✂ Ritaglia": "✂ Zuschneiden",
+    "Trascina le maniglie per tagliare i bordi: la parte tolta resta visibile in trasparenza e si può rimettere. Per ridimensionare l'immagine torna con «Fine ritaglio».": "Ziehe die Griffe, um die Ränder abzuschneiden: Der entfernte Teil bleibt blass sichtbar und lässt sich zurückholen. Zum Skalieren zuerst „Zuschneiden fertig“ klicken.",
+    "Togli il ritaglio": "Zuschnitt entfernen",
+    "Opacità": "Deckkraft",
+    "Luminosità": "Helligkeit",
+    "Contrasto": "Kontrast",
+    "Saturazione": "Sättigung",
+    "Tonalità": "Farbton",
+    "Bianco e nero": "Schwarzweiß",
+    "Seppia": "Sepia",
+    "Inversione": "Invertieren",
+    "Sfocatura (mm)": "Weichzeichnen (mm)",
+    "Bilanciamento del colore": "Farbbalance",
+    "Rosso": "Rot",
+    "Verde": "Grün",
+    "Blu": "Blau",
+    "Ricolora con": "Umfärben mit",
+    "Ripristina gli effetti": "Effekte zurücksetzen",
+    "Doppio clic su un cursore per riportarlo al valore iniziale. Ritaglio ed effetti valgono anche nelle esportazioni e nelle stampe.": "Doppelklick auf einen Regler setzt ihn zurück. Zuschnitt und Effekte gelten auch für Exporte und Ausdrucke.",
+    "Ritaglia subito dopo l'inserimento": "Direkt nach dem Einfügen zuschneiden",
+    "Colore della griglia": "Rasterfarbe",
     "Sfondo del foglio applicato ai pannelli.": "Blatthintergrund auf die Platten angewendet.",
     "Sposta gli oggetti selezionati ({n}) nel livello:": "Ausgewählte Objekte ({n}) in Ebene verschieben:",
     "Sposta qui gli oggetti selezionati": "Ausgewählte Objekte hierher verschieben",
@@ -4827,6 +4874,28 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "✔ Fine ritaglio": "✔ Terminar recorte",
+    "✂ Ritaglia": "✂ Recortar",
+    "Trascina le maniglie per tagliare i bordi: la parte tolta resta visibile in trasparenza e si può rimettere. Per ridimensionare l'immagine torna con «Fine ritaglio».": "Arrastra los tiradores para cortar los bordes: la parte quitada sigue visible, atenuada, y se puede recuperar. Para redimensionar la imagen pulsa antes «Terminar recorte».",
+    "Togli il ritaglio": "Quitar recorte",
+    "Opacità": "Opacidad",
+    "Luminosità": "Brillo",
+    "Contrasto": "Contraste",
+    "Saturazione": "Saturación",
+    "Tonalità": "Tono",
+    "Bianco e nero": "Blanco y negro",
+    "Seppia": "Sepia",
+    "Inversione": "Inversión",
+    "Sfocatura (mm)": "Desenfoque (mm)",
+    "Bilanciamento del colore": "Balance de color",
+    "Rosso": "Rojo",
+    "Verde": "Verde",
+    "Blu": "Azul",
+    "Ricolora con": "Recolorear con",
+    "Ripristina gli effetti": "Restablecer efectos",
+    "Doppio clic su un cursore per riportarlo al valore iniziale. Ritaglio ed effetti valgono anche nelle esportazioni e nelle stampe.": "Doble clic en un control lo devuelve al valor inicial. Recorte y efectos también se aplican a exportaciones e impresiones.",
+    "Ritaglia subito dopo l'inserimento": "Recortar justo después de insertar",
+    "Colore della griglia": "Color de la cuadrícula",
     "Sfondo del foglio applicato ai pannelli.": "Fondo de la hoja aplicado a los paneles.",
     "Sposta gli oggetti selezionati ({n}) nel livello:": "Mover los objetos seleccionados ({n}) a la capa:",
     "Sposta qui gli oggetti selezionati": "Mover aquí los objetos seleccionados",
@@ -6200,6 +6269,28 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "✔ Fine ritaglio": "✔ 完成裁剪",
+    "✂ Ritaglia": "✂ 裁剪",
+    "Trascina le maniglie per tagliare i bordi: la parte tolta resta visibile in trasparenza e si può rimettere. Per ridimensionare l'immagine torna con «Fine ritaglio».": "拖动控制点裁掉边缘：被裁掉的部分以半透明显示，可以恢复。要调整图像大小，请先点击“完成裁剪”。",
+    "Togli il ritaglio": "取消裁剪",
+    "Opacità": "不透明度",
+    "Luminosità": "亮度",
+    "Contrasto": "对比度",
+    "Saturazione": "饱和度",
+    "Tonalità": "色相",
+    "Bianco e nero": "黑白",
+    "Seppia": "棕褐色",
+    "Inversione": "反相",
+    "Sfocatura (mm)": "模糊（毫米）",
+    "Bilanciamento del colore": "色彩平衡",
+    "Rosso": "红",
+    "Verde": "绿",
+    "Blu": "蓝",
+    "Ricolora con": "重新着色",
+    "Ripristina gli effetti": "重置效果",
+    "Doppio clic su un cursore per riportarlo al valore iniziale. Ritaglio ed effetti valgono anche nelle esportazioni e nelle stampe.": "双击滑块可恢复初始值。裁剪和效果同样适用于导出和打印。",
+    "Ritaglia subito dopo l'inserimento": "插入后立即裁剪",
+    "Colore della griglia": "网格颜色",
     "Sfondo del foglio applicato ai pannelli.": "已将页面背景应用到面板。",
     "Sposta gli oggetti selezionati ({n}) nel livello:": "将所选对象（{n}）移动到图层：",
     "Sposta qui gli oggetti selezionati": "将所选对象移到此处",
@@ -7573,6 +7664,28 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "✔ Fine ritaglio": "✔ Terminer le recadrage",
+    "✂ Ritaglia": "✂ Recadrer",
+    "Trascina le maniglie per tagliare i bordi: la parte tolta resta visibile in trasparenza e si può rimettere. Per ridimensionare l'immagine torna con «Fine ritaglio».": "Fais glisser les poignées pour couper les bords : la partie retirée reste visible en transparence et peut être remise. Pour redimensionner l’image, clique d’abord sur « Terminer le recadrage ».",
+    "Togli il ritaglio": "Supprimer le recadrage",
+    "Opacità": "Opacité",
+    "Luminosità": "Luminosité",
+    "Contrasto": "Contraste",
+    "Saturazione": "Saturation",
+    "Tonalità": "Teinte",
+    "Bianco e nero": "Noir et blanc",
+    "Seppia": "Sépia",
+    "Inversione": "Inversion",
+    "Sfocatura (mm)": "Flou (mm)",
+    "Bilanciamento del colore": "Balance des couleurs",
+    "Rosso": "Rouge",
+    "Verde": "Vert",
+    "Blu": "Bleu",
+    "Ricolora con": "Recolorer avec",
+    "Ripristina gli effetti": "Réinitialiser les effets",
+    "Doppio clic su un cursore per riportarlo al valore iniziale. Ritaglio ed effetti valgono anche nelle esportazioni e nelle stampe.": "Double-clic sur un curseur pour le remettre à sa valeur initiale. Recadrage et effets s’appliquent aussi aux exports et impressions.",
+    "Ritaglia subito dopo l'inserimento": "Recadrer juste après l’insertion",
+    "Colore della griglia": "Couleur de la grille",
     "Sfondo del foglio applicato ai pannelli.": "Fond de la feuille appliqué aux panneaux.",
     "Sposta gli oggetti selezionati ({n}) nel livello:": "Déplacer les objets sélectionnés ({n}) vers le calque :",
     "Sposta qui gli oggetti selezionati": "Déplacer ici les objets sélectionnés",
@@ -8838,6 +8951,8 @@ const state = {
   magnetPx: 10,                // screen px radius for magnet
   draft: null,                 // in-progress drawing object
   drag: null,                  // active drag operation
+  cropShapeId: null,           // immagine in modalità ritaglio (le maniglie tagliano invece di ridimensionare)
+  gridColor: '#ffffff',        // colore delle linee della griglia (preferenza del browser)
   refImage: null,              // {dataUrl, x,y,w,h, opacity, img, layerId, hidden, rotation, locked, filters}
   refImageSelected: false,     // l'immagine di riferimento è selezionata sul canvas (interazione separata dalle forme)
   libraryId: null,             // id del progetto in libreria, se caricato/salvato da lì
@@ -8987,10 +9102,10 @@ function drawGrid(){
   const w = state.page.w, h = state.page.h, g = state.grid;
   const grp = el('g', {stroke:'var(--grid)', 'stroke-width':1, 'shape-rendering':'crispEdges'});
   for(let x=0; x<=w; x+=g){
-    grp.appendChild(el('line', {x1:mmToPx(x),y1:0,x2:mmToPx(x),y2:mmToPx(h), stroke:'#eeece4'}));
+    grp.appendChild(el('line', {x1:mmToPx(x),y1:0,x2:mmToPx(x),y2:mmToPx(h), stroke:state.gridColor}));
   }
   for(let y=0; y<=h; y+=g){
-    grp.appendChild(el('line', {x1:0,y1:mmToPx(y),x2:mmToPx(w),y2:mmToPx(y), stroke:'#eeece4'}));
+    grp.appendChild(el('line', {x1:0,y1:mmToPx(y),x2:mmToPx(w),y2:mmToPx(y), stroke:state.gridColor}));
   }
   layerGrid.appendChild(grp);
   layerGrid.style.display = state.snapGrid ? '' : 'none';
@@ -9318,6 +9433,55 @@ function newStyle(role){
   const r = ROLE_STYLE[role] || ROLE_STYLE.design;
   return { stroke:r.stroke, fill:'none', strokeWidth: role==='design'?1.2:0.8, dash:r.dash, role: role };
 }
+/* ---------- immagini inserite così come sono: ritaglio ed effetti ----------
+   s.crop = {l,t,r,b}: parte dell'immagine originale tolta da ogni lato (frazione 0..1).
+   s.fx = effetti; il disegno usa un filtro SVG, così sullo schermo e nei file esportati è uguale. */
+const IMG_FX_DEFAULT = {opacity:100, brightness:100, contrast:100, saturate:100, hue:0, gray:0, sepia:0, invert:0, blur:0, red:100, green:100, blue:100, tint:null};
+function imgCrop(s){ const c = s.crop || {}; return {l:c.l||0, t:c.t||0, r:c.r||0, b:c.b||0}; }
+function imgFx(s){ return Object.assign({}, IMG_FX_DEFAULT, s.fx || {}); }
+function imgFxIsDefault(s){ const f = imgFx(s); return Object.keys(IMG_FX_DEFAULT).every(k=> k==='opacity' || f[k]===IMG_FX_DEFAULT[k]); }
+function imageFilterSVG(s, fid){
+  if(imgFxIsDefault(s)) return '';
+  const f = imgFx(s), c = imgCrop(s), n = v=> +(+v).toFixed(5);
+  let p = '';
+  if(f.brightness!==100 || f.contrast!==100){
+    const k = f.contrast/100, slope = f.brightness/100*k, icpt = 0.5 - 0.5*k;
+    p += `<feComponentTransfer><feFuncR type="linear" slope="${n(slope)}" intercept="${n(icpt)}"/><feFuncG type="linear" slope="${n(slope)}" intercept="${n(icpt)}"/><feFuncB type="linear" slope="${n(slope)}" intercept="${n(icpt)}"/></feComponentTransfer>`;
+  }
+  const sat = f.saturate/100 * (1 - f.gray/100);
+  if(sat!==1) p += `<feColorMatrix type="saturate" values="${n(sat)}"/>`;
+  if(f.hue) p += `<feColorMatrix type="hueRotate" values="${n(f.hue)}"/>`;
+  if(f.sepia){
+    const a = f.sepia/100, m = [[.393,.769,.189],[.349,.686,.168],[.272,.534,.131]];
+    const row = i=> [0,1,2].map(j=> n((i===j ? 1-a : 0) + a*m[i][j])).join(' ') + ' 0 0';
+    p += `<feColorMatrix type="matrix" values="${row(0)} ${row(1)} ${row(2)} 0 0 0 1 0"/>`;
+  }
+  if(f.red!==100 || f.green!==100 || f.blue!==100) p += `<feColorMatrix type="matrix" values="${n(f.red/100)} 0 0 0 0 0 ${n(f.green/100)} 0 0 0 0 0 ${n(f.blue/100)} 0 0 0 0 0 1 0"/>`;
+  if(f.tint && /^#[0-9a-f]{6}$/i.test(f.tint)){ // ricolora: luminosità dell'immagine × colore scelto
+    const rgb = [1,3,5].map(i=> parseInt(f.tint.substr(i,2),16)/255), L = [.2126,.7152,.0722];
+    p += `<feColorMatrix type="matrix" values="${rgb.map(v=> L.map(l=> n(l*v)).join(' ') + ' 0 0').join(' ')} 0 0 0 1 0"/>`;
+  }
+  if(f.invert){ const a = f.invert/100; p += `<feComponentTransfer><feFuncR type="table" tableValues="${n(a)} ${n(1-a)}"/><feFuncG type="table" tableValues="${n(a)} ${n(1-a)}"/><feFuncB type="table" tableValues="${n(a)} ${n(1-a)}"/></feComponentTransfer>`; }
+  if(f.blur > 0 && s.w > 0 && s.h > 0){ // sfocatura in mm, convertita nelle unità dell'immagine (lato = 1)
+    const cw = 1-c.l-c.r, ch = 1-c.t-c.b;
+    p += `<feGaussianBlur stdDeviation="${n(f.blur*cw/s.w)} ${n(f.blur*ch/s.h)}"/>`;
+  }
+  return p ? `<filter id="${fid}" color-interpolation-filters="sRGB" x="-5%" y="-5%" width="110%" height="110%">${p}</filter>` : '';
+}
+// k = unità per mm (scala dello schermo, oppure 1 nei file esportati). ghost: mostra in trasparenza le parti tagliate
+function imageShapeSVG(s, k, ghost){
+  const c = imgCrop(s), cw = Math.max(1e-4, 1-c.l-c.r), ch = Math.max(1e-4, 1-c.t-c.b), f = imgFx(s);
+  const fid = 'imgfx-' + s.id, filt = imageFilterSVG(s, fid), N = v=> +(+v).toFixed(4);
+  const href = String(s.href||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+  const img = attrs=> `<image x="0" y="0" width="1" height="1" preserveAspectRatio="none" xlink:href="${href}"${attrs}/>`;
+  let out = filt ? `<defs>${filt}</defs>` : '';
+  if(ghost){
+    const fw = s.w/cw, fh = s.h/ch;
+    out += `<svg x="${N((s.x - c.l*fw)*k)}" y="${N((s.y - c.t*fh)*k)}" width="${N(fw*k)}" height="${N(fh*k)}" viewBox="0 0 1 1" preserveAspectRatio="none" opacity="0.3">${img('')}</svg>`;
+  }
+  out += `<svg x="${N(s.x*k)}" y="${N(s.y*k)}" width="${N(s.w*k)}" height="${N(s.h*k)}" viewBox="${N(c.l)} ${N(c.t)} ${N(cw)} ${N(ch)}" preserveAspectRatio="none"${f.opacity<100 ? ` opacity="${N(f.opacity/100)}"` : ''}>${img(filt ? ` filter="url(#${fid})"` : '')}</svg>`;
+  return out;
+}
 function makeShape(type, extra){
   const shape = Object.assign({ id: uid(), type, style:newStyle(state.activeRole), visible:true, locked:false, layerId: state.activeLayerId }, extra);
   if(shape.points && !shape.smooth) shape.smooth = shape.points.map(()=>0);
@@ -9415,8 +9579,8 @@ function shapeToNode(s){
       node.setAttribute('filter', `url(#txthin-${s.id})`); g.appendChild(node); node = g;
     }
   } else if(s.type==='image'){
-    node = el('image', {x:s.x*state.scale, y:s.y*state.scale, width:s.w*state.scale, height:s.h*state.scale, preserveAspectRatio:'none', 'data-id':s.id, 'data-role':st.role});
-    node.setAttributeNS('http://www.w3.org/1999/xlink','href', s.href);
+    node = el('g', {'data-id':s.id, 'data-role':st.role});
+    node.innerHTML = imageShapeSVG(s, state.scale, state.cropShapeId===s.id && state.selection.has(s.id));
     const cx=(s.x+s.w/2)*state.scale, cy=(s.y+s.h/2)*state.scale;
     const tr = flipRotateTransform(s, cx, cy);
     if(tr) node.setAttribute('transform', tr);
@@ -11163,6 +11327,58 @@ function playFold3D(){
   fold3d.anim = requestAnimationFrame(step);
 }
 function stopFold3D(){ if(fold3d.anim){ cancelAnimationFrame(fold3d.anim); fold3d.anim=null; } }
+// Ordine di disegno dei pannelli (dal più lontano al più vicino). La sola profondità media sbaglia quando
+// pannelli grandi e piccoli si toccano o si sovrappongono (a scatola chiusa spuntava l'interno davanti
+// all'esterno): per ogni coppia che si sovrappone sullo schermo guardo da che parte del piano dell'uno sta
+// l'altro rispetto a chi guarda. Pannelli sullo stesso piano (lembi sovrapposti, linguetta di incollaggio):
+// sta fuori quello piegato in un passo successivo o più lontano dal pannello di base.
+function sortFold3DFaces(items, model, E, proj, eps){
+  const steps = foldSteps(model);
+  const treeDepth = fi=>{ let d = 0, x = fi; while(x!=null && model.parent[x]!=null && d<999){ x = model.parent[x]; d++; } return d; };
+  items.forEach(it=>{
+    const h = model.parentHinge[it.fi];
+    it.rank = (h ? steps.indexOf(foldOrderOf(h.fold)) + 1 : 0)*1000 + treeDepth(it.fi);
+    const sp = it.vs.map(proj);
+    it.bb = [Math.min(...sp.map(q=>q[0])), Math.min(...sp.map(q=>q[1])), Math.max(...sp.map(q=>q[0])), Math.max(...sp.map(q=>q[1]))];
+  });
+  const side = (A, v)=> A.n[0]*(v[0]-A.vs[0][0]) + A.n[1]*(v[1]-A.vs[0][1]) + A.n[2]*(v[2]-A.vs[0][2]);
+  // 1: B va disegnato dopo A, -1: prima, 0: non si sa
+  const behindFront = (A, B)=>{
+    const sA = Math.sign(side(A, E)) || 1;
+    let pos = 0, neg = 0;
+    B.vs.forEach(v=>{ const d = side(A, v)*sA; if(d > eps) pos++; else if(d < -eps) neg++; });
+    if(pos && !neg) return 1;
+    if(neg && !pos) return -1;
+    if(!pos && !neg){ // stesso piano: dal lato stampato (esterno) si vede quello più esterno, dall'interno il contrario
+      if(A.rank===B.rank) return 0;
+      const facing = Math.sign(side(A, E)) * (A.n[0]*B.n[0] + A.n[1]*B.n[1] + A.n[2]*B.n[2] >= 0 ? 1 : -1);
+      return (B.rank > A.rank ? 1 : -1) * (facing >= 0 ? 1 : -1);
+    }
+    const sB = Math.sign(side(B, E)) || 1;
+    pos = 0; neg = 0;
+    A.vs.forEach(v=>{ const d = side(B, v)*sB; if(d > eps) pos++; else if(d < -eps) neg++; });
+    if(pos && !neg) return -1;
+    if(neg && !pos) return 1;
+    return 0;
+  };
+  const n = items.length, after = items.map(()=>[]), indeg = items.map(()=>0);
+  for(let i=0;i<n;i++) for(let j=i+1;j<n;j++){
+    const A = items[i], B = items[j];
+    if(A.bb[2] <= B.bb[0]+0.5 || B.bb[2] <= A.bb[0]+0.5 || A.bb[3] <= B.bb[1]+0.5 || B.bb[3] <= A.bb[1]+0.5) continue; // non si coprono sullo schermo
+    const r = behindFront(A, B);
+    if(r > 0){ after[i].push(j); indeg[j]++; } else if(r < 0){ after[j].push(i); indeg[i]++; }
+  }
+  // ordinamento topologico; a parità (o in caso di cicli) prima il più lontano
+  const out = [], done = items.map(()=>false);
+  for(let k=0;k<n;k++){
+    let best = -1;
+    for(let i=0;i<n;i++) if(!done[i] && indeg[i]===0 && (best<0 || items[i].depth < items[best].depth)) best = i;
+    if(best<0) for(let i=0;i<n;i++) if(!done[i] && (best<0 || items[i].depth < items[best].depth)) best = i;
+    done[best] = true; out.push(items[best]);
+    after[best].forEach(j=>{ indeg[j]--; });
+  }
+  items.splice(0, n, ...out);
+}
 function renderFold3D(){
   const cv = document.getElementById('fold3dCanvas');
   if(!fold3d.model || !cv) return;
@@ -11190,9 +11406,9 @@ function renderFold3D(){
     const vs = f.pts.map(p=> rot([p[0]-C[0], p[1]-C[1], p[2]-C[2]]));
     // asole del pannello: seguono il pannello mentre si piega
     const sl = f.split ? [] : (fold3d.model.slits||[]).filter(s=>s.face===f.fi).map(s=> [s.a, s.b].map(q=>{ const p = tfApply(faces0.T[f.fi], [q[0], -q[1], 0]); return rot([p[0]-C[0], p[1]-C[1], p[2]-C[2]]); }));
-    return { vs, depth: vs.reduce((a,v)=>a+v[2],0)/vs.length, n: rot(f.normal), bad: f.unreached, flat: f.flat, tris: f.tris, sl };
+    return { fi: f.fi, vs, depth: vs.reduce((a,v)=>a+v[2],0)/vs.length, n: rot(f.normal), bad: f.unreached, flat: f.flat, tris: f.tris, sl };
   });
-  items.sort((a,b)=> a.depth-b.depth); // prima i pannelli lontani, poi quelli vicini
+  sortFold3DFaces(items, fold3d.model, [0,0,camDist], proj, radius*1e-3); // prima i pannelli dietro, poi quelli davanti
   // Trasparenza: pannelli semitrasparenti per vedere le parti interne; i bordi restano marcati
   const xray = !!fold3d.xray, alpha = xray ? fold3d.xrayOpacity : 1;
   items.forEach(it=>{
@@ -14294,7 +14510,7 @@ function handleMouseDown(mm, e){
     }
     if(target.dataset && target.dataset.resize){
       { const rs = state.shapes.find(x=>x.id===target.dataset.shape);
-        dragMode='resize'; state.drag={shapeId:target.dataset.shape, corner:target.dataset.resize, start:mm, box: rs ? {x:rs.x, y:rs.y, w:rs.w, h:rs.h} : null}; }
+        dragMode='resize'; state.drag={shapeId:target.dataset.shape, corner:target.dataset.resize, start:mm, box: rs ? {x:rs.x, y:rs.y, w:rs.w, h:rs.h} : null, crop0: rs && rs.type==='image' ? imgCrop(rs) : null}; }
       return;
     }
     const hit = topShapeAt(mm);
@@ -14478,7 +14694,8 @@ function handleMouseMove(mm, e){
         lm = rotatePointAround(mm, [cx,cy], -s.rotation);
       }
       const c = state.drag.corner;
-      const r = resizeFromCorner(state.drag.box || {x:s.x, y:s.y, w:s.w, h:s.h}, c, lm, e && e.shiftKey, 1); // Shift: proporzioni fisse
+      const r = resizeFromCorner(state.drag.box || {x:s.x, y:s.y, w:s.w, h:s.h}, c, lm, e && e.shiftKey && state.cropShapeId!==s.id, 1); // Shift: proporzioni fisse
+      if(s.type==='image' && state.cropShapeId===s.id && state.drag.box && state.drag.crop0){ cropImageFromBox(s, state.drag.box, state.drag.crop0, r); renderAll(); return; }
       s.x = r.x; s.y = r.y; s.w = r.w; s.h = r.h;
       renderAll();
     }
@@ -17409,6 +17626,11 @@ document.getElementById('unitSelect').addEventListener('change', (e)=>{
   renderAll();
 });
 document.getElementById('langSelect').addEventListener('change', (e)=>{ setLang(e.target.value); });
+document.getElementById('gridColor').addEventListener('input', (e)=>{
+  state.gridColor = e.target.value;
+  try{ localStorage.setItem('spikecut-gridcolor', state.gridColor); }catch(err){ /* best-effort */ }
+  renderCanvasOnly();
+});
 document.getElementById('gridStepSelect').addEventListener('change', (e)=>{
   state.grid = parseFloat(e.target.value) || 10;
   try{ localStorage.setItem('spikecut-gridstep', String(state.grid)); }catch(err){ /* best-effort */ }
@@ -17436,6 +17658,7 @@ document.querySelectorAll('.tabtrig').forEach(b=>{
 
 /* ---------- PROPERTIES TAB ---------- */
 function renderPropPanel(){
+  if(state.cropShapeId && (state.selection.size!==1 || !state.selection.has(state.cropShapeId))) state.cropShapeId = null; // il ritaglio finisce cambiando selezione
   renderPropPanelInner();
   applyI18n(document.getElementById('tab-prop'));
 }
@@ -17672,9 +17895,12 @@ function renderPropPanelInner(){
   }
   renderSelectionActions(host, ids); // comandi della selezione sempre in cima
   const s = state.shapes.find(x=>x.id===ids[0]);
+  if(ids.length===1 && s.type==='image'){ renderImageShapeSection(host, s); host.appendChild(document.createElement('hr')).className='sep'; }
 
-  addColorField(host, 'Colore linea', s.style.stroke, v=>{ withSelection(sh=>sh.style.stroke=v); });
-  renderFillSection(host, ids);
+  if(!ids.every(id=>{ const x = state.shapes.find(y=>y.id===id); return x && x.type==='image'; })){
+    addColorField(host, 'Colore linea', s.style.stroke, v=>{ withSelectionLive(sh=>sh.style.stroke=v); }); // senza ricostruire il pannello: il selettore del colore resterebbe chiuso a ogni cifra
+    renderFillSection(host, ids);
+  }
 
   const row = document.createElement('div'); row.className='row';
   const f1 = document.createElement('div'); f1.className='field';
@@ -18590,7 +18816,8 @@ function renderFillSection(host, ids){
     const row = document.createElement('div'); row.style.cssText='display:flex;gap:8px;align-items:center;margin-top:6px;';
     const inp = document.createElement('input'); inp.type='color'; inp.value = cur.startsWith('#') && cur.length===7 ? cur : '#f2c230'; inp.style.cssText='width:46px;height:32px;padding:2px;flex:none;';
     inp.oninput = ()=>{ state.lastFill = inp.value; sel.forEach(x=>{ x.style.fill = inp.value; syncT(x); }); renderCanvasOnly(); };
-    inp.onchange = ()=>{ pushHistory(); renderPropPanel(); };
+    // non ricostruisco il pannello: alcuni browser inviano "change" a ogni valore scritto nel selettore, che si chiuderebbe
+    inp.onchange = ()=>{ pushHistory(); sw.querySelectorAll('button').forEach(b=> b.classList.toggle('active', b.title.toLowerCase()===inp.value.toLowerCase())); };
     const sw = document.createElement('div'); sw.className='fill-swatches';
     FILL_SWATCHES.forEach(col=>{ const b = document.createElement('button'); b.type='button'; b.style.background = col; b.title = col;
       if(col.toLowerCase()===String(cur).toLowerCase()) b.classList.add('active');
@@ -18623,6 +18850,70 @@ function renderFillSection(host, ids){
   host.appendChild(f);
 }
 
+function renderImageShapeSection(host, s){
+  const f = document.createElement('div'); f.className='field fill-field';
+  f.innerHTML = `<label>🖼 ${escapeHTML(translate('Immagine'))}</label>`;
+  // ritaglio
+  const cropping = state.cropShapeId===s.id;
+  const cb = document.createElement('button'); cb.className = 'btn' + (cropping ? ' primary' : ''); cb.style.marginTop = '0';
+  cb.textContent = translate(cropping ? '✔ Fine ritaglio' : '✂ Ritaglia');
+  cb.onclick = ()=>{ state.cropShapeId = cropping ? null : s.id; if(cropping) pushHistory(); renderAll(); };
+  f.appendChild(cb);
+  if(cropping){
+    const h = document.createElement('div'); h.className='hint'; h.style.marginTop='4px';
+    h.textContent = translate('Trascina le maniglie per tagliare i bordi: la parte tolta resta visibile in trasparenza e si può rimettere. Per ridimensionare l\'immagine torna con «Fine ritaglio».');
+    f.appendChild(h);
+  }
+  const c = imgCrop(s);
+  if(c.l || c.t || c.r || c.b){
+    const rb = document.createElement('button'); rb.className='btn'; rb.style.marginTop='4px'; rb.textContent = translate('Togli il ritaglio');
+    rb.onclick = ()=>{ cropImageFromBox(s, {x:s.x, y:s.y, w:s.w, h:s.h}, c, (()=>{ // riporta i bordi all'immagine intera
+      const fw = s.w/(1-c.l-c.r), fh = s.h/(1-c.t-c.b), dl = s.flipH ? c.r : c.l, dt = s.flipV ? c.b : c.t;
+      return {x: s.x - dl*fw, y: s.y - dt*fh, w: fw, h: fh}; })()); s.crop = null; pushHistory(); renderAll(); };
+    f.appendChild(rb);
+  }
+  // effetti
+  const fx = imgFx(s);
+  const setFx = (k, v)=>{ s.fx = Object.assign(imgFx(s), {[k]: v}); renderCanvasOnly(); };
+  const slider = (key, label, min, max, step, unit)=>{
+    const lab = document.createElement('label'); lab.style.cssText='margin-top:8px;display:flex;justify-content:space-between;';
+    const val = document.createElement('span'); val.style.color='var(--ink-dim)'; val.textContent = fx[key] + unit;
+    const t = document.createElement('span'); t.textContent = translate(label); lab.append(t, val);
+    const rg = document.createElement('input'); rg.type='range'; rg.min=min; rg.max=max; rg.step=step; rg.value=fx[key]; rg.style.width='100%';
+    rg.oninput = ()=>{ val.textContent = rg.value + unit; setFx(key, parseFloat(rg.value)); };
+    rg.onchange = ()=> pushHistory();
+    rg.ondblclick = ()=>{ rg.value = IMG_FX_DEFAULT[key]; rg.oninput(); pushHistory(); }; // doppio clic: valore iniziale
+    f.append(lab, rg);
+  };
+  slider('opacity', 'Opacità', 0, 100, 1, '%');
+  slider('brightness', 'Luminosità', 0, 200, 1, '%');
+  slider('contrast', 'Contrasto', 0, 200, 1, '%');
+  slider('saturate', 'Saturazione', 0, 200, 1, '%');
+  slider('hue', 'Tonalità', -180, 180, 1, '°');
+  slider('gray', 'Bianco e nero', 0, 100, 1, '%');
+  slider('sepia', 'Seppia', 0, 100, 1, '%');
+  slider('invert', 'Inversione', 0, 100, 1, '%');
+  slider('blur', 'Sfocatura (mm)', 0, 5, 0.1, '');
+  const bh = document.createElement('div'); bh.className='hint'; bh.style.marginTop='10px'; bh.style.fontWeight='600'; bh.textContent = translate('Bilanciamento del colore'); f.appendChild(bh);
+  slider('red', 'Rosso', 0, 200, 1, '%');
+  slider('green', 'Verde', 0, 200, 1, '%');
+  slider('blue', 'Blu', 0, 200, 1, '%');
+  // ricolora
+  const tl = document.createElement('label'); tl.style.cssText='display:flex;align-items:center;gap:8px;cursor:pointer;margin-top:10px;text-transform:none;letter-spacing:0;';
+  const tc = document.createElement('input'); tc.type='checkbox'; tc.checked = !!fx.tint; tc.style.cssText='width:auto;margin:0;';
+  const ti = document.createElement('input'); ti.type='color'; ti.value = fx.tint || '#c9973f'; ti.style.cssText='width:40px;height:26px;padding:2px;flex:none;'; ti.disabled = !fx.tint;
+  tc.onchange = ()=>{ ti.disabled = !tc.checked; setFx('tint', tc.checked ? ti.value : null); pushHistory(); };
+  ti.oninput = ()=>{ if(tc.checked) setFx('tint', ti.value); };
+  ti.onchange = ()=> pushHistory();
+  tl.append(tc, document.createTextNode(translate('Ricolora con')), ti); f.appendChild(tl);
+  const rst = document.createElement('button'); rst.className='btn'; rst.style.marginTop='10px'; rst.textContent = translate('Ripristina gli effetti');
+  rst.onclick = ()=>{ s.fx = null; pushHistory(); renderAll(); };
+  f.appendChild(rst);
+  const hint = document.createElement('div'); hint.className='hint'; hint.style.marginTop='4px';
+  hint.textContent = translate('Doppio clic su un cursore per riportarlo al valore iniziale. Ritaglio ed effetti valgono anche nelle esportazioni e nelle stampe.');
+  f.appendChild(hint);
+  host.appendChild(f);
+}
 function addColorField(host, label, value, onChange, disabled){
   const f = document.createElement('div'); f.className='field';
   f.innerHTML = `<label>${label}</label>`;
@@ -18820,6 +19111,18 @@ function renderLayersPanelInner(){
   });
 }
 // sposta gli oggetti selezionati in un altro livello (restano nella stessa posizione sul foglio)
+// ritaglio con le maniglie: il nuovo riquadro (r) toglie o rimette parti dell'immagine invece di deformarla
+function cropImageFromBox(s, box, c0, r){
+  const cw0 = 1-c0.l-c0.r, ch0 = 1-c0.t-c0.b, fw = box.w/cw0, fh = box.h/ch0;
+  let dL = (r.x - box.x)/fw, dR = ((box.x+box.w) - (r.x+r.w))/fw, dT = (r.y - box.y)/fh, dB = ((box.y+box.h) - (r.y+r.h))/fh;
+  if(s.flipH) [dL, dR] = [dR, dL];
+  if(s.flipV) [dT, dB] = [dB, dT];
+  const MIN = 0.02, c = {l: Math.max(0, c0.l+dL), r: Math.max(0, c0.r+dR), t: Math.max(0, c0.t+dT), b: Math.max(0, c0.b+dB)};
+  if(1-c.l-c.r < MIN){ if(dL!==0) c.l = 1-c.r-MIN; else c.r = 1-c.l-MIN; }
+  if(1-c.t-c.b < MIN){ if(dT!==0) c.t = 1-c.b-MIN; else c.b = 1-c.t-MIN; }
+  const left = s.flipH ? c0.r - c.r : c0.l - c.l, top = s.flipV ? c0.b - c.b : c0.t - c.t; // di quanto si sposta il bordo sinistro/superiore (in frazioni)
+  s.crop = c; s.x = box.x - left*fw; s.y = box.y - top*fh; s.w = (1-c.l-c.r)*fw; s.h = (1-c.t-c.b)*fh;
+}
 function moveSelectionToLayer(layerId){
   const layer = state.layers.find(l=>l.id===layerId); if(!layer) return;
   const moved = state.shapes.filter(s=> state.selection.has(s.id) && s.layerId!==layerId);
@@ -19537,7 +19840,7 @@ async function pasteImageFromClipboardButton(){
    solo un'immagine di riferimento da ricalcare.
 ============================================================ */
 const imgImp = { dataUrl:null, name:'', pw:0, ph:0, wMM:100, mode:'dieline' };
-try{ const sv = JSON.parse(localStorage.getItem('spikecut-imgimp') || '{}'); if(sv.mode) imgImp.mode = sv.mode; if(sv.colors) imgImp.colors = sv.colors; if(sv.detail) imgImp.detail = sv.detail; if(sv.keepRef!=null) imgImp.keepRef = sv.keepRef; }catch(e){}
+try{ const sv = JSON.parse(localStorage.getItem('spikecut-imgimp') || '{}'); if(sv.mode) imgImp.mode = sv.mode; if(sv.colors) imgImp.colors = sv.colors; if(sv.detail) imgImp.detail = sv.detail; if(sv.keepRef!=null) imgImp.keepRef = sv.keepRef; if(sv.cropNow!=null) imgImp.cropNow = sv.cropNow; }catch(e){}
 
 // Risoluzione salvata nel file (se c'è): JPEG (JFIF o EXIF) e PNG (pHYs). Senza, restituisce null.
 function readImageDPI(buf){
@@ -19599,6 +19902,7 @@ function openImageImport(file){
       document.getElementById('imgImpColors').value = imgImp.colors || 4;
       document.getElementById('imgImpDetail').value = imgImp.detail || 'mid';
       document.getElementById('imgImpKeepRef').checked = imgImp.keepRef!=null ? imgImp.keepRef : true;
+      document.getElementById('imgImpCropNow').checked = !!imgImp.cropNow;
       imgImpFillSize();
       openModal('imgImportModal');
     }).catch(()=> showToast('Impossibile leggere questa immagine.', true));
@@ -19616,6 +19920,7 @@ function imgImpRefresh(){
   const mode = (document.querySelector('input[name="imgImpMode"]:checked')||{}).value || 'dieline';
   imgImp.mode = mode;
   document.getElementById('imgImpTraceOpts').style.display = mode==='trace' ? '' : 'none';
+  document.getElementById('imgImpImageOpts').style.display = mode==='image' ? '' : 'none';
   document.getElementById('imgImpKeepRow').style.display = mode==='ref' || mode==='image' ? 'none' : '';
   document.querySelectorAll('.imgimp-mode').forEach(l=> l.classList.toggle('active', l.querySelector('input').checked));
   const hMM = imgImp.wMM * imgImp.ph / imgImp.pw;
@@ -19634,7 +19939,7 @@ function closeImageImport(){ document.getElementById('imgImportModal').classList
 async function applyImageImport(){
   const mode = imgImp.mode, keepRef = mode==='ref' || (mode!=='image' && document.getElementById('imgImpKeepRef').checked);
   const colors = parseInt(document.getElementById('imgImpColors').value)||4, detail = document.getElementById('imgImpDetail').value;
-  try{ localStorage.setItem('spikecut-imgimp', JSON.stringify({mode, colors, detail, keepRef: document.getElementById('imgImpKeepRef').checked})); }catch(e){}
+  try{ localStorage.setItem('spikecut-imgimp', JSON.stringify({mode, colors, detail, keepRef: document.getElementById('imgImpKeepRef').checked, cropNow: document.getElementById('imgImpCropNow').checked})); }catch(e){}
   const w = imgImp.wMM, h = w * imgImp.ph / imgImp.pw;
   // il foglio non cambia: se l'immagine è più grande parte dall'angolo in alto a sinistra e l'eccedenza esce dal foglio
   const src = { dataUrl: imgImp.dataUrl, x: w <= state.page.w ? (state.page.w-w)/2 : 0, y: h <= state.page.h ? (state.page.h-h)/2 : 0, w, h, srcW: imgImp.pw, srcH: imgImp.ph };
@@ -19646,6 +19951,7 @@ async function applyImageImport(){
       style:{stroke:'none', fill:'none', fillOpacity:1, strokeWidth:0, dash:'none', role:'design', hasRealStroke:false},
       visible:true, layerId: state.activeLayerId };
     state.shapes.push(shape); state.selection = new Set([shape.id]);
+    if(document.getElementById('imgImpCropNow').checked){ state.cropShapeId = shape.id; document.querySelector('.tabtrig[data-tab="prop"]').click(); }
     closeImageImport(); pushHistory(); renderAll();
     showToast('Immagine inserita così com\'è: si sposta, ruota e ridimensiona come le altre forme.', false);
     return;
@@ -21334,7 +21640,7 @@ function exportNode(s){
   if(s.type==='image'){
     const cx=s.x+s.w/2, cy=s.y+s.h/2;
     const tr = exportFlipRotateAttr(s, cx, cy);
-    return `<image x="${sN(s.x)}" y="${sN(s.y)}" width="${sN(s.w)}" height="${sN(s.h)}" preserveAspectRatio="none" xlink:href="${s.href}"${tr?` transform="${tr}"`:''}/>`;
+    return `<g${tr?` transform="${tr}"`:''}>${imageShapeSVG(s, 1, false)}</g>`;
   }
   if(s.type==='text'){
     const a = textAttrs(s, 1), tr = textTransform(s, 1);
@@ -22122,6 +22428,10 @@ async function init(){
       state.unit = savedUnit;
       document.getElementById('unitSelect').value = savedUnit;
     }
+  }catch(err){ /* best-effort */ }
+  try{
+    const savedGridColor = localStorage.getItem('spikecut-gridcolor');
+    if(/^#[0-9a-f]{6}$/i.test(savedGridColor||'')){ state.gridColor = savedGridColor; document.getElementById('gridColor').value = savedGridColor; }
   }catch(err){ /* best-effort */ }
   try{
     const savedGrid = localStorage.getItem('spikecut-gridstep');
