@@ -848,6 +848,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
       <div class="menu-sep"></div>
       <button data-action="manage-fonts">Gestisci font personalizzati…</button>
       <button data-action="text-to-paths">🔤 Converti testo in tracciati</button>
+      <button data-action="codes">🔳 QR code e codici a barre…</button>
       <div class="menu-sep"></div>
       <button data-action="preflight">✅ Controllo prima della stampa…</button>
       <button data-action="bleed">⬚ Abbondanza e zona sicura…</button>
@@ -949,7 +950,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.50</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.51</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1367,6 +1368,29 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   </div>
 </div>
 
+<div id="codesModal" class="modal-overlay">
+  <div class="modal-box" style="width:460px;">
+    <div class="modal-head"><h3>QR code e codici a barre</h3><button class="iconbtn" data-close="codesModal" title="Chiudi">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Tipo</label><select id="codeType">
+        <option value="qr">QR code</option><option value="EAN13">EAN-13 (prodotti in vendita)</option><option value="EAN8">EAN-8</option><option value="UPC">UPC-A</option><option value="CODE128">Code 128 (testo libero)</option><option value="ITF14">ITF-14 (imballi)</option></select></div>
+      <div class="field"><label id="codeValueLabel">Contenuto</label><input type="text" id="codeValue" value="https://"></div>
+      <div class="row">
+        <div class="field"><label id="codeWLabel">Larghezza (mm)</label><input type="number" id="codeW" value="25" min="5" step="1"></div>
+        <div class="field" id="codeHRow"><label>Altezza barre (mm)</label><input type="number" id="codeH" value="20" min="3" step="1"></div>
+      </div>
+      <div class="row">
+        <div class="field" id="codeEccRow"><label>Correzione d'errore</label><select id="codeEcc"><option value="L">Bassa (7%)</option><option value="M" selected>Media (15%)</option><option value="Q">Alta (25%)</option><option value="H">Massima (30%)</option></select></div>
+        <div class="field"><label>Colore</label><input type="color" id="codeColor" value="#000000"></div>
+      </div>
+      <label id="codeTextRow" style="display:flex;gap:6px;align-items:center;font-size:12.5px;cursor:pointer;"><input type="checkbox" id="codeText" checked style="width:auto;margin:0;"><span>Scrivi le cifre sotto le barre</span></label>
+      <div class="hint" id="codeInfo" style="margin-top:8px;"></div>
+      <div id="codePreview" style="margin-top:8px;background:#fff;border-radius:6px;min-height:60px;display:flex;align-items:center;justify-content:center;padding:8px;"></div>
+      <button class="btn primary" id="codeGo" style="width:100%;margin-top:12px;">Inserisci nel disegno</button>
+    </div>
+  </div>
+</div>
+
 <div id="bleedModal" class="modal-overlay">
   <div class="modal-box" style="width:440px;">
     <div class="modal-head"><h3>Abbondanza e zona sicura</h3><button class="iconbtn" data-close="bleedModal" title="Chiudi">✕</button></div>
@@ -1482,6 +1506,10 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
         <select id="boxGenType">
           <option value="american">Scatola americana (RSC)</option>
           <option value="tuck">Astuccio con coperchio a incastro</option>
+          <option value="tray">Vassoio con alette d'angolo</option>
+          <option value="lidbox">Scatola con coperchio (fondo + coperchio)</option>
+          <option value="sleeve">Fascia (sleeve)</option>
+          <option value="pyramid">Piramide a base quadrata</option>
         </select>
       </div>
       <div class="field"><label>Larghezza L (mm)</label><input type="number" id="boxGenL" value="200" min="10"></div>
@@ -10395,6 +10423,7 @@ function drawCornerAngle(rayA, rayB){
   while(d <= -Math.PI) d += 2*Math.PI;
   const diffDeg = Math.abs(d) * 180/Math.PI;
   if(diffDeg < 1) return; // tratti sostanzialmente allineati/sovrapposti: nulla di utile da mostrare
+  if(diffDeg > 172) return; // angolo quasi piatto (es. i punti di un raccordo o di un arco): l'etichetta coprirebbe il disegno
   const R = 6/state.scale, RL = 11/state.scale; // raggi in mm: restano costanti a schermo indipendentemente dallo zoom
   const steps = 10;
   const pts = [];
@@ -10777,6 +10806,14 @@ function foldModelAt(model, frac){
     normal: (()=>{ const m=T[fi].m; return [m[2], m[5], m[8]]; })(),
     isRoot: fi===model.root
   }));
+  if(model.flipView){ // scatola che si chiude "sotto" il pannello di base: la giro (rotazione di 180° attorno a X)
+    res.forEach(f=>{ f.pts = f.pts.map(p=>[p[0], -p[1], -p[2]]); f.normal = [f.normal[0], -f.normal[1], -f.normal[2]]; });
+    for(let i=0;i<T.length;i++){ const m = T[i].m, t = T[i].t; T[i] = {m:[m[0],m[1],m[2], -m[3],-m[4],-m[5], -m[6],-m[7],-m[8]], t:[t[0], -t[1], -t[2]]}; }
+  }
+  if(model.baseUp){ // il pannello di base è il fondo (vassoi, piramidi): sta in orizzontale, le pareti salgono
+    res.forEach(f=>{ f.pts = f.pts.map(p=>[p[0], p[2], -p[1]]); f.normal = [f.normal[0], f.normal[2], -f.normal[1]]; });
+    for(let i=0;i<T.length;i++){ const m = T[i].m, t = T[i].t; T[i] = {m:[m[0],m[1],m[2], m[6],m[7],m[8], -m[3],-m[4],-m[5]], t:[t[0], t[2], -t[1]]}; }
+  }
   res.T = T; // posizione di ogni pannello: serve per disegnare le cerniere evidenziate
   return res;
 }
@@ -11471,6 +11508,14 @@ function openFold3D(){
 function refreshFold3D(){
   const model = buildFoldModel(state.shapes);
   fold3d.model = model;
+  // verso della vista: se a scatola chiusa quasi tutto sta sotto il pannello di base (vassoi, piramidi…), la si gira
+  model.flipView = false; model.baseUp = false;
+  if(model.faces.length){
+    const pts = foldModelAt(model, 1).flatMap(f=> f.pts), zs = pts.map(p=>p[2]);
+    const span = Math.max(...zs) - Math.min(...zs), mean = zs.reduce((a,b)=>a+b, 0)/zs.length;
+    model.flipView = span > 1 && mean < -0.25*span;
+  }
+  model.baseUp = !!state.page.view3dBase; // dopo il verso: il fondo va in orizzontale, le pareti salgono
   const K = foldSteps(model).length;
   buildArtTexture();
   document.getElementById('fold3dInfo').textContent = tpl('{p} pannelli, {h} pieghe collegate.', {p:model.faces.length, h:model.hinges.length})
@@ -12820,7 +12865,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.50';
+const GUIDE_VERSION = '2.51';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -13054,7 +13099,12 @@ html:`<p>Ogni piega ha un numero di <b>passo</b>: nella simulazione 3D si chiudo
 { id:'genera-scatola', cat:'Fustella e scatole', title:'Genera scatola', keys:'genera scatola americana rsc astuccio tuck box dimensioni larghezza profondità altezza automatica',
 html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profondità e Altezza in mm e scegli il tipo. La fustella viene creata in una nuova scheda.</p>
 <ul><li><b>Scatola americana (RSC)</b>: 4 pareti con aletta di incollaggio, alette sopra e sotto separate da tagli.</li>
-<li><b>Astuccio con coperchio a incastro</b>: alette antipolvere, aletta posteriore e linguetta di chiusura.</li></ul>
+<li><b>Astuccio con coperchio a incastro</b>: alette antipolvere, aletta posteriore e linguetta di chiusura.</li>
+<li><b>Vassoio con alette d'angolo</b>: fondo L×P, pareti alte H; le alette d'angolo stanno sulle pareti corte e si incollano dentro le lunghe.</li>
+<li><b>Scatola con coperchio</b>: due vassoi sullo stesso foglio, il fondo e il coperchio (più largo di 1 mm più due spessori, alto un terzo dell'altezza, almeno 15 mm). Nel 3D si piega un pezzo per volta: l'altro viene segnalato come "non collegato".</li>
+<li><b>Fascia (sleeve)</b>: quattro pannelli L, P, L, P alti H, con l'aletta di incollaggio; senza fondo né coperchio.</li>
+<li><b>Piramide a base quadrata</b>: base di lato L, altezza H; le pieghe hanno già gli angoli giusti (non 90°) e le alette di incollaggio stanno dentro.</li></ul>
+<p>Per vassoi, scatole con coperchio e piramidi l'<a data-topic="anteprima-3d">anteprima 3D</a> mostra il fondo in basso e le pareti che salgono.</p>
 <p><b>Spessore del cartone</b>: con 0 le misure sono quelle delle linee. Con uno spessore (es. 0,5 mm cartoncino, 3 mm ondulato onda B, 4 mm onda C) le misure scritte diventano <b>interne</b>: lunghezza e profondità crescono di uno spessore, l'altezza di due.</p>
 <p>Le pieghe sono già impostate a monte, 90°, con un <a data-topic="ordine">ordine di piegatura</a> sensato, e la zona di incollaggio è un poligono <a data-topic="incollaggio">tratteggiato</a>. L'aletta di incollaggio si può impostare o lasciare automatica. Gli spigoli delle alette sono semplificati: verifica le misure prima della produzione.</p>` },
 
@@ -13080,6 +13130,14 @@ html:`<p>Il colore della <b>linea</b>, del <b>riempimento</b>, dello <b>sfondo d
 <li>l'<b>opacità</b> con cursore e numero in %;</li>
 <li>alcuni colori pronti.</li></ul>
 <p>Il disegno cambia mentre scegli; <b>OK</b> o un clic fuori confermano, <b>Esc</b> o <b>Annulla</b> tornano al colore di prima. L'opacità vale anche in esportazioni e stampe.</p>` },
+{ id:'codici', cat:'Disegnare', title:'QR code e codici a barre', keys:'qr code codice a barre barcode ean ean13 ean8 upc code128 itf14 prodotto scanner',
+html:`<p>Menu <b>Strumenti → 🔳 QR code e codici a barre…</b>. Scegli il tipo, scrivi il contenuto e la misura: l'anteprima si aggiorna mentre scrivi.</p>
+<ul><li><b>QR code</b>: qualunque testo o indirizzo web (anche con lettere accentate), lato in mm e correzione d'errore (più alta = più robusto ma più fitto). Ha già il margine bianco di 4 moduli.</li>
+<li><b>EAN-13</b> (12 o 13 cifre: la cifra di controllo è calcolata se manca), <b>EAN-8</b>, <b>UPC-A</b>, <b>Code 128</b> (testo libero) e <b>ITF-14</b> per gli imballi: larghezza e altezza delle barre in mm, e le cifre scritte sotto.</li></ul>
+<p>Il codice viene inserito al centro del foglio come grafica <b>vettoriale</b> nel colore scelto (con le cifre, è un <a data-topic="gruppi">gruppo</a>). Usa colori scuri su fondo chiaro e verifica sempre la lettura con uno scanner o con il telefono prima di stampare. Richiede la connessione a Internet la prima volta.</p>` },
+{ id:'raccordi', cat:'Modificare', title:'Raccordi e smussi degli angoli', keys:'raccordo raccordare arrotondare angolo raggio smusso smussare fillet chamfer spigolo',
+html:`<p>Tasto destro su un <b>punto</b> d'angolo di una linea (con lo strumento Selezione): <b>◜ Raccorda l'angolo…</b> lo sostituisce con un arco del raggio che scrivi; <b>◸ Smussa l'angolo…</b> lo taglia con un tratto dritto alla distanza che scrivi dall'angolo. Il valore usato viene ricordato.</p>
+<p>Se il raggio o la distanza non stanno nei tratti vicini vengono ridotti (il programma lo dice). I punti staccati restano staccati; Ctrl+Z annulla. Utile per angoli di finestre, linguette e alette, che arrotondati si strappano di meno.</p>` },
 { id:'righello', cat:'Disegnare', title:'Righello: misurare sul foglio', keys:'righello misura misurare distanza lunghezza angolo dx dy metro quota misurazione',
 html:`<p>Il <b>Righello (M)</b>, nella sezione Controlla della barra a sinistra, misura qualsiasi cosa sul foglio senza aggiungere nulla al disegno: trascina da un punto all'altro e vedi <b>distanza</b>, <b>ΔX</b>, <b>ΔY</b> e <b>angolo</b>, sia sul foglio sia nel pannello (con le coordinate dei due estremi).</p>
 <ul><li>Gli estremi si agganciano a punti, linee e griglia come gli altri strumenti (con la calamita attiva), così misuri esattamente tra due punti del disegno.</li>
@@ -13107,7 +13165,9 @@ html:`<p><b>Forme pronte</b>: nella barra a sinistra, sezione <b>Forme pronte</b
 <ul><li><b>Trascina</b> una forma sul foglio per inserirla in quel punto, oppure <b>fai clic</b> per metterla al centro (sui tablet si usa il clic). La galleria resta aperta per inserirne altre; si chiude con ✕, Esc o di nuovo con F.</li>
 <li>La casella <b>Dimensione</b> indica il lato del quadrato in cui sta la forma; i pezzi di packaging hanno invece <b>misure reali fisse</b>.</li>
 <li>La forma usa il <b>ruolo linea</b> scelto (Taglio, Piega…), come gli strumenti di disegno; cerchi ed ellissi sono ellissi vere. Le forme in più parti (corona, cartellino, ingranaggio) sono inserite già <a data-topic="gruppi">raggruppate</a>.</li>
-<li>La casella <b>Cerca</b> filtra per nome o categoria (es. "stella", "poligoni").</li></ul>
+<li>La casella <b>Cerca</b> filtra per nome o categoria (es. "stella", "poligoni").</li>
+<li>Nella categoria <b>Packaging</b> trovi, in misura reale: aletta, foro europeo, foro a sombrero, maniglia, linguetta, gancio, foro tondo, asola, finestra rettangolare, tonda e ovale, fessura per linguetta, foro per cordino, tacca a V e tacca per il pollice.</li></ul>
+<p>QR code e codici a barre: vedi <a data-topic="codici">QR code e codici a barre</a>.</p>
 <p><b>Componenti condivisi</b>: nel pannello a destra, scheda <b>Condivisi</b>, ogni progetto pubblico della libreria si inserisce nel disegno come un pezzo pronto.</p>` },
 { id:'incollaggio', cat:'Fustella e scatole', title:'Zone di incollaggio', keys:'incollaggio colla tratteggio zona aletta stampa',
 html:`<p>Una forma <b>chiusa</b> con ruolo Incollaggio e senza colore di riempimento viene mostrata a schermo con un <b>tratteggio diagonale</b>. Il tratteggio serve solo sul disegno: esportazioni SVG e PDF, stampa di prova e anteprima di taglio non lo contengono (resta solo il contorno).</p>
@@ -13292,6 +13352,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.51</b> — Nuovi modelli nel <a data-topic="genera-scatola">generatore</a>: vassoio, scatola con coperchio, fascia, piramide (nel 3D il fondo sta in basso); <a data-topic="raccordi">raccordi e smussi</a> degli angoli; <a data-topic="codici">QR code e codici a barre</a> vettoriali; nuovi elementi di packaging tra le <a data-topic="componenti">forme pronte</a>; gli angoli quasi piatti non mostrano più l'etichetta dei gradi.</li>
 <li><b>2.50</b> — Tante novità:
 <ul><li>Esportazioni: <a data-topic="pdf-stampa">PDF per la stampa</a> con CutContour/Crease in sovrastampa; <a data-topic="cad">DXF per CAD a livelli, HPGL/PLT, CF2 e metri di lama</a>; <a data-topic="esporta-immagine">immagine PNG/JPG</a>; dal 3D <a data-topic="esporta-3d">immagine, video e modello GLB/OBJ</a>.</li>
 <li>Produzione: <a data-topic="imposizione">imposizione con incastro</a>, <a data-topic="abbondanza">abbondanza e zona sicura</a>, <a data-topic="preflight">controllo prima della stampa</a>, <a data-topic="testo-tracciati">testo in tracciati</a>, spessore del cartone nel <a data-topic="genera-scatola">generatore</a>.</li>
@@ -13965,7 +14026,61 @@ function generateBoxOfType(type, L, W, H, glueW, t){
   if(BOX_TEMPLATES[type]) return BOX_TEMPLATES[type].gen(L, W, H, glueW, t);
   return type==='tuck' ? generateTuckBox(L,W,H,glueW) : generateAmericanBox(L,W,H,glueW);
 }
-const BOX_TEMPLATES = {}; // modelli aggiuntivi (vedi più avanti)
+// modelli aggiuntivi: gen(L, W, H, glueW, t) → {shapes, totalW, totalH}
+// Vassoio: fondo L×W, pareti alte H; le alette d'angolo stanno sulle pareti corte e si incollano dentro le lunghe
+function trayShapes(L, W, H, ox, oy, shapes){
+  const g = 0.5, hf = Math.max(4, H - 1), tp = Math.min(H*0.3, hf*0.5), X = x=> ox + x, Y = y=> oy + y;
+  const P = [[H,0],[H+L,0],[H+L,H],
+    [H+L+g,H],[H+L+g,H-hf],[2*H+L-tp,H-hf],[2*H+L,H],[2*H+L,H+W],[2*H+L-tp,H+W+hf],[H+L+g,H+W+hf],[H+L+g,H+W],
+    [H+L,H+W],[H+L,2*H+W],[H,2*H+W],[H,H+W],
+    [H-g,H+W],[H-g,H+W+hf],[tp,H+W+hf],[0,H+W],[0,H],[tp,H-hf],[H-g,H-hf],[H-g,H],[H,H]].map(q=>[X(q[0]),Y(q[1])]);
+  shapes.push(boxPolyShape(P, 'cut'));
+  const fold = (a, b, order)=>{ const f = boxLineShape([X(a[0]),Y(a[1])],[X(b[0]),Y(b[1])],'fold'); f.foldOrder = order; shapes.push(f); };
+  fold([H,H],[H,H+W],1); fold([H+L,H],[H+L,H+W],1);          // 1: pareti corte
+  fold([H+L+g,H],[2*H+L,H],2); fold([H+L+g,H+W],[2*H+L,H+W],2); fold([0,H],[H-g,H],2); fold([0,H+W],[H-g,H+W],2); // 2: alette d'angolo
+  fold([H,H],[H+L,H],3); fold([H,H+W],[H+L,H+W],3);          // 3: pareti lunghe, sopra le alette
+  [[H+L+g, H-hf],[H+L+g, H+W],[0, H-hf],[0, H+W]].forEach(([x,y])=> shapes.push(glueZoneShape(X(x)+tp*0.5, Y(y), H-g-tp, hf)));
+  return {w: L+2*H, h: W+2*H};
+}
+const BOX_TEMPLATES = {
+  tray: {label:'Vassoio', base:true, gen:(L, W, H)=>{ const shapes = []; const d = trayShapes(L, W, H, 0, 0, shapes); setDefaultFolds(shapes); return {shapes, totalW:d.w, totalH:d.h}; }},
+  lidbox: {label:'Scatola con coperchio', base:true, gen:(L, W, H, glueW, t)=>{
+    const shapes = [], a = trayShapes(L, W, H, 0, 0, shapes);
+    const c = 1 + 2*(t||0), lidH = Math.max(15, Math.round(H/3)); // il coperchio è più largo del fondo di 2 spessori + 1 mm di gioco
+    const b = trayShapes(L + c, W + c, lidH, a.w + 15, 0, shapes);
+    setDefaultFolds(shapes);
+    return {shapes, totalW: a.w + 15 + b.w, totalH: Math.max(a.h, b.h)};
+  }},
+  sleeve: {label:'Fascia', gen:(L, W, H, glueW)=>{
+    const gw = glueW || Math.round(Math.max(12, Math.min(L,W)*0.35)), tp = Math.min(gw*0.6, H*0.15), T = gw + 2*L + 2*W;
+    const shapes = [boxPolyShape([[gw,0],[T,0],[T,H],[gw,H],[0,H-tp],[0,tp]], 'cut')];
+    [gw, gw+L, gw+L+W, gw+2*L+W].forEach(x=>{ const f = boxLineShape([x,0],[x,H],'fold'); f.foldOrder = 1; shapes.push(f); });
+    shapes.push(glueZoneShape(0, tp, gw, H-2*tp));
+    setDefaultFolds(shapes);
+    return {shapes, totalW:T, totalH:H};
+  }},
+  pyramid: {label:'Piramide', base:true, gen:(L, W, H)=>{
+    const a = L/2, sl = Math.hypot(H, a), fw = Math.max(6, Math.min(12, L*0.15));
+    const A = [sl+a, 0], B = [sl+L, sl], R = [2*sl+L, sl+a], C = [sl+L, sl+L], Bt = [sl+a, 2*sl+L], D = [sl, sl+L], Lp = [0, sl+a], E = [sl, sl];
+    const cen = [sl+a, sl+a];
+    const flap = (p, q)=>{ // aletta trapezoidale verso l'esterno sul lato p→q
+      const dx = q[0]-p[0], dy = q[1]-p[1], len = Math.hypot(dx,dy), u = [dx/len, dy/len];
+      let n = [-u[1], u[0]]; const m = [(p[0]+q[0])/2, (p[1]+q[1])/2];
+      if((m[0]+n[0]-cen[0])**2 + (m[1]+n[1]-cen[1])**2 < (m[0]-cen[0])**2 + (m[1]-cen[1])**2) n = [-n[0], -n[1]];
+      const ins = Math.min(fw, len*0.3);
+      return [[p[0]+n[0]*fw+u[0]*ins, p[1]+n[1]*fw+u[1]*ins], [q[0]+n[0]*fw-u[0]*ins, q[1]+n[1]*fw-u[1]*ins]];
+    };
+    const f1 = flap(A,B), f2 = flap(R,C), f3 = flap(Bt,D), f4 = flap(Lp,E);
+    const shapes = [boxPolyShape([A, ...f1, B, R, ...f2, C, Bt, ...f3, D, Lp, ...f4, E], 'cut')];
+    const alpha = Math.atan2(H, a)*180/Math.PI, phi = Math.acos(a*a/(H*H + a*a))*180/Math.PI;
+    // prima le alette di incollaggio (1), poi le facce (2): a piramide chiusa le alette stanno dentro
+    [[E,B],[B,C],[C,D],[D,E]].forEach(([p,q])=>{ const f = boxLineShape(p, q, 'fold'); f.foldOrder = 2; shapes.push(f); });
+    [[A,B],[R,C],[Bt,D],[Lp,E]].forEach(([p,q])=>{ const f = boxLineShape(p, q, 'fold'); f.foldOrder = 1; shapes.push(f); });
+    setDefaultFolds(shapes);
+    shapes.forEach(x=>{ if(x.style.role==='fold') x.foldAngle = Math.round((x.foldOrder===2 ? 180 - alpha : phi)*10)/10; });
+    return {shapes, totalW: 2*sl + L, totalH: 2*sl + L};
+  }}
+};
 function generateAmericanBox(L, W, H, glueW){
   glueW = glueW || Math.round(Math.max(20, Math.min(L,W)*0.5));
   const flapH = W/2;
@@ -14154,6 +14269,11 @@ const SHAPE_LIBRARY = [
     const pts = [].concat(SL.arcPts(-12.5,2.5,2.5,90,270,10), SL.arcPts(0,0,7,180,360,28), SL.arcPts(12.5,2.5,2.5,-90,90,10));
     return SL.poly(pts); }},
   {key:'vnotch', cat:'Packaging', label:'Tacca a V', fixed:true, make:()=>({points:[[-4,0],[0,5],[4,0]], closed:false})},
+  {key:'window_round', cat:'Packaging', label:'Finestra tonda Ø 40 mm', fixed:true, make:()=>SL.ell(40,40)},
+  {key:'window_oval', cat:'Packaging', label:'Finestra ovale 60 × 40 mm', fixed:true, make:()=>SL.ell(60,40)},
+  {key:'tabslot', cat:'Packaging', label:'Fessura per linguetta 20 × 1,5 mm', fixed:true, make:()=>SL.poly([[0,0],[20,0],[20,1.5],[0,1.5]])},
+  {key:'cordhole', cat:'Packaging', label:'Foro per cordino Ø 4 mm', fixed:true, make:()=>SL.ell(4,4)},
+  {key:'thumbnotch', cat:'Packaging', label:'Tacca per il pollice (mezzaluna)', fixed:true, make:()=>({points: SL.arcPts(0,0,12,0,180,24), closed:false})},
 ];
 function shapeLibSize(){ return state.shapeLibSizeMM > 0 ? state.shapeLibSizeMM : 40; } // sempre in mm, qualunque sia l'unità mostrata
 // cambio di unità: il campo della dimensione mostra lo stesso valore nella nuova unità
@@ -14524,6 +14644,7 @@ stage.addEventListener('contextmenu', (e)=>{
         if(det) items.push({label: tpl('🔗 Ricollega il punto {n}', {n:idx+1}), action:()=> setPointLink(s, idx, true)});
         if(!linked && !det) items.push({label: tpl('Il punto {n} non è unito ad altre linee', {n:idx+1}), disabled:true, action:()=>{}});
         if(!s.arc && (s.closed || (idx>0 && idx<s.points.length-1))) items.push('sep', {label: tpl('✂ Spezza la linea nel punto {n}', {n:idx+1}), action:()=> splitLineAt(s, null, idx)});
+        if(!s.arc && (s.closed || (idx>0 && idx<s.points.length-1))) items.push('sep', {label: tpl('◜ Raccorda l\'angolo {n}…', {n:idx+1}), action:()=> cornerPrompt(s, idx, 'fillet')}, {label: tpl('◸ Smussa l\'angolo {n}…', {n:idx+1}), action:()=> cornerPrompt(s, idx, 'chamfer')});
         if(s.points.length>2) items.push('sep', {label: tpl('🗑 Elimina il punto {n}', {n:idx+1}), action:()=> deletePointFromShape(s, idx)});
         showContextMenu(e.clientX, e.clientY, items);
         return;
@@ -15861,6 +15982,7 @@ function handleMenuAction(e){
   else if(action==='export-silhouette') openSilhouetteExport();
   else if(action==='export-pdf-print') openModal('pdfPrintModal');
   else if(action==='text-to-paths') textToPaths();
+  else if(action==='codes'){ openModal('codesModal'); codesRefresh(); }
   else if(action==='preflight') openPreflight();
   else if(action==='bleed') openModal('bleedModal');
   else if(action==='imposition') openImposition();
@@ -17210,13 +17332,15 @@ document.getElementById('fold3dGlb').onclick = exportFold3DGLB;
 document.getElementById('fold3dObj').onclick = exportFold3DOBJ;
 try{ const sv = JSON.parse(localStorage.getItem('spikecut-pdfspots') || 'null'); if(Array.isArray(sv)) [...document.querySelectorAll('#pdfSpotTable input')].forEach((i, k)=>{ if(sv[k]==null) return; if(i.type==='checkbox') i.checked = !!sv[k]; else i.value = sv[k]; }); }catch(e){}
 document.getElementById('pdfPrintGo').onclick = doPrintPDF;
+['codeType','codeValue','codeW','codeH','codeEcc','codeText'].forEach(id=>{ const e = document.getElementById(id); e.addEventListener('input', codesRefresh); e.addEventListener('change', codesRefresh); });
+document.getElementById('codeGo').onclick = codesInsert;
 document.getElementById('bleedGo').onclick = ()=> makeBleedGuides(false);
 document.getElementById('bleedRemove').onclick = ()=> makeBleedGuides(true);
 document.getElementById('preflightAgain').onclick = runPreflight;
 document.getElementById('impSheet').onchange = ()=>{ const v = document.getElementById('impSheet').value; if(v!=='custom'){ const [w,h] = v.split('x'); document.getElementById('impW').value = w; document.getElementById('impH').value = h; } impRefresh(); };
 ['impW','impH','impMargin','impGap','impRot','impNest'].forEach(id=>{ const e = document.getElementById(id); e.addEventListener('change', impRefresh); });
 document.getElementById('impGo').onclick = impCreate;
-['imgExpModal','cadModal','pdfPrintModal','bleedModal','preflightModal','impModal'].forEach(id=>{ const m = document.getElementById(id); setupOverlayClickClose(m, ()=> m.classList.remove('open')); m.querySelector('[data-close]').onclick = ()=> m.classList.remove('open'); m.addEventListener('keydown', e=> e.stopPropagation()); });
+['imgExpModal','cadModal','pdfPrintModal','bleedModal','preflightModal','impModal','codesModal'].forEach(id=>{ const m = document.getElementById(id); setupOverlayClickClose(m, ()=> m.classList.remove('open')); m.querySelector('[data-close]').onclick = ()=> m.classList.remove('open'); m.addEventListener('keydown', e=> e.stopPropagation()); });
 ['imgExpFmt','imgExpDpi'].forEach(id=> document.getElementById(id).onchange = imgExpRefresh);
 document.getElementById('imgExpGo').onclick = doImageExport;
 document.getElementById('cadDxf').onclick = ()=> doCadExport('dxf');
@@ -17266,11 +17390,12 @@ document.getElementById('boxGenApply').onclick = ()=>{
   const result = generateBoxOfType(type, L + t, W + t, H + 2*t, glueW, t);
 
   snapshotActiveDocument();
-  const label = type==='tuck' ? 'Astuccio' : 'Scatola americana';
+  const label = BOX_TEMPLATES[type] ? BOX_TEMPLATES[type].label : (type==='tuck' ? 'Astuccio' : 'Scatola americana');
   const doc = makeNewDocument(tpl('{label} {L}×{W}×{H}', {label:translate(label), L, W, H}));
   result.shapes.forEach(s=> s.layerId = doc.activeLayerId); // le forme erano state generate col livello del documento precedente
   doc.shapes = result.shapes;
   doc.page = { w: Math.ceil(result.totalW+10), h: Math.ceil(result.totalH+10), bg:'#ffffff' };
+  if(BOX_TEMPLATES[type] && BOX_TEMPLATES[type].base) doc.page.view3dBase = true; // nel 3D il fondo va in basso
   // il punto di partenza della cronologia è la scatola appena generata (non il foglio vuoto):
   // altrimenti il primo Ctrl+Z dopo una modifica cancellerebbe tutta la scatola
   doc.history = [JSON.stringify({shapes:doc.shapes, layers:doc.layers})]; doc.historyTimes = [Date.now()]; doc.histIndex = 0;
@@ -17883,7 +18008,7 @@ document.getElementById('pageSize').addEventListener('change', (e)=>{
   const v = e.target.value;
   if(v==='custom'){ openCustomPageModal(); return; }
   const [w,h] = v.split('x').map(Number);
-  state.page = {w,h,bg:state.page.bg,bgExport:state.page.bgExport,bgOpacity:state.page.bgOpacity};
+  state.page = {w,h,bg:state.page.bg,bgExport:state.page.bgExport,bgOpacity:state.page.bgOpacity,view3dBase:state.page.view3dBase};
   renderAll();
 });
 function openCustomPageModal(){
@@ -17914,7 +18039,7 @@ function applyCustomPage(){
     err.style.display = 'block';
     return;
   }
-  state.page = {w,h,bg:state.page.bg,bgExport:state.page.bgExport,bgOpacity:state.page.bgOpacity};
+  state.page = {w,h,bg:state.page.bg,bgExport:state.page.bgExport,bgOpacity:state.page.bgOpacity,view3dBase:state.page.view3dBase};
   document.getElementById('pageSizeModal').classList.remove('open');
   syncPageSizeSelect();
   renderAll();
@@ -19501,6 +19626,47 @@ function cropImageFromBox(s, box, c0, r){
   if(1-c.t-c.b < MIN){ if(dT!==0) c.t = 1-c.b-MIN; else c.b = 1-c.t-MIN; }
   const left = s.flipH ? c0.r - c.r : c0.l - c.l, top = s.flipV ? c0.b - c.b : c0.t - c.t; // di quanto si sposta il bordo sinistro/superiore (in frazioni)
   s.crop = c; s.x = box.x - left*fw; s.y = box.y - top*fh; s.w = (1-c.l-c.r)*fw; s.h = (1-c.t-c.b)*fh;
+}
+// raccordo (arco di raggio r) o smusso (taglio a distanza d dall'angolo) su un vertice di una linea
+async function cornerPrompt(s, idx, kind){
+  const key = 'spikecut-corner-' + kind, last = (()=>{ try{ return localStorage.getItem(key) || '5'; }catch(e){ return '5'; } })();
+  const v = await showPrompt(kind==='fillet' ? tpl('Raggio del raccordo ({u})', {u: unitLabel()}) : tpl('Distanza dello smusso dall\'angolo ({u})', {u: unitLabel()}), last);
+  if(v==null) return;
+  const r = unitToMm(parseFloat(String(v).replace(',', '.')));
+  if(!(r > 0)){ showToast('Inserisci un valore maggiore di zero.', true); return; }
+  try{ localStorage.setItem(key, String(v)); }catch(e){}
+  const res = roundCorner(s, idx, r, kind);
+  if(!res){ showToast('Qui non si può: l\'angolo è piatto o i tratti sono troppo corti.', true); return; }
+  pushHistory(); renderAll();
+  if(res.reduced) showToast(tpl('Valore ridotto a {v} per stare nei tratti vicini.', {v: fmtUnit(res.reduced)}), false);
+}
+function roundCorner(s, idx, r, kind){
+  const n = s.points.length, P = s.points[idx];
+  const prev = s.points[(idx-1+n)%n], next = s.points[(idx+1)%n];
+  const l1 = dist(P, prev), l2 = dist(P, next); if(l1 < 1e-6 || l2 < 1e-6) return null;
+  const u1 = [(prev[0]-P[0])/l1, (prev[1]-P[1])/l1], u2 = [(next[0]-P[0])/l2, (next[1]-P[1])/l2];
+  const cosT = Math.max(-1, Math.min(1, u1[0]*u2[0] + u1[1]*u2[1])), th = Math.acos(cosT);
+  if(th < 1e-3 || Math.PI - th < 1e-3) return null; // tratti allineati
+  let reduced = null, d, pts;
+  if(kind==='chamfer'){
+    d = r; const dmax = Math.min(l1, l2)*0.98; if(d > dmax){ d = dmax; reduced = d; }
+    pts = [[P[0]+u1[0]*d, P[1]+u1[1]*d], [P[0]+u2[0]*d, P[1]+u2[1]*d]];
+  } else {
+    d = r / Math.tan(th/2); const dmax = Math.min(l1, l2)*0.98;
+    if(d > dmax){ d = dmax; r = d*Math.tan(th/2); reduced = r; }
+    const T1 = [P[0]+u1[0]*d, P[1]+u1[1]*d], T2 = [P[0]+u2[0]*d, P[1]+u2[1]*d];
+    const bis = [u1[0]+u2[0], u1[1]+u2[1]], bl = Math.hypot(bis[0], bis[1]), cd = r / Math.sin(th/2);
+    const C = [P[0]+bis[0]/bl*cd, P[1]+bis[1]/bl*cd];
+    const a1 = Math.atan2(T1[1]-C[1], T1[0]-C[0]); let a2 = Math.atan2(T2[1]-C[1], T2[0]-C[0]), sp = a2 - a1;
+    while(sp > Math.PI) sp -= 2*Math.PI; while(sp < -Math.PI) sp += 2*Math.PI;
+    const step = 2*Math.acos(Math.max(-1, Math.min(1, 1 - ARC_TOL/r))), k = Math.max(4, Math.min(90, Math.ceil(Math.abs(sp)/step)));
+    pts = []; for(let i=0;i<=k;i++){ const a = a1 + sp*i/k; pts.push([C[0]+r*Math.cos(a), C[1]+r*Math.sin(a)]); }
+    pts[0] = T1; pts[k] = T2;
+  }
+  s.points.splice(idx, 1, ...pts);
+  if(s.smooth) s.smooth.splice(idx, 1, ...pts.map(()=>0));
+  shiftDetachedIndices(s, idx, -1); for(let i=0;i<pts.length;i++) shiftDetachedIndices(s, idx, +1);
+  return {reduced};
 }
 function moveSelectionToLayer(layerId){
   const layer = state.layers.find(l=>l.id===layerId); if(!layer) return;
@@ -22898,6 +23064,72 @@ async function textToPaths(){
   }
   pushHistory(); renderAll();
   showToast(done ? tpl('{n} testi convertiti in tracciati: ora non dipendono più dal font.', {n: done}) : 'Non è stato possibile convertire i testi.', !done);
+}
+/* ---------- QR code e codici a barre: vettoriali (rettangoli), nel colore scelto ---------- */
+const LIB_URLS = {qr:'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js', barcode:'https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.6/JsBarcode.all.min.js'};
+const libLoading = {};
+function loadLib(key){
+  if(key==='qr' && typeof qrcode!=='undefined') return Promise.resolve();
+  if(key==='barcode' && typeof JsBarcode!=='undefined') return Promise.resolve();
+  return libLoading[key] || (libLoading[key] = new Promise((res, rej)=>{ const sc = document.createElement('script'); sc.src = LIB_URLS[key]; sc.onload = ()=> res(); sc.onerror = ()=>{ delete libLoading[key]; rej(new Error('lib')); }; document.head.appendChild(sc); }));
+}
+// codice → {d (rettangoli in unità "modulo"), mw, mh, text}
+async function buildCode(){
+  const type = document.getElementById('codeType').value, val = document.getElementById('codeValue').value;
+  if(type==='qr'){
+    await loadLib('qr');
+    if(qrcode.stringToBytesFuncs && qrcode.stringToBytesFuncs['UTF-8']) qrcode.stringToBytes = qrcode.stringToBytesFuncs['UTF-8'];
+    const q = qrcode(0, document.getElementById('codeEcc').value); q.addData(val || ' '); q.make();
+    const n = q.getModuleCount(), Q = 4; let d = '';
+    for(let r=0;r<n;r++){ let c = 0; while(c<n){ if(!q.isDark(r,c)){ c++; continue; } let e = c; while(e<n && q.isDark(r,e)) e++; d += `M${c+Q} ${r+Q}h${e-c}v1h${c-e}z`; c = e; } }
+    return {d, mw: n + 2*Q, mh: n + 2*Q, square: true, info: tpl('QR versione {v}: {n}×{n} moduli (con il margine bianco di 4 moduli).', {v: Math.round((n-17)/4), n})};
+  }
+  await loadLib('barcode');
+  const svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  JsBarcode(svgEl, val, {format: type, width: 1, height: 100, margin: 0, displayValue: false});
+  const rects = [...svgEl.querySelectorAll('rect')].filter(r=> (r.getAttribute('style')||'').indexOf('fill:#ffffff')<0 && r.getAttribute('fill')!=='#ffffff');
+  let d = '', mw = 0;
+  rects.forEach(r=>{ const g = r.parentNode && r.parentNode.getAttribute ? r.parentNode.getAttribute('transform') : ''; const tx = g && /translate\(([\d.]+)/.exec(g) ? parseFloat(/translate\(([\d.]+)/.exec(g)[1]) : 0;
+    const x = tx + parseFloat(r.getAttribute('x')||0), w = parseFloat(r.getAttribute('width')||0), h = parseFloat(r.getAttribute('height')||0), y = parseFloat(r.getAttribute('y')||0);
+    if(w > 0 && h > 0 && h >= 50){ d += `M${x} ${y}h${w}v${h}h${-w}z`; mw = Math.max(mw, x + w); } });
+  if(!d) throw new Error('value');
+  return {d, mw, mh: 100, square: false, text: val, info: tpl('{n} moduli di larghezza: modulo di {m} mm.', {n: mw, m: (parseFloat(document.getElementById('codeW').value)/mw).toFixed(3)})};
+}
+let codeBuilt = null;
+async function codesRefresh(){
+  const type = document.getElementById('codeType').value, qr = type==='qr';
+  document.getElementById('codeHRow').style.display = qr ? 'none' : '';
+  document.getElementById('codeEccRow').style.display = qr ? '' : 'none';
+  document.getElementById('codeTextRow').style.display = qr ? 'none' : '';
+  document.getElementById('codeWLabel').textContent = translate(qr ? 'Lato (mm)' : 'Larghezza (mm)');
+  const prev = document.getElementById('codePreview'), info = document.getElementById('codeInfo');
+  try{
+    codeBuilt = await buildCode();
+    prev.innerHTML = `<svg viewBox="0 0 ${codeBuilt.mw} ${codeBuilt.mh}" style="width:${qr ? 140 : 260}px;height:${qr ? 140 : 90}px;" preserveAspectRatio="${qr ? 'xMidYMid meet' : 'none'}"><path d="${codeBuilt.d}" fill="#000"/></svg>`;
+    info.textContent = codeBuilt.info; document.getElementById('codeGo').disabled = false;
+  }catch(e){
+    codeBuilt = null; prev.innerHTML = ''; document.getElementById('codeGo').disabled = true;
+    info.textContent = e.message==='lib' ? translate('La libreria per i codici richiede la connessione a Internet.') : translate('Contenuto non valido per questo tipo di codice (es. EAN-13 vuole 12 o 13 cifre, EAN-8 7 o 8, UPC-A 11 o 12, ITF-14 13 o 14).');
+  }
+}
+async function codesInsert(){
+  if(!codeBuilt) return;
+  ensureDocumentOpen();
+  const w = Math.max(5, parseFloat(document.getElementById('codeW').value)||25), h = codeBuilt.square ? w : Math.max(3, parseFloat(document.getElementById('codeH').value)||20);
+  const col = document.getElementById('codeColor').value, x = (state.page.w - w)/2, y = (state.page.h - h)/2;
+  const made = [];
+  const sh = makeShape('tracedpath', {x, y, w, h, srcW: codeBuilt.mw, srcH: codeBuilt.mh, paths:[{d: codeBuilt.d, fill: col}], codeValue: document.getElementById('codeValue').value});
+  Object.assign(sh.style, {role:'design', stroke:'none', fill: col, fillOpacity:1});
+  state.shapes.push(sh); made.push(sh);
+  if(!codeBuilt.square && document.getElementById('codeText').checked){
+    const t = makeShape('text', {x: x + w/2, y: y + h + Math.max(2.2, w*0.07), text: codeBuilt.text, fontSize: Math.max(2, Math.min(4, w*0.08)), align:'center', fontFamily:'builtin:"Courier New", Courier, monospace'});
+    t.style.role = 'design'; t.style.stroke = col; state.shapes.push(t); made.push(t);
+  }
+  if(made.length > 1){ const gid = uid(); made.forEach(m=> m.groupId = gid); }
+  state.selection = new Set(made.map(m=>m.id));
+  document.getElementById('codesModal').classList.remove('open');
+  pushHistory(); renderAll();
+  showToast('Codice inserito al centro del foglio: è vettoriale, spostalo dove serve. Verificalo con uno scanner prima di stampare.', false);
 }
 // vista 3D: immagine ad alta risoluzione e video della piegatura
 function fold3DShot(){
