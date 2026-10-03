@@ -950,7 +950,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.51</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.52</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -12865,7 +12865,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.51';
+const GUIDE_VERSION = '2.52';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -13123,7 +13123,15 @@ html:`<p>Con il pulsante <b>⇪</b> in alto, trascinando il file sul foglio o <b
 html:`<p>Un'immagine inserita "così com'è" (vedi <a data-topic="importa-immagine">Importare un'immagine</a>) è una forma: selezionala e nel pannello Proprietà trovi la sezione <b>🖼 Immagine</b>.</p>
 <ul><li><b>✂ Ritaglia</b>: le maniglie tagliano i bordi invece di ridimensionare; la parte tolta resta visibile in trasparenza e si può rimettere. <b>✔ Fine ritaglio</b> per tornare a ridimensionare; <b>Togli il ritaglio</b> riporta l'immagine intera.</li>
 <li><b>Effetti</b>: opacità, luminosità, contrasto, saturazione, tonalità, bianco e nero, seppia, inversione, sfocatura (in mm), <b>bilanciamento</b> rosso/verde/blu e <b>Ricolora con</b> un colore (l'immagine diventa una tinta di quel colore). Doppio clic su un cursore lo riporta al valore iniziale; <b>Ripristina gli effetti</b> li azzera tutti.</li></ul>
-<p>Ritaglio ed effetti valgono anche in SVG, PDF, immagini, stampe e nel 3D.</p>` },
+<p>Ritaglio ed effetti valgono anche in SVG, PDF, immagini, stampe e nel 3D.</p>
+<p>Per togliere da un'immagine la forma di quella che le sta sopra vedi <a data-topic="estrusione">Estrusione tra immagini</a>.</p>` },
+{ id:'estrusione', cat:'Disegnare', title:'Estrusione tra immagini (forare le immagini sotto)', keys:'estrusione forare foro bucare togliere sagoma contorno blocco sovrapposte immagini livelli sotto knockout maschera',
+html:`<p>Quando due o più immagini si sovrappongono, quella sopra può <b>forare</b> quelle sotto: la sua forma viene tolta dalle immagini sottostanti, che lì diventano trasparenti.</p>
+<ul><li>Seleziona l'immagine sopra e quelle sotto (riquadro o Shift+clic). Come oggetto che fora va bene anche una forma chiusa (rettangolo, ellisse, linea chiusa, tracciato vettorizzato).</li>
+<li>Nel pannello Proprietà, sezione <b>⬒ Estrusione tra immagini</b>, scegli il <b>Modo</b>: <b>Contorno</b> toglie solo le parti piene (le parti trasparenti di un PNG non forano), <b>Blocco</b> toglie tutto il riquadro dell'oggetto.</li>
+<li><b>Livelli sotto</b>: quante immagini più in basso nella pila vengono forate da ogni oggetto (1 = solo quella subito sotto).</li>
+<li>Premi <b>Fora le immagini sotto</b>.</li></ul>
+<p>Il foro diventa parte dell'immagine, quindi vale uguale in esportazioni, stampe e 3D, anche se poi sposti l'oggetto sopra. Ctrl+Z annulla; selezionando l'immagine forata, nella sezione Immagine, <b>Ripristina l'immagine originale</b> toglie tutti i fori. Le immagini solo collegate a un sito esterno non si possono forare: salvale e importale.</p>` },
 { id:'selettore-colore', cat:'Disegnare', title:'Colore e trasparenza', keys:'colore trasparenza opacità alfa hex rgb selettore colore linea riempimento sfondo griglia',
 html:`<p>Il colore della <b>linea</b>, del <b>riempimento</b>, dello <b>sfondo del foglio</b> e della <b>griglia</b> si sceglie con un quadratino (con la scacchiera sotto, per vedere la trasparenza). Cliccandolo si apre un pannellino:</p>
 <ul><li>il selettore del sistema, il codice <b>HEX</b> e i valori <b>R G B</b> (0–255);</li>
@@ -13352,6 +13360,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.52</b> — <a data-topic="estrusione">Estrusione tra immagini</a>: gli oggetti sopra forano le immagini sotto (contorno o blocco), fino a N livelli.</li>
 <li><b>2.51</b> — Nuovi modelli nel <a data-topic="genera-scatola">generatore</a>: vassoio, scatola con coperchio, fascia, piramide (nel 3D il fondo sta in basso); <a data-topic="raccordi">raccordi e smussi</a> degli angoli; <a data-topic="codici">QR code e codici a barre</a> vettoriali; nuovi elementi di packaging tra le <a data-topic="componenti">forme pronte</a>; gli angoli quasi piatti non mostrano più l'etichetta dei gradi.</li>
 <li><b>2.50</b> — Tante novità:
 <ul><li>Esportazioni: <a data-topic="pdf-stampa">PDF per la stampa</a> con CutContour/Crease in sovrastampa; <a data-topic="cad">DXF per CAD a livelli, HPGL/PLT, CF2 e metri di lama</a>; <a data-topic="esporta-immagine">immagine PNG/JPG</a>; dal 3D <a data-topic="esporta-3d">immagine, video e modello GLB/OBJ</a>.</li>
@@ -18323,6 +18332,7 @@ function renderPropPanelInner(){
   renderSelectionActions(host, ids); // comandi della selezione sempre in cima
   const s = state.shapes.find(x=>x.id===ids[0]);
   if(ids.length===1 && s.type==='image'){ renderImageShapeSection(host, s); host.appendChild(document.createElement('hr')).className='sep'; }
+  if(ids.length>=2 && ids.some(id=>{ const x = state.shapes.find(y=>y.id===id); return x && x.type==='image'; })){ renderKnockoutSection(host, ids); host.appendChild(document.createElement('hr')).className='sep'; }
 
   if(!ids.every(id=>{ const x = state.shapes.find(y=>y.id===id); return x && x.type==='image'; })){
     const cf = document.createElement('div'); cf.className='field';
@@ -19410,6 +19420,11 @@ function renderImageShapeSection(host, s){
   ti.oninput = ()=>{ if(tc.checked) setFx('tint', ti.value); };
   ti.onchange = ()=> pushHistory();
   tl.append(tc, document.createTextNode(translate('Ricolora con')), ti); f.appendChild(tl);
+  if(s.hrefOriginal){
+    const ro = document.createElement('button'); ro.className='btn'; ro.style.marginTop='10px'; ro.textContent = translate('Ripristina l\'immagine originale (togli i fori)');
+    ro.onclick = ()=>{ s.href = s.hrefOriginal; delete s.hrefOriginal; pushHistory(); renderAll(); };
+    f.appendChild(ro);
+  }
   const rst = document.createElement('button'); rst.className='btn'; rst.style.marginTop='10px'; rst.textContent = translate('Ripristina gli effetti');
   rst.onclick = ()=>{ s.fx = null; pushHistory(); renderAll(); };
   f.appendChild(rst);
@@ -19417,6 +19432,92 @@ function renderImageShapeSection(host, s){
   hint.textContent = translate('Doppio clic su un cursore per riportarlo al valore iniziale. Ritaglio ed effetti valgono anche nelle esportazioni e nelle stampe.');
   f.appendChild(hint);
   host.appendChild(f);
+}
+/* ---------- estrusione: gli oggetti sopra forano le immagini sotto (fino a N livelli) ----------
+   Ogni oggetto selezionato toglie la sua sagoma (Contorno: le parti opache; Blocco: tutto il riquadro) alle
+   immagini selezionate che stanno sotto di lui, fino a N posizioni più in basso nella pila. Il foro viene
+   scritto nei pixel dell'immagine sotto (trasparenti), così vale uguale in esportazioni, stampe e 3D. */
+function renderKnockoutSection(host, ids){
+  const f = document.createElement('div'); f.className='field fill-field';
+  f.innerHTML = `<label>⬒ ${escapeHTML(translate('Estrusione tra immagini'))}</label><div class="hint">${escapeHTML(translate('Ogni oggetto selezionato fora le immagini selezionate che stanno sotto di lui: la sua forma viene tolta da quelle sotto.'))}</div>`;
+  const row = document.createElement('div'); row.className='row'; row.style.marginTop='6px';
+  const f1 = document.createElement('div'); f1.className='field'; f1.innerHTML = `<label>${escapeHTML(translate('Modo'))}</label>`;
+  const mode = document.createElement('select'); [['shape','Contorno (solo le parti piene)'],['block','Blocco (tutto il riquadro)']].forEach(([v,l])=>{ const o = document.createElement('option'); o.value = v; o.textContent = translate(l); mode.appendChild(o); });
+  const f2 = document.createElement('div'); f2.className='field'; f2.innerHTML = `<label>${escapeHTML(translate('Livelli sotto'))}</label>`;
+  const nIn = document.createElement('input'); nIn.type='number'; nIn.min='1'; nIn.max='50'; nIn.value='1';
+  try{ const sv = JSON.parse(localStorage.getItem('spikecut-knockout')||'{}'); if(sv.mode) mode.value = sv.mode; if(sv.n) nIn.value = sv.n; }catch(e){}
+  f1.appendChild(mode); f2.appendChild(nIn); row.append(f1, f2); f.appendChild(row);
+  const go = document.createElement('button'); go.className='btn primary'; go.style.marginTop='6px'; go.textContent = translate('Fora le immagini sotto');
+  go.onclick = async ()=>{
+    const n = Math.max(1, Math.min(50, parseInt(nIn.value,10)||1));
+    try{ localStorage.setItem('spikecut-knockout', JSON.stringify({mode: mode.value, n})); }catch(e){}
+    go.disabled = true; go.textContent = translate('Estrusione in corso…');
+    try{ await applyKnockout(ids, mode.value, n); } finally { go.disabled = false; go.textContent = translate('Fora le immagini sotto'); }
+  };
+  f.appendChild(go);
+  const h = document.createElement('div'); h.className='hint'; h.style.marginTop='4px';
+  h.textContent = translate('Con «Livelli sotto» = 1 ogni oggetto fora solo quello subito sotto; con numeri più alti anche i successivi. Ctrl+Z annulla; dalla sezione Immagine puoi sempre ripristinare l\'originale.');
+  f.appendChild(h); host.appendChild(f);
+}
+// trasformazione di canvas che porta le coordinate del foglio (mm) nei pixel dell'immagine s (ritaglio, rotazione e ribaltamenti compresi)
+function pageToImagePx(g, s, natW, natH){
+  const c = imgCrop(s), cw = 1-c.l-c.r, ch = 1-c.t-c.b, cx = s.x+s.w/2, cy = s.y+s.h/2;
+  g.setTransform(1,0,0,1,0,0);
+  g.scale(natW*cw/s.w, natH*ch/s.h);
+  g.translate(-s.x + c.l*s.w/cw, -s.y + c.t*s.h/ch);
+  if(s.flipH || s.flipV){ g.translate(cx, cy); g.scale(s.flipH ? -1 : 1, s.flipV ? -1 : 1); g.translate(-cx, -cy); }
+  if(s.rotation){ g.translate(cx, cy); g.rotate(-s.rotation*Math.PI/180); g.translate(-cx, -cy); }
+}
+// disegna la sagoma di un oggetto (in coordinate del foglio) nel contesto già trasformato
+async function drawCutter(g, u, mode){
+  if(mode==='block' && u.points){ const b = shapeBBox(u); g.fillRect(b.x, b.y, b.w, b.h); return true; }
+  if(u.type==='image' || u.type==='tracedpath' || u.x!=null && u.w!=null){
+    const cx = u.x+u.w/2, cy = u.y+u.h/2;
+    g.save();
+    if(u.rotation){ g.translate(cx, cy); g.rotate(u.rotation*Math.PI/180); g.translate(-cx, -cy); }
+    if(u.flipH || u.flipV){ g.translate(cx, cy); g.scale(u.flipH ? -1 : 1, u.flipV ? -1 : 1); g.translate(-cx, -cy); }
+    if(mode==='block' || u.type==='rect'){ g.fillRect(u.x, u.y, u.w, u.h); g.restore(); return true; }
+    if(u.type==='ellipse'){ g.beginPath(); g.ellipse(cx, cy, Math.abs(u.w)/2, Math.abs(u.h)/2, 0, 0, 2*Math.PI); g.fill(); g.restore(); return true; }
+    if(u.type==='image'){
+      const im = await loadImageEl(u.href).catch(()=> null); if(!im){ g.restore(); return false; }
+      const c = imgCrop(u), W = im.naturalWidth, H = im.naturalHeight;
+      g.drawImage(im, c.l*W, c.t*H, (1-c.l-c.r)*W, (1-c.t-c.b)*H, u.x, u.y, u.w, u.h);
+      g.restore(); return true;
+    }
+    if(u.type==='tracedpath'){
+      g.translate(u.x, u.y); g.scale(u.w/u.srcW, u.h/u.srcH);
+      u.paths.forEach(pp=>{ if(pp.fill && pp.fill!=='none') g.fill(new Path2D(pp.d), 'evenodd'); });
+      g.restore(); return true;
+    }
+    g.restore();
+  }
+  const pls = shapeToPolylines(u).filter(pl=> pl.closed && pl.pts.length>=3);
+  if(!pls.length) return false;
+  g.beginPath(); pls.forEach(pl=>{ pl.pts.forEach((p,i)=> i ? g.lineTo(p[0],p[1]) : g.moveTo(p[0],p[1])); g.closePath(); }); g.fill('evenodd');
+  return true;
+}
+async function applyKnockout(ids, mode, n){
+  const sel = new Set(ids), stack = shapesInZOrder().filter(x=> sel.has(x.id) && isShapeEffVisible(x)); // dal basso verso l'alto
+  let holes = 0, touched = 0, failed = 0;
+  for(let i=0;i<stack.length;i++){
+    const lower = stack[i]; if(lower.type!=='image') continue;
+    const cutters = stack.slice(i+1, i+1+n); if(!cutters.length) continue;
+    const im = await loadImageEl(lower.href).catch(()=> null); if(!im){ failed++; continue; }
+    const W = im.naturalWidth, H = im.naturalHeight, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+    const g = cv.getContext('2d'); g.drawImage(im, 0, 0);
+    g.globalCompositeOperation = 'destination-out'; g.fillStyle = '#000';
+    let any = false;
+    for(const u of cutters){ pageToImagePx(g, lower, W, H); if(await drawCutter(g, u, mode)){ any = true; holes++; } }
+    if(!any) continue;
+    try{
+      const url = cv.toDataURL('image/png');
+      if(!lower.hrefOriginal) lower.hrefOriginal = lower.href;
+      lower.href = url; touched++;
+    }catch(e){ failed++; } // immagine collegata a un altro sito: il browser non permette di modificarla
+  }
+  if(touched){ pushHistory(); renderAll(); }
+  showToast(touched ? tpl('Estrusione fatta: {n} immagini forate.', {n: touched}) + (failed ? ' ' + translate('Alcune immagini collegate a siti esterni non si possono modificare: salvale e importale.') : '')
+    : (failed ? translate('Alcune immagini collegate a siti esterni non si possono modificare: salvale e importale.') : translate('Niente da forare: servono almeno un\'immagine e un oggetto sopra di lei, entrambi selezionati.')), !touched);
 }
 function addColorField(host, label, value, onChange, disabled){
   const f = document.createElement('div'); f.className='field';
