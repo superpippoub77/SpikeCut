@@ -949,7 +949,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Sett 2026 · Ver: 2.49.1</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.50</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -12820,7 +12820,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.49.1';
+const GUIDE_VERSION = '2.50';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -12849,9 +12849,9 @@ html:`<p><b>Chiudere le schede</b>: la ✕ di ogni scheda la chiude; il pulsante
 <p>Anche alcune funzioni aprono nuove schede: <a data-topic="genera-scatola">Genera scatola</a>, l'apertura di più progetti dalla <a data-topic="libreria">libreria</a> e l'apertura di una versione passata.</p>` },
 
 { id:'foglio', cat:'Per iniziare', title:'Foglio, unità, griglia, righelli e zoom', keys:'pagina formato dimensione sfondo trasparente unità mm cm pollici griglia passo righello zoom rotella',
-html:`<ul><li><b>Formato del foglio</b>: dal pannello Proprietà senza selezione, oppure trascinando la maniglia nell'angolo del foglio. Lo sfondo può avere un colore o essere trasparente.</li>
+html:`<ul><li><b>Formato del foglio</b>: dal pannello Proprietà senza selezione, oppure trascinando la maniglia nell'angolo del foglio. Lo sfondo può avere un colore (anche semitrasparente, vedi <a data-topic="selettore-colore">colore e trasparenza</a>) o essere trasparente. La casella <b>Applica</b> accanto al colore decide se lo sfondo entra anche in esportazioni, stampe e nella grafica dell'<a data-topic="grafica-3d">anteprima 3D</a>: senza spunta il colore si vede solo mentre disegni.</li>
 <li><b>Unità di misura</b> (mm, cm, m, pollici): dalla barra di stato. Tutti i campi numerici usano l'unità scelta.</li>
-<li><b>Griglia</b> millimetrica o centimetrica, con aggancio: tasto <b>G</b> o "▦ griglia" nella barra di stato.</li>
+<li><b>Griglia</b> millimetrica o centimetrica, con aggancio: tasto <b>G</b> o "▦ griglia" nella barra di stato. Il quadratino accanto al passo sceglie <b>colore e opacità</b> delle linee della griglia (bianco all'inizio: si vede sugli sfondi colorati); la scelta viene ricordata.</li>
 <li><b>Zoom</b>: Ctrl + rotella (centrato sul cursore), oppure <b>+</b>, <b>−</b> e <b>0</b> per reimpostarlo.</li>
 <li><b>Quote</b> (📐) e <b>punti</b> (●) dalla barra di stato: le quote mostrano le misure dei tratti; i punti evidenziano le estremità libere (arancio) o collegate (verde) e gli angoli tra i tratti.</li></ul>` },
 
@@ -13055,6 +13055,7 @@ html:`<p>Ogni piega ha un numero di <b>passo</b>: nella simulazione 3D si chiudo
 html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profondità e Altezza in mm e scegli il tipo. La fustella viene creata in una nuova scheda.</p>
 <ul><li><b>Scatola americana (RSC)</b>: 4 pareti con aletta di incollaggio, alette sopra e sotto separate da tagli.</li>
 <li><b>Astuccio con coperchio a incastro</b>: alette antipolvere, aletta posteriore e linguetta di chiusura.</li></ul>
+<p><b>Spessore del cartone</b>: con 0 le misure sono quelle delle linee. Con uno spessore (es. 0,5 mm cartoncino, 3 mm ondulato onda B, 4 mm onda C) le misure scritte diventano <b>interne</b>: lunghezza e profondità crescono di uno spessore, l'altezza di due.</p>
 <p>Le pieghe sono già impostate a monte, 90°, con un <a data-topic="ordine">ordine di piegatura</a> sensato, e la zona di incollaggio è un poligono <a data-topic="incollaggio">tratteggiato</a>. L'aletta di incollaggio si può impostare o lasciare automatica. Gli spigoli delle alette sono semplificati: verifica le misure prima della produzione.</p>` },
 
 { id:'importa-immagine', cat:'Salvare ed esportare', title:'Importare un\'immagine (PNG, JPG…)', keys:'importare immagine foto scansione png jpg jpeg webp gif bmp vettorizzare vettoriale individua taglio piega fustella dpi riferimento ricalcare trascinare file',
@@ -13064,8 +13065,21 @@ html:`<p>Con il pulsante <b>⇪</b> in alto, trascinando il file sul foglio o <b
 <li><b>Vettorizza la grafica</b>: per loghi e disegni, i contorni delle zone di colore diventano grafica vettoriale nel livello di disegno (scegli il numero di colori e il dettaglio). Richiede la connessione a Internet la prima volta.</li>
 <li><b>Inserisci l'immagine così com'è</b>: per foto, sfondi e decorazioni l'immagine entra nel disegno senza essere vettorizzata, come una forma: si sposta, ruota, ribalta e ridimensiona come le altre e viene esportata con il disegno (non è mai una linea di taglio o piega). Vale anche per le immagini incollate con Ctrl+V.</li>
 <li><b>Solo immagine di riferimento</b>: resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti; opacità, filtri e rimozione sono nella scheda Immagine.</li></ul>
+<p>Con "così com'è" puoi spuntare <b>Ritaglia subito dopo l'inserimento</b>; ritaglio ed effetti si possono cambiare in ogni momento: vedi <a data-topic="immagine-forma">Ritagliare e regolare le immagini</a>.</p>
+<p><b>Immagini copiate da Google Disegni, Documenti o pagine web</b>: lì gli appunti contengono un collegamento invece del file; SpikeCut lo scarica e apre la finestra. Se il sito non lo permette, propone di inserirla <b>collegata</b> al suo indirizzo (si vede finché il link è valido e può mancare nei PNG/PDF): meglio salvarla sul computer e importarla.</p>
 <p>Con <b>Tieni l'immagine sotto il disegno</b> l'originale resta visibile in trasparenza per confrontarlo con le linee ottenute. Le scelte vengono ricordate per la volta successiva.</p>` },
 
+{ id:'immagine-forma', cat:'Disegnare', title:'Ritagliare e regolare le immagini', keys:'immagine ritaglio ritagliare crop effetti opacità luminosità contrasto saturazione tonalità bianco nero seppia inversione negativo sfocatura bilanciamento colore ricolora',
+html:`<p>Un'immagine inserita "così com'è" (vedi <a data-topic="importa-immagine">Importare un'immagine</a>) è una forma: selezionala e nel pannello Proprietà trovi la sezione <b>🖼 Immagine</b>.</p>
+<ul><li><b>✂ Ritaglia</b>: le maniglie tagliano i bordi invece di ridimensionare; la parte tolta resta visibile in trasparenza e si può rimettere. <b>✔ Fine ritaglio</b> per tornare a ridimensionare; <b>Togli il ritaglio</b> riporta l'immagine intera.</li>
+<li><b>Effetti</b>: opacità, luminosità, contrasto, saturazione, tonalità, bianco e nero, seppia, inversione, sfocatura (in mm), <b>bilanciamento</b> rosso/verde/blu e <b>Ricolora con</b> un colore (l'immagine diventa una tinta di quel colore). Doppio clic su un cursore lo riporta al valore iniziale; <b>Ripristina gli effetti</b> li azzera tutti.</li></ul>
+<p>Ritaglio ed effetti valgono anche in SVG, PDF, immagini, stampe e nel 3D.</p>` },
+{ id:'selettore-colore', cat:'Disegnare', title:'Colore e trasparenza', keys:'colore trasparenza opacità alfa hex rgb selettore colore linea riempimento sfondo griglia',
+html:`<p>Il colore della <b>linea</b>, del <b>riempimento</b>, dello <b>sfondo del foglio</b> e della <b>griglia</b> si sceglie con un quadratino (con la scacchiera sotto, per vedere la trasparenza). Cliccandolo si apre un pannellino:</p>
+<ul><li>il selettore del sistema, il codice <b>HEX</b> e i valori <b>R G B</b> (0–255);</li>
+<li>l'<b>opacità</b> con cursore e numero in %;</li>
+<li>alcuni colori pronti.</li></ul>
+<p>Il disegno cambia mentre scegli; <b>OK</b> o un clic fuori confermano, <b>Esc</b> o <b>Annulla</b> tornano al colore di prima. L'opacità vale anche in esportazioni e stampe.</p>` },
 { id:'righello', cat:'Disegnare', title:'Righello: misurare sul foglio', keys:'righello misura misurare distanza lunghezza angolo dx dy metro quota misurazione',
 html:`<p>Il <b>Righello (M)</b>, nella sezione Controlla della barra a sinistra, misura qualsiasi cosa sul foglio senza aggiungere nulla al disegno: trascina da un punto all'altro e vedi <b>distanza</b>, <b>ΔX</b>, <b>ΔY</b> e <b>angolo</b>, sia sul foglio sia nel pannello (con le coordinate dei due estremi).</p>
 <ul><li>Gli estremi si agganciano a punti, linee e griglia come gli altri strumenti (con la calamita attiva), così misuri esattamente tra due punti del disegno.</li>
@@ -13083,8 +13097,8 @@ html:`<p>Lo strumento <b>Inserisci punto (I)</b>, nella sezione Modifica della b
 { id:'colore-interno', cat:'Modificare', title:'Colorare l\'interno di una forma', keys:'colore interno riempimento riempire colorare forma chiusa figura percorso sfondo trasparenza opacità fill secchiello zona linee separate pannello',
 html:`<p><b>Secchiello (K)</b>: per colorare una zona chiusa <b>formata da più linee separate</b> (per esempio un pannello di una fustella, chiuso da tagli e pieghe, o una sagoma disegnata a pezzi) scegli il secchiello nella barra a sinistra e fai clic dentro la zona. Viene creata una forma colorata esattamente di quella zona, messa sotto le linee; le figure chiuse al suo interno restano vuote (fori). Se il contorno ha una piccola apertura (fino a circa 1 mm) si chiude da sola; se è più grande l'app lo segnala. Il colore del secchiello si sceglie nel pannello quando lo strumento è attivo.</p>
 <p>Per una forma singola già chiusa: selezionala (rettangoli, ellissi, figure disegnate con la penna, tracciati importati) e nel pannello Proprietà attiva <b>Colora l'interno</b>:</p>
-<ul><li>scegli il colore con il selettore o con uno dei <b>12 colori rapidi</b>;</li>
-<li>il cursore <b>Opacità del colore</b> lo rende trasparente, per vedere quello che c'è sotto;</li>
+<ul><li>scegli il colore con il quadratino (vedi <a data-topic="selettore-colore">colore e trasparenza</a>) o con uno dei <b>12 colori rapidi</b>;</li>
+<li>nello stesso quadratino l'<b>opacità</b> rende il colore trasparente, per vedere quello che c'è sotto;</li>
 <li>togliendo la spunta la forma torna senza colore.</li></ul>
 <p>Se la forma è una <b>linea aperta</b>, il pannello lo segnala e il pulsante <b>Chiudi la forma</b> la trasforma in una figura chiusa. Sulle linee di taglio e di piega il colore interno è solo visivo: si vede sullo schermo e in stampa, ma non cambia il taglio né le pieghe. Il colore vale anche nelle esportazioni SVG e PDF.</p>` },
 
@@ -13134,7 +13148,16 @@ html:`<p>Aprendo l'anteprima 3D, sotto il modello compare l'elenco di ciò che n
 
 { id:'grafica-3d', cat:'Anteprima 3D', title:'Grafica sui pannelli del 3D', keys:'grafica disegno livello stampa pannelli texture immagine 3d',
 html:`<p>La grafica viene riportata sui pannelli dell'anteprima 3D, sul lato stampato, e li segue mentre si piegano, con luce e ombre. È grafica tutto ciò che non ha ruolo Taglio, Piega, Fustella speciale o Incollaggio, sui <a data-topic="livelli">livelli</a> visibili (anche testo e immagini).</p>
-<p>La casella "Grafica" accanto al cursore la mostra o la nasconde. I font personalizzati potrebbero comparire con un font di sistema.</p>` },
+<p>La casella "Grafica" accanto al cursore la mostra o la nasconde. I font personalizzati potrebbero comparire con un font di sistema.</p>
+<p>Lo <b>sfondo del foglio</b> viene stampato sui pannelli se nel foglio è spuntato <b>Applica</b> e il colore non è il bianco di partenza (che lascia il colore carta). Con la scatola chiusa si vede sempre il lato esterno davanti; dove i lembi si sovrappongono sullo stesso piano sta fuori quello piegato dopo.</p>
+<p>Dalla vista 3D si esportano anche immagine, video e modello 3D: vedi <a data-topic="esporta-3d">Esportare il 3D</a>.</p>` },
+{ id:'esporta-3d', cat:'Anteprima 3D', title:'Esportare il 3D: immagine, video, GLB/OBJ', keys:'3d immagine png foto video mp4 webm animazione glb gltf obj blender mockup realtà aumentata modello',
+html:`<p>Nella finestra dell'anteprima 3D:</p>
+<ul><li><b>📷 Immagine</b>: la vista attuale in PNG ad alta risoluzione (tre volte lo schermo), per mockup e cataloghi. Ruota e ingrandisci prima di salvare.</li>
+<li><b>🎬 Video</b>: registra la scatola che si piega e poi fa un giro completo su se stessa; MP4 se il browser lo permette, altrimenti WebM. Dura qualche secondo: aspetta che il pulsante torni normale.</li>
+<li><b>🧊 GLB</b>: modello 3D della scatola nella piegatura attuale, con la grafica sul lato esterno e il colore cartone all'interno. Si apre in Blender, nei visualizzatori web (es. glTF Viewer), in PowerPoint, e sui telefoni per la realtà aumentata.</li>
+<li><b>OBJ</b>: lo stesso modello in formato OBJ, con il file MTL e l'immagine della grafica (tieni i tre file nella stessa cartella).</li></ul>
+<p>Il modello è in metri, con l'asse verticale verso l'alto; lo spessore del cartone non è rappresentato.</p>` },
 
 /* ---------------- LIVELLI ---------------- */
 { id:'livelli', cat:'Livelli', title:'Livelli', keys:'livello layer rinominare nascondere bloccare ordine accordion aprire chiudere nuovo',
@@ -13143,7 +13166,12 @@ html:`<p>Scheda <b>Livelli</b> del pannello laterale. Ogni forma appartiene a un
 <li><b>Rinominare</b>: pulsante ✎, doppio clic sul nome o tasto destro; Invio conferma, Esc annulla.</li>
 <li>👁 mostra/nasconde, 🔒 blocca, le frecce cambiano l'ordine, il cestino elimina il livello.</li>
 <li>"＋ Nuovo livello" crea un livello, che diventa attivo e aperto.</li></ul>
-<p>Uso tipico: un livello per taglio e pieghe, uno sopra per la grafica.</p>` },
+<p><b>Spostare oggetti in un altro livello</b>: seleziona gli oggetti (sul foglio con un riquadro o Shift+clic; nell'elenco di un livello con <b>Ctrl+clic</b> o <b>Shift+clic</b>), poi:</p>
+<ul><li>nel riquadro in cima alla scheda Livelli scegli il livello e premi <b>Sposta</b>;</li>
+<li>oppure il pulsante <b>⤵</b> sul livello di arrivo (o tasto destro sul nome → "Sposta qui gli oggetti selezionati");</li>
+<li>oppure tasto destro su un oggetto nel foglio → "📑 Sposta nel livello «…»".</li></ul>
+<p>Gli oggetti restano dove sono sul foglio; Ctrl+Z annulla. Se il livello di arrivo è nascosto o bloccato, escono dalla selezione.</p>
+<p>Uso tipico: un livello per taglio e pieghe, uno sopra per la grafica. Il livello <b>Guide di stampa</b> contiene le guide di <a data-topic="abbondanza">abbondanza e zona sicura</a>, che non vengono mai esportate.</p>` },
 
 /* ---------------- SALVARE ED ESPORTARE ---------------- */
 { id:'salvataggio', cat:'Salvare ed esportare', title:'Salvataggio', keys:'salvare salvataggio automatico locale browser json aprire file progetto allineato aggiornare ricaricare pagina versione recente',
@@ -13182,7 +13210,10 @@ html:`<p>Gli <b>amministratori</b> trovano nella finestra dell'account (👤) il
 { id:'esporta', cat:'Salvare ed esportare', title:'Esportare e stampare', keys:'esportare svg pdf multipagina stampa di prova formato a4 a3 scala reale',
 html:`<p>Dal menu <b>Stampa</b>:</p>
 <ul><li><b>Esporta SVG</b> (Ctrl+S): pronto per taglio e stampa, raggruppato per ruolo.</li>
-<li><b>Esporta PDF</b> in scala reale 1:1.</li>
+<li><b>📄 PDF per la stampa</b>: grafica in alta risoluzione e linee tecniche vettoriali in tinta piatta (CutContour, Crease…) in sovrastampa: vedi <a data-topic="pdf-stampa">PDF per la stampa</a>.</li>
+<li><b>Esporta PDF (anteprima)</b> in scala reale 1:1, tutto come immagine: per controllare o mandare un'anteprima.</li>
+<li><b>🖼 Immagine PNG/JPG</b> del foglio: vedi <a data-topic="esporta-immagine">Esportare un'immagine</a>.</li>
+<li><b>📐 CAD, plotter e fustellatore</b> (DXF, PLT, CF2) e <b>📏 metri di lama</b>: vedi <a data-topic="cad">CAD, plotter e fustellatori</a>.</li>
 <li><b>PDF multi-pagina</b>: divide un disegno grande su più fogli (A3, A4, A5 o personalizzato) con sovrapposizione e riferimenti per riassemblarli.</li>
 <li><b>Stampa di prova</b>: scalata per stare nel foglio scelto, per controllare le proporzioni.</li>
 <li><b>Silhouette Cameo</b>: vedi <a data-topic="silhouette">Silhouette Cameo</a>.</li></ul>
@@ -13192,6 +13223,45 @@ html:`<p>Dal menu <b>Stampa</b>:</p>
 html:`<p>Menu <b>Stampa → ✂ Esporta per Silhouette Cameo (DXF)…</b>. Crea un file DXF in millimetri reali, che Silhouette Studio apre anche nell'edizione gratuita con le linee pronte per il taglio (gli SVG richiedono la Designer Edition). Contiene solo le linee tecniche dei livelli visibili.</p>
 <p>Per le pieghe scegli: <b>tratteggiate</b> (taglio a tratti, lunghezza di tratto e ponte regolabili: pronte da tagliare), <b>nel file del taglio come linee continue</b> (in Studio vanno assegnate alla cordonatura), <b>in un file separato</b>, oppure non esportarle.</p>
 <p>In Studio: File → Apri, seleziona tutto, verifica nel pannello Invia che le linee siano su "Taglio" e controlla le misure prima di tagliare. Il Print &amp; Cut non è supportato.</p>` },
+
+{ id:'pdf-stampa', cat:'Salvare ed esportare', title:'PDF per la stampa (CutContour, sovrastampa)', keys:'pdf stampa tipografia vettoriale tinta piatta spot cutcontour crease thru-cut kiss-cut sovrastampa overprint print and cut roland mimaki summa hp plotter',
+html:`<p>Menu <b>Stampa → 📄 Esporta PDF per la stampa…</b>. È il file da mandare a tipografie e plotter <b>print&amp;cut</b> (Roland, Mimaki, Summa, HP…):</p>
+<ul><li>la <b>grafica</b> (sfondo, immagini, testi, disegni) è un'immagine alla risoluzione scelta (150, 300 o 450 DPI);</li>
+<li>le <b>linee tecniche</b> sono vettoriali, ognuna in una <b>tinta piatta</b> con un nome (CutContour per il taglio, Crease per le pieghe, Perf per la fustella speciale, Glue per l'incollaggio): la macchina le riconosce dal nome;</li>
+<li>sono in <b>sovrastampa</b>, quindi non "bucano" la grafica sotto;</li>
+<li>spessore delle linee regolabile (0,25 pt è il valore tipico), misura reale, un foglio.</li></ul>
+<p>I nomi si cambiano nella finestra e vengono ricordati: chiedi alla tipografia quali usa (es. Thru-cut, Kiss-cut, Creasing). Togli la spunta a una linea per non esportarla.</p>` },
+{ id:'esporta-immagine', cat:'Salvare ed esportare', title:'Esportare un\'immagine (PNG/JPG)', keys:'png jpg jpeg immagine esportare dpi risoluzione anteprima ecommerce catalogo',
+html:`<p>Menu <b>Stampa → 🖼 Esporta immagine…</b>: il foglio in scala reale come PNG o JPG a 96, 150, 300 o 600 DPI, con o senza le linee di taglio e piega. La risoluzione viene scritta nel file, così stampandolo esce della misura giusta. Il PNG mantiene la trasparenza (se lo sfondo non è applicato); il JPG ha sempre il fondo bianco. Per fogli molto grandi la risoluzione viene ridotta quanto basta a stare nei limiti del browser (la finestra lo dice).</p>` },
+{ id:'cad', cat:'Salvare ed esportare', title:'CAD, plotter e fustellatori (DXF, PLT, CF2) e metri di lama', keys:'dxf cad autocad artioscad librecad lightburn laser hpgl plt cf2 kongsberg elitron fustellatore fustella lama metri preventivo livelli cut crease perf',
+html:`<p>Menu <b>Stampa → 📐 Esporta per CAD, plotter e fustellatore…</b> (o <b>📏 Metri di lama</b>). In alto la finestra mostra i <b>metri di lama</b>: taglio, cordonatura (pieghe), fustella speciale e incollaggio, con il totale. È il dato con cui il fustellatore fa il preventivo.</p>
+<ul><li><b>DXF per CAD</b> (AutoCAD, ArtiosCAD, LibreCAD, LightBurn…): millimetri, livelli <b>CUT</b> (rosso), <b>CREASE</b> (blu), <b>PERF</b> (verde), <b>GLUE</b>, <b>GRAPHIC</b>; archi e cerchi sono archi e cerchi veri.</li>
+<li><b>HPGL / PLT</b> per i plotter da taglio: penna 1 taglio, 2 pieghe, 3 lame speciali, 4 incollaggio.</li>
+<li><b>CF2</b> per i programmi delle fustelle (ArtiosCAD, Kongsberg, Elitron…): linee e archi con il tipo di lama, 2 punti.</li></ul>
+<p>Puoi scegliere l'<b>origine</b> (angolo in basso a sinistra del foglio o della fustella) e se includere grafica e incollaggio. Testi, immagini e tracciati vettorizzati non vengono esportati in questi formati: per i testi usa prima <a data-topic="testo-tracciati">Converti testo in tracciati</a>. Il DXF per Silhouette resta a parte: <a data-topic="silhouette">Silhouette Cameo</a>.</p>` },
+
+/* ---------------- PRODUZIONE ---------------- */
+{ id:'imposizione', cat:'Produzione', title:'Imposizione e nesting sul foglio di stampa', keys:'imposizione nesting incastro copie foglio cartone resa scarto materiale step repeat 70x100 file alternate',
+html:`<p>Menu <b>Strumenti → ▦ Imposizione e nesting…</b>: quante copie della fustella entrano in un foglio di stampa o di cartone, e come disporle per sprecare meno.</p>
+<ul><li>scegli il <b>foglio</b> (70×100, 72×102, 50×70, 100×140, SRA3, A3 o personalizzato), il <b>margine</b> e la <b>distanza tra le copie</b>;</li>
+<li><b>Orientamento</b>: automatico prova la fustella dritta e ruotata di 90°;</li>
+<li><b>Incastra le copie</b>: prova anche file sfalsate e file alternate ruotate di 180°, avvicinandole fin dove il contorno reale lo permette (le alette di una copia entrano negli spazi dell'altra).</li></ul>
+<p>L'anteprima mostra la disposizione migliore (in blu le copie ruotate) e la <b>resa del materiale</b> e lo <b>scarto</b>. "Crea il foglio in una nuova scheda" crea il foglio imposto con tutte le copie, pronto da esportare. Il contorno usato è quello di taglio: se non è chiuso, si usa il riquadro del disegno.</p>` },
+{ id:'abbondanza', cat:'Produzione', title:'Abbondanza e zona sicura', keys:'abbondanza bleed zona sicura margine sicurezza guide stampa bordi bianchi testi loghi',
+html:`<p>Menu <b>Strumenti → ⬚ Abbondanza e zona sicura…</b>: crea due guide attorno al contorno di taglio, nel livello bloccato <b>Guide di stampa</b>:</p>
+<ul><li><b>magenta = abbondanza</b> (di solito 3 mm fuori): la grafica di sfondo deve arrivare fin lì, perché dopo il taglio non restino bordi bianchi;</li>
+<li><b>verde = zona sicura</b> (di solito 3 mm dentro): tieni dentro testi, loghi e codici.</li></ul>
+<p>Le guide si vedono solo nel programma: non vengono esportate né stampate. "Togli le guide" le elimina. Il contorno è l'unione dei pannelli della fustella, quindi funziona anche quando il taglio è fatto di tante linee separate.</p>` },
+{ id:'preflight', cat:'Produzione', title:'Controllo prima della stampa', keys:'preflight controllo verifica stampa risoluzione dpi immagini testo vicino taglio linee sottili errori',
+html:`<p>Menu <b>Strumenti → ✅ Controllo prima della stampa…</b>. Segnala (⛔ errore, ⚠️ attenzione) e con <b>Mostra</b> seleziona gli oggetti interessati:</p>
+<ul><li>immagini a <b>bassa risoluzione</b> alla misura attuale (sotto 150 DPI errore, sotto 250 attenzione) o solo <b>collegate</b> a un sito;</li>
+<li><b>testi</b> attraversati da una linea di taglio o piega, o a meno di 2 mm; testi molto piccoli;</li>
+<li>linee di grafica più sottili di 0,1 mm;</li>
+<li>linee di taglio assenti o non chiuse; linee di taglio o piega su livelli nascosti;</li>
+<li>grafica di sfondo che non arriva all'<a data-topic="abbondanza">abbondanza</a>.</li></ul>` },
+{ id:'testo-tracciati', cat:'Produzione', title:'Convertire il testo in tracciati', keys:'testo tracciati curve contorni outline font vettorializzare convertire',
+html:`<p>Menu <b>Strumenti → 🔤 Converti testo in tracciati</b>: i testi selezionati (o tutti i testi visibili e non bloccati, se non ne selezioni nessuno) diventano forme vettoriali, identiche a come si vedono, che non dipendono più dal font. Serve per mandare il file a chi non ha i tuoi font e per plotter, laser e CAD.</p>
+<p>Il testo non è più modificabile come testo: Ctrl+Z annulla la conversione. Funziona con qualunque font (anche quelli di sistema); richiede la connessione a Internet la prima volta.</p>` },
 
 /* ---------------- RIFERIMENTO ---------------- */
 { id:'finestre', cat:'Riferimento', title:'Finestre: spostarle e ridurle a icona', keys:'finestra spostare trascinare muovere ridurre icona minimizzare barra in basso riprendere',
@@ -13222,6 +13292,13 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.50</b> — Tante novità:
+<ul><li>Esportazioni: <a data-topic="pdf-stampa">PDF per la stampa</a> con CutContour/Crease in sovrastampa; <a data-topic="cad">DXF per CAD a livelli, HPGL/PLT, CF2 e metri di lama</a>; <a data-topic="esporta-immagine">immagine PNG/JPG</a>; dal 3D <a data-topic="esporta-3d">immagine, video e modello GLB/OBJ</a>.</li>
+<li>Produzione: <a data-topic="imposizione">imposizione con incastro</a>, <a data-topic="abbondanza">abbondanza e zona sicura</a>, <a data-topic="preflight">controllo prima della stampa</a>, <a data-topic="testo-tracciati">testo in tracciati</a>, spessore del cartone nel <a data-topic="genera-scatola">generatore</a>.</li>
+<li>Immagini <a data-topic="importa-immagine">inserite così come sono</a> (anche incollate da Google Disegni o dal web), con <a data-topic="immagine-forma">ritaglio ed effetti</a>.</li>
+<li><a data-topic="selettore-colore">Colore e trasparenza</a> per linea, riempimento, sfondo e griglia; colore della griglia; sfondo "Applica" a esportazioni, stampe e 3D (<a data-topic="foglio">Foglio</a>).</li>
+<li><a data-topic="livelli">Spostare oggetti in un altro livello</a>.</li>
+<li>Anteprima 3D: niente più interno davanti all'esterno a scatola chiusa né righe a raggiera sulla grafica.</li></ul></li>
 <li><b>2.49.1</b> — Pulsante <a data-topic="punti-tratti">Inserisci punto</a> (I) nella barra a sinistra.</li>
 <li><b>2.49</b> — <a data-topic="righello">Righello</a> (M); i blocchi di più oggetti si spostano insieme; barra Azioni in cima al pannello; copia e incolla tra schede senza confondersi con le immagini negli appunti.</li>
 <li><b>2.48</b> — <a data-topic="punti-tratti">Punti sui tratti</a>: aggiungi un punto esattamente sulla linea, spezza la linea in due linee unite, dividi un tratto in parti uguali (tasto destro o doppio clic).</li>
@@ -13284,6 +13361,8 @@ html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 const guideState = { current:'intro', query:'' };
 const guideNorm = s=> String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 function guidePlain(html){ const d = document.createElement('div'); d.innerHTML = html; return d.textContent.replace(/\s+/g,' ').trim(); }
+// argomenti raggruppati per categoria (nell'ordine in cui le categorie compaiono), così ogni categoria ha un solo titolo
+function guideByCat(){ const order = [...new Set(GUIDE_TOPICS.map(t=>t.cat))]; return GUIDE_TOPICS.map((t,i)=>({t,i})).sort((x,y)=> order.indexOf(x.t.cat) - order.indexOf(y.t.cat) || x.i - y.i).map(x=>x.t); }
 const guideIndex = GUIDE_TOPICS.map(t=>({ t, title: guideNorm(t.title), keys: guideNorm(t.keys||''), text: guideNorm(guidePlain(t.html)), plain: guidePlain(t.html) }));
 function guideSearchResults(q){
   const terms = guideNorm(q).split(/\s+/).filter(w=>w.length>1);
@@ -13354,14 +13433,14 @@ function guideRenderList(){
     res.forEach(r=> item(r.ix.t, guideSnippet(r.ix, r.terms)));
   } else {
     let cat = null;
-    GUIDE_TOPICS.forEach(t=>{ if(t.cat!==cat){ cat = t.cat; const h=document.createElement('div'); h.className='guide-cathead'; h.textContent = cat; host.appendChild(h); } item(t, null); });
+    guideByCat().forEach(t=>{ if(t.cat!==cat){ cat = t.cat; const h=document.createElement('div'); h.className='guide-cathead'; h.textContent = cat; host.appendChild(h); } item(t, null); });
   }
 }
 function openGuide(topicId){
   const sel = document.getElementById('guideTopic');
   if(!sel.options.length){
     let cat=null, grp=null;
-    GUIDE_TOPICS.forEach(t=>{ if(t.cat!==cat){ cat=t.cat; grp=document.createElement('optgroup'); grp.label=cat; sel.appendChild(grp); } const o=document.createElement('option'); o.value=t.id; o.textContent=t.title; grp.appendChild(o); });
+    guideByCat().forEach(t=>{ if(t.cat!==cat){ cat=t.cat; grp=document.createElement('optgroup'); grp.label=cat; sel.appendChild(grp); } const o=document.createElement('option'); o.value=t.id; o.textContent=t.title; grp.appendChild(o); });
   }
   openModal('helpModal');
   guideShow(topicId || guideState.current);
