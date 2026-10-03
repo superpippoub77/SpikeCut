@@ -1174,6 +1174,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
               <span class="field"><label>Dettaglio</label><select id="imgImpDetail"><option value="low">Basso</option><option value="mid" selected>Medio</option><option value="high">Alto</option></select></span>
             </span>
           </label>
+          <label class="imgimp-mode"><input type="radio" name="imgImpMode" value="image"><span class="t">Inserisci l'immagine così com'è</span><span class="d">Per foto, sfondi e decorazioni: l'immagine entra nel disegno senza essere vettorizzata e si sposta, ruota e ridimensiona come le altre forme.</span></label>
           <label class="imgimp-mode"><input type="radio" name="imgImpMode" value="ref"><span class="t">Solo immagine di riferimento</span><span class="d">L'immagine resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti.</span></label>
         </div>
       </div>
@@ -2850,6 +2851,10 @@ const I18N = {
     "Vettorizza la grafica": "Vectorize the artwork",
     "Per loghi e disegni: i contorni delle zone di colore diventano grafica vettoriale nel livello di disegno.": "For logos and drawings: the outlines of the colour areas become vector artwork in the drawing layer.",
     "Solo immagine di riferimento": "Reference image only",
+    "Inserisci l'immagine così com'è": "Insert the image as is",
+    "Per foto, sfondi e decorazioni: l'immagine entra nel disegno senza essere vettorizzata e si sposta, ruota e ridimensiona come le altre forme.": "For photos, backgrounds and decorations: the image goes into the drawing without being vectorized and can be moved, rotated and resized like any other shape.",
+    "L'immagine verrà inserita nel disegno così com'è ({size}), senza vettorizzarla.": "The image will be inserted into the drawing as is ({size}), without vectorizing it.",
+    "Immagine inserita così com'è: si sposta, ruota e ridimensiona come le altre forme.": "Image inserted as is: move, rotate and resize it like any other shape.",
     "L'immagine resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti.": "The image stays under the drawing, semi-transparent, to trace by hand with the tools.",
     "Tieni l'immagine sotto il disegno (semitrasparente) per confrontare il risultato": "Keep the image under the drawing (semi-transparent) to compare the result",
     "Colori": "Colours",
@@ -4209,6 +4214,10 @@ const I18N = {
     "Vettorizza la grafica": "Grafik vektorisieren",
     "Per loghi e disegni: i contorni delle zone di colore diventano grafica vettoriale nel livello di disegno.": "Für Logos und Zeichnungen: Die Umrisse der Farbflächen werden Vektorgrafik in der Zeichenebene.",
     "Solo immagine di riferimento": "Nur Referenzbild",
+    "Inserisci l'immagine così com'è": "Bild unverändert einfügen",
+    "Per foto, sfondi e decorazioni: l'immagine entra nel disegno senza essere vettorizzata e si sposta, ruota e ridimensiona come le altre forme.": "Für Fotos, Hintergründe und Verzierungen: Das Bild kommt ohne Vektorisierung in die Zeichnung und lässt sich wie jede andere Form verschieben, drehen und skalieren.",
+    "L'immagine verrà inserita nel disegno così com'è ({size}), senza vettorizzarla.": "Das Bild wird unverändert in die Zeichnung eingefügt ({size}), ohne Vektorisierung.",
+    "Immagine inserita così com'è: si sposta, ruota e ridimensiona come le altre forme.": "Bild unverändert eingefügt: Verschiebe, drehe und skaliere es wie jede andere Form.",
     "L'immagine resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti.": "Das Bild bleibt halbtransparent unter der Zeichnung, zum Nachzeichnen mit den Werkzeugen.",
     "Tieni l'immagine sotto il disegno (semitrasparente) per confrontare il risultato": "Bild unter der Zeichnung behalten (halbtransparent), um das Ergebnis zu vergleichen",
     "Colori": "Farben",
@@ -5568,6 +5577,10 @@ const I18N = {
     "Vettorizza la grafica": "Vectorizar el gráfico",
     "Per loghi e disegni: i contorni delle zone di colore diventano grafica vettoriale nel livello di disegno.": "Para logotipos y dibujos: los contornos de las zonas de color pasan a gráfico vectorial en la capa de dibujo.",
     "Solo immagine di riferimento": "Solo imagen de referencia",
+    "Inserisci l'immagine così com'è": "Insertar la imagen tal cual",
+    "Per foto, sfondi e decorazioni: l'immagine entra nel disegno senza essere vettorizzata e si sposta, ruota e ridimensiona come le altre forme.": "Para fotos, fondos y decoraciones: la imagen entra en el dibujo sin vectorizarse y se mueve, gira y redimensiona como las demás formas.",
+    "L'immagine verrà inserita nel disegno così com'è ({size}), senza vettorizzarla.": "La imagen se insertará en el dibujo tal cual ({size}), sin vectorizarla.",
+    "Immagine inserita così com'è: si sposta, ruota e ridimensiona come le altre forme.": "Imagen insertada tal cual: muévela, gírala y redimensiónala como las demás formas.",
     "L'immagine resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti.": "La imagen queda bajo el dibujo, semitransparente, para calcarla a mano con las herramientas.",
     "Tieni l'immagine sotto il disegno (semitrasparente) per confrontare il risultato": "Mantener la imagen bajo el dibujo (semitransparente) para comparar el resultado",
     "Colori": "Colores",
@@ -6927,6 +6940,10 @@ const I18N = {
     "Vettorizza la grafica": "矢量化图形",
     "Per loghi e disegni: i contorni delle zone di colore diventano grafica vettoriale nel livello di disegno.": "适用于标志和图画：颜色区域的轮廓变为绘图图层中的矢量图形。",
     "Solo immagine di riferimento": "仅参考图像",
+    "Inserisci l'immagine così com'è": "按原样插入图像",
+    "Per foto, sfondi e decorazioni: l'immagine entra nel disegno senza essere vettorizzata e si sposta, ruota e ridimensiona come le altre forme.": "适用于照片、背景和装饰：图像不经矢量化直接放入绘图，可像其他形状一样移动、旋转和缩放。",
+    "L'immagine verrà inserita nel disegno così com'è ({size}), senza vettorizzarla.": "图像将按原样插入绘图（{size}），不进行矢量化。",
+    "Immagine inserita così com'è: si sposta, ruota e ridimensiona come le altre forme.": "图像已按原样插入：可像其他形状一样移动、旋转和缩放。",
     "L'immagine resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti.": "图像半透明地保留在图纸下方，可用工具手动描绘。",
     "Tieni l'immagine sotto il disegno (semitrasparente) per confrontare il risultato": "将图像保留在图纸下方（半透明）以对比结果",
     "Colori": "颜色",
@@ -8286,6 +8303,10 @@ const I18N = {
     "Vettorizza la grafica": "Vectoriser le graphisme",
     "Per loghi e disegni: i contorni delle zone di colore diventano grafica vettoriale nel livello di disegno.": "Pour les logos et dessins : les contours des zones de couleur deviennent du graphisme vectoriel dans le calque de dessin.",
     "Solo immagine di riferimento": "Image de référence uniquement",
+    "Inserisci l'immagine così com'è": "Insérer l’image telle quelle",
+    "Per foto, sfondi e decorazioni: l'immagine entra nel disegno senza essere vettorizzata e si sposta, ruota e ridimensiona come le altre forme.": "Pour les photos, fonds et décorations : l’image entre dans le dessin sans être vectorisée et se déplace, pivote et se redimensionne comme les autres formes.",
+    "L'immagine verrà inserita nel disegno così com'è ({size}), senza vettorizzarla.": "L’image sera insérée dans le dessin telle quelle ({size}), sans la vectoriser.",
+    "Immagine inserita così com'è: si sposta, ruota e ridimensiona come le altre forme.": "Image insérée telle quelle : déplace-la, fais-la pivoter et redimensionne-la comme les autres formes.",
     "L'immagine resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti.": "L’image reste sous le dessin, semi-transparente, à décalquer à la main avec les outils.",
     "Tieni l'immagine sotto il disegno (semitrasparente) per confrontare il risultato": "Garder l’image sous le dessin (semi-transparente) pour comparer le résultat",
     "Colori": "Couleurs",
@@ -12581,6 +12602,7 @@ html:`<p>Con il pulsante <b>⇪</b> in alto, trascinando il file sul foglio o <b
 <ul><li><b>Misura reale</b>: se il file contiene la sua risoluzione (DPI) viene usata quella; altrimenti si considerano 96 DPI, tipici di schermate e immagini dal web, e la finestra lo dice. Puoi indicare la larghezza o l'altezza vera (l'altra segue le proporzioni) oppure i DPI della scansione: per una fustella in scala reale basta una misura nota, per esempio la larghezza totale. Il <b>foglio non cambia</b>: se l'immagine è più grande, parte dall'angolo in alto a sinistra e la parte in eccesso esce dal foglio ("Adatta al foglio" la rimpicciolisce se preferisci).</li>
 <li><b>Individua taglio e pieghe</b>: per fustelle scansionate, fotografate dritte, schermate o modelli disegnati al tratto. Le linee vengono seguite pixel per pixel, comprese <b>curve e diagonali</b>; le <b>scritte</b> vengono scartate. Le linee sul <b>bordo</b> della sagoma diventano <b>Taglio</b>, quelle <b>interne</b> (con la sagoma da entrambi i lati) diventano <b>Piega</b>: funziona anche nei modelli dove tagli e pieghe sono disegnati nello stesso modo. Linee tratteggiate o blu/verdi sono pieghe, linee rosse sono tagli. Dove restano piccoli spazi tra le linee si chiudono con Strumenti → Salda punti vicini o con il <a data-topic="controllo-3d">controllo del disegno</a>.</li>
 <li><b>Vettorizza la grafica</b>: per loghi e disegni, i contorni delle zone di colore diventano grafica vettoriale nel livello di disegno (scegli il numero di colori e il dettaglio). Richiede la connessione a Internet la prima volta.</li>
+<li><b>Inserisci l'immagine così com'è</b>: per foto, sfondi e decorazioni l'immagine entra nel disegno senza essere vettorizzata, come una forma: si sposta, ruota, ribalta e ridimensiona come le altre e viene esportata con il disegno (non è mai una linea di taglio o piega). Vale anche per le immagini incollate con Ctrl+V.</li>
 <li><b>Solo immagine di riferimento</b>: resta sotto il disegno, semitrasparente, da ricalcare a mano con gli strumenti; opacità, filtri e rimozione sono nella scheda Immagine.</li></ul>
 <p>Con <b>Tieni l'immagine sotto il disegno</b> l'originale resta visibile in trasparenza per confrontarlo con le linee ottenute. Le scelte vengono ricordate per la volta successiva.</p>` },
 
@@ -19463,22 +19485,23 @@ function imgImpRefresh(){
   const mode = (document.querySelector('input[name="imgImpMode"]:checked')||{}).value || 'dieline';
   imgImp.mode = mode;
   document.getElementById('imgImpTraceOpts').style.display = mode==='trace' ? '' : 'none';
-  document.getElementById('imgImpKeepRow').style.display = mode==='ref' ? 'none' : '';
+  document.getElementById('imgImpKeepRow').style.display = mode==='ref' || mode==='image' ? 'none' : '';
   document.querySelectorAll('.imgimp-mode').forEach(l=> l.classList.toggle('active', l.querySelector('input').checked));
   const hMM = imgImp.wMM * imgImp.ph / imgImp.pw;
   const size = fmtUnit(imgImp.wMM) + ' × ' + fmtUnit(hMM);
   const tracerOk = typeof ImageTracer!=='undefined';
   let txt = mode==='dieline' ? tpl('Le linee della fustella diventeranno linee vettoriali di taglio e piega, su {size}.', {size})
     : mode==='trace' ? (tracerOk ? tpl('Le zone di colore diventeranno grafica vettoriale, su {size}.', {size}) : translate('La vettorizzazione richiede la connessione a Internet (libreria non caricata): scegli un\'altra opzione.'))
+    : mode==='image' ? tpl('L\'immagine verrà inserita nel disegno così com\'è ({size}), senza vettorizzarla.', {size})
     : tpl('L\'immagine verrà posta sotto il disegno ({size}), semitrasparente, da ricalcare con gli strumenti.', {size});
-  if(state.refImage && (mode==='ref' || document.getElementById('imgImpKeepRef').checked)) txt += ' ' + translate('Sostituisce l\'immagine di riferimento attuale.');
+  if(state.refImage && (mode==='ref' || (mode!=='image' && document.getElementById('imgImpKeepRef').checked))) txt += ' ' + translate('Sostituisce l\'immagine di riferimento attuale.');
   if(imgImp.wMM > state.page.w + 0.01 || hMM > state.page.h + 0.01) txt += ' ' + tpl('È più grande del foglio ({pw} × {ph}): il foglio resta com\'è e la parte in eccesso uscirà dal foglio (puoi usare "Adatta al foglio").', {pw: fmtUnit(state.page.w), ph: fmtUnit(state.page.h)});
   document.getElementById('imgImpSummary').textContent = txt;
   document.getElementById('imgImpApply').disabled = mode==='trace' && !tracerOk;
 }
 function closeImageImport(){ document.getElementById('imgImportModal').classList.remove('open'); }
 async function applyImageImport(){
-  const mode = imgImp.mode, keepRef = mode==='ref' || document.getElementById('imgImpKeepRef').checked;
+  const mode = imgImp.mode, keepRef = mode==='ref' || (mode!=='image' && document.getElementById('imgImpKeepRef').checked);
   const colors = parseInt(document.getElementById('imgImpColors').value)||4, detail = document.getElementById('imgImpDetail').value;
   try{ localStorage.setItem('spikecut-imgimp', JSON.stringify({mode, colors, detail, keepRef: document.getElementById('imgImpKeepRef').checked})); }catch(e){}
   const w = imgImp.wMM, h = w * imgImp.ph / imgImp.pw;
@@ -19487,6 +19510,15 @@ async function applyImageImport(){
   const btn = document.getElementById('imgImpApply'); const label = btn.textContent;
   const setRef = op=>{ state.refImage = Object.assign({}, src, { opacity:op, layerId: state.activeLayerId, hidden:false, rotation:0, locked:false,
     filters:{brightness:100, contrast:100, saturate:100, grayscale:0, sepia:0, invert:0, hueRotate:0, blur:0} }); };
+  if(mode==='image'){ // inserita così com'è, come forma: niente vettorizzazione
+    const shape = { id:uid(), type:'image', x:src.x, y:src.y, w, h, href: imgImp.dataUrl, rotation:0, locked:false,
+      style:{stroke:'none', fill:'none', fillOpacity:1, strokeWidth:0, dash:'none', role:'design', hasRealStroke:false},
+      visible:true, layerId: state.activeLayerId };
+    state.shapes.push(shape); state.selection = new Set([shape.id]);
+    closeImageImport(); pushHistory(); renderAll();
+    showToast('Immagine inserita così com\'è: si sposta, ruota e ridimensiona come le altre forme.', false);
+    return;
+  }
   if(mode==='ref'){
     setRef(0.5); closeImageImport(); renderAll(); refreshImageTabPreview();
     showToast('Immagine di riferimento inserita: ricalcala con gli strumenti. Opacità, filtri e rimozione sono nella scheda Immagine.', false);
