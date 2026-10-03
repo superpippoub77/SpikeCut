@@ -426,6 +426,23 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 
 /* menu contestuale (tasto destro) — stesso aspetto del menu a tendina, ma
    posizionato liberamente alle coordinate del clic invece che ancorato */
+.cswatch{display:inline-flex;align-items:center;gap:6px;padding:2px 6px 2px 2px;border:1px solid var(--line);border-radius:6px;background:var(--bg-1);color:var(--ink);cursor:pointer;font:11px var(--mono);flex:none;}
+.cswatch:disabled{opacity:.45;cursor:default;}
+.cswatch .chip, .cpop .prev{display:inline-block;width:26px;height:20px;border-radius:4px;border:1px solid rgba(0,0,0,.35);
+  background-image:linear-gradient(45deg,#bbb 25%,transparent 25%,transparent 75%,#bbb 75%),linear-gradient(45deg,#bbb 25%,#fff 25%,#fff 75%,#bbb 75%);
+  background-size:8px 8px;background-position:0 0,4px 4px;position:relative;overflow:hidden;}
+.cswatch .chip i, .cpop .prev i{position:absolute;inset:0;}
+.cswatch.small{padding:1px;border-radius:4px;}
+.cswatch.small .chip{width:20px;height:14px;}
+.cpop{position:fixed;z-index:10000;width:236px;padding:10px;background:var(--bg-2);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.45);color:var(--ink);font-size:12px;}
+.cpop .r{display:flex;gap:6px;align-items:center;margin-top:8px;}
+.cpop label{font-size:10.5px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.04em;}
+.cpop input[type=number], .cpop input[type=text]{width:100%;min-width:0;padding:3px 5px;font:12px var(--mono);}
+.cpop input[type=color]{width:100%;height:34px;padding:2px;cursor:pointer;}
+.cpop .prev{width:48px;height:34px;flex:none;}
+.cpop .sw{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-top:8px;}
+.cpop .sw button{height:18px;border-radius:3px;border:1px solid rgba(0,0,0,.35);cursor:pointer;padding:0;}
+.cpop .col{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;}
 #ctxMenu{
   position:fixed;min-width:200px;
   background:var(--bg-2);border:1px solid var(--line);border-radius:8px;
@@ -2084,6 +2101,10 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Colore e opacità della linea": "Line colour and opacity",
+    "Colore e opacità del riempimento": "Fill colour and opacity",
+    "Colore e opacità dello sfondo del foglio": "Sheet background colour and opacity",
+    "Colore e opacità della griglia": "Grid colour and opacity",
     "✔ Fine ritaglio": "✔ Done cropping",
     "✂ Ritaglia": "✂ Crop",
     "Trascina le maniglie per tagliare i bordi: la parte tolta resta visibile in trasparenza e si può rimettere. Per ridimensionare l'immagine torna con «Fine ritaglio».": "Drag the handles to cut the edges: the removed part stays visible, faded, and can be brought back. To resize the image, click “Done cropping” first.",
@@ -3479,6 +3500,10 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Colore e opacità della linea": "Linienfarbe und Deckkraft",
+    "Colore e opacità del riempimento": "Füllfarbe und Deckkraft",
+    "Colore e opacità dello sfondo del foglio": "Farbe und Deckkraft des Blatthintergrunds",
+    "Colore e opacità della griglia": "Rasterfarbe und Deckkraft",
     "✔ Fine ritaglio": "✔ Zuschneiden fertig",
     "✂ Ritaglia": "✂ Zuschneiden",
     "Trascina le maniglie per tagliare i bordi: la parte tolta resta visibile in trasparenza e si può rimettere. Per ridimensionare l'immagine torna con «Fine ritaglio».": "Ziehe die Griffe, um die Ränder abzuschneiden: Der entfernte Teil bleibt blass sichtbar und lässt sich zurückholen. Zum Skalieren zuerst „Zuschneiden fertig“ klicken.",
@@ -4874,6 +4899,10 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Colore e opacità della linea": "Color y opacidad de la línea",
+    "Colore e opacità del riempimento": "Color y opacidad del relleno",
+    "Colore e opacità dello sfondo del foglio": "Color y opacidad del fondo de la hoja",
+    "Colore e opacità della griglia": "Color y opacidad de la cuadrícula",
     "✔ Fine ritaglio": "✔ Terminar recorte",
     "✂ Ritaglia": "✂ Recortar",
     "Trascina le maniglie per tagliare i bordi: la parte tolta resta visibile in trasparenza e si può rimettere. Per ridimensionare l'immagine torna con «Fine ritaglio».": "Arrastra los tiradores para cortar los bordes: la parte quitada sigue visible, atenuada, y se puede recuperar. Para redimensionar la imagen pulsa antes «Terminar recorte».",
@@ -6269,6 +6298,10 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Colore e opacità della linea": "线条颜色和不透明度",
+    "Colore e opacità del riempimento": "填充颜色和不透明度",
+    "Colore e opacità dello sfondo del foglio": "页面背景颜色和不透明度",
+    "Colore e opacità della griglia": "网格颜色和不透明度",
     "✔ Fine ritaglio": "✔ 完成裁剪",
     "✂ Ritaglia": "✂ 裁剪",
     "Trascina le maniglie per tagliare i bordi: la parte tolta resta visibile in trasparenza e si può rimettere. Per ridimensionare l'immagine torna con «Fine ritaglio».": "拖动控制点裁掉边缘：被裁掉的部分以半透明显示，可以恢复。要调整图像大小，请先点击“完成裁剪”。",
@@ -7664,6 +7697,10 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Colore e opacità della linea": "Couleur et opacité de la ligne",
+    "Colore e opacità del riempimento": "Couleur et opacité du remplissage",
+    "Colore e opacità dello sfondo del foglio": "Couleur et opacité du fond de la feuille",
+    "Colore e opacità della griglia": "Couleur et opacité de la grille",
     "✔ Fine ritaglio": "✔ Terminer le recadrage",
     "✂ Ritaglia": "✂ Recadrer",
     "Trascina le maniglie per tagliare i bordi: la parte tolta resta visibile in trasparenza e si può rimettere. Per ridimensionare l'immagine torna con «Fine ritaglio».": "Fais glisser les poignées pour couper les bords : la partie retirée reste visible en transparence et peut être remise. Pour redimensionner l’image, clique d’abord sur « Terminer le recadrage ».",
@@ -9092,15 +9129,16 @@ function setStageSize(){
   stage.setAttribute('viewBox', `0 0 ${w} ${h}`);
   layerBg.innerHTML = '';
   const bg = state.page.bg || '#ffffff';
-  const fillValue = bg==='transparent' ? 'url(#transparency-pattern)' : bg;
-  layerBg.appendChild(el('rect', {x:0,y:0,width:w,height:h,fill:fillValue}));
+  const bgA = state.page.bgOpacity!=null ? state.page.bgOpacity : 1;
+  if(bg==='transparent' || bgA < 1) layerBg.appendChild(el('rect', {x:0,y:0,width:w,height:h,fill:'url(#transparency-pattern)'})); // scacchiera: si vede la trasparenza
+  if(bg!=='transparent') layerBg.appendChild(el('rect', {x:0,y:0,width:w,height:h,fill:bg,'fill-opacity':bgA}));
 }
 
 function drawGrid(){
   layerGrid.innerHTML = '';
   if(!state.grid) return;
   const w = state.page.w, h = state.page.h, g = state.grid;
-  const grp = el('g', {stroke:'var(--grid)', 'stroke-width':1, 'shape-rendering':'crispEdges'});
+  const grp = el('g', {stroke:'var(--grid)', 'stroke-width':1, 'stroke-opacity': state.gridOpacity!=null ? state.gridOpacity : 1, 'shape-rendering':'crispEdges'});
   for(let x=0; x<=w; x+=g){
     grp.appendChild(el('line', {x1:mmToPx(x),y1:0,x2:mmToPx(x),y2:mmToPx(h), stroke:state.gridColor}));
   }
@@ -9549,7 +9587,7 @@ function shapeToNode(s){
   // stampa usano i dati della forma, dove il riempimento resta "nessuno", quindi il tratteggio non compare)
   const glueHatch = st.role==='glue' && (!st.fill || st.fill==='none') && ((s.points && s.closed) || s.type==='rect' || s.type==='ellipse');
   const common = {
-    stroke: st.stroke, 'stroke-width': st.strokeWidth,
+    stroke: st.stroke, 'stroke-width': st.strokeWidth, 'stroke-opacity': st.strokeOpacity!=null ? st.strokeOpacity : 1,
     fill: glueHatch ? 'url(#glue-hatch)' : (st.fill||'none'), 'fill-opacity': glueHatch ? 1 : (st.fillOpacity!=null?st.fillOpacity:1),
     'stroke-dasharray': st.dash && st.dash!=='none' ? st.dash : '',
     'stroke-linejoin':'round', 'stroke-linecap':'round',
@@ -9571,7 +9609,7 @@ function shapeToNode(s){
       node.setAttribute('transform', `rotate(${s.rotation} ${cx} ${cy})`);
     }
   } else if(s.type==='text'){
-    node = el('text', Object.assign(textAttrs(s, state.scale), {stroke:'none', fill: st.stroke}, {'data-id':s.id,'data-role':st.role}));
+    node = el('text', Object.assign(textAttrs(s, state.scale), {stroke:'none', fill: st.stroke, 'fill-opacity': st.strokeOpacity!=null ? st.strokeOpacity : 1}, {'data-id':s.id,'data-role':st.role}));
     textTspans(s, state.scale).forEach(t=>{ const ts = el('tspan', {x:t.x, dy:t.dy}); ts.textContent = t.text; node.appendChild(ts); });
     const trT = textTransform(s, state.scale); if(trT) node.setAttribute('transform', trT);
     if(textThinRadius(s) > 0){ // assottiglia: il filtro sta accanto al testo, in un gruppo
@@ -9588,7 +9626,7 @@ function shapeToNode(s){
     node = el('g', {'data-id':s.id, 'data-role':st.role, transform:`translate(${s.x*state.scale},${s.y*state.scale}) scale(${(s.w*state.scale)/s.srcW},${(s.h*state.scale)/s.srcH})`});
     for(const sub of s.paths){
       node.appendChild(el('path', {d: sub.d, fill: sub.fill||'none', stroke: sub.stroke||'none',
-        'fill-opacity': st.fillOpacity!=null ? st.fillOpacity : 1,
+        'fill-opacity': st.fillOpacity!=null ? st.fillOpacity : 1, 'stroke-opacity': st.strokeOpacity!=null ? st.strokeOpacity : 1,
         'stroke-width': (st.strokeWidth||1) / ((s.w*state.scale)/s.srcW || 1),
         'stroke-dasharray': st.dash && st.dash!=='none' ? st.dash : '',
         'stroke-linejoin':'round','stroke-linecap':'round','fill-rule':'evenodd'}));
@@ -11213,7 +11251,7 @@ function buildArtTexture(){
   if((!art.length && !bgOn) || (box && !box.checked)) return;
   const W = state.page.w, H = state.page.h, k = Math.max(1, Math.min(6, 4096/Math.max(W,H)));
   const set = new Set(art);
-  const body = `<style>${buildFontFaceCSS()}</style>` + (bgOn ? `<rect x="0" y="0" width="${W}" height="${H}" fill="${bg}"/>` : '') + shapesInZOrder().filter(s=>set.has(s)).map(exportNode).join('\n'); // anche i font personalizzati
+  const body = `<style>${buildFontFaceCSS()}</style>` + (bgOn ? `<rect x="0" y="0" width="${W}" height="${H}" fill="${bg}"${exportPageBgOpacity()}/>` : '') + shapesInZOrder().filter(s=>set.has(s)).map(exportNode).join('\n'); // anche i font personalizzati
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${Math.round(W*k)}" height="${Math.round(H*k)}" viewBox="0 0 ${W} ${H}">${body}</svg>`;
   const img = new Image();
   img.onload = ()=> afterSVGFonts(svg, ()=>{
@@ -14172,7 +14210,7 @@ window.addEventListener('mousemove', (e)=>{
   state.page = {
     w: Math.max(5, Math.min(5000, pageResizeDrag.startW + dxMM)),
     h: Math.max(5, Math.min(5000, pageResizeDrag.startH + dyMM)),
-    bg: state.page.bg, bgExport: state.page.bgExport
+    bg: state.page.bg, bgExport: state.page.bgExport, bgOpacity: state.page.bgOpacity
   };
   renderAll();
 });
@@ -17476,7 +17514,7 @@ function buildProofSVG(l){
   const pageBg = exportPageBg() || '#ffffff'; // la carta stampata non può essere "trasparente"
   let body = `<style>${buildFontFaceCSS()}</style><rect x="0" y="0" width="${sN(l.pw)}" height="${sN(l.ph)}" fill="#ffffff"/>`;
   body += `<g transform="translate(${sN(offX)},${sN(offY)}) scale(${sN(l.scale)})">`;
-  body += `<rect x="0" y="0" width="${sN(l.dw)}" height="${sN(l.dh)}" fill="${pageBg}" stroke="#cfcfcf" stroke-width="${sN(0.4/l.scale)}"/>`;
+  body += `<rect x="0" y="0" width="${sN(l.dw)}" height="${sN(l.dh)}" fill="${pageBg}"${exportPageBg() ? exportPageBgOpacity() : ''} stroke="#cfcfcf" stroke-width="${sN(0.4/l.scale)}"/>`;
   const groups = {design:[],cut:[],fold:[],diecut:[],glue:[]};
   state.shapes.forEach(s=>{ if(isShapeEffVisible(s)) (groups[s.style.role]||groups.design).push(s); });
   Object.keys(ROLE_STYLE).forEach(roleKey=> groups[roleKey].forEach(s=> body += exportNode(s)));
@@ -17548,6 +17586,7 @@ function syncPageSizeSelect(){
   syncPageBgControls();
 }
 // colore di sfondo da usare in esportazioni e stampe: null se è trasparente o se "Applica" non è spuntato
+function exportPageBgOpacity(){ const a = state.page.bgOpacity; return a!=null && a<1 ? ` fill-opacity="${a}"` : ''; }
 function exportPageBg(){
   const bg = state.page.bg || '#ffffff';
   return state.page.bgExport===false || bg==='transparent' ? null : bg;
@@ -17560,7 +17599,9 @@ function syncPageBgControls(){
   document.getElementById('pageBgColor').disabled = isTransparent;
   document.getElementById('pageBgApply').checked = state.page.bgExport!==false;
   document.getElementById('pageBgApply').disabled = isTransparent;
+  if(pageBgPicker) pageBgPicker.syncFromNative();
 }
+var pageBgPicker = attachColorAlpha('pageBgColor', ()=> state.page.bgOpacity!=null ? state.page.bgOpacity : 1, a=>{ state.page.bgOpacity = a; }, 'Colore e opacità dello sfondo del foglio');
 document.getElementById('pageBgApply').addEventListener('change', (e)=>{
   state.page.bgExport = e.target.checked;
   pushHistory();
@@ -17575,6 +17616,7 @@ document.getElementById('pageBgTransparent').addEventListener('change', (e)=>{
   state.page.bg = e.target.checked ? 'transparent' : document.getElementById('pageBgColor').value;
   document.getElementById('pageBgColor').disabled = e.target.checked;
   document.getElementById('pageBgApply').disabled = e.target.checked;
+  pageBgPicker.syncFromNative();
   pushHistory();
   renderCanvasOnly();
 });
@@ -17582,7 +17624,7 @@ document.getElementById('pageSize').addEventListener('change', (e)=>{
   const v = e.target.value;
   if(v==='custom'){ openCustomPageModal(); return; }
   const [w,h] = v.split('x').map(Number);
-  state.page = {w,h,bg:state.page.bg,bgExport:state.page.bgExport};
+  state.page = {w,h,bg:state.page.bg,bgExport:state.page.bgExport,bgOpacity:state.page.bgOpacity};
   renderAll();
 });
 function openCustomPageModal(){
@@ -17613,7 +17655,7 @@ function applyCustomPage(){
     err.style.display = 'block';
     return;
   }
-  state.page = {w,h,bg:state.page.bg,bgExport:state.page.bgExport};
+  state.page = {w,h,bg:state.page.bg,bgExport:state.page.bgExport,bgOpacity:state.page.bgOpacity};
   document.getElementById('pageSizeModal').classList.remove('open');
   syncPageSizeSelect();
   renderAll();
@@ -17626,9 +17668,10 @@ document.getElementById('unitSelect').addEventListener('change', (e)=>{
   renderAll();
 });
 document.getElementById('langSelect').addEventListener('change', (e)=>{ setLang(e.target.value); });
+var gridPicker = attachColorAlpha('gridColor', ()=> state.gridOpacity!=null ? state.gridOpacity : 1, a=>{ state.gridOpacity = a; }, 'Colore e opacità della griglia');
 document.getElementById('gridColor').addEventListener('input', (e)=>{
   state.gridColor = e.target.value;
-  try{ localStorage.setItem('spikecut-gridcolor', state.gridColor); }catch(err){ /* best-effort */ }
+  try{ localStorage.setItem('spikecut-gridcolor', state.gridColor); localStorage.setItem('spikecut-gridopacity', String(state.gridOpacity!=null ? state.gridOpacity : 1)); }catch(err){ /* best-effort */ }
   renderCanvasOnly();
 });
 document.getElementById('gridStepSelect').addEventListener('change', (e)=>{
@@ -17898,7 +17941,16 @@ function renderPropPanelInner(){
   if(ids.length===1 && s.type==='image'){ renderImageShapeSection(host, s); host.appendChild(document.createElement('hr')).className='sep'; }
 
   if(!ids.every(id=>{ const x = state.shapes.find(y=>y.id===id); return x && x.type==='image'; })){
-    addColorField(host, 'Colore linea', s.style.stroke, v=>{ withSelectionLive(sh=>sh.style.stroke=v); }); // senza ricostruire il pannello: il selettore del colore resterebbe chiuso a ogni cifra
+    const cf = document.createElement('div'); cf.className='field';
+    cf.innerHTML = `<label>${escapeHTML(translate('Colore linea'))}</label>`;
+    const crow = document.createElement('div'); crow.style.cssText='display:flex;gap:8px;align-items:center;';
+    const hasStroke = s.style.stroke && s.style.stroke!=='none';
+    crow.appendChild(makeColorAlpha({color: hasStroke ? s.style.stroke : '#000000', alpha: s.style.strokeOpacity!=null ? s.style.strokeOpacity : 1, title:'Colore e opacità della linea',
+      onInput: (c, a)=> withSelectionLive(sh=>{ sh.style.stroke = c; sh.style.strokeOpacity = a; }),
+      onChange: ()=>{ pushHistory(); renderPropPanel(); }}));
+    const none = document.createElement('button'); none.className='btn'; none.style.cssText='width:auto;margin:0;'; none.textContent = translate('Nessun contorno');
+    none.onclick = ()=>{ ids.forEach(id=>{ const x = state.shapes.find(y=>y.id===id); if(x) x.style.stroke='none'; }); pushHistory(); renderAll(); };
+    crow.appendChild(none); cf.appendChild(crow); host.appendChild(cf);
     renderFillSection(host, ids);
   }
 
@@ -18572,6 +18624,83 @@ function allSelectedHaveRole(ids, role){
 }
 
 /* ---------- colore interno delle forme (riempimento), anche con trasparenza ---------- */
+/* ---------- selettore colore "classico": colore + trasparenza ----------
+   Un riquadro (con la scacchiera sotto, per vedere la trasparenza) che apre un pannellino con il
+   selettore del sistema, HEX, R G B, opacità e alcuni colori pronti. Mentre il pannellino è aperto
+   si aggiorna solo il disegno (onInput); alla chiusura si registra la modifica (onChange). */
+function hexToRgb(h){ const m = /^#?([0-9a-f]{6})$/i.exec(String(h||'').trim()); if(!m) return null; const v = parseInt(m[1],16); return [v>>16 & 255, v>>8 & 255, v & 255]; }
+function rgbToHex(r,g,b){ return '#' + [r,g,b].map(v=> Math.max(0,Math.min(255,Math.round(v||0))).toString(16).padStart(2,'0')).join(''); }
+let colorPopClose = null;
+function makeColorAlpha(o){
+  // o: {color, alpha (0..1), noAlpha, small, title, onInput(color, alpha), onChange(color, alpha), disabled}
+  const st = {color: hexToRgb(o.color) ? o.color : '#000000', alpha: o.alpha!=null ? o.alpha : 1};
+  const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'cswatch' + (o.small ? ' small' : '');
+  if(o.title) btn.title = translate(o.title);
+  const chip = document.createElement('span'); chip.className = 'chip'; const fill = document.createElement('i'); chip.appendChild(fill);
+  const txt = document.createElement('span'); btn.append(chip); if(!o.small) btn.append(txt);
+  const paint = ()=>{ fill.style.background = st.color; fill.style.opacity = st.alpha; txt.textContent = st.color.toUpperCase() + (o.noAlpha ? '' : ' ' + Math.round(st.alpha*100) + '%'); };
+  btn.setValue = (c, a)=>{ if(hexToRgb(c)) st.color = c; if(a!=null) st.alpha = a; paint(); };
+  btn.disabled = !!o.disabled;
+  paint();
+  btn.onclick = (e)=>{
+    e.stopPropagation();
+    if(colorPopClose) colorPopClose();
+    const start = {color: st.color, alpha: st.alpha};
+    const pop = document.createElement('div'); pop.className = 'cpop';
+    pop.innerHTML = `<div class="r" style="margin-top:0"><input type="color" class="nat"><span class="prev"><i></i></span></div>
+      <div class="r"><div class="col"><label>HEX</label><input type="text" class="hex" maxlength="7" spellcheck="false"></div></div>
+      <div class="r"><div class="col"><label>R</label><input type="number" class="cr" min="0" max="255"></div><div class="col"><label>G</label><input type="number" class="cg" min="0" max="255"></div><div class="col"><label>B</label><input type="number" class="cb" min="0" max="255"></div></div>`
+      + (o.noAlpha ? '' : `<div class="r"><div class="col" style="flex:3"><label>${escapeHTML(translate('Opacità'))}</label><input type="range" class="ar" min="0" max="100" step="1"></div><div class="col"><label>%</label><input type="number" class="an" min="0" max="100"></div></div>`)
+      + `<div class="sw"></div><div class="r" style="justify-content:flex-end"><button type="button" class="btn cancel" style="width:auto;margin:0">${escapeHTML(translate('Annulla'))}</button><button type="button" class="btn primary ok" style="width:auto;margin:0">OK</button></div>`;
+    const q = c=> pop.querySelector(c);
+    const sync = (skip)=>{
+      const rgb = hexToRgb(st.color);
+      if(skip!=='nat') q('.nat').value = st.color;
+      if(skip!=='hex') q('.hex').value = st.color.toUpperCase();
+      if(skip!=='rgb'){ q('.cr').value = rgb[0]; q('.cg').value = rgb[1]; q('.cb').value = rgb[2]; }
+      if(!o.noAlpha){ if(skip!=='ar') q('.ar').value = Math.round(st.alpha*100); if(skip!=='an') q('.an').value = Math.round(st.alpha*100); }
+      q('.prev i').style.background = st.color; q('.prev i').style.opacity = st.alpha;
+      paint();
+    };
+    const live = (skip)=>{ sync(skip); if(o.onInput) o.onInput(st.color, st.alpha); };
+    q('.nat').addEventListener('input', ()=>{ st.color = q('.nat').value; live('nat'); });
+    q('.hex').addEventListener('input', ()=>{ let v = q('.hex').value.trim(); if(!v.startsWith('#')) v = '#' + v; if(hexToRgb(v)){ st.color = v.toLowerCase(); live('hex'); } });
+    ['.cr','.cg','.cb'].forEach(c=> q(c).addEventListener('input', ()=>{ st.color = rgbToHex(+q('.cr').value, +q('.cg').value, +q('.cb').value); live('rgb'); }));
+    if(!o.noAlpha){
+      q('.ar').addEventListener('input', ()=>{ st.alpha = +q('.ar').value/100; live('ar'); });
+      q('.an').addEventListener('input', ()=>{ const v = parseFloat(q('.an').value); if(!isNaN(v)){ st.alpha = Math.max(0, Math.min(100, v))/100; live('an'); } });
+    }
+    FILL_SWATCHES.forEach(c=>{ const b = document.createElement('button'); b.type='button'; b.style.background = c; b.title = c; b.onclick = ()=>{ st.color = c; live(); }; q('.sw').appendChild(b); });
+    pop.addEventListener('keydown', ev=>{ ev.stopPropagation(); if(ev.key==='Enter'){ ev.preventDefault(); close(true); } if(ev.key==='Escape'){ ev.preventDefault(); close(false); } });
+    pop.addEventListener('mousedown', ev=> ev.stopPropagation());
+    const outside = ev=>{ if(!pop.contains(ev.target) && ev.target!==btn) close(true); };
+    const close = (keep)=>{
+      if(!pop.isConnected) return;
+      pop.remove(); document.removeEventListener('mousedown', outside, true); colorPopClose = null;
+      if(!keep){ st.color = start.color; st.alpha = start.alpha; paint(); if(o.onInput) o.onInput(st.color, st.alpha); }
+      if(keep && (st.color!==start.color || st.alpha!==start.alpha) && o.onChange) o.onChange(st.color, st.alpha);
+    };
+    colorPopClose = ()=> close(true);
+    q('.ok').onclick = ()=> close(true);
+    q('.cancel').onclick = ()=> close(false);
+    document.body.appendChild(pop); sync();
+    const r = btn.getBoundingClientRect(), pr = pop.getBoundingClientRect();
+    pop.style.left = Math.max(6, Math.min(window.innerWidth - pr.width - 6, r.left)) + 'px';
+    pop.style.top = (r.bottom + 6 + pr.height < window.innerHeight ? r.bottom + 6 : Math.max(6, r.top - pr.height - 6)) + 'px';
+    setTimeout(()=> document.addEventListener('mousedown', outside, true), 0);
+  };
+  return btn;
+}
+// collega un <input type="color"> già esistente (nascosto) al selettore con trasparenza
+function attachColorAlpha(nativeId, getAlpha, setAlpha, title){
+  const nat = document.getElementById(nativeId); if(!nat) return null;
+  const btn = makeColorAlpha({color: nat.value, alpha: getAlpha(), small: true, title,
+    onInput: (c, a)=>{ setAlpha(a); if(nat.value!==c){ nat.value = c; } nat.dispatchEvent(new Event('input')); },
+    onChange: ()=> nat.dispatchEvent(new Event('change'))});
+  nat.style.display = 'none'; nat.after(btn);
+  btn.syncFromNative = ()=>{ btn.setValue(nat.value, getAlpha()); btn.disabled = nat.disabled; };
+  return btn;
+}
 const FILL_SWATCHES = ['#111111','#ffffff','#d1402c','#e8732a','#f2c230','#3fa34d','#2f9e9a','#3572d6','#6b4fbf','#c2477d','#8b5a2b','#9aa0a6'];
 function shapeCanFill(s){ return s && (s.type==='rect' || s.type==='ellipse' || s.type==='tracedpath' || (s.type==='path' && s.points && s.points.length>=3)); }
 
@@ -18814,23 +18943,14 @@ function renderFillSection(host, ids){
   if(on){
     const cur = s.style.fill && s.style.fill!=='none' ? s.style.fill : '#f2c230';
     const row = document.createElement('div'); row.style.cssText='display:flex;gap:8px;align-items:center;margin-top:6px;';
-    const inp = document.createElement('input'); inp.type='color'; inp.value = cur.startsWith('#') && cur.length===7 ? cur : '#f2c230'; inp.style.cssText='width:46px;height:32px;padding:2px;flex:none;';
-    inp.oninput = ()=>{ state.lastFill = inp.value; sel.forEach(x=>{ x.style.fill = inp.value; syncT(x); }); renderCanvasOnly(); };
-    // non ricostruisco il pannello: alcuni browser inviano "change" a ogni valore scritto nel selettore, che si chiuderebbe
-    inp.onchange = ()=>{ pushHistory(); sw.querySelectorAll('button').forEach(b=> b.classList.toggle('active', b.title.toLowerCase()===inp.value.toLowerCase())); };
+    const inp = makeColorAlpha({color: hexToRgb(cur) ? cur : '#f2c230', alpha: s.style.fillOpacity!=null ? s.style.fillOpacity : 1, small:true, title:'Colore e opacità del riempimento',
+      onInput: (c, a)=>{ state.lastFill = c; sel.forEach(x=>{ x.style.fill = c; x.style.fillOpacity = a; syncT(x); }); renderCanvasOnly(); },
+      onChange: ()=>{ pushHistory(); renderPropPanel(); }});
     const sw = document.createElement('div'); sw.className='fill-swatches';
     FILL_SWATCHES.forEach(col=>{ const b = document.createElement('button'); b.type='button'; b.style.background = col; b.title = col;
       if(col.toLowerCase()===String(cur).toLowerCase()) b.classList.add('active');
       b.onclick = ()=>{ state.lastFill = col; apply(x=> x.style.fill = col, true); }; sw.appendChild(b); });
     row.append(inp, sw); f.appendChild(row);
-    // trasparenza
-    const op = Math.round((s.style.fillOpacity!=null ? s.style.fillOpacity : 1)*100);
-    const ol = document.createElement('label'); ol.style.cssText='margin-top:8px;display:flex;justify-content:space-between;';
-    ol.innerHTML = `<span>${escapeHTML(translate('Opacità del colore'))}</span><span class="fillOpVal" style="color:var(--ink-dim);">${op}%</span>`;
-    const rg = document.createElement('input'); rg.type='range'; rg.min='5'; rg.max='100'; rg.step='5'; rg.value = op; rg.style.width='100%';
-    rg.oninput = ()=>{ sel.forEach(x=> x.style.fillOpacity = parseInt(rg.value,10)/100); ol.querySelector('.fillOpVal').textContent = rg.value + '%'; renderCanvasOnly(); };
-    rg.onchange = ()=> pushHistory();
-    f.appendChild(ol); f.appendChild(rg);
   }
   // linea aperta: il colore ha senso su una figura chiusa
   const open = sel.filter(x=> x.type==='path' && !x.closed);
@@ -20652,7 +20772,7 @@ async function autoFitImportedShapes(newShapes, opts){
         'Disegno più grande della pagina'
       );
       if(ok){
-        state.page = {w: Math.ceil(bw+4), h: Math.ceil(bh+4), bg: state.page.bg, bgExport: state.page.bgExport};
+        state.page = {w: Math.ceil(bw+4), h: Math.ceil(bh+4), bg: state.page.bg, bgExport: state.page.bgExport, bgOpacity: state.page.bgOpacity};
         syncPageSizeSelect();
       }
     }
@@ -21604,7 +21724,7 @@ function buildExportSVG(){
   const w = state.page.w, h = state.page.h;
   const { body: groupsBody, groups } = buildDrawingGroupsSVG();
   const pageBg = exportPageBg();
-  const bgRect = !pageBg ? '' : `<rect x="0" y="0" width="${w}" height="${h}" fill="${pageBg}"/>\n`;
+  const bgRect = !pageBg ? '' : `<rect x="0" y="0" width="${w}" height="${h}" fill="${pageBg}"${exportPageBgOpacity()}/>\n`;
   let body = bgRect + groupsBody;
   // legend
   const legendItems = Object.keys(ROLE_STYLE).filter(k=>groups[k].length);
@@ -21624,7 +21744,7 @@ function buildExportSVG(){
 }
 function exportNode(s){
   const st = s.style;
-  const common = `stroke="${st.stroke}" stroke-width="${sN(st.strokeWidth)}" fill="${st.fill||'none'}" fill-opacity="${st.fillOpacity!=null?st.fillOpacity:1}" ${st.dash&&st.dash!=='none'?`stroke-dasharray="${st.dash}"`:''} stroke-linejoin="round" stroke-linecap="round"`;
+  const common = `stroke="${st.stroke}" stroke-width="${sN(st.strokeWidth)}"${st.strokeOpacity!=null && st.strokeOpacity<1 ? ` stroke-opacity="${st.strokeOpacity}"` : ''} fill="${st.fill||'none'}" fill-opacity="${st.fillOpacity!=null?st.fillOpacity:1}" ${st.dash&&st.dash!=='none'?`stroke-dasharray="${st.dash}"`:''} stroke-linejoin="round" stroke-linecap="round"`;
   if(s.type==='path'||s.type==='freehand'||s.type==='line'){
     const d = buildSmoothPathD(s.points, !!s.closed, s.smooth, 1);
     return `<path d="${d}" ${common}/>`;
@@ -21647,14 +21767,14 @@ function exportNode(s){
     const attrs = Object.entries(a).map(([k,v])=> `${k}="${typeof v==='number' ? sN(v) : escapeXML(String(v))}"`).join(' ');
     const spans = textTspans(s, 1).map(t=> `<tspan x="${sN(t.x)}" dy="${sN(t.dy)}">${escapeXML(t.text)}</tspan>`).join('');
     const thin = textThinRadius(s) > 0;
-    return (thin ? textThinFilterSVG(s, 1) : '') + `<text ${attrs} fill="${st.stroke}"${tr ? ` transform="${tr}"` : ''}${thin ? ` filter="url(#txthin-${s.id})"` : ''} xml:space="preserve">${spans}</text>`;
+    return (thin ? textThinFilterSVG(s, 1) : '') + `<text ${attrs} fill="${st.stroke}"${st.strokeOpacity!=null && st.strokeOpacity<1 ? ` fill-opacity="${st.strokeOpacity}"` : ''}${tr ? ` transform="${tr}"` : ''}${thin ? ` filter="url(#txthin-${s.id})"` : ''} xml:space="preserve">${spans}</text>`;
   }
   if(s.type==='tracedpath'){
     const sx=s.w/s.srcW, sy=s.h/s.srcH;
     const compW = (st.strokeWidth||1) / (sx||1);
     const fo = st.fillOpacity!=null ? st.fillOpacity : 1;
     let g = `<g transform="translate(${sN(s.x)},${sN(s.y)}) scale(${sN(sx)},${sN(sy)})">`;
-    s.paths.forEach(p=> g += `<path d="${p.d}" fill="${p.fill||'none'}" fill-opacity="${fo}" stroke="${p.stroke||'none'}" stroke-width="${sN(compW)}" ${st.dash&&st.dash!=='none'?`stroke-dasharray="${st.dash}"`:''} stroke-linejoin="round" stroke-linecap="round" fill-rule="evenodd"/>`);
+    s.paths.forEach(p=> g += `<path d="${p.d}" fill="${p.fill||'none'}" fill-opacity="${fo}"${st.strokeOpacity!=null && st.strokeOpacity<1 ? ` stroke-opacity="${st.strokeOpacity}"` : ''} stroke="${p.stroke||'none'}" stroke-width="${sN(compW)}" ${st.dash&&st.dash!=='none'?`stroke-dasharray="${st.dash}"`:''} stroke-linejoin="round" stroke-linecap="round" fill-rule="evenodd"/>`);
     g += `</g>`;
     const cx=s.x+s.w/2, cy=s.y+s.h/2;
     const tr = exportFlipRotateAttr(s, cx, cy);
@@ -21786,7 +21906,7 @@ function buildTileSVG(l, r, c, direction){
   const clipId = 'tileclip-' + (r*l.cols+c+1);
   const tileBg = exportPageBg() || '#ffffff'; // un foglio stampato non può essere "trasparente"
   let extra = `<defs><clipPath id="${clipId}"><rect x="${sN(l.margin)}" y="${sN(l.margin)}" width="${sN(l.usableW)}" height="${sN(l.usableH)}"/></clipPath></defs>`;
-  extra += `<rect x="0" y="0" width="${sN(l.sheetW)}" height="${sN(l.sheetH)}" fill="${tileBg}"/>\n`;
+  extra += `<rect x="0" y="0" width="${sN(l.sheetW)}" height="${sN(l.sheetH)}" fill="#ffffff"/><rect x="0" y="0" width="${sN(l.sheetW)}" height="${sN(l.sheetH)}" fill="${tileBg}"${exportPageBg() ? exportPageBgOpacity() : ''}/>\n`;
   // linee tratteggiate nella zona di sovrapposizione, solo verso un foglio successivo esistente
   if(c < l.cols-1){
     const x = l.margin + l.usableW - l.overlap;
@@ -22432,6 +22552,9 @@ async function init(){
   try{
     const savedGridColor = localStorage.getItem('spikecut-gridcolor');
     if(/^#[0-9a-f]{6}$/i.test(savedGridColor||'')){ state.gridColor = savedGridColor; document.getElementById('gridColor').value = savedGridColor; }
+    const savedGridOp = parseFloat(localStorage.getItem('spikecut-gridopacity'));
+    if(savedGridOp>=0 && savedGridOp<=1) state.gridOpacity = savedGridOp;
+    if(gridPicker) gridPicker.syncFromNative();
   }catch(err){ /* best-effort */ }
   try{
     const savedGrid = localStorage.getItem('spikecut-gridstep');
