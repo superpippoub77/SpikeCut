@@ -956,7 +956,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.54</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.55</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1281,6 +1281,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
       <div id="seqList"></div>
       <div style="display:flex;gap:8px;margin-top:12px;">
         <button class="btn primary" id="seqSimulate" style="width:auto;margin:0;">🧊 Simula nel 3D</button>
+        <button class="btn" id="seqSplitAll" style="width:auto;margin:0;" title="Ogni piega (ogni tratto tra due pannelli) diventa un passo a sé, nell'ordine attuale: nella simulazione si chiudono una alla volta">1️⃣ Una piega per passo</button>
       </div>
     </div>
   </div>
@@ -2258,6 +2259,13 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "1️⃣ Una piega per passo": "1️⃣ One fold per step",
+    "Ogni piega (ogni tratto tra due pannelli) diventa un passo a sé, nell'ordine attuale: nella simulazione si chiudono una alla volta": "Each fold (each segment between two panels) becomes its own step, in the current order: in the simulation they close one at a time",
+    "{n} pieghe, ognuna nel suo passo: nella simulazione si chiudono una alla volta. Riordinale trascinandole o con le frecce.": "{n} folds, each in its own step: in the simulation they close one at a time. Reorder them by dragging or with the arrows.",
+    "{n} tratti di piega in {k} passi.": "{n} fold segments in {k} steps.",
+    "{u} pieghe non dividono due pannelli e non vengono usate nel 3D (controlla che arrivino fino al taglio).": "{u} folds don't separate two panels and aren't used in 3D (check that they reach the cut line).",
+    "Tutte le pieghe sono usate nel 3D.": "All folds are used in 3D.",
+    "Mostrale sul disegno": "Show them on the drawing",
     "Interno": "Inside",
     "Est": "Out",
     "Int": "In",
@@ -3854,6 +3862,13 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "1️⃣ Una piega per passo": "1️⃣ Ein Falz pro Schritt",
+    "Ogni piega (ogni tratto tra due pannelli) diventa un passo a sé, nell'ordine attuale: nella simulazione si chiudono una alla volta": "Jeder Falz (jede Strecke zwischen zwei Platten) wird ein eigener Schritt, in der aktuellen Reihenfolge: In der Simulation schließen sie sich einzeln",
+    "{n} pieghe, ognuna nel suo passo: nella simulazione si chiudono una alla volta. Riordinale trascinandole o con le frecce.": "{n} Falze, jeder in seinem Schritt: In der Simulation schließen sie sich einzeln. Ordne sie per Ziehen oder mit den Pfeilen.",
+    "{n} tratti di piega in {k} passi.": "{n} Falzstrecken in {k} Schritten.",
+    "{u} pieghe non dividono due pannelli e non vengono usate nel 3D (controlla che arrivino fino al taglio).": "{u} Falze trennen keine zwei Platten und werden in 3D nicht verwendet (prüfe, dass sie bis zur Schnittlinie reichen).",
+    "Tutte le pieghe sono usate nel 3D.": "Alle Falze werden in 3D verwendet.",
+    "Mostrale sul disegno": "Auf der Zeichnung zeigen",
     "Interno": "Innen",
     "Est": "Au",
     "Int": "In",
@@ -5450,6 +5465,13 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "1️⃣ Una piega per passo": "1️⃣ Un pliegue por paso",
+    "Ogni piega (ogni tratto tra due pannelli) diventa un passo a sé, nell'ordine attuale: nella simulazione si chiudono una alla volta": "Cada pliegue (cada tramo entre dos paneles) pasa a ser un paso propio, en el orden actual: en la simulación se cierran de uno en uno",
+    "{n} pieghe, ognuna nel suo passo: nella simulazione si chiudono una alla volta. Riordinale trascinandole o con le frecce.": "{n} pliegues, cada uno en su paso: en la simulación se cierran de uno en uno. Reordénalos arrastrando o con las flechas.",
+    "{n} tratti di piega in {k} passi.": "{n} tramos de pliegue en {k} pasos.",
+    "{u} pieghe non dividono due pannelli e non vengono usate nel 3D (controlla che arrivino fino al taglio).": "{u} pliegues no separan dos paneles y no se usan en 3D (comprueba que lleguen hasta el corte).",
+    "Tutte le pieghe sono usate nel 3D.": "Todos los pliegues se usan en 3D.",
+    "Mostrale sul disegno": "Mostrarlos en el dibujo",
     "Interno": "Interior",
     "Est": "Ext",
     "Int": "Int",
@@ -7046,6 +7068,13 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "1️⃣ Una piega per passo": "1️⃣ 每步一条折线",
+    "Ogni piega (ogni tratto tra due pannelli) diventa un passo a sé, nell'ordine attuale: nella simulazione si chiudono una alla volta": "每条折线（两个面板之间的每段）成为单独的一步，保持当前顺序：模拟时逐一折叠",
+    "{n} pieghe, ognuna nel suo passo: nella simulazione si chiudono una alla volta. Riordinale trascinandole o con le frecce.": "{n} 条折线，每条各占一步：模拟时逐一折叠。可拖动或用箭头重新排序。",
+    "{n} tratti di piega in {k} passi.": "{n} 段折线，共 {k} 步。",
+    "{u} pieghe non dividono due pannelli e non vengono usate nel 3D (controlla che arrivino fino al taglio).": "{u} 条折线没有分隔两个面板，未在 3D 中使用（请检查是否延伸到切割线）。",
+    "Tutte le pieghe sono usate nel 3D.": "所有折线都已在 3D 中使用。",
+    "Mostrale sul disegno": "在绘图中显示",
     "Interno": "内侧",
     "Est": "外",
     "Int": "内",
@@ -8642,6 +8671,13 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "1️⃣ Una piega per passo": "1️⃣ Un pli par étape",
+    "Ogni piega (ogni tratto tra due pannelli) diventa un passo a sé, nell'ordine attuale: nella simulazione si chiudono una alla volta": "Chaque pli (chaque segment entre deux panneaux) devient une étape à part, dans l'ordre actuel : dans la simulation ils se ferment un par un",
+    "{n} pieghe, ognuna nel suo passo: nella simulazione si chiudono una alla volta. Riordinale trascinandole o con le frecce.": "{n} plis, chacun dans son étape : dans la simulation ils se ferment un par un. Réordonne-les en les faisant glisser ou avec les flèches.",
+    "{n} tratti di piega in {k} passi.": "{n} segments de pli en {k} étapes.",
+    "{u} pieghe non dividono due pannelli e non vengono usate nel 3D (controlla che arrivino fino al taglio).": "{u} plis ne séparent pas deux panneaux et ne sont pas utilisés en 3D (vérifie qu'ils atteignent la découpe).",
+    "Tutte le pieghe sono usate nel 3D.": "Tous les plis sont utilisés en 3D.",
+    "Mostrale sul disegno": "Les montrer sur le dessin",
     "Interno": "Intérieur",
     "Est": "Ext",
     "Int": "Int",
@@ -13656,6 +13692,22 @@ function seqEnsureOwnShape(key){
   state.selection.delete(s.id);
   return parts[parseInt(part,10)] || parts[0];
 }
+// ogni tratto di piega diventa un passo a sé, mantenendo l'ordine attuale (dentro un passo: dall'alto in basso, da sinistra a destra)
+function seqSplitAll(){
+  // prima divido le linee che attraversano più pannelli, così ogni tratto può avere il suo passo
+  let guard = 0;
+  while(guard++ < 500){
+    const multi = foldPieces().find(en=> en.n > 1 && foldIsStraight(en.shape));
+    if(!multi) break;
+    const before = state.shapes.length;
+    seqEnsureOwnShape(multi.key);
+    if(state.shapes.length === before) break;
+  }
+  const steps = buildSeq(), seen = new Set(); let k = 0;
+  steps.forEach(arr=> arr.forEach(en=>{ if(seen.has(en.shape)) return; seen.add(en.shape); en.shape.foldOrder = ++k; }));
+  pushHistory(); renderAll(); renderSeq();
+  showToast(tpl('{n} pieghe, ognuna nel suo passo: nella simulazione si chiudono una alla volta. Riordinale trascinandole o con le frecce.', {n: k}), false);
+}
 function seqMoveFold(key, toIndex, asNewStep){
   const s = seqEnsureOwnShape(key); if(!s) return;
   const steps = buildSeq();
@@ -13789,6 +13841,14 @@ function renderSeq(){
     dropTarget(g, d=>{ if(d.type==='fold') seqMoveFold(d.id, i, true); else seqMoveStep(d.index, i); });
     return g;
   };
+  { // riepilogo: quante pieghe ci sono e quante sono usate davvero nel 3D
+    const all = steps.flat(), unused = all.filter(en=> en.unused);
+    const sm = document.createElement('div'); sm.className = 'hint'; sm.style.cssText = 'margin-bottom:8px;padding:6px 8px;border-radius:6px;background:' + (unused.length ? 'rgba(209,64,44,.12)' : 'rgba(47,158,90,.12)') + ';';
+    sm.textContent = tpl('{n} tratti di piega in {k} passi.', {n: all.length, k: steps.length}) + ' ' + (unused.length ? tpl('{u} pieghe non dividono due pannelli e non vengono usate nel 3D (controlla che arrivino fino al taglio).', {u: unused.length}) : translate('Tutte le pieghe sono usate nel 3D.'));
+    if(unused.length){ const b = document.createElement('button'); b.className = 'btn'; b.style.cssText = 'width:auto;margin:4px 0 0;display:block;'; b.textContent = translate('Mostrale sul disegno');
+      b.onclick = ()=>{ state.selection = new Set(unused.map(en=> en.shape.id)); renderAll(); }; sm.appendChild(b); }
+    host.appendChild(sm);
+  }
   host.appendChild(gap(0));
   steps.forEach((arr, k)=>{
     const box = document.createElement('div'); box.className='seq-step'; box.dataset.step = k;
@@ -14002,7 +14062,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.54';
+const GUIDE_VERSION = '2.55';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -14232,6 +14292,7 @@ html:`<p>Ogni piega ha un numero di <b>passo</b>: nella simulazione 3D si chiudo
 <li><b>Ordine automatico</b> ("Ordina" nel pannello, o "Applica e simula" nell'anteprima 3D): dal pannello principale verso l'esterno, da sinistra a destra, da destra a sinistra, dall'alto, dal basso, dal centro, oppure tutte insieme. Le pieghe alla stessa posizione (entro 2 mm) finiscono nello stesso passo.</li>
 <li><b>Sequenza di piegatura</b> (menu Strumenti, "📋 Sequenza…" nel 3D, o nel pannello): elenco dei passi, <b>pezzo per pezzo</b>: ogni tratto di piega tra due pannelli è una voce a sé ("tratto 2 di 3"), anche quando una sola linea attraversa più pannelli. Spostando un solo tratto, la linea viene divisa automaticamente nei suoi tratti. Le pieghe non usate nel 3D compaiono in grigio. <b>Un clic su una voce</b> la evidenzia nell'anteprima 3D (che si apre da sola, se serve): la cerniera diventa arancione, il pannello che vi si piega viene colorato e la simulazione si porta alla fine del passo di quella voce. La finestra della sequenza non oscura il resto e si apre sul lato destro, così vedi insieme elenco, 3D e disegno. Trascina una piega su un altro passo per spostarla, tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo o unirlo a un altro. Oppure usa le frecce ↑ ↓. Passando col mouse su una piega la vedi evidenziata sul disegno.</li></ul>
 <p>Sul disegno il passo compare accanto all'angolo ("90° · passo 2"), nel 3D accanto al cursore ("Passo 2 di 3"). Ctrl+Z annulla ogni modifica.</p>
+<p><b>1️⃣ Una piega per passo</b> (nella finestra Sequenza): ogni tratto di piega diventa un passo a sé, nell'ordine attuale; le linee che attraversano più pannelli vengono divise nei loro tratti. Così nella simulazione alette, linguette e pareti si chiudono una alla volta e puoi riordinarle singolarmente. In cima all'elenco un riepilogo dice quanti tratti ci sono e se qualche piega non viene usata nel 3D (perché non divide due pannelli: di solito non arriva fino al taglio); "Mostrale sul disegno" le seleziona.</p>
 <p><b>Vedere i passi nel 3D</b>:</p>
 <ul><li>passando con il mouse su un passo o su una piega della sequenza, nel 3D si accendono <b>in giallo</b> le cerniere e i pannelli interessati;</li>
 <li><b>clic sul titolo di un passo</b> ("Passo 2 · …"): tutte le sue pieghe vengono evidenziate <b>in arancione</b> con l'etichetta "Passo 2" e il 3D mostra <b>solo quel passo</b> che si chiude (dalla posizione prima alla posizione dopo);</li>
@@ -14520,6 +14581,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.55</b> — Sequenza di piegatura: <a data-topic="ordine">"Una piega per passo"</a> e riepilogo delle pieghe usate e non usate nel 3D.</li>
 <li><b>2.54</b> — <a data-topic="lato-interno">Stampa dell'interno</a>: livelli Esterno/Interno, vista Interno con la fustella specchiata, sfondo interno, retro nelle esportazioni (PDF pagina 2, SVG, immagini), grafica interna nel 3D e nei modelli GLB/OBJ, imposizione e controllo anche del retro.</li>
 <li><b>2.53</b> — <a data-topic="ordine">Sequenza di piegatura nel 3D</a>: clic su un passo per vederlo evidenziato e animato, evidenziazione al passaggio del mouse, pezzo intero che si muove, e clic su un pannello del 3D per sapere a quale piega e passo appartiene.</li>
 <li><b>2.52.2</b> — Anteprima 3D: la scatola non appare più capovolta (con le scritte sottosopra). Tutte le nuove funzioni sono tradotte in inglese, tedesco, spagnolo, cinese e francese.</li>
@@ -18524,6 +18586,7 @@ document.getElementById('cadPlt').onclick = ()=> doCadExport('plt');
 document.getElementById('cadCf2').onclick = ()=> doCadExport('cf2');
 document.getElementById('seqModalClose').onclick = closeFoldSequence;
 setupOverlayClickClose(document.getElementById('seqModal'), closeFoldSequence);
+document.getElementById('seqSplitAll').onclick = seqSplitAll;
 document.getElementById('seqSimulate').onclick = ()=>{ closeFoldSequence(); const f3=document.getElementById('fold3dModal'); if(!f3.classList.contains('open')) openFold3D(); };
 document.getElementById('fold3dAutoOrder').innerHTML = autoOrderSelectHTML();
 document.getElementById('fold3dAutoOrderApply').onclick = ()=> applyAutoOrder(document.getElementById('fold3dAutoOrder').value, allFoldShapes(), true);
