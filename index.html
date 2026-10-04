@@ -308,6 +308,9 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
   border:1px solid transparent;margin-bottom:2px;cursor:pointer;background:var(--bg-2);
 }
 .layer-movesel{padding:8px;margin-bottom:10px;border:1px solid var(--brass);border-radius:8px;background:rgba(201,151,63,.10);}
+.layer-side{ font-size:10px !important; padding:1px 5px !important; border-radius:4px; border:1px solid var(--line) !important; color:var(--ink-dim); }
+.layer-side.in{ color:#fff; background:#6b4fbf !important; border-color:#6b4fbf !important; }
+#toggleSide.on{ color:#fff; background:#6b4fbf; border-color:#6b4fbf; }
 .layerhead.active{border-color:rgba(201,151,63,.5);}
 .layerhead.dragover{border-top:2px solid var(--brass);}
 .layerhead .drag{cursor:grab;color:var(--ink-dim);flex:none;font-size:11px;letter-spacing:-2px;}
@@ -939,6 +942,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
 
 <div id="status">
   <span id="coord">x: 0.0  y: 0.0 mm</span>
+  <span class="toggle" id="toggleSide" title="Lato su cui disegni: Esterno (fronte) o Interno (retro, il foglio visto girato)">⇆ vista: Esterno</span>
   <span class="toggle on" id="toggleGrid" title="Griglia (G)">▦ griglia</span>
   <select id="gridStepSelect" title="Passo della griglia" style="width:auto;padding:2px 4px;font-size:10.5px;margin-left:-4px;">
     <option value="1">1 mm</option>
@@ -952,7 +956,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.53</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.54</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1340,6 +1344,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
         <div class="field"><label>Formato</label><select id="imgExpFmt"><option value="png">PNG</option><option value="jpg">JPG</option></select></div>
         <div class="field"><label>Risoluzione</label><select id="imgExpDpi"><option value="96">96 DPI (schermo)</option><option value="150">150 DPI</option><option value="300" selected>300 DPI (stampa)</option><option value="600">600 DPI</option></select></div>
       </div>
+      <div class="field" style="margin-top:6px;"><label>Lato</label><select id="imgExpSide"><option value="outside">Esterno (fronte)</option><option value="inside">Interno (retro, come si vede girando il foglio)</option></select></div>
       <label style="display:flex;gap:6px;align-items:center;font-size:12.5px;cursor:pointer;margin-top:6px;"><input type="checkbox" id="imgExpLines" checked style="width:auto;margin:0;"><span>Includi le linee di taglio, piega e incollaggio</span></label>
       <div class="hint" id="imgExpInfo" style="margin-top:8px;"></div>
       <button class="btn primary" id="imgExpGo" style="width:100%;margin-top:12px;">Esporta</button>
@@ -1364,6 +1369,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
         <div class="field"><label>Risoluzione della grafica</label><select id="pdfArtDpi"><option value="150">150 DPI</option><option value="300" selected>300 DPI</option><option value="450">450 DPI</option></select></div>
       </div>
       <label style="display:flex;gap:6px;align-items:center;font-size:12.5px;cursor:pointer;margin-top:4px;"><input type="checkbox" id="pdfIncludeArt" checked style="width:auto;margin:0;"><span>Includi la grafica (sfondo, immagini, testi)</span></label>
+      <label style="display:flex;gap:6px;align-items:center;font-size:12.5px;cursor:pointer;margin-top:4px;"><input type="checkbox" id="pdfBack" checked style="width:auto;margin:0;"><span>Aggiungi il retro (grafica interna) come pagina 2, già pronto per la stampa in volta</span></label>
       <div class="hint" style="margin-top:6px;">Nomi più usati: CutContour (Roland, Summa, Mimaki, HP), Thru-cut / Kiss-cut, Crease o Creasing per le pieghe. Chiedi alla tipografia quali usa.</div>
       <button class="btn primary" id="pdfPrintGo" style="width:100%;margin-top:12px;">Esporta PDF</button>
     </div>
@@ -2252,6 +2258,24 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Interno": "Inside",
+    "Est": "Out",
+    "Int": "In",
+    "⇆ vista: Interno": "⇆ view: Inside",
+    "⇆ vista: Esterno": "⇆ view: Outside",
+    "Vista riportata sul lato Esterno: la fustella si lavora da qui.": "View switched back to the Outside: the die is worked from here.",
+    "Lato su cui disegni: Esterno (fronte) o Interno (retro, il foglio visto girato)": "Side you draw on: Outside (front) or Inside (back, the sheet seen turned over)",
+    "Lato Interno (retro): clic per farlo diventare Esterno": "Inside side (back): click to make it Outside",
+    "Lato Esterno (fronte): clic per farlo diventare Interno": "Outside side (front): click to make it Inside",
+    "Il livello «{l}» ora è stampato all'interno (retro). Le sue forme restano dove le vedi in vista Interno.": "Layer “{l}” is now printed on the inside (back). Its shapes stay where you see them in Inside view.",
+    "Il livello «{l}» ora è stampato all'esterno (fronte).": "Layer “{l}” is now printed on the outside (front).",
+    "Aggiungi il retro (grafica interna) come pagina 2, già pronto per la stampa in volta": "Add the back (inside artwork) as page 2, ready for back-side printing",
+    "Lato": "Side",
+    "Esterno (fronte)": "Outside (front)",
+    "Interno (retro, come si vede girando il foglio)": "Inside (back, as seen turning the sheet over)",
+    "Esportati due SVG: esterno e interno (retro, con la fustella specchiata nel gruppo «fustella-riferimento»).": "Two SVGs exported: outside and inside (back, with the mirrored die in the “fustella-riferimento” group).",
+    "Grafica interna sui lati interni dei pannelli.": "Inside artwork on the inner sides of the panels.",
+    "Lato interno:": "Inside:",
     "Pannello di base: resta fermo, gli altri si piegano attorno a lui.": "Base panel: it stays still, the others fold around it.",
     "Passo {n} di {t} · piega a {d} {g}° · lunga {l}": "Step {n} of {t} · {d} fold {g}° · {l} long",
     "Clic: mostra questo passo nel 3D": "Click: show this step in 3D",
@@ -3830,6 +3854,24 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Interno": "Innen",
+    "Est": "Au",
+    "Int": "In",
+    "⇆ vista: Interno": "⇆ Ansicht: Innen",
+    "⇆ vista: Esterno": "⇆ Ansicht: Außen",
+    "Vista riportata sul lato Esterno: la fustella si lavora da qui.": "Ansicht auf Außen zurückgesetzt: Die Stanzform wird von hier bearbeitet.",
+    "Lato su cui disegni: Esterno (fronte) o Interno (retro, il foglio visto girato)": "Seite, auf der du zeichnest: Außen (Vorderseite) oder Innen (Rückseite, das umgedrehte Blatt)",
+    "Lato Interno (retro): clic per farlo diventare Esterno": "Innenseite (Rückseite): Klick, um sie zu Außen zu machen",
+    "Lato Esterno (fronte): clic per farlo diventare Interno": "Außenseite (Vorderseite): Klick, um sie zu Innen zu machen",
+    "Il livello «{l}» ora è stampato all'interno (retro). Le sue forme restano dove le vedi in vista Interno.": "Ebene „{l}“ wird jetzt innen (Rückseite) gedruckt. Ihre Formen bleiben dort, wo du sie in der Innenansicht siehst.",
+    "Il livello «{l}» ora è stampato all'esterno (fronte).": "Ebene „{l}“ wird jetzt außen (Vorderseite) gedruckt.",
+    "Aggiungi il retro (grafica interna) come pagina 2, già pronto per la stampa in volta": "Rückseite (Innengrafik) als Seite 2 hinzufügen, bereit für den Widerdruck",
+    "Lato": "Seite",
+    "Esterno (fronte)": "Außen (Vorderseite)",
+    "Interno (retro, come si vede girando il foglio)": "Innen (Rückseite, wie beim Umdrehen des Blatts)",
+    "Esportati due SVG: esterno e interno (retro, con la fustella specchiata nel gruppo «fustella-riferimento»).": "Zwei SVGs exportiert: außen und innen (Rückseite, mit gespiegelter Stanzform in der Gruppe „fustella-riferimento“).",
+    "Grafica interna sui lati interni dei pannelli.": "Innengrafik auf den Innenseiten der Platten.",
+    "Lato interno:": "Innenseite:",
     "Pannello di base: resta fermo, gli altri si piegano attorno a lui.": "Basisplatte: Sie bleibt fest, die anderen falten sich um sie.",
     "Passo {n} di {t} · piega a {d} {g}° · lunga {l}": "Schritt {n} von {t} · {d}-Falz {g}° · {l} lang",
     "Clic: mostra questo passo nel 3D": "Klick: diesen Schritt in 3D zeigen",
@@ -5408,6 +5450,24 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Interno": "Interior",
+    "Est": "Ext",
+    "Int": "Int",
+    "⇆ vista: Interno": "⇆ vista: Interior",
+    "⇆ vista: Esterno": "⇆ vista: Exterior",
+    "Vista riportata sul lato Esterno: la fustella si lavora da qui.": "Vista devuelta al lado Exterior: el troquel se trabaja desde aquí.",
+    "Lato su cui disegni: Esterno (fronte) o Interno (retro, il foglio visto girato)": "Lado en el que dibujas: Exterior (anverso) o Interior (reverso, la hoja vista girada)",
+    "Lato Interno (retro): clic per farlo diventare Esterno": "Lado Interior (reverso): clic para hacerlo Exterior",
+    "Lato Esterno (fronte): clic per farlo diventare Interno": "Lado Exterior (anverso): clic para hacerlo Interior",
+    "Il livello «{l}» ora è stampato all'interno (retro). Le sue forme restano dove le vedi in vista Interno.": "La capa «{l}» ahora se imprime en el interior (reverso). Sus formas quedan donde las ves en la vista Interior.",
+    "Il livello «{l}» ora è stampato all'esterno (fronte).": "La capa «{l}» ahora se imprime en el exterior (anverso).",
+    "Aggiungi il retro (grafica interna) come pagina 2, già pronto per la stampa in volta": "Añadir el reverso (gráfico interior) como página 2, listo para la impresión del reverso",
+    "Lato": "Lado",
+    "Esterno (fronte)": "Exterior (anverso)",
+    "Interno (retro, come si vede girando il foglio)": "Interior (reverso, como se ve al girar la hoja)",
+    "Esportati due SVG: esterno e interno (retro, con la fustella specchiata nel gruppo «fustella-riferimento»).": "Exportados dos SVG: exterior e interior (reverso, con el troquel reflejado en el grupo «fustella-riferimento»).",
+    "Grafica interna sui lati interni dei pannelli.": "Gráfico interior en las caras interiores de los paneles.",
+    "Lato interno:": "Lado interior:",
     "Pannello di base: resta fermo, gli altri si piegano attorno a lui.": "Panel base: queda fijo, los demás se pliegan a su alrededor.",
     "Passo {n} di {t} · piega a {d} {g}° · lunga {l}": "Paso {n} de {t} · pliegue en {d} {g}° · largo {l}",
     "Clic: mostra questo passo nel 3D": "Clic: mostrar este paso en 3D",
@@ -6986,6 +7046,24 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Interno": "内侧",
+    "Est": "外",
+    "Int": "内",
+    "⇆ vista: Interno": "⇆ 视图：内侧",
+    "⇆ vista: Esterno": "⇆ 视图：外侧",
+    "Vista riportata sul lato Esterno: la fustella si lavora da qui.": "视图已切回外侧：刀模在这一侧编辑。",
+    "Lato su cui disegni: Esterno (fronte) o Interno (retro, il foglio visto girato)": "绘制的面：外侧（正面）或内侧（背面，翻转后的纸张）",
+    "Lato Interno (retro): clic per farlo diventare Esterno": "内侧（背面）：点击改为外侧",
+    "Lato Esterno (fronte): clic per farlo diventare Interno": "外侧（正面）：点击改为内侧",
+    "Il livello «{l}» ora è stampato all'interno (retro). Le sue forme restano dove le vedi in vista Interno.": "图层“{l}”现在印在内侧（背面）。其形状保持在内侧视图中看到的位置。",
+    "Il livello «{l}» ora è stampato all'esterno (fronte).": "图层“{l}”现在印在外侧（正面）。",
+    "Aggiungi il retro (grafica interna) come pagina 2, già pronto per la stampa in volta": "将背面（内侧图形）作为第 2 页添加，可直接用于背面印刷",
+    "Lato": "面",
+    "Esterno (fronte)": "外侧（正面）",
+    "Interno (retro, come si vede girando il foglio)": "内侧（背面，翻转纸张后看到的样子）",
+    "Esportati due SVG: esterno e interno (retro, con la fustella specchiata nel gruppo «fustella-riferimento»).": "已导出两个 SVG：外侧和内侧（背面，镜像刀模位于“fustella-riferimento”组中）。",
+    "Grafica interna sui lati interni dei pannelli.": "内侧图形位于面板内侧。",
+    "Lato interno:": "内侧：",
     "Pannello di base: resta fermo, gli altri si piegano attorno a lui.": "基准面板：保持不动，其他面板围绕它折叠。",
     "Passo {n} di {t} · piega a {d} {g}° · lunga {l}": "第 {n} 步，共 {t} 步 · {d}折 {g}° · 长 {l}",
     "Clic: mostra questo passo nel 3D": "点击：在 3D 中显示此步骤",
@@ -8564,6 +8642,24 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Interno": "Intérieur",
+    "Est": "Ext",
+    "Int": "Int",
+    "⇆ vista: Interno": "⇆ vue : Intérieur",
+    "⇆ vista: Esterno": "⇆ vue : Extérieur",
+    "Vista riportata sul lato Esterno: la fustella si lavora da qui.": "Vue ramenée sur l'Extérieur : la forme se travaille d'ici.",
+    "Lato su cui disegni: Esterno (fronte) o Interno (retro, il foglio visto girato)": "Côté sur lequel tu dessines : Extérieur (recto) ou Intérieur (verso, la feuille retournée)",
+    "Lato Interno (retro): clic per farlo diventare Esterno": "Côté Intérieur (verso) : clic pour le passer en Extérieur",
+    "Lato Esterno (fronte): clic per farlo diventare Interno": "Côté Extérieur (recto) : clic pour le passer en Intérieur",
+    "Il livello «{l}» ora è stampato all'interno (retro). Le sue forme restano dove le vedi in vista Interno.": "Le calque « {l} » est maintenant imprimé à l'intérieur (verso). Ses formes restent où tu les vois en vue Intérieur.",
+    "Il livello «{l}» ora è stampato all'esterno (fronte).": "Le calque « {l} » est maintenant imprimé à l'extérieur (recto).",
+    "Aggiungi il retro (grafica interna) come pagina 2, già pronto per la stampa in volta": "Ajouter le verso (graphisme intérieur) en page 2, prêt pour l'impression du verso",
+    "Lato": "Côté",
+    "Esterno (fronte)": "Extérieur (recto)",
+    "Interno (retro, come si vede girando il foglio)": "Intérieur (verso, tel qu'on le voit en retournant la feuille)",
+    "Esportati due SVG: esterno e interno (retro, con la fustella specchiata nel gruppo «fustella-riferimento»).": "Deux SVG exportés : extérieur et intérieur (verso, avec la forme en miroir dans le groupe « fustella-riferimento »).",
+    "Grafica interna sui lati interni dei pannelli.": "Graphisme intérieur sur les faces intérieures des panneaux.",
+    "Lato interno:": "Côté intérieur :",
     "Pannello di base: resta fermo, gli altri si piegano attorno a lui.": "Panneau de base : il reste fixe, les autres se plient autour de lui.",
     "Passo {n} di {t} · piega a {d} {g}° · lunga {l}": "Étape {n} sur {t} · pli {d} {g}° · longueur {l}",
     "Clic: mostra questo passo nel 3D": "Clic : afficher cette étape en 3D",
@@ -10073,8 +10169,32 @@ function isLayerLocked(layerId){
   return !!(l && l.locked);
 }
 function isShapeEffVisible(s){
-  return s.visible !== false && isLayerVisible(s.layerId);
+  return s.visible !== false && isLayerVisible(s.layerId) && shapeSide(s)===activeSide();
 }
+/* ---------- lato di stampa: Esterno (fronte) / Interno (retro) ----------
+   Ogni livello ha un lato. Le forme dei livelli interni sono salvate "viste dall'interno" (come si vede il
+   cartone girato: x_interno = larghezza − x_esterno), così in vista Interno si disegna e si scrive in modo
+   naturale e la pagina del retro esce già pronta per la stampa in volta. */
+function layerSide(layerId){ const l = state.layers.find(x=>x.id===layerId); return l && l.side==='inside' ? 'inside' : 'outside'; }
+function shapeSide(s){ return layerSide(s.layerId); }
+function activeSide(){ return state.sideOverride || state.viewSide || 'outside'; }
+function withSide(side, fn){ const prev = state.sideOverride; state.sideOverride = side; try{ return fn(); } finally { state.sideOverride = prev; } }
+function hasInsideContent(){ return !!state.page.bgIn || state.shapes.some(x=> x.visible!==false && isLayerVisible(x.layerId) && shapeSide(x)==='inside' && !x.guide); }
+function setViewSide(side){
+  if(side!=='inside') side = 'outside';
+  state.viewSide = side;
+  state.selection.clear(); state.cropShapeId = null;
+  let layers = state.layers.filter(l=> (l.side==='inside' ? 'inside' : 'outside')===side);
+  if(!layers.length && side==='inside'){ const l = {id:uid(), name:translate('Interno'), visible:true, locked:false, side:'inside'}; state.layers.push(l); layers = [l]; }
+  if(layerSide(state.activeLayerId)!==side && layers.length) state.activeLayerId = layers[layers.length-1].id;
+  const b = document.getElementById('toggleSide');
+  if(b){ b.textContent = translate(side==='inside' ? '⇆ vista: Interno' : '⇆ vista: Esterno'); b.classList.toggle('on', side==='inside'); }
+  syncPageBgControls(); renderAll();
+}
+// le funzioni della fustella (3D, esportazioni, controlli…) lavorano dal lato esterno
+function ensureOutsideView(){ if(state.viewSide==='inside'){ setViewSide('outside'); showToast('Vista riportata sul lato Esterno: la fustella si lavora da qui.', false); } }
+function pageBgOf(side){ return side==='inside' ? (state.page.bgIn || 'transparent') : (state.page.bg || '#ffffff'); }
+function pageBgOpacityOf(side){ const a = side==='inside' ? state.page.bgInOpacity : state.page.bgOpacity; return a!=null ? a : 1; }
 function shapesInZOrder(){
   return state.shapes.slice().sort((a,b)=> getLayerIndex(a.layerId) - getLayerIndex(b.layerId));
 }
@@ -10174,8 +10294,9 @@ function setStageSize(){
   stage.setAttribute('height', h);
   stage.setAttribute('viewBox', `0 0 ${w} ${h}`);
   layerBg.innerHTML = '';
-  const bg = state.page.bg || '#ffffff';
-  const bgA = state.page.bgOpacity!=null ? state.page.bgOpacity : 1;
+  const vs = state.viewSide==='inside' ? 'inside' : 'outside';
+  const bg = pageBgOf(vs);
+  const bgA = pageBgOpacityOf(vs);
   if(bg==='transparent' || bgA < 1) layerBg.appendChild(el('rect', {x:0,y:0,width:w,height:h,fill:'url(#transparency-pattern)'})); // scacchiera: si vede la trasparenza
   if(bg!=='transparent') layerBg.appendChild(el('rect', {x:0,y:0,width:w,height:h,fill:bg,'fill-opacity':bgA}));
 }
@@ -10747,6 +10868,19 @@ function setTextAlign(s, align){
 
 function renderShapes(){
   layerArt.innerHTML='';
+  if(state.viewSide==='inside'){ // vista Interno: sotto, la fustella e la grafica esterna specchiate, solo come riferimento
+    const ref = el('g', {transform:`translate(${state.page.w*state.scale},0) scale(-1,1)`, 'pointer-events':'none', 'data-ref-side':'1'});
+    withSide('outside', ()=>{
+      shapesInZOrder().forEach(s=>{
+        if(!isShapeEffVisible(s) || s.guide) return;
+        const n = shapeToNode(s), tech = s.style && s.style.role!=='design';
+        n.setAttribute('opacity', tech ? 0.85 : 0.15);
+        [n, ...n.querySelectorAll('[data-id]')].forEach(x=> x.removeAttribute && x.removeAttribute('data-id'));
+        ref.appendChild(n);
+      });
+    });
+    layerArt.appendChild(ref);
+  }
   for(const s of shapesInZOrder()){
     layerArt.appendChild(shapeToNode(s));
   }
@@ -12312,31 +12446,38 @@ function afterSVGFonts(svg, draw){
   ready.then(()=> setTimeout(draw, 450)).catch(()=> setTimeout(draw, 450));
 }
 function buildArtTexture(){
-  fold3d.art = null;
+  fold3d.art = null; fold3d.artIn = null;
   const token = ++fold3d.artToken;
-  const art = artShapesForFold3D();
-  fold3d.artCount = art.length;
   const box = document.getElementById('fold3dShowArt');
-  // sfondo del foglio stampato sui pannelli, come nelle esportazioni (casella "Applica"); il bianco di partenza
-  // non lo copre: i pannelli restano color carta
-  const bg = exportPageBg(), bgOn = !!bg && bg.toLowerCase()!=='#ffffff';
-  fold3d.artBg = bgOn;
-  if((!art.length && !bgOn) || (box && !box.checked)) return;
   const W = state.page.w, H = state.page.h, k = Math.max(1, Math.min(6, 4096/Math.max(W,H)));
-  const set = new Set(art);
-  const body = `<style>${buildFontFaceCSS()}</style>` + (bgOn ? `<rect x="0" y="0" width="${W}" height="${H}" fill="${bg}"${exportPageBgOpacity()}/>` : '') + shapesInZOrder().filter(s=>set.has(s)).map(exportNode).join('\n'); // anche i font personalizzati
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${Math.round(W*k)}" height="${Math.round(H*k)}" viewBox="0 0 ${W} ${H}">${body}</svg>`;
-  const img = new Image();
-  img.onload = ()=> afterSVGFonts(svg, ()=>{
-    if(token!==fold3d.artToken) return; // nel frattempo è stata richiesta un'immagine più recente
-    const cv = document.createElement('canvas'); cv.width = Math.round(W*k); cv.height = Math.round(H*k);
-    const g = cv.getContext('2d'); if(!g) return;
-    g.drawImage(img, 0, 0, cv.width, cv.height);
-    fold3d.art = {canvas:cv, k};
-    renderFold3D();
-  });
-  img.onerror = ()=>{ if(token===fold3d.artToken) document.getElementById('fold3dInfo').textContent += ' ' + translate('(la grafica non è stata caricata: alcuni elementi non si possono disegnare nel 3D)'); };
-  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  // per ogni lato: grafica e sfondo di quel lato, nelle sue coordinate (l'interno "visto dall'altra parte")
+  const make = (side, key)=>{
+    let art, bg, bgOn, body;
+    withSide(side, ()=>{
+      art = artShapesForFold3D();
+      bg = exportPageBg();
+      // esterno: il bianco di partenza non copre (i pannelli restano color carta); interno: qualunque colore scelto
+      bgOn = !!bg && (side==='inside' || bg.toLowerCase()!=='#ffffff');
+      const set = new Set(art);
+      body = `<style>${buildFontFaceCSS()}</style>` + (bgOn ? `<rect x="0" y="0" width="${W}" height="${H}" fill="${bg}"${exportPageBgOpacity()}/>` : '') + shapesInZOrder().filter(x=>set.has(x)).map(exportNode).join('\n');
+    });
+    if(side==='outside'){ fold3d.artCount = art.length; fold3d.artBg = bgOn; } else fold3d.artInCount = art.length;
+    if((!art.length && !bgOn) || (box && !box.checked)) return;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${Math.round(W*k)}" height="${Math.round(H*k)}" viewBox="0 0 ${W} ${H}">${body}</svg>`;
+    const img = new Image();
+    img.onload = ()=> afterSVGFonts(svg, ()=>{
+      if(token!==fold3d.artToken) return; // nel frattempo è stata richiesta un'immagine più recente
+      const cv = document.createElement('canvas'); cv.width = Math.round(W*k); cv.height = Math.round(H*k);
+      const g = cv.getContext('2d'); if(!g) return;
+      g.drawImage(img, 0, 0, cv.width, cv.height);
+      fold3d[key] = {canvas:cv, k};
+      renderFold3D();
+    });
+    img.onerror = ()=>{ if(token===fold3d.artToken) document.getElementById('fold3dInfo').textContent += ' ' + translate('(la grafica non è stata caricata: alcuni elementi non si possono disegnare nel 3D)'); };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  };
+  make('outside', 'art');
+  make('inside', 'artIn');
 }
 
 // Linguette nelle asole: quando un pannello si appoggia sul piano di un pannello che ha un'asola e l'asola lo
@@ -12397,6 +12538,7 @@ function applySlotTucks(model, faces, frac){
 /* ---------- visualizzatore 3D (canvas 2D, algoritmo del pittore) ---------- */
 const fold3d = { model:null, frac:1, yaw:-0.6, pitch:0.45, zoom:1, anim:null, drag:null, art:null, artToken:0, artCount:0, xray:false, xrayOpacity:0.35 };
 function openFold3D(){
+  ensureOutsideView();
   fold3d.yaw=-0.6; fold3d.pitch=0.45; fold3d.zoom=1;
   openModal('fold3dModal');
   refreshFold3D();
@@ -12404,7 +12546,7 @@ function openFold3D(){
 // ricostruisce modello e controllo dal disegno attuale (usata anche al ripristino
 // dalla barra in basso, dopo aver modificato il disegno), mantenendo il punto di vista
 function refreshFold3D(){
-  const model = buildFoldModel(state.shapes);
+  const model = withSide('outside', ()=> buildFoldModel(state.shapes));
   fold3d.model = model;
   // verso della vista: se a scatola chiusa quasi tutto sta sotto il pannello di base (vassoi, piramidi…), la si gira
   model.flipView = false; model.baseUp = false;
@@ -12419,6 +12561,7 @@ function refreshFold3D(){
   document.getElementById('fold3dInfo').textContent = tpl('{p} pannelli, {h} pieghe collegate.', {p:model.faces.length, h:model.hinges.length})
     + (K>1 ? ' ' + tpl('Piegatura in {k} passi (ordine impostato sulle pieghe).', {k:K}) : '')
     + (fold3d.artBg ? ' ' + translate('Sfondo del foglio applicato ai pannelli.') : '')
+    + (fold3d.artInCount || state.page.bgIn ? ' ' + translate('Grafica interna sui lati interni dei pannelli.') : '')
     + ' ' + (fold3d.artCount ? tpl('Grafica sui pannelli: {n} elementi dei livelli visibili.', {n:fold3d.artCount})
                              : translate('Nessuna grafica da mostrare: è grafica tutto ciò che non ha ruolo Taglio, Piega, Fustella speciale o Incollaggio, sui livelli visibili.'));
   renderFold3DCheck(checkFoldModel(model));
@@ -12540,12 +12683,14 @@ function renderFold3D(){
     ctx.beginPath();
     it.vs.forEach((v,k)=>{ const p = proj(v); if(k) ctx.lineTo(p[0],p[1]); else ctx.moveTo(p[0],p[1]); });
     ctx.closePath(); ctx.fill();
-    if(front && fold3d.art && !it.bad && it.flat && it.flat.length>=3){ // grafica stampata sul lato esterno del pannello
-      const A = fold3d.art, sp = it.vs.map(proj);
+    const A = front ? fold3d.art : fold3d.artIn; // lato esterno: grafica esterna; lato interno: grafica dei livelli interni
+    if(A && !it.bad && it.flat && it.flat.length>=3){ // grafica stampata sul lato del pannello rivolto verso chi guarda
+      const sp = it.vs.map(proj), PW = state.page.w;
+      const tex = front ? (x, y)=> [x*A.k, y*A.k] : (x, y)=> [(PW - x)*A.k, y*A.k]; // l'interno è salvato visto dall'altra parte
       // 1) tutta la grafica del pannello con una sola trasformazione (approssimata), ritagliata sul contorno:
       //    copre le giunture tra i triangoli e i bordi, che altrimenti lasciavano vedere il pannello chiaro sotto
       //    (sui contorni con archi, tanti triangoli sottili a ventaglio formavano una raggiera)
-      const T = it.flat.map(q=>[q[0]*A.k, q[1]*A.k]);
+      const T = it.flat.map(q=> tex(q[0], q[1]));
       const drawArt = (m, clipPts)=>{
         ctx.save();
         ctx.beginPath(); clipPts.forEach((q,k2)=>{ if(k2) ctx.lineTo(q[0],q[1]); else ctx.moveTo(q[0],q[1]); }); ctx.closePath(); ctx.clip();
@@ -12573,7 +12718,7 @@ function renderFold3D(){
         const fx0 = Math.min(...F.map(q=>q[0])), fx1 = Math.max(...F.map(q=>q[0])), fy0 = Math.min(...F.map(q=>q[1])), fy1 = Math.max(...F.map(q=>q[1]));
         const spx = Math.max(...sp.map(q=>q[0])) - Math.min(...sp.map(q=>q[0])), spy = Math.max(...sp.map(q=>q[1])) - Math.min(...sp.map(q=>q[1]));
         const nx = Math.max(1, Math.min(24, Math.ceil(Math.max(spx, spy*(fx1-fx0)/Math.max(1e-6, fy1-fy0))/30))), ny = Math.max(1, Math.min(24, Math.ceil(Math.max(spy, spx*(fy1-fy0)/Math.max(1e-6, fx1-fx0))/30)));
-        const G = []; for(let j=0;j<=ny;j++){ const row = []; for(let i=0;i<=nx;i++){ const fx = fx0 + (fx1-fx0)*i/nx, fy = fy0 + (fy1-fy0)*j/ny; row.push({f:[fx*A.k, fy*A.k], s: toScreen(fx, fy)}); } G.push(row); }
+        const G = []; for(let j=0;j<=ny;j++){ const row = []; for(let i=0;i<=nx;i++){ const fx = fx0 + (fx1-fx0)*i/nx, fy = fy0 + (fy1-fy0)*j/ny; row.push({f: tex(fx, fy), s: toScreen(fx, fy)}); } G.push(row); }
         ctx.save();
         ctx.beginPath(); sp.forEach((q,k2)=>{ if(k2) ctx.lineTo(q[0],q[1]); else ctx.moveTo(q[0],q[1]); }); ctx.closePath(); ctx.clip(); // solo dentro il pannello
         const tri = (pa, pb, pc)=>{
@@ -13612,6 +13757,7 @@ function seqShow3D(){
   const sq = document.getElementById('seqModal'); sq.parentNode.appendChild(sq); // la sequenza resta sopra al 3D
 }
 function openFoldSequence(){
+  ensureOutsideView();
   if(!allFoldShapes().length){ showToast('Nel disegno non ci sono pieghe.', true); return; }
   openModal('seqModal');
   renderSeq();
@@ -13856,7 +14002,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.53';
+const GUIDE_VERSION = '2.54';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -14236,6 +14382,7 @@ html:`<p>Scheda <b>Livelli</b> del pannello laterale. Ogni forma appartiene a un
 <li>oppure il pulsante <b>⤵</b> sul livello di arrivo (o tasto destro sul nome → "Sposta qui gli oggetti selezionati");</li>
 <li>oppure tasto destro su un oggetto nel foglio → "📑 Sposta nel livello «…»".</li></ul>
 <p>Gli oggetti restano dove sono sul foglio; Ctrl+Z annulla. Se il livello di arrivo è nascosto o bloccato, escono dalla selezione.</p>
+<p>Il pulsante <b>Est / Int</b> su ogni livello sceglie il lato di stampa: vedi <a data-topic="lato-interno">Stampare anche l'interno</a>.</p>
 <p>Uso tipico: un livello per taglio e pieghe, uno sopra per la grafica. Il livello <b>Guide di stampa</b> contiene le guide di <a data-topic="abbondanza">abbondanza e zona sicura</a>, che non vengono mai esportate.</p>` },
 
 /* ---------------- SALVARE ED ESPORTARE ---------------- */
@@ -14305,6 +14452,22 @@ html:`<p>Menu <b>Stampa → 📐 Esporta per CAD, plotter e fustellatore…</b> 
 <li><b>CF2</b> per i programmi delle fustelle (ArtiosCAD, Kongsberg, Elitron…): linee e archi con il tipo di lama, 2 punti.</li></ul>
 <p>Puoi scegliere l'<b>origine</b> (angolo in basso a sinistra del foglio o della fustella) e se includere grafica e incollaggio. Testi, immagini e tracciati vettorizzati non vengono esportati in questi formati: per i testi usa prima <a data-topic="testo-tracciati">Converti testo in tracciati</a>. Il DXF per Silhouette resta a parte: <a data-topic="silhouette">Silhouette Cameo</a>.</p>` },
 
+{ id:'lato-interno', cat:'Salvare ed esportare', title:'Stampare anche l\'interno (fronte e retro)', keys:'interno retro fronte esterno lato stampa volta ribalta ribaltare specchio specchiato bianca volta due lati',
+html:`<p>Una scatola può essere stampata anche <b>all'interno</b>. In SpikeCut ogni <a data-topic="livelli">livello</a> ha un <b>lato</b>: <b>Esterno</b> (fronte, il valore di partenza) o <b>Interno</b> (retro). Il pulsante <b>Est / Int</b> sul livello lo cambia.</p>
+<ul><li><b>⇆ vista</b> nella barra in basso passa da <b>Esterno</b> a <b>Interno</b>: in vista Interno vedi il foglio come lo vedresti girando il cartone, con la fustella <b>specchiata</b> come riferimento (non modificabile) e solo i livelli interni. Disegna e scrivi normalmente: le scritte vanno dritte, al ribaltamento ci pensa il programma.</li>
+<li>Se non esiste ancora un livello interno, passando alla vista Interno ne viene creato uno ("Interno"). Cliccando un livello dell'altro lato, la vista cambia da sola.</li>
+<li>Lo <b>sfondo del foglio</b> è separato: in vista Interno il colore scelto vale per l'interno (senza colore l'interno resta del colore del cartone).</li>
+<li>I comandi della fustella (3D, sequenza, esportazioni, controlli, imposizione…) riportano la vista su Esterno e usano da soli anche l'interno dove serve.</li></ul>
+<p><b>Dove finisce l'interno</b>:</p>
+<ul><li><a data-topic="pdf-stampa">PDF per la stampa</a>: pagina 2 con il retro, già pronto per la stampa in volta (senza linee tecniche);</li>
+<li>Esporta PDF (anteprima): pagina 2 con il retro e la fustella specchiata come riferimento;</li>
+<li>Esporta SVG: un secondo file <i>_interno.svg</i>, con la fustella specchiata nel gruppo "fustella-riferimento";</li>
+<li><a data-topic="esporta-immagine">Immagine PNG/JPG</a>: scegli il lato;</li>
+<li><a data-topic="anteprima-3d">Anteprima 3D</a> e modelli <a data-topic="esporta-3d">GLB/OBJ</a>: la grafica interna sui lati interni dei pannelli (aprendo la scatola vedi se le scritte sono dritte);</li>
+<li><a data-topic="imposizione">Imposizione</a>: anche il retro viene imposto, specchiato come deve essere;</li>
+<li><a data-topic="preflight">Controllo prima della stampa</a>: anche i testi interni troppo vicini a taglio e pieghe.</li></ul>
+<p>Cambiando il lato di un livello che ha già delle forme, le forme restano dove le vedi nella vista di quel lato.</p>` },
+
 /* ---------------- PRODUZIONE ---------------- */
 { id:'imposizione', cat:'Produzione', title:'Imposizione e nesting sul foglio di stampa', keys:'imposizione nesting incastro copie foglio cartone resa scarto materiale step repeat 70x100 file alternate',
 html:`<p>Menu <b>Strumenti → ▦ Imposizione e nesting…</b>: quante copie della fustella entrano in un foglio di stampa o di cartone, e come disporle per sprecare meno.</p>
@@ -14357,6 +14520,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.54</b> — <a data-topic="lato-interno">Stampa dell'interno</a>: livelli Esterno/Interno, vista Interno con la fustella specchiata, sfondo interno, retro nelle esportazioni (PDF pagina 2, SVG, immagini), grafica interna nel 3D e nei modelli GLB/OBJ, imposizione e controllo anche del retro.</li>
 <li><b>2.53</b> — <a data-topic="ordine">Sequenza di piegatura nel 3D</a>: clic su un passo per vederlo evidenziato e animato, evidenziazione al passaggio del mouse, pezzo intero che si muove, e clic su un pannello del 3D per sapere a quale piega e passo appartiene.</li>
 <li><b>2.52.2</b> — Anteprima 3D: la scatola non appare più capovolta (con le scritte sottosopra). Tutte le nuove funzioni sono tradotte in inglese, tedesco, spagnolo, cinese e francese.</li>
 <li><b>2.52.1</b> — Anteprima 3D: la grafica sui pannelli inclinati segue la prospettiva vera e non si deforma più ruotando la scatola.</li>
@@ -15567,11 +15731,10 @@ window.addEventListener('mousemove', (e)=>{
   if(!pageResizeDrag) return;
   const dxMM = (e.clientX - pageResizeDrag.startClientX) / state.scale;
   const dyMM = (e.clientY - pageResizeDrag.startClientY) / state.scale;
-  state.page = {
+  state.page = Object.assign({}, state.page, {
     w: Math.max(5, Math.min(5000, pageResizeDrag.startW + dxMM)),
-    h: Math.max(5, Math.min(5000, pageResizeDrag.startH + dyMM)),
-    bg: state.page.bg, bgExport: state.page.bgExport, bgOpacity: state.page.bgOpacity
-  };
+    h: Math.max(5, Math.min(5000, pageResizeDrag.startH + dyMM))
+  });
   renderAll();
 });
 window.addEventListener('mouseup', ()=>{
@@ -16611,7 +16774,7 @@ window.addEventListener('keydown', (e)=>{
   if(k==='enter' && !e.ctrlKey && !e.metaKey && state.tool==='select' && state.selection.size){ e.preventDefault(); openMoveModal(); return; } // Invio: Sposta di…
   if((e.ctrlKey||e.metaKey) && k==='z' && !e.shiftKey){ e.preventDefault(); undo(); return; }
   if((e.ctrlKey||e.metaKey) && (k==='y' || (k==='z'&&e.shiftKey))){ e.preventDefault(); redo(); return; }
-  if((e.ctrlKey||e.metaKey) && k==='s'){ e.preventDefault(); exportSVG(); return; }
+  if((e.ctrlKey||e.metaKey) && k==='s'){ e.preventDefault(); ensureOutsideView(); exportSVG(); return; }
   if((e.ctrlKey||e.metaKey) && (k===']' || k==='[') && state.selection.size===1){
     e.preventDefault();
     const id = [...state.selection][0];
@@ -16686,6 +16849,7 @@ function updateStatusToggles(){
   document.getElementById('toggleTileGuides').classList.toggle('on', state.showTileGuides);
 }
 document.getElementById('toggleGrid').onclick = toggleGrid;
+document.getElementById('toggleSide').onclick = ()=> setViewSide(state.viewSide==='inside' ? 'outside' : 'inside');
 document.getElementById('toggleMagnet').onclick = toggleMagnet;
 document.getElementById('toggleEndpoints').onclick = ()=>{
   state.showEndpoints = !state.showEndpoints;
@@ -16987,6 +17151,9 @@ document.addEventListener('click', closeAllMenus);
 function handleMenuAction(e){
   const action = e.target.dataset.action; if(!action) return;
   ensureDocumentOpen(); // con tutte le schede chiuse, un comando apre prima un disegno nuovo
+  // i comandi della fustella e delle esportazioni si lavorano dal lato esterno (l'interno viene aggiunto da loro dove serve)
+  if(['export-svg','export-pdf','export-pdf-print','export-pdf-tiled','export-image','export-cad','blade-report','export-silhouette','print-proof',
+      'fold-3d','fold-sequence','imposition','bleed','preflight','cut-preview','check-closures','check-overlaps','weld-points','close-all-paths','symmetry','scale-drawing'].includes(action)) ensureOutsideView();
   if(action==='export-svg') exportSVG();
   else if(action==='export-silhouette') openSilhouetteExport();
   else if(action==='export-pdf-print') openModal('pdfPrintModal');
@@ -18849,7 +19016,7 @@ function openProjectFilePicker(){
 }
 function exportPDF(){
   if(!window.jspdf){ showToast('Libreria PDF non disponibile: verifica la connessione a Internet e riprova.', true); return; }
-  const svgStr = buildExportSVG();
+  const svgStr = withSide('outside', ()=> buildExportSVG());
   const wrap = new DOMParser().parseFromString(svgStr, 'image/svg+xml').documentElement;
   const wmm = parseFloat(wrap.getAttribute('width')), hmm = parseFloat(wrap.getAttribute('height'));
   const dpi = 200, pxPerMM = dpi/25.4;
@@ -18868,7 +19035,17 @@ function exportPDF(){
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({ orientation: wmm>=hmm?'landscape':'portrait', unit:'mm', format:[wmm,hmm] });
     pdf.addImage(imgData, 'PNG', 0, 0, wmm, hmm);
-    pdf.save((document.getElementById('filename').value||'disegno') + '.pdf');
+    const save = ()=> pdf.save((document.getElementById('filename').value||'disegno') + '.pdf');
+    if(!hasInsideContent()){ save(); return; }
+    // pagina 2: il retro, con la fustella specchiata come riferimento
+    const W2 = state.page.w, H2 = state.page.h, svg2 = buildInsideSVG(true), im2 = new Image();
+    im2.onload = ()=> afterSVGFonts(svg2, ()=>{
+      const c2 = document.createElement('canvas'); c2.width = Math.max(1, Math.round(W2*pxPerMM)); c2.height = Math.max(1, Math.round(H2*pxPerMM));
+      const g2 = c2.getContext('2d'); g2.fillStyle = '#ffffff'; g2.fillRect(0,0,c2.width,c2.height); g2.drawImage(im2, 0, 0, c2.width, c2.height);
+      pdf.addPage([W2, H2], W2>=H2 ? 'landscape' : 'portrait'); pdf.addImage(c2.toDataURL('image/png'), 'PNG', 0, 0, W2, H2); save();
+    });
+    im2.onerror = save;
+    im2.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg2);
   });
   img.onerror = ()=>{ URL.revokeObjectURL(url); showToast('Errore durante la generazione del PDF.', true); };
   img.src = url;
@@ -18983,13 +19160,13 @@ function syncPageSizeSelect(){
   syncPageBgControls();
 }
 // colore di sfondo da usare in esportazioni e stampe: null se è trasparente o se "Applica" non è spuntato
-function exportPageBgOpacity(){ const a = state.page.bgOpacity; return a!=null && a<1 ? ` fill-opacity="${a}"` : ''; }
+function exportPageBgOpacity(){ const a = pageBgOpacityOf(activeSide()); return a<1 ? ` fill-opacity="${a}"` : ''; }
 function exportPageBg(){
-  const bg = state.page.bg || '#ffffff';
+  const bg = pageBgOf(activeSide());
   return state.page.bgExport===false || bg==='transparent' ? null : bg;
 }
 function syncPageBgControls(){
-  const bg = state.page.bg || '#ffffff';
+  const bg = pageBgOf(state.viewSide==='inside' ? 'inside' : 'outside');
   const isTransparent = bg === 'transparent';
   document.getElementById('pageBgTransparent').checked = isTransparent;
   document.getElementById('pageBgColor').value = isTransparent ? '#ffffff' : bg;
@@ -18998,19 +19175,20 @@ function syncPageBgControls(){
   document.getElementById('pageBgApply').disabled = isTransparent;
   if(pageBgPicker) pageBgPicker.syncFromNative();
 }
-var pageBgPicker = attachColorAlpha('pageBgColor', ()=> state.page.bgOpacity!=null ? state.page.bgOpacity : 1, a=>{ state.page.bgOpacity = a; }, 'Colore e opacità dello sfondo del foglio');
+var pageBgPicker = attachColorAlpha('pageBgColor', ()=> pageBgOpacityOf(state.viewSide==='inside' ? 'inside' : 'outside'), a=>{ if(state.viewSide==='inside') state.page.bgInOpacity = a; else state.page.bgOpacity = a; }, 'Colore e opacità dello sfondo del foglio');
 document.getElementById('pageBgApply').addEventListener('change', (e)=>{
   state.page.bgExport = e.target.checked;
   pushHistory();
 });
 document.getElementById('pageBgColor').addEventListener('input', (e)=>{
   document.getElementById('pageBgTransparent').checked = false;
-  state.page.bg = e.target.value;
+  if(state.viewSide==='inside') state.page.bgIn = e.target.value; else state.page.bg = e.target.value;
   renderCanvasOnly();
 });
 document.getElementById('pageBgColor').addEventListener('change', ()=> pushHistory());
 document.getElementById('pageBgTransparent').addEventListener('change', (e)=>{
-  state.page.bg = e.target.checked ? 'transparent' : document.getElementById('pageBgColor').value;
+  const v = e.target.checked ? 'transparent' : document.getElementById('pageBgColor').value;
+  if(state.viewSide==='inside') state.page.bgIn = e.target.checked ? null : v; else state.page.bg = v;
   document.getElementById('pageBgColor').disabled = e.target.checked;
   document.getElementById('pageBgApply').disabled = e.target.checked;
   pageBgPicker.syncFromNative();
@@ -19021,7 +19199,7 @@ document.getElementById('pageSize').addEventListener('change', (e)=>{
   const v = e.target.value;
   if(v==='custom'){ openCustomPageModal(); return; }
   const [w,h] = v.split('x').map(Number);
-  state.page = {w,h,bg:state.page.bg,bgExport:state.page.bgExport,bgOpacity:state.page.bgOpacity,view3dBase:state.page.view3dBase};
+  state.page = Object.assign({}, state.page, {w, h});
   renderAll();
 });
 function openCustomPageModal(){
@@ -19052,7 +19230,7 @@ function applyCustomPage(){
     err.style.display = 'block';
     return;
   }
-  state.page = {w,h,bg:state.page.bg,bgExport:state.page.bgExport,bgOpacity:state.page.bgOpacity,view3dBase:state.page.view3dBase};
+  state.page = Object.assign({}, state.page, {w, h});
   document.getElementById('pageSizeModal').classList.remove('open');
   syncPageSizeSelect();
   renderAll();
@@ -20557,7 +20735,7 @@ function renderLayersPanelInner(){
   const addBtn = document.createElement('button');
   addBtn.className = 'btn'; addBtn.textContent = '＋ Nuovo livello'; addBtn.style.marginBottom = '10px';
   addBtn.onclick = ()=>{
-    const layer = {id:uid(), name:translate('Livello ')+(state.layers.length+1), visible:true, locked:false};
+    const layer = {id:uid(), name:translate('Livello ')+(state.layers.length+1), visible:true, locked:false, side: state.viewSide==='inside' ? 'inside' : 'outside'};
     state.layers.push(layer);
     state.activeLayerId = layer.id;
     state.openLayerId = layer.id; // il livello appena creato è quello aperto nell'elenco
@@ -20650,10 +20828,17 @@ function renderLayersPanelInner(){
     const count = document.createElement('span'); count.className='layer-count'; count.textContent = nObj; count.title = tpl('{n} oggetti in questo livello', {n:nObj});
     head.appendChild(arrow);
     head.appendChild(drag); head.appendChild(eyeBtn); head.appendChild(lockBtn);
-    head.appendChild(nameEl); head.appendChild(count); head.appendChild(hereBtn); head.appendChild(renBtn);
+    const sideBtn = document.createElement('button'); const isIn = layer.side==='inside';
+    sideBtn.textContent = isIn ? 'Int' : 'Est'; sideBtn.className = 'layer-side' + (isIn ? ' in' : '');
+    sideBtn.title = translate(isIn ? 'Lato Interno (retro): clic per farlo diventare Esterno' : 'Lato Esterno (fronte): clic per farlo diventare Interno');
+    sideBtn.onclick = (e)=>{ e.stopPropagation(); layer.side = isIn ? 'outside' : 'inside'; if(state.activeLayerId===layer.id) state.activeLayerId = layer.id; pushHistory(); setViewSide(layer.side); state.activeLayerId = layer.id; renderAll();
+      showToast(tpl(layer.side==='inside' ? 'Il livello «{l}» ora è stampato all\'interno (retro). Le sue forme restano dove le vedi in vista Interno.' : 'Il livello «{l}» ora è stampato all\'esterno (fronte).', {l: layer.name}), false); };
+    if((isIn ? 'inside' : 'outside') !== (state.viewSide==='inside' ? 'inside' : 'outside')) head.style.opacity = '0.55';
+    head.appendChild(nameEl); head.appendChild(count); head.appendChild(sideBtn); head.appendChild(hereBtn); head.appendChild(renBtn);
     head.appendChild(upBtn); head.appendChild(downBtn); head.appendChild(delBtn);
     // accordion: il clic sul titolo apre questo livello e chiude gli altri; sul livello già aperto lo richiude
     head.onclick = ()=>{
+      if((layer.side==='inside' ? 'inside' : 'outside') !== (state.viewSide==='inside' ? 'inside' : 'outside')){ state.activeLayerId = layer.id; setViewSide(layer.side==='inside' ? 'inside' : 'outside'); state.activeLayerId = layer.id; }
       state.activeLayerId = layer.id;
       state.openLayerId = (state.openLayerId===layer.id) ? null : layer.id;
       renderLayersPanel();
@@ -22302,7 +22487,7 @@ async function autoFitImportedShapes(newShapes, opts){
         'Disegno più grande della pagina'
       );
       if(ok){
-        state.page = {w: Math.ceil(bw+4), h: Math.ceil(bh+4), bg: state.page.bg, bgExport: state.page.bgExport, bgOpacity: state.page.bgOpacity};
+        state.page = Object.assign({}, state.page, {w: Math.ceil(bw+4), h: Math.ceil(bh+4)});
         syncPageSizeSelect();
       }
     }
@@ -23690,6 +23875,14 @@ function exportImageSVG(withLines){
   return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="${w}mm" height="${h}mm" viewBox="0 0 ${w} ${h}">`
     + (bg ? `<rect x="0" y="0" width="${w}" height="${h}" fill="${bg}"${exportPageBgOpacity()}/>` : '') + groups + `</svg>`;
 }
+// retro: grafica dei livelli interni (coordinate già "viste dall'interno") e, se richiesto, la fustella specchiata come riferimento
+function buildInsideSVG(withDie){
+  const w = state.page.w, h = state.page.h;
+  const art = withSide('inside', ()=>{ const bg = exportPageBg(); return (bg ? `<rect x="0" y="0" width="${w}" height="${h}" fill="${bg}"${exportPageBgOpacity()}/>` : '') + buildDrawingGroupsSVG().body; });
+  let die = '';
+  if(withDie) die = withSide('outside', ()=> `<g id="fustella-riferimento" transform="translate(${w},0) scale(-1,1)" opacity="0.8">` + state.shapes.filter(x=> isShapeEffVisible(x) && !x.guide && x.style && x.style.role!=='design').map(exportNode).join('\n') + `</g>`);
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="${w}mm" height="${h}mm" viewBox="0 0 ${w} ${h}">\n${art}\n${die}\n</svg>`;
+}
 function imgExpRefresh(){
   const dpi = parseInt(document.getElementById('imgExpDpi').value, 10), k = dpi/25.4;
   let W = Math.round(state.page.w*k), H = Math.round(state.page.h*k);
@@ -23703,7 +23896,8 @@ function doImageExport(){
   const maxSide = Math.max(state.page.w, state.page.h)/25.4*dpi;
   if(maxSide > 14000) dpi = Math.floor(dpi*14000/maxSide);
   const k = dpi/25.4, W = Math.max(1, Math.round(state.page.w*k)), H = Math.max(1, Math.round(state.page.h*k));
-  const svg = exportImageSVG(document.getElementById('imgExpLines').checked);
+  const inside = document.getElementById('imgExpSide').value==='inside';
+  const svg = inside ? buildInsideSVG(document.getElementById('imgExpLines').checked) : exportImageSVG(document.getElementById('imgExpLines').checked);
   const img = new Image();
   img.onload = ()=> afterSVGFonts(svg, ()=>{
     const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
@@ -23712,7 +23906,7 @@ function doImageExport(){
     g.drawImage(img, 0, 0, W, H);
     cv.toBlob(async blob=>{
       if(!blob){ showToast('Immagine troppo grande per il browser: scegli una risoluzione più bassa.', true); return; }
-      downloadBlob(await blobWithDPI(blob, dpi, fmt), exportBaseName() + '.' + fmt);
+      downloadBlob(await blobWithDPI(blob, dpi, fmt), exportBaseName() + (inside ? '_interno.' : '.') + fmt);
       document.getElementById('imgExpModal').classList.remove('open');
     }, fmt==='jpg' ? 'image/jpeg' : 'image/png', 0.92);
   });
@@ -23723,13 +23917,13 @@ function doImageExport(){
    Il PDF è scritto direttamente (la libreria PDF usata per l'anteprima non gestisce le tinte piatte). */
 const PDF_SPOT_ALT = {cut:[0,1,0,0], fold:[1,0,0,0], diecut:[0.7,0,1,0], glue:[0,0.45,1,0]}; // colore CMYK con cui le tinte si vedono a schermo
 function pdfName(n){ return '/' + String(n||'Spot').replace(/[^A-Za-z0-9_.\-]/g, c=> '#' + c.charCodeAt(0).toString(16).padStart(2,'0')); }
-function renderArtJPEG(dpi){
+function renderArtJPEG(dpi, side){
   return new Promise((resolve)=>{
-    const hasArt = !!exportPageBg() || state.shapes.some(x=> isShapeEffVisible(x) && x.style && x.style.role==='design');
+    const hasArt = withSide(side || 'outside', ()=> !!exportPageBg() || state.shapes.some(x=> isShapeEffVisible(x) && !x.guide && x.style && x.style.role==='design'));
     if(!hasArt){ resolve(null); return; }
     const maxSide = Math.max(state.page.w, state.page.h)/25.4*dpi; if(maxSide > 14000) dpi = Math.floor(dpi*14000/maxSide);
     const k = dpi/25.4, W = Math.max(1, Math.round(state.page.w*k)), H = Math.max(1, Math.round(state.page.h*k));
-    const svg = exportImageSVG(false), img = new Image();
+    const svg = withSide(side || 'outside', ()=> exportImageSVG(false)), img = new Image();
     img.onload = ()=> afterSVGFonts(svg, ()=>{
       const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
       const g = cv.getContext('2d'); g.fillStyle = '#ffffff'; g.fillRect(0, 0, W, H); g.drawImage(img, 0, 0, W, H);
@@ -23739,32 +23933,37 @@ function renderArtJPEG(dpi){
     img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
   });
 }
-function buildPrintPDF(art, spots, lineW){
+// pages: [{art, spots}] — una pagina per lato (fronte e, se c'è, retro)
+function buildPrintPDF(pages, lineW){
   const enc = new TextEncoder(), K = 72/25.4, Wpt = state.page.w*K, Hpt = state.page.h*K, n = v=> (Math.round(v*1000)/1000).toString();
   const objs = []; // [numero, contenuto (stringa o Uint8Array[])]
-  let content = '';
-  const res = {cs:[], gs:false, img:false};
-  if(art){ content += `q ${n(Wpt)} 0 0 ${n(Hpt)} 0 0 cm /Im0 Do Q\n`; res.img = true; }
-  spots.forEach((sp, i)=>{
-    if(!sp.geo.length) return;
-    res.cs.push(sp); res.gs = true;
-    content += `q /GS0 gs /CS${i} CS 1 SCN ${n(lineW)} w 1 J 1 j\n`;
-    sp.geo.forEach(g=>{
-      const pts = g.pts; if(pts.length < 2) return;
-      content += pts.map((p, j)=> `${n(p[0]*K)} ${n((state.page.h - p[1])*K)} ${j ? 'l' : 'm'}`).join('\n') + (g.closed ? '\nh' : '') + '\nS\n';
+  const kids = [];
+  pages.forEach((pg, pi)=>{
+    const oPage = 4 + pi*3, oCont = 5 + pi*3, oImg = 6 + pi*3;
+    let content = '';
+    const res = {cs:[], gs:false, img:false};
+    if(pg.art){ content += `q ${n(Wpt)} 0 0 ${n(Hpt)} 0 0 cm /Im0 Do Q\n`; res.img = true; }
+    (pg.spots || []).forEach((sp, i)=>{
+      if(!sp.geo.length) return;
+      res.cs.push([i, sp]); res.gs = true;
+      content += `q /GS0 gs /CS${i} CS 1 SCN ${n(lineW)} w 1 J 1 j\n`;
+      sp.geo.forEach(g=>{
+        const pts = g.pts; if(pts.length < 2) return;
+        content += pts.map((p, j)=> `${n(p[0]*K)} ${n((state.page.h - p[1])*K)} ${j ? 'l' : 'm'}`).join('\n') + (g.closed ? '\nh' : '') + '\nS\n';
+      });
+      content += 'Q\n';
     });
-    content += 'Q\n';
+    const cs = res.cs.map(([i, sp])=> `/CS${i} [/Separation ${pdfName(sp.name)} /DeviceCMYK << /FunctionType 2 /Domain [0 1] /C0 [0 0 0 0] /C1 [${sp.alt.join(' ')}] /N 1 >>]`).join(' ');
+    const resources = `<< ${res.img ? `/XObject << /Im0 ${oImg} 0 R >> ` : ''}${cs ? `/ColorSpace << ${cs} >> ` : ''}${res.gs ? '/ExtGState << /GS0 << /Type /ExtGState /OP true /op true /OPM 1 >> >> ' : ''}>>`;
+    const contentBytes = enc.encode(content);
+    objs.push([oPage, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${n(Wpt)} ${n(Hpt)}] /TrimBox [0 0 ${n(Wpt)} ${n(Hpt)}] /Resources ${resources} /Contents ${oCont} 0 R >>`]);
+    objs.push([oCont, [enc.encode(`<< /Length ${contentBytes.length} >>\nstream\n`), contentBytes, enc.encode('\nendstream')]]);
+    if(pg.art) objs.push([oImg, [enc.encode(`<< /Type /XObject /Subtype /Image /Width ${pg.art.W} /Height ${pg.art.H} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${pg.art.bytes.length} >>\nstream\n`), pg.art.bytes, enc.encode('\nendstream')]]);
+    kids.push(`${oPage} 0 R`);
   });
-  // oggetti
-  const cs = res.cs.map((sp, i)=> `/CS${spots.indexOf(sp)} [/Separation ${pdfName(sp.name)} /DeviceCMYK << /FunctionType 2 /Domain [0 1] /C0 [0 0 0 0] /C1 [${sp.alt.join(' ')}] /N 1 >>]`).join(' ');
-  const resources = `<< ${res.img ? '/XObject << /Im0 6 0 R >> ' : ''}${cs ? `/ColorSpace << ${cs} >> ` : ''}${res.gs ? '/ExtGState << /GS0 << /Type /ExtGState /OP true /op true /OPM 1 >> >> ' : ''}>>`;
-  const contentBytes = enc.encode(content);
   objs.push([1, `<< /Type /Catalog /Pages 2 0 R >>`]);
-  objs.push([2, `<< /Type /Pages /Kids [3 0 R] /Count 1 >>`]);
-  objs.push([3, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${n(Wpt)} ${n(Hpt)}] /TrimBox [0 0 ${n(Wpt)} ${n(Hpt)}] /Resources ${resources} /Contents 4 0 R >>`]);
-  objs.push([4, [enc.encode(`<< /Length ${contentBytes.length} >>\nstream\n`), contentBytes, enc.encode('\nendstream')]]);
-  objs.push([5, `<< /Producer (SpikeCut) /Title <FEFF${[...exportBaseName()].map(ch=>{ const c = ch.codePointAt(0); return c > 0xFFFF ? '' : c.toString(16).padStart(4,'0'); }).join('')}> /CreationDate (D:${new Date().toISOString().replace(/[-:T]/g,'').slice(0,14)}) >>`]);
-  if(art) objs.push([6, [enc.encode(`<< /Type /XObject /Subtype /Image /Width ${art.W} /Height ${art.H} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${art.bytes.length} >>\nstream\n`), art.bytes, enc.encode('\nendstream')]]);
+  objs.push([2, `<< /Type /Pages /Kids [${kids.join(' ')}] /Count ${kids.length} >>`]);
+  objs.push([3, `<< /Producer (SpikeCut) /Title <FEFF${[...exportBaseName()].map(ch=>{ const c = ch.codePointAt(0); return c > 0xFFFF ? '' : c.toString(16).padStart(4,'0'); }).join('')}> /CreationDate (D:${new Date().toISOString().replace(/[-:T]/g,'').slice(0,14)}) >>`]);
   const parts = [enc.encode('%PDF-1.6\n%\xE2\xE3\xCF\xD3\n')], offsets = [];
   let pos = parts[0].length;
   objs.sort((a,b)=> a[0]-b[0]).forEach(([num, body])=>{
@@ -23775,7 +23974,7 @@ function buildPrintPDF(art, spots, lineW){
   const maxNum = Math.max(...objs.map(o=>o[0]));
   let xref = `xref\n0 ${maxNum+1}\n0000000000 65535 f \n`;
   for(let i=1;i<=maxNum;i++) xref += offsets[i]!=null ? String(offsets[i]).padStart(10,'0') + ' 00000 n \n' : '0000000000 65535 f \n';
-  parts.push(enc.encode(xref + `trailer\n<< /Size ${maxNum+1} /Root 1 0 R /Info 5 0 R >>\nstartxref\n${pos}\n%%EOF\n`));
+  parts.push(enc.encode(xref + `trailer\n<< /Size ${maxNum+1} /Root 1 0 R /Info 3 0 R >>\nstartxref\n${pos}\n%%EOF\n`));
   return new Blob(parts, {type:'application/pdf'});
 }
 async function doPrintPDF(){
@@ -23789,9 +23988,15 @@ async function doPrintPDF(){
   if(!spots.some(sp=> sp.geo.length) && !document.getElementById('pdfIncludeArt').checked){ showToast('Niente da esportare: non ci sono linee di taglio o piega visibili.', true); return; }
   btn.disabled = true; btn.textContent = translate('Preparazione del PDF…');
   try{
-    const art = document.getElementById('pdfIncludeArt').checked ? await renderArtJPEG(parseInt(document.getElementById('pdfArtDpi').value, 10)) : null;
+    const dpi = parseInt(document.getElementById('pdfArtDpi').value, 10);
+    const art = document.getElementById('pdfIncludeArt').checked ? await renderArtJPEG(dpi, 'outside') : null;
     const lw = Math.max(0.05, parseFloat(document.getElementById('pdfLineW').value) || 0.25);
-    downloadBlob(buildPrintPDF(art, spots, lw), exportBaseName() + '_stampa.pdf');
+    const pages = [{art, spots}];
+    if(document.getElementById('pdfBack').checked && hasInsideContent()){ // pagina 2: il retro (interno), già pronto per la stampa in volta
+      const back = await renderArtJPEG(dpi, 'inside');
+      if(back) pages.push({art: back, spots: []});
+    }
+    downloadBlob(buildPrintPDF(pages, lw), exportBaseName() + '_stampa.pdf');
     try{ localStorage.setItem('spikecut-pdfspots', JSON.stringify([...document.querySelectorAll('#pdfSpotTable input')].map(i=> i.type==='checkbox' ? i.checked : i.value))); }catch(e){}
     document.getElementById('pdfPrintModal').classList.remove('open');
     showToast(tpl('PDF per la stampa esportato: {n} tinte piatte in sovrastampa.', {n: spots.filter(sp=> sp.geo.length).length}), false);
@@ -23818,29 +24023,30 @@ function fold3DMesh(){
       const v = tri.map(i=> P[i]), n0 = cross(sub(v[1],v[0]), sub(v[2],v[0])), nl = Math.hypot(...n0) || 1, n = n0.map(x=> x/nl);
       [1, -1].forEach(side=>{ // esterno, poi interno con il verso rovesciato
         const base = out.pos.length/3, order = side>0 ? tri : [tri[0], tri[2], tri[1]];
-        order.forEach(i=>{ out.pos.push(...P[i]); out.nrm.push(...n.map(x=> x*side)); out.uv.push(f.flat[i][0]/W, f.flat[i][1]/H); });
+        order.forEach(i=>{ out.pos.push(...P[i]); out.nrm.push(...n.map(x=> x*side)); out.uv.push(side>0 ? f.flat[i][0]/W : 1 - f.flat[i][0]/W, f.flat[i][1]/H); }); // interno: grafica salvata vista dall'altra parte
         (side>0 ? out.idxOut : out.idxIn).push(base, base+1, base+2);
       });
     });
   });
   return out.pos.length ? out : null;
 }
-function fold3DTexturePNG(){
+function fold3DTexturePNG(key){
+  const A = fold3d[key || 'art'];
   return new Promise(resolve=>{
-    if(!fold3d.art || !fold3d.art.canvas){ resolve(null); return; }
-    fold3d.art.canvas.toBlob(async b=> resolve(b ? new Uint8Array(await b.arrayBuffer()) : null), 'image/png');
+    if(!A || !A.canvas){ resolve(null); return; }
+    A.canvas.toBlob(async b=> resolve(b ? new Uint8Array(await b.arrayBuffer()) : null), 'image/png');
   });
 }
 async function exportFold3DGLB(){
   const mesh = fold3DMesh(); if(!mesh){ showToast('Nessun pannello da esportare.', true); return; }
-  const png = await fold3DTexturePNG();
+  const png = await fold3DTexturePNG('art'), pngIn = await fold3DTexturePNG('artIn');
   const f32 = a=> new Uint8Array(new Float32Array(a).buffer), u32 = a=> new Uint8Array(new Uint32Array(a).buffer);
   const chunks = [], views = [];
   const addView = (bytes, target)=>{ const off = chunks.reduce((s,c)=> s + c.length, 0); chunks.push(bytes); const pad = (4 - bytes.length % 4) % 4; if(pad) chunks.push(new Uint8Array(pad)); views.push(Object.assign({buffer:0, byteOffset:off, byteLength:bytes.length}, target ? {target} : {})); return views.length-1; };
   const pos = mesh.pos, mn = [0,1,2].map(i=> Math.min(...pos.filter((_,k)=> k%3===i))), mx = [0,1,2].map(i=> Math.max(...pos.filter((_,k)=> k%3===i)));
   const vPos = addView(f32(pos), 34962), vNrm = addView(f32(mesh.nrm), 34962), vUv = addView(f32(mesh.uv), 34962);
   const vOut = addView(u32(mesh.idxOut), 34963), vIn = addView(u32(mesh.idxIn), 34963);
-  const vImg = png ? addView(png) : null;
+  const vImg = png ? addView(png) : null, vImgIn = pngIn ? addView(pngIn) : null;
   const nV = pos.length/3;
   const gltf = {
     asset:{version:'2.0', generator:'SpikeCut'},
@@ -23856,10 +24062,14 @@ async function exportFold3DGLB(){
       {bufferView:vIn, componentType:5125, count:mesh.idxIn.length, type:'SCALAR'}],
     materials:[
       {name:'esterno', pbrMetallicRoughness: Object.assign({metallicFactor:0, roughnessFactor:0.85}, png ? {baseColorTexture:{index:0}} : {baseColorFactor:[0.9,0.87,0.81,1]})},
-      {name:'interno_cartone', pbrMetallicRoughness:{baseColorFactor:[0.55,0.32,0.13,1], metallicFactor:0, roughnessFactor:0.95}}],
+      {name:'interno_cartone', pbrMetallicRoughness: Object.assign({metallicFactor:0, roughnessFactor:0.95}, pngIn ? {baseColorTexture:{index: png ? 1 : 0}} : {baseColorFactor:[0.55,0.32,0.13,1]})}],
     bufferViews: views
   };
-  if(png){ gltf.images = [{bufferView:vImg, mimeType:'image/png'}]; gltf.samplers = [{magFilter:9729, minFilter:9987, wrapS:33071, wrapT:33071}]; gltf.textures = [{source:0, sampler:0}]; }
+  if(png || pngIn){
+    gltf.images = []; gltf.textures = []; gltf.samplers = [{magFilter:9729, minFilter:9987, wrapS:33071, wrapT:33071}];
+    if(png){ gltf.images.push({bufferView:vImg, mimeType:'image/png'}); gltf.textures.push({source:gltf.images.length-1, sampler:0}); }
+    if(pngIn){ gltf.images.push({bufferView:vImgIn, mimeType:'image/png'}); gltf.textures.push({source:gltf.images.length-1, sampler:0}); }
+  }
   const bin = new Uint8Array(chunks.reduce((s,c)=> s + c.length, 0)); let o = 0; chunks.forEach(c=>{ bin.set(c, o); o += c.length; });
   gltf.buffers = [{byteLength: bin.length}];
   let json = new TextEncoder().encode(JSON.stringify(gltf)); const jp = (4 - json.length % 4) % 4;
@@ -23872,17 +24082,18 @@ async function exportFold3DGLB(){
 }
 async function exportFold3DOBJ(){
   const mesh = fold3DMesh(); if(!mesh){ showToast('Nessun pannello da esportare.', true); return; }
-  const base = exportBaseName(), png = await fold3DTexturePNG(), r = v=> (Math.round(v*1e6)/1e6).toString();
+  const base = exportBaseName(), png = await fold3DTexturePNG('art'), pngIn = await fold3DTexturePNG('artIn'), r = v=> (Math.round(v*1e6)/1e6).toString();
   let obj = `# SpikeCut\nmtllib ${base}.mtl\no scatola\n`;
   for(let i=0;i<mesh.pos.length;i+=3) obj += `v ${r(mesh.pos[i])} ${r(mesh.pos[i+1])} ${r(mesh.pos[i+2])}\n`;
   for(let i=0;i<mesh.uv.length;i+=2) obj += `vt ${r(mesh.uv[i])} ${r(1 - mesh.uv[i+1])}\n`; // in OBJ la V cresce verso l'alto
   for(let i=0;i<mesh.nrm.length;i+=3) obj += `vn ${r(mesh.nrm[i])} ${r(mesh.nrm[i+1])} ${r(mesh.nrm[i+2])}\n`;
   const face = idx=>{ let t = ''; for(let i=0;i<idx.length;i+=3){ const a = idx[i]+1, b = idx[i+1]+1, c = idx[i+2]+1; t += `f ${a}/${a}/${a} ${b}/${b}/${b} ${c}/${c}/${c}\n`; } return t; };
   obj += 'usemtl esterno\n' + face(mesh.idxOut) + 'usemtl interno_cartone\n' + face(mesh.idxIn);
-  const mtl = `newmtl esterno\nKd 0.9 0.87 0.81\n${png ? `map_Kd ${base}_grafica.png\n` : ''}\nnewmtl interno_cartone\nKd 0.55 0.32 0.13\n`;
+  const mtl = `newmtl esterno\nKd 0.9 0.87 0.81\n${png ? `map_Kd ${base}_grafica.png\n` : ''}\nnewmtl interno_cartone\nKd 0.55 0.32 0.13\n${pngIn ? `map_Kd ${base}_grafica_interno.png\n` : ''}`;
   downloadText(obj, base + '.obj', 'text/plain');
   setTimeout(()=> downloadText(mtl, base + '.mtl', 'text/plain'), 300);
   if(png) setTimeout(()=> downloadBlob(new Blob([png], {type:'image/png'}), base + '_grafica.png'), 600);
+  if(pngIn) setTimeout(()=> downloadBlob(new Blob([pngIn], {type:'image/png'}), base + '_grafica_interno.png'), 900);
   showToast(png ? 'Modello OBJ esportato: tre file (OBJ, MTL e immagine della grafica), tienili nella stessa cartella.' : 'Modello OBJ esportato: due file (OBJ e MTL), tienili nella stessa cartella.', false);
 }
 /* ============================================================
@@ -24038,6 +24249,7 @@ function rotateShapeCopy(s, c, deg){ // ruota una copia attorno al punto c
 function impCreate(){
   const st = impState; if(!st || !st.best || !st.best.n){ showToast('La fustella non entra nel foglio: scegli un foglio più grande o riduci il margine.', true); return; }
   const src = state.shapes.filter(x=> isShapeEffVisible(x) && !x.guide);
+  const srcIn = withSide('inside', ()=> state.shapes.filter(x=> isShapeEffVisible(x) && !x.guide)); // grafica interna (retro)
   const R0 = st.R0, C = [(R0.x0+R0.x1)/2, (R0.y0+R0.y1)/2];
   const out = [];
   st.best.place.forEach(q=>{
@@ -24047,14 +24259,17 @@ function impCreate(){
     const a = q.rot*Math.PI/180, hw = (R0.x1-R0.x0)/2, hh = (R0.y1-R0.y0)/2;
     const rw = Math.abs(hw*Math.cos(a)) + Math.abs(hh*Math.sin(a)), rh = Math.abs(hw*Math.sin(a)) + Math.abs(hh*Math.cos(a));
     copies.forEach(cp=> translateShapeCopy(cp, q.x - (C[0]-rw), q.y - (C[1]-rh)));
-    remapGroupIds(copies); out.push(...copies);
+    // retro: coordinate "viste dall'altra parte", quindi rotazione nel verso opposto e posizione specchiata sul foglio nuovo
+    const Cin = [state.page.w - C[0], C[1]], inCopies = JSON.parse(JSON.stringify(srcIn));
+    inCopies.forEach(cp=>{ cp.id = uid(); rotateShapeCopy(cp, Cin, -q.rot); translateShapeCopy(cp, (st.SW - q.x - 2*rw) - (Cin[0]-rw), q.y - (Cin[1]-rh)); });
+    remapGroupIds(copies); remapGroupIds(inCopies); out.push(...copies, ...inCopies);
   });
   snapshotActiveDocument();
   const doc = makeNewDocument(tpl('Imposizione {n} copie', {n: st.best.n}));
   doc.layers = JSON.parse(JSON.stringify(state.layers)); doc.activeLayerId = state.activeLayerId;
   doc.customFonts = state.customFonts;
   doc.shapes = out;
-  doc.page = {w: st.SW, h: st.SH, bg: state.page.bg, bgExport: state.page.bgExport, bgOpacity: state.page.bgOpacity};
+  doc.page = Object.assign({}, state.page, {w: st.SW, h: st.SH});
   doc.history = [JSON.stringify({shapes:doc.shapes, layers:doc.layers})]; doc.historyTimes = [Date.now()]; doc.histIndex = 0;
   documents.push(doc); activeDocId = doc.id; loadDocumentIntoState(doc); renderTabBar();
   document.getElementById('impModal').classList.remove('open');
@@ -24108,6 +24323,13 @@ async function runPreflight(){
     let dmin = Infinity;
     tech.forEach(g=>{ const pts = g.closed ? g.pts.concat([g.pts[0]]) : g.pts; for(let i=1;i<pts.length;i++) for(let j=0;j<4;j++) dmin = Math.min(dmin, segSegDist(pts[i-1], pts[i], box[j], box[(j+1)%4])); });
     if(dmin < 2) items.push({level: dmin===0 ? 'err' : 'warn', text: dmin===0 ? translate('Testo attraversato da una linea di taglio o piega.') : tpl('Testo a {d} mm da una linea di taglio o piega: tienilo ad almeno 2–3 mm.', {d: dmin.toFixed(1)}), ids:[t.id]});
+  });
+  // testi interni (retro): posizione riportata sul fronte per confrontarla con taglio e pieghe
+  withSide('inside', ()=> state.shapes.filter(x=> isShapeEffVisible(x) && x.type==='text')).forEach(t=>{
+    const b = shapeBBox(t), x0 = state.page.w - b.x - b.w, box = [[x0,b.y],[x0+b.w,b.y],[x0+b.w,b.y+b.h],[x0,b.y+b.h]];
+    let dmin = Infinity;
+    tech.forEach(g=>{ const pts = g.closed ? g.pts.concat([g.pts[0]]) : g.pts; for(let i=1;i<pts.length;i++) for(let j=0;j<4;j++) dmin = Math.min(dmin, segSegDist(pts[i-1], pts[i], box[j], box[(j+1)%4])); });
+    if(dmin < 2) items.push({level: dmin===0 ? 'err' : 'warn', text: translate('Lato interno:') + ' ' + (dmin===0 ? translate('Testo attraversato da una linea di taglio o piega.') : tpl('Testo a {d} mm da una linea di taglio o piega: tienilo ad almeno 2–3 mm.', {d: dmin.toFixed(1)})), ids:[]});
   });
   // linee sottili di grafica
   const thin = vis.filter(x=> x.style && x.style.role==='design' && x.type!=='text' && x.type!=='image' && x.style.stroke && x.style.stroke!=='none' && (x.style.strokeWidth||0) < 0.1);
@@ -24273,7 +24495,7 @@ function fold3DVideo(){
   requestAnimationFrame(step);
 }
 function exportSVG(){
-  const svgStr = buildExportSVG();
+  const svgStr = withSide('outside', ()=> buildExportSVG());
   const blob = new Blob([svgStr], {type:'image/svg+xml'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -24281,6 +24503,10 @@ function exportSVG(){
   a.download = (document.getElementById('filename').value||'disegno') + '.svg';
   a.click();
   setTimeout(()=>URL.revokeObjectURL(url), 2000);
+  if(hasInsideContent()){ // anche il retro, in un secondo file, con la fustella specchiata come riferimento (gruppo a parte)
+    setTimeout(()=> downloadText(buildInsideSVG(true), exportBaseName() + '_interno.svg', 'image/svg+xml'), 400);
+    showToast('Esportati due SVG: esterno e interno (retro, con la fustella specchiata nel gruppo «fustella-riferimento»).', false);
+  }
 }
 
 /* ============================================================
@@ -24648,6 +24874,7 @@ function snapshotActiveDocument(){
   doc.projectInfo = state.projectInfo;
 }
 function loadDocumentIntoState(doc){
+  state.viewSide = 'outside';
   state.shapes = doc.shapes; migrateLegacyArcs(state.shapes);
   state.page = doc.page;
   state.refImage = doc.refImage;
