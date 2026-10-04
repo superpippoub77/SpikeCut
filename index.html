@@ -611,6 +611,8 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
 .seq-item:hover{ background:rgba(53,114,214,.16); }
 .seq-item.seq-unused{ opacity:.6; font-style:italic; }
 .seq-item.active{ background:rgba(255,159,10,.25); outline:2px solid #ff9f0a; }
+.seq-head.active{ background:rgba(255,159,10,.18); border-radius:6px; outline:2px solid #ff9f0a; }
+.seq-head:hover{ background:rgba(255,214,10,.12); border-radius:6px; }
 #seqModal{ background:transparent; pointer-events:none; justify-content:flex-end; align-items:flex-start; z-index:230; }
 #seqModal .modal-box{ pointer-events:auto; width:460px !important; margin:64px 16px 0 0; box-shadow:0 10px 36px rgba(0,0,0,.55); }
 .seq-item.dragging, .seq-step.dragging{ opacity:.45; }
@@ -950,7 +952,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.52.2</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.53</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2250,6 +2252,9 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Pannello di base: resta fermo, gli altri si piegano attorno a lui.": "Base panel: it stays still, the others fold around it.",
+    "Passo {n} di {t} · piega a {d} {g}° · lunga {l}": "Step {n} of {t} · {d} fold {g}° · {l} long",
+    "Clic: mostra questo passo nel 3D": "Click: show this step in 3D",
     "(Non c'è un contorno di taglio chiuso: uso il riquadro del disegno.)": "(There is no closed cut outline: using the drawing's bounding box.)",
     "100 × 140 cm": "100 × 140 cm",
     "50 × 70 cm": "50 × 70 cm",
@@ -3825,6 +3830,9 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Pannello di base: resta fermo, gli altri si piegano attorno a lui.": "Basisplatte: Sie bleibt fest, die anderen falten sich um sie.",
+    "Passo {n} di {t} · piega a {d} {g}° · lunga {l}": "Schritt {n} von {t} · {d}-Falz {g}° · {l} lang",
+    "Clic: mostra questo passo nel 3D": "Klick: diesen Schritt in 3D zeigen",
     "(Non c'è un contorno di taglio chiuso: uso il riquadro del disegno.)": "(Keine geschlossene Schnittkontur: Es wird der Rahmen der Zeichnung verwendet.)",
     "100 × 140 cm": "100 × 140 cm",
     "50 × 70 cm": "50 × 70 cm",
@@ -5400,6 +5408,9 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Pannello di base: resta fermo, gli altri si piegano attorno a lui.": "Panel base: queda fijo, los demás se pliegan a su alrededor.",
+    "Passo {n} di {t} · piega a {d} {g}° · lunga {l}": "Paso {n} de {t} · pliegue en {d} {g}° · largo {l}",
+    "Clic: mostra questo passo nel 3D": "Clic: mostrar este paso en 3D",
     "(Non c'è un contorno di taglio chiuso: uso il riquadro del disegno.)": "(No hay un contorno de corte cerrado: se usa el recuadro del dibujo.)",
     "100 × 140 cm": "100 × 140 cm",
     "50 × 70 cm": "50 × 70 cm",
@@ -6975,6 +6986,9 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Pannello di base: resta fermo, gli altri si piegano attorno a lui.": "基准面板：保持不动，其他面板围绕它折叠。",
+    "Passo {n} di {t} · piega a {d} {g}° · lunga {l}": "第 {n} 步，共 {t} 步 · {d}折 {g}° · 长 {l}",
+    "Clic: mostra questo passo nel 3D": "点击：在 3D 中显示此步骤",
     "(Non c'è un contorno di taglio chiuso: uso il riquadro del disegno.)": "（没有闭合的切割轮廓：使用绘图的外框。）",
     "100 × 140 cm": "100 × 140 cm",
     "50 × 70 cm": "50 × 70 cm",
@@ -8550,6 +8564,9 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Pannello di base: resta fermo, gli altri si piegano attorno a lui.": "Panneau de base : il reste fixe, les autres se plient autour de lui.",
+    "Passo {n} di {t} · piega a {d} {g}° · lunga {l}": "Étape {n} sur {t} · pli {d} {g}° · longueur {l}",
+    "Clic: mostra questo passo nel 3D": "Clic : afficher cette étape en 3D",
     "(Non c'è un contorno di taglio chiuso: uso il riquadro del disegno.)": "(Pas de contour de découpe fermé : le cadre du dessin est utilisé.)",
     "100 × 140 cm": "100 × 140 cm",
     "50 × 70 cm": "50 × 70 cm",
@@ -12580,39 +12597,62 @@ function renderFold3D(){
     });
     ctx.globalAlpha = 1;
   });
+  fold3d.lastItems = items.map(it=> ({fi: it.fi, sp: it.vs.map(proj)})); // per riconoscere il pannello cliccato
   renderFold3DHighlight(ctx, faces0, rot, proj, C);
 }
 // Tratto di piega scelto nella sequenza: cerniera in arancione e pannello che vi si piega colorato,
 // disegnati sopra a tutto perché si vedano anche quando sono dietro ad altri pannelli
 function renderFold3DHighlight(ctx, faces, rot, proj, C){
-  const hl = fold3d.highlight, model = fold3d.model;
-  if(!hl || !model || !faces.T) return;
-  const onPiece = h=>{
-    if(!hl.a) return true;
-    const m = [(model.nodes[h.i][0]+model.nodes[h.j][0])/2, (model.nodes[h.i][1]+model.nodes[h.j][1])/2];
-    const a = hl.a, b = hl.b, dx=b[0]-a[0], dy=b[1]-a[1], l2=dx*dx+dy*dy;
-    const t = l2 ? Math.max(0, Math.min(1, ((m[0]-a[0])*dx + (m[1]-a[1])*dy)/l2)) : 0;
-    return Math.hypot(a[0]+dx*t-m[0], a[1]+dy*t-m[1]) < 0.5;
-  };
-  const hs = model.hinges.filter(h=> h.fold && h.fold.id===hl.id && onPiece(h));
-  if(!hs.length) return;
+  const model = fold3d.model;
+  if(!model || !faces.T) return;
   const P = v=> proj(rot([v[0]-C[0], v[1]-C[1], v[2]-C[2]]));
-  // il pannello che si piega su questa cerniera (il "figlio" nell'albero di piegatura)
-  model.order.forEach(fi=>{
-    const ph = model.parentHinge[fi];
-    if(!ph || !hs.some(h=> h===ph || (h.i===ph.i && h.j===ph.j) || (h.i===ph.j && h.j===ph.i))) return;
-    const f = faces[fi]; if(!f) return;
-    ctx.fillStyle = 'rgba(255,159,10,0.38)';
-    ctx.beginPath(); f.pts.forEach((v,k)=>{ const q = P(v); if(k) ctx.lineTo(q[0],q[1]); else ctx.moveTo(q[0],q[1]); }); ctx.closePath(); ctx.fill();
-    ctx.strokeStyle = '#ff9f0a'; ctx.lineWidth = 2; ctx.stroke();
-  });
-  hs.forEach(h=>{
-    const a = P(tfApply(faces.T[h.f1], model.flat3(h.i))), b = P(tfApply(faces.T[h.f1], model.flat3(h.j)));
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = 'rgba(255,159,10,0.35)'; ctx.lineWidth = 12; ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke();
-    ctx.strokeStyle = '#ff9f0a'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke();
-  });
+  // figli di ogni pannello nell'albero di piegatura: piegando una cerniera si muove tutto il ramo
+  const kids = model.faces.map(()=>[]); model.order.forEach(fi=>{ const pf = model.parent[fi]; if(pf!=null) kids[pf].push(fi); });
+  const draw = (hl, col, fillA, strong)=>{
+    const entries = hl.list || [hl];
+    const onPiece = (h, en)=>{
+      if(!en.a) return true;
+      const m = [(model.nodes[h.i][0]+model.nodes[h.j][0])/2, (model.nodes[h.i][1]+model.nodes[h.j][1])/2];
+      const a = en.a, b = en.b, dx=b[0]-a[0], dy=b[1]-a[1], l2=dx*dx+dy*dy;
+      const t = l2 ? Math.max(0, Math.min(1, ((m[0]-a[0])*dx + (m[1]-a[1])*dy)/l2)) : 0;
+      return Math.hypot(a[0]+dx*t-m[0], a[1]+dy*t-m[1]) < 0.5;
+    };
+    const hs = model.hinges.filter(h=> h.fold && entries.some(en=> h.fold.id===en.id && onPiece(h, en)));
+    if(!hs.length) return;
+    const moving = new Set(), direct = new Set();
+    model.order.forEach(fi=>{
+      const ph = model.parentHinge[fi];
+      if(!ph || !hs.some(h=> h===ph || (h.i===ph.i && h.j===ph.j) || (h.i===ph.j && h.j===ph.i))) return;
+      direct.add(fi); const st = [fi]; while(st.length){ const x = st.pop(); if(moving.has(x)) continue; moving.add(x); kids[x].forEach(k=> st.push(k)); }
+    });
+    const poly = (f, fill, stroke, lw)=>{ ctx.beginPath(); f.pts.forEach((v,k)=>{ const q = P(v); if(k) ctx.lineTo(q[0],q[1]); else ctx.moveTo(q[0],q[1]); }); ctx.closePath(); if(fill){ ctx.fillStyle = fill; ctx.fill(); } if(stroke){ ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.stroke(); } };
+    moving.forEach(fi=>{ const f = faces[fi]; if(f && !direct.has(fi)) poly(f, `rgba(${col},${fillA*0.45})`, `rgba(${col},0.7)`, 1); }); // il resto del pezzo che si muove insieme
+    direct.forEach(fi=>{ const f = faces[fi]; if(f) poly(f, `rgba(${col},${fillA})`, `rgb(${col})`, 2); });                         // il pannello piegato su questa cerniera
+    hs.forEach(h=>{
+      const a = P(tfApply(faces.T[h.f1], model.flat3(h.i))), b = P(tfApply(faces.T[h.f1], model.flat3(h.j)));
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = `rgba(${col},0.35)`; ctx.lineWidth = strong ? 12 : 8; ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke();
+      ctx.strokeStyle = `rgb(${col})`; ctx.lineWidth = strong ? 4 : 3; ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke();
+    });
+    if(hl.label){ // etichetta sul pannello piegato
+      const f = faces[[...direct][0]]; if(f){
+        const q = f.pts.map(P), cx = q.reduce((s2,p)=>s2+p[0],0)/q.length, cy = q.reduce((s2,p)=>s2+p[1],0)/q.length;
+        ctx.font = 'bold 13px sans-serif'; const tw = ctx.measureText(hl.label).width;
+        ctx.fillStyle = 'rgba(20,20,20,.8)'; ctx.fillRect(cx - tw/2 - 6, cy - 11, tw + 12, 22);
+        ctx.fillStyle = `rgb(${col})`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(hl.label, cx, cy); ctx.textAlign = 'start'; ctx.textBaseline = 'alphabetic';
+      }
+    }
+  };
+  if(fold3d.highlight) draw(fold3d.highlight, '255,159,10', 0.38, true);
+  if(fold3d.hover && fold3d.hover!==fold3d.highlight) draw(fold3d.hover, '255,214,10', 0.28, false);
+  if(fold3d.pickInfo){ // cosa si è cliccato nel 3D
+    const cv = ctx.canvas, w = cv.clientWidth || 800, h = cv.clientHeight || 460;
+    ctx.font = '12.5px sans-serif'; const tw = ctx.measureText(fold3d.pickInfo).width;
+    ctx.fillStyle = 'rgba(20,20,20,.85)'; ctx.fillRect(10, h - 34, tw + 20, 24);
+    ctx.fillStyle = '#ffd60a'; ctx.fillText(fold3d.pickInfo, 20, h - 18);
+  }
 }
+
 
 
 /* ============================================================
@@ -13521,18 +13561,55 @@ function foldEntryLabel(en){
 function seqFocusEntry(en, stepIndex, rowEl){
   const s = en.shape;
   state.selection = new Set([s.id]);
-  fold3d.highlight = {id:s.id, a:en.a, b:en.b};
-  document.querySelectorAll('#seqList .seq-item.active').forEach(x=>x.classList.remove('active'));
+  fold3d.highlight = {id:s.id, a:en.a, b:en.b, label: tpl('Passo {n}', {n: stepIndex+1})}; fold3d.pickInfo = null;
+  document.querySelectorAll('#seqList .seq-item.active, #seqList .seq-head.active').forEach(x=>x.classList.remove('active'));
   if(rowEl) rowEl.classList.add('active');
+  seqShow3D();
+  renderAll();
+  seqAnimateStep(stepIndex); // si vede la piega che si chiude
+  if(en.unused) showToast('Questa piega non è usata nel 3D: non divide due pannelli (vedi il controllo del disegno).', false);
+}
+// pannello cliccato nella vista 3D: si evidenzia la sua piega (e la voce nella sequenza, se è aperta)
+function fold3DPick(x, y){
+  const model = fold3d.model; if(!model || !fold3d.lastItems) return;
+  let hit = null;
+  for(let i=fold3d.lastItems.length-1;i>=0;i--){ if(pointInPoly([x,y], fold3d.lastItems[i].sp)){ hit = fold3d.lastItems[i]; break; } }
+  if(!hit){ fold3d.highlight = null; fold3d.pickInfo = null; renderFold3D(); return; }
+  const h = model.parentHinge[hit.fi];
+  if(!h || !h.fold){ fold3d.highlight = null; fold3d.pickInfo = translate('Pannello di base: resta fermo, gli altri si piegano attorno a lui.'); renderFold3D(); return; }
+  const steps = foldSteps(model), k = Math.max(0, steps.indexOf(foldOrderOf(h.fold)));
+  const a = model.nodes[h.i], b = model.nodes[h.j];
+  fold3d.highlight = {id: h.fold.id, a: [a[0],a[1]], b: [b[0],b[1]], label: tpl('Passo {n}', {n: k+1})};
+  const dir = h.fold.foldDir==='valley' ? translate('valle') : translate('monte');
+  fold3d.pickInfo = tpl('Passo {n} di {t} · piega a {d} {g}° · lunga {l}', {n: k+1, t: steps.length || 1, d: dir, g: Math.round(h.fold.foldAngle!=null ? h.fold.foldAngle : 90), l: fmtUnit(dist(a, b))});
+  state.selection = new Set([h.fold.id]); renderCanvasOnly();
+  renderFold3D();
+  const sq = document.getElementById('seqModal');
+  if(sq && sq.classList.contains('open')){ // la voce corrispondente nella sequenza
+    renderSeq();
+    const rows = [...document.querySelectorAll('#seqList .seq-item')].filter(r=> r.dataset.shape===h.fold.id);
+    const row = rows.find(r=>{ const ra = r.dataset.a ? JSON.parse(r.dataset.a) : null, rb = r.dataset.b ? JSON.parse(r.dataset.b) : null; if(!ra) return true;
+      const m = [(a[0]+b[0])/2, (a[1]+b[1])/2], dx = rb[0]-ra[0], dy = rb[1]-ra[1], l2 = dx*dx+dy*dy, t = l2 ? Math.max(0, Math.min(1, ((m[0]-ra[0])*dx + (m[1]-ra[1])*dy)/l2)) : 0;
+      return Math.hypot(ra[0]+dx*t-m[0], ra[1]+dy*t-m[1]) < 0.5; }) || rows[0];
+    document.querySelectorAll('#seqList .seq-item.active').forEach(x=> x.classList.remove('active'));
+    if(row){ row.classList.add('active'); row.scrollIntoView({block:'nearest'}); }
+  }
+}
+// anima solo il passo k: dalla fine del passo precedente alla fine di questo
+function seqAnimateStep(k){
+  if(!fold3d.model) return;
+  stopFold3D();
+  const K = Math.max(1, foldSteps(fold3d.model).length), f0 = Math.max(0, k)/K, f1 = Math.min(1, (k+1)/K), t0 = performance.now(), DUR = 1300;
+  const ease = x=> x<0.5 ? 2*x*x : 1-Math.pow(-2*x+2,2)/2;
+  setFold3DFrac(f0);
+  const step = now=>{ const u = Math.min(1, (now - t0)/DUR); setFold3DFrac(f0 + (f1 - f0)*ease(u)); fold3d.anim = u < 1 ? requestAnimationFrame(step) : null; };
+  fold3d.anim = requestAnimationFrame(step);
+}
+function seqShow3D(){
   const f3 = document.getElementById('fold3dModal');
   if(!f3.classList.contains('open')) openFold3D();
   else if(f3.dataset.minimized==='1') restoreModal('fold3dModal');
-  stopFold3D();
   const sq = document.getElementById('seqModal'); sq.parentNode.appendChild(sq); // la sequenza resta sopra al 3D
-  const K = fold3d.model ? Math.max(1, foldSteps(fold3d.model).length) : 1;
-  setFold3DFrac(Math.min(1, (stepIndex+1)/K));
-  renderAll();
-  if(en.unused) showToast('Questa piega non è usata nel 3D: non divide due pannelli (vedi il controllo del disegno).', false);
 }
 function openFoldSequence(){
   if(!allFoldShapes().length){ showToast('Nel disegno non ci sono pieghe.', true); return; }
@@ -13540,7 +13617,7 @@ function openFoldSequence(){
   renderSeq();
 }
 function closeFoldSequence(){
-  state.seqHover = null; fold3d.highlight = null;
+  state.seqHover = null; fold3d.highlight = null; fold3d.hover = null; fold3d.pickInfo = null;
   const ov = document.getElementById('seqModal'); ov.classList.remove('open'); delete ov.dataset.minimized;
   renderModalDock(); renderCanvasOnly();
   const f3 = document.getElementById('fold3dModal');
@@ -13576,6 +13653,15 @@ function renderSeq(){
     const t = document.createElement('span'); t.className='seq-grow';
     t.textContent = tpl('Passo {n}', {n:k+1}) + '  ·  ' + (arr.length===1 ? translate('1 piega') : tpl('{n} pieghe insieme', {n:arr.length}));
     head.appendChild(t);
+    // clic sul titolo del passo: tutte le sue pieghe evidenziate nel 3D e animazione di quel passo
+    const stepHl = {list: arr.map(en=>({id: en.shape.id, a: en.a, b: en.b})), label: tpl('Passo {n}', {n: k+1})};
+    head.style.cursor = 'pointer'; head.title = translate('Clic: mostra questo passo nel 3D');
+    head.addEventListener('click', e=>{ if(e.target.closest('button')) return;
+      document.querySelectorAll('#seqList .seq-item.active, #seqList .seq-head.active').forEach(x=>x.classList.remove('active')); head.classList.add('active');
+      fold3d.highlight = stepHl; fold3d.pickInfo = null; state.selection = new Set(arr.map(en=> en.shape.id));
+      seqShow3D(); renderAll(); seqAnimateStep(k); });
+    head.addEventListener('mouseenter', ()=>{ fold3d.hover = stepHl; if(fold3d.model) renderFold3D(); });
+    head.addEventListener('mouseleave', ()=>{ if(fold3d.hover===stepHl){ fold3d.hover = null; if(fold3d.model) renderFold3D(); } });
     head.appendChild(mkBtn('↑', 'Sposta il passo prima', ()=>seqMoveStep(k, k-1), k===0));
     head.appendChild(mkBtn('↓', 'Sposta il passo dopo', ()=>seqMoveStep(k, k+2), k===steps.length-1));
     box.appendChild(head);
@@ -13588,8 +13674,9 @@ function renderSeq(){
       it.appendChild(mkBtn('↓', 'Chiudi questa piega un passo dopo', ()=>seqFoldStep(en.key, +1), k===steps.length-1 && arr.length===1));
       startDrag(it, {type:'fold', id:en.key});
       const hov = {id:s.id, a:en.a, b:en.b};
-      it.addEventListener('mouseenter', ()=>{ state.seqHover = hov; renderCanvasOnly(); });
-      it.addEventListener('mouseleave', ()=>{ if(state.seqHover===hov){ state.seqHover = null; renderCanvasOnly(); } });
+      it.dataset.shape = s.id; if(en.a){ it.dataset.a = JSON.stringify(en.a); it.dataset.b = JSON.stringify(en.b); }
+      it.addEventListener('mouseenter', ()=>{ state.seqHover = hov; fold3d.hover = hov; renderCanvasOnly(); if(fold3d.model) renderFold3D(); });
+      it.addEventListener('mouseleave', ()=>{ if(state.seqHover===hov){ state.seqHover = null; renderCanvasOnly(); } if(fold3d.hover===hov){ fold3d.hover = null; if(fold3d.model) renderFold3D(); } });
       it.addEventListener('click', ()=> seqFocusEntry(en, k, it));
       if(fold3d.highlight && fold3d.highlight.id===s.id && ((!fold3d.highlight.a && !en.a) || (fold3d.highlight.a && en.a && dist(fold3d.highlight.a, en.a)<1e-6))) it.classList.add('active');
       box.appendChild(it);
@@ -13769,7 +13856,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.52.2';
+const GUIDE_VERSION = '2.53';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -13998,7 +14085,13 @@ html:`<p>Ogni piega ha un numero di <b>passo</b>: nella simulazione 3D si chiudo
 <ul><li><b>A mano</b>: pannello Proprietà → "Ordine di piegatura", con − e +, anche su più pieghe insieme.</li>
 <li><b>Ordine automatico</b> ("Ordina" nel pannello, o "Applica e simula" nell'anteprima 3D): dal pannello principale verso l'esterno, da sinistra a destra, da destra a sinistra, dall'alto, dal basso, dal centro, oppure tutte insieme. Le pieghe alla stessa posizione (entro 2 mm) finiscono nello stesso passo.</li>
 <li><b>Sequenza di piegatura</b> (menu Strumenti, "📋 Sequenza…" nel 3D, o nel pannello): elenco dei passi, <b>pezzo per pezzo</b>: ogni tratto di piega tra due pannelli è una voce a sé ("tratto 2 di 3"), anche quando una sola linea attraversa più pannelli. Spostando un solo tratto, la linea viene divisa automaticamente nei suoi tratti. Le pieghe non usate nel 3D compaiono in grigio. <b>Un clic su una voce</b> la evidenzia nell'anteprima 3D (che si apre da sola, se serve): la cerniera diventa arancione, il pannello che vi si piega viene colorato e la simulazione si porta alla fine del passo di quella voce. La finestra della sequenza non oscura il resto e si apre sul lato destro, così vedi insieme elenco, 3D e disegno. Trascina una piega su un altro passo per spostarla, tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo o unirlo a un altro. Oppure usa le frecce ↑ ↓. Passando col mouse su una piega la vedi evidenziata sul disegno.</li></ul>
-<p>Sul disegno il passo compare accanto all'angolo ("90° · passo 2"), nel 3D accanto al cursore ("Passo 2 di 3"). Ctrl+Z annulla ogni modifica.</p>` },
+<p>Sul disegno il passo compare accanto all'angolo ("90° · passo 2"), nel 3D accanto al cursore ("Passo 2 di 3"). Ctrl+Z annulla ogni modifica.</p>
+<p><b>Vedere i passi nel 3D</b>:</p>
+<ul><li>passando con il mouse su un passo o su una piega della sequenza, nel 3D si accendono <b>in giallo</b> le cerniere e i pannelli interessati;</li>
+<li><b>clic sul titolo di un passo</b> ("Passo 2 · …"): tutte le sue pieghe vengono evidenziate <b>in arancione</b> con l'etichetta "Passo 2" e il 3D mostra <b>solo quel passo</b> che si chiude (dalla posizione prima alla posizione dopo);</li>
+<li><b>clic su una piega</b>: la stessa cosa per quella piega sola, che viene anche selezionata sul disegno;</li>
+<li>il pannello che si piega è colorato pieno, i pannelli attaccati a lui (che si muovono insieme) più tenui; l'evidenziazione si vede anche quando il pezzo è dietro ad altri pannelli;</li>
+<li>al contrario, <b>clic su un pannello nel 3D</b>: viene evidenziata la piega su cui si chiude e in basso compare "Passo 2 di 4 · piega a monte 90° · lunga …"; se la sequenza è aperta, la voce corrispondente si accende. Il pannello di base viene indicato come tale; un clic fuori dalla scatola toglie l'evidenziazione.</li></ul>` },
 
 { id:'genera-scatola', cat:'Fustella e scatole', title:'Genera scatola', keys:'genera scatola americana rsc astuccio tuck box dimensioni larghezza profondità altezza automatica',
 html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profondità e Altezza in mm e scegli il tipo. La fustella viene creata in una nuova scheda.</p>
@@ -14264,6 +14357,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.53</b> — <a data-topic="ordine">Sequenza di piegatura nel 3D</a>: clic su un passo per vederlo evidenziato e animato, evidenziazione al passaggio del mouse, pezzo intero che si muove, e clic su un pannello del 3D per sapere a quale piega e passo appartiene.</li>
 <li><b>2.52.2</b> — Anteprima 3D: la scatola non appare più capovolta (con le scritte sottosopra). Tutte le nuove funzioni sono tradotte in inglese, tedesco, spagnolo, cinese e francese.</li>
 <li><b>2.52.1</b> — Anteprima 3D: la grafica sui pannelli inclinati segue la prospettiva vera e non si deforma più ruotando la scatola.</li>
 <li><b>2.52</b> — <a data-topic="estrusione">Estrusione tra immagini</a>: gli oggetti sopra forano le immagini sotto (contorno o blocco), fino a N livelli.</li>
@@ -18270,7 +18364,11 @@ document.getElementById('fold3dSlider').oninput = e=>{ stopFold3D(); setFold3DFr
 document.getElementById('fold3dReset').onclick = ()=>{ fold3d.yaw=-0.6; fold3d.pitch=0.45; fold3d.zoom=1; renderFold3D(); };
 (()=>{
   const cv = document.getElementById('fold3dCanvas');
-  cv.addEventListener('mousedown', e=>{ fold3d.drag = {x:e.clientX, y:e.clientY}; cv.style.cursor='grabbing'; });
+  cv.addEventListener('mousedown', e=>{ fold3d.drag = {x:e.clientX, y:e.clientY}; fold3d.downAt = {x:e.clientX, y:e.clientY}; cv.style.cursor='grabbing'; });
+  cv.addEventListener('click', e=>{ // clic senza trascinare: quale pannello e quale piega
+    const d = fold3d.downAt; if(d && Math.hypot(e.clientX-d.x, e.clientY-d.y) > 4) return;
+    const r = cv.getBoundingClientRect(); fold3DPick(e.clientX - r.left, e.clientY - r.top);
+  });
   window.addEventListener('mousemove', e=>{
     if(!fold3d.drag) return;
     fold3d.yaw += (e.clientX-fold3d.drag.x)*0.01;
