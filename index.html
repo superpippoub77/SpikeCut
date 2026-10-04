@@ -956,7 +956,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.55</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.56</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1519,6 +1519,8 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
           <option value="lidbox">Scatola con coperchio (fondo + coperchio)</option>
           <option value="sleeve">Fascia (sleeve)</option>
           <option value="pyramid">Piramide a base quadrata</option>
+          <option value="clamshell">Scatola panino a conchiglia (clamshell)</option>
+          <option value="gable">Scatola a casetta con manico (menù bambini)</option>
         </select>
       </div>
       <div class="field"><label>Larghezza L (mm)</label><input type="number" id="boxGenL" value="200" min="10"></div>
@@ -2259,6 +2261,10 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Scatola panino a conchiglia (clamshell)": "Clamshell burger box",
+    "Scatola a casetta con manico (menù bambini)": "Gable box with handle (kids' meal)",
+    "Scatola panino a conchiglia": "Clamshell burger box",
+    "Scatola a casetta con manico": "Gable box with handle",
     "1️⃣ Una piega per passo": "1️⃣ One fold per step",
     "Ogni piega (ogni tratto tra due pannelli) diventa un passo a sé, nell'ordine attuale: nella simulazione si chiudono una alla volta": "Each fold (each segment between two panels) becomes its own step, in the current order: in the simulation they close one at a time",
     "{n} pieghe, ognuna nel suo passo: nella simulazione si chiudono una alla volta. Riordinale trascinandole o con le frecce.": "{n} folds, each in its own step: in the simulation they close one at a time. Reorder them by dragging or with the arrows.",
@@ -3862,6 +3868,10 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Scatola panino a conchiglia (clamshell)": "Burger-Klappschachtel (Clamshell)",
+    "Scatola a casetta con manico (menù bambini)": "Giebelschachtel mit Griff (Kindermenü)",
+    "Scatola panino a conchiglia": "Burger-Klappschachtel",
+    "Scatola a casetta con manico": "Giebelschachtel mit Griff",
     "1️⃣ Una piega per passo": "1️⃣ Ein Falz pro Schritt",
     "Ogni piega (ogni tratto tra due pannelli) diventa un passo a sé, nell'ordine attuale: nella simulazione si chiudono una alla volta": "Jeder Falz (jede Strecke zwischen zwei Platten) wird ein eigener Schritt, in der aktuellen Reihenfolge: In der Simulation schließen sie sich einzeln",
     "{n} pieghe, ognuna nel suo passo: nella simulazione si chiudono una alla volta. Riordinale trascinandole o con le frecce.": "{n} Falze, jeder in seinem Schritt: In der Simulation schließen sie sich einzeln. Ordne sie per Ziehen oder mit den Pfeilen.",
@@ -5465,6 +5475,10 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Scatola panino a conchiglia (clamshell)": "Caja de hamburguesa tipo concha (clamshell)",
+    "Scatola a casetta con manico (menù bambini)": "Caja tipo casita con asa (menú infantil)",
+    "Scatola panino a conchiglia": "Caja de hamburguesa tipo concha",
+    "Scatola a casetta con manico": "Caja tipo casita con asa",
     "1️⃣ Una piega per passo": "1️⃣ Un pliegue por paso",
     "Ogni piega (ogni tratto tra due pannelli) diventa un passo a sé, nell'ordine attuale: nella simulazione si chiudono una alla volta": "Cada pliegue (cada tramo entre dos paneles) pasa a ser un paso propio, en el orden actual: en la simulación se cierran de uno en uno",
     "{n} pieghe, ognuna nel suo passo: nella simulazione si chiudono una alla volta. Riordinale trascinandole o con le frecce.": "{n} pliegues, cada uno en su paso: en la simulación se cierran de uno en uno. Reordénalos arrastrando o con las flechas.",
@@ -7068,6 +7082,10 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Scatola panino a conchiglia (clamshell)": "汉堡蛤壳盒",
+    "Scatola a casetta con manico (menù bambini)": "带提手的屋顶形盒（儿童套餐）",
+    "Scatola panino a conchiglia": "汉堡蛤壳盒",
+    "Scatola a casetta con manico": "带提手的屋顶形盒",
     "1️⃣ Una piega per passo": "1️⃣ 每步一条折线",
     "Ogni piega (ogni tratto tra due pannelli) diventa un passo a sé, nell'ordine attuale: nella simulazione si chiudono una alla volta": "每条折线（两个面板之间的每段）成为单独的一步，保持当前顺序：模拟时逐一折叠",
     "{n} pieghe, ognuna nel suo passo: nella simulazione si chiudono una alla volta. Riordinale trascinandole o con le frecce.": "{n} 条折线，每条各占一步：模拟时逐一折叠。可拖动或用箭头重新排序。",
@@ -8671,6 +8689,10 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Scatola panino a conchiglia (clamshell)": "Boîte burger à clapet (clamshell)",
+    "Scatola a casetta con manico (menù bambini)": "Boîte maisonnette à poignée (menu enfant)",
+    "Scatola panino a conchiglia": "Boîte burger à clapet",
+    "Scatola a casetta con manico": "Boîte maisonnette à poignée",
     "1️⃣ Una piega per passo": "1️⃣ Un pli par étape",
     "Ogni piega (ogni tratto tra due pannelli) diventa un passo a sé, nell'ordine attuale: nella simulazione si chiudono una alla volta": "Chaque pli (chaque segment entre deux panneaux) devient une étape à part, dans l'ordre actuel : dans la simulation ils se ferment un par un",
     "{n} pieghe, ognuna nel suo passo: nella simulazione si chiudono una alla volta. Riordinale trascinandole o con le frecce.": "{n} plis, chacun dans son étape : dans la simulation ils se ferment un par un. Réordonne-les en les faisant glisser ou avec les flèches.",
@@ -11788,7 +11810,9 @@ function buildFoldModel(shapes){
   });
 
   // --- albero di piegatura: dal pannello più grande verso gli altri
-  const root = kept.reduce((best,f,fi)=> f.area>kept[best].area ? fi : best, 0);
+  let root = kept.reduce((best,f,fi)=> f.area>kept[best].area ? fi : best, 0);
+  const rh = state.page && state.page.view3dRoot; // pannello di base indicato dal generatore (es. il fondo)
+  if(rh){ const fi = kept.findIndex(f=> pointInPoly(rh, f.nodes.map(v=> nodes[v]))); if(fi>=0) root = fi; }
   const parent = kept.map(()=>null), parentHinge = kept.map(()=>null);
   const order = []; const unreached = [];
   if(kept.length){
@@ -14062,7 +14086,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.55';
+const GUIDE_VERSION = '2.56';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -14307,6 +14331,8 @@ html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profo
 <li><b>Vassoio con alette d'angolo</b>: fondo L×P, pareti alte H; le alette d'angolo stanno sulle pareti corte e si incollano dentro le lunghe.</li>
 <li><b>Scatola con coperchio</b>: due vassoi sullo stesso foglio, il fondo e il coperchio (più largo di 1 mm più due spessori, alto un terzo dell'altezza, almeno 15 mm). Nel 3D si piega un pezzo per volta: l'altro viene segnalato come "non collegato".</li>
 <li><b>Fascia (sleeve)</b>: quattro pannelli L, P, L, P alti H, con l'aletta di incollaggio; senza fondo né coperchio.</li>
+<li><b>Scatola panino a conchiglia (clamshell)</b>: fondo e coperchio sono due vassoi (L×P, pareti alte H) uniti dalla cerniera posteriore; le alette d'angolo si incollano dentro le pareti; da chiusa le pareti del coperchio poggiano su quelle del fondo (altezza totale 2×H).</li>
+<li><b>Scatola a casetta con manico (menù bambini)</b>: quattro pareti in fila con l'aletta di colla, fondo a incastro (alette antipolvere e linguetta), due falde del tetto sulle pareti lunghe che salgono al colmo, due manici con il foro che da chiusi stanno uno contro l'altro (vanno incollati), pareti corte a punta con alette che si incollano sotto le falde. Gli angoli delle falde sono calcolati dalle misure.</li>
 <li><b>Piramide a base quadrata</b>: base di lato L, altezza H; le pieghe hanno già gli angoli giusti (non 90°) e le alette di incollaggio stanno dentro.</li></ul>
 <p>Per vassoi, scatole con coperchio e piramidi l'<a data-topic="anteprima-3d">anteprima 3D</a> mostra il fondo in basso e le pareti che salgono.</p>
 <p><b>Spessore del cartone</b>: con 0 le misure sono quelle delle linee. Con uno spessore (es. 0,5 mm cartoncino, 3 mm ondulato onda B, 4 mm onda C) le misure scritte diventano <b>interne</b>: lunghezza e profondità crescono di uno spessore, l'altezza di due.</p>
@@ -14581,6 +14607,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.56</b> — Nuovi modelli nel <a data-topic="genera-scatola">generatore</a>: scatola panino a conchiglia e scatola a casetta con manico.</li>
 <li><b>2.55</b> — Sequenza di piegatura: <a data-topic="ordine">"Una piega per passo"</a> e riepilogo delle pieghe usate e non usate nel 3D.</li>
 <li><b>2.54</b> — <a data-topic="lato-interno">Stampa dell'interno</a>: livelli Esterno/Interno, vista Interno con la fustella specchiata, sfondo interno, retro nelle esportazioni (PDF pagina 2, SVG, immagini), grafica interna nel 3D e nei modelli GLB/OBJ, imposizione e controllo anche del retro.</li>
 <li><b>2.53</b> — <a data-topic="ordine">Sequenza di piegatura nel 3D</a>: clic su un passo per vederlo evidenziato e animato, evidenziazione al passaggio del mouse, pezzo intero che si muove, e clic su un pannello del 3D per sapere a quale piega e passo appartiene.</li>
@@ -15263,21 +15290,111 @@ function generateBoxOfType(type, L, W, H, glueW, t){
 }
 // modelli aggiuntivi: gen(L, W, H, glueW, t) → {shapes, totalW, totalH}
 // Vassoio: fondo L×W, pareti alte H; le alette d'angolo stanno sulle pareti corte e si incollano dentro le lunghe
-function trayShapes(L, W, H, ox, oy, shapes){
-  const g = 0.5, hf = Math.max(4, H - 1), tp = Math.min(H*0.3, hf*0.5), X = x=> ox + x, Y = y=> oy + y;
+// pezzi del vassoio (coordinate locali): contorno, pieghe [a, b, passo], zone di colla [x, y, w, h]
+function trayParts(L, W, H){
+  const g = 0.5, hf = Math.max(4, H - 1), tp = Math.min(H*0.3, hf*0.5);
   const P = [[H,0],[H+L,0],[H+L,H],
     [H+L+g,H],[H+L+g,H-hf],[2*H+L-tp,H-hf],[2*H+L,H],[2*H+L,H+W],[2*H+L-tp,H+W+hf],[H+L+g,H+W+hf],[H+L+g,H+W],
     [H+L,H+W],[H+L,2*H+W],[H,2*H+W],[H,H+W],
-    [H-g,H+W],[H-g,H+W+hf],[tp,H+W+hf],[0,H+W],[0,H],[tp,H-hf],[H-g,H-hf],[H-g,H],[H,H]].map(q=>[X(q[0]),Y(q[1])]);
-  shapes.push(boxPolyShape(P, 'cut'));
-  const fold = (a, b, order)=>{ const f = boxLineShape([X(a[0]),Y(a[1])],[X(b[0]),Y(b[1])],'fold'); f.foldOrder = order; shapes.push(f); };
-  fold([H,H],[H,H+W],1); fold([H+L,H],[H+L,H+W],1);          // 1: pareti corte
-  fold([H+L+g,H],[2*H+L,H],2); fold([H+L+g,H+W],[2*H+L,H+W],2); fold([0,H],[H-g,H],2); fold([0,H+W],[H-g,H+W],2); // 2: alette d'angolo
-  fold([H,H],[H+L,H],3); fold([H,H+W],[H+L,H+W],3);          // 3: pareti lunghe, sopra le alette
-  [[H+L+g, H-hf],[H+L+g, H+W],[0, H-hf],[0, H+W]].forEach(([x,y])=> shapes.push(glueZoneShape(X(x)+tp*0.5, Y(y), H-g-tp, hf)));
-  return {w: L+2*H, h: W+2*H};
+    [H-g,H+W],[H-g,H+W+hf],[tp,H+W+hf],[0,H+W],[0,H],[tp,H-hf],[H-g,H-hf],[H-g,H],[H,H]];
+  const folds = [[[H,H],[H,H+W],1], [[H+L,H],[H+L,H+W],1],                                   // 1: pareti corte
+    [[H+L+g,H],[2*H+L,H],2], [[H+L+g,H+W],[2*H+L,H+W],2], [[0,H],[H-g,H],2], [[0,H+W],[H-g,H+W],2], // 2: alette d'angolo
+    [[H,H],[H+L,H],3], [[H,H+W],[H+L,H+W],3]];                                                  // 3: pareti lunghe, sopra le alette
+  const glues = [[H+L+g, H-hf],[H+L+g, H+W],[0, H-hf],[0, H+W]].map(([x,y])=> [x+tp*0.5, y, H-g-tp, hf]);
+  return {P, folds, glues, w: L+2*H, h: W+2*H};
+}
+function trayShapes(L, W, H, ox, oy, shapes){
+  const t = trayParts(L, W, H), X = x=> ox + x, Y = y=> oy + y;
+  shapes.push(boxPolyShape(t.P.map(q=>[X(q[0]),Y(q[1])]), 'cut'));
+  t.folds.forEach(([a,b,order])=>{ const f = boxLineShape([X(a[0]),Y(a[1])],[X(b[0]),Y(b[1])],'fold'); f.foldOrder = order; shapes.push(f); });
+  t.glues.forEach(([x,y,w,h])=> shapes.push(glueZoneShape(X(x), Y(y), w, h)));
+  return {w: t.w, h: t.h};
+}
+// Scatola panino a conchiglia: fondo e coperchio sono due vassoi uniti dalla cerniera posteriore (le due pareti
+// posteriori in fila); da chiusa le pareti del coperchio poggiano su quelle del fondo.
+function genClamshell(L, W, H){
+  const base = trayParts(L, W, H), lid = trayParts(L, W, H), oy = W + 2*H;
+  const mapL = q=> [L + 2*H - q[0], -q[1]];                // coperchio: vassoio ruotato di 180°, sopra il fondo
+  const Y = q=> [q[0], q[1] + oy];
+  const contour = base.P.slice(1).concat(lid.P.map(mapL).slice(1)).map(Y);
+  const shapes = [boxPolyShape(contour, 'cut')];
+  const fold = (a, b, order, ang)=>{ const f = boxLineShape(Y(a), Y(b), 'fold'); f.foldOrder = order; if(ang!=null) f.foldAngleFixed = ang; shapes.push(f); };
+  base.folds.forEach(([a,b,o])=> fold(a, b, o));
+  lid.folds.forEach(([a,b,o])=> fold(mapL(a), mapL(b), o + 3));
+  fold([H,0], [H+L,0], 7, 0);                               // cerniera tra le due pareti posteriori: da chiusa resta dritta
+  base.glues.forEach(([x,y,w,h])=>{ const q = Y([x,y]); shapes.push(glueZoneShape(q[0], q[1], w, h)); });
+  lid.glues.forEach(([x,y,w,h])=>{ const q = Y([L + 2*H - x - w, -y - h]); shapes.push(glueZoneShape(q[0], q[1], w, h)); });
+  setDefaultFolds(shapes);
+  shapes.forEach(x=>{ if(x.foldAngleFixed!=null){ x.foldAngle = x.foldAngleFixed; delete x.foldAngleFixed; } });
+  return {shapes, totalW: L + 2*H, totalH: 2*(W + 2*H), rootHint: [H + L/2, oy + H + W/2]};
+}
+// Scatola a casetta con manico: quattro pareti in fila con aletta di colla, fondo a incastro, due falde del tetto
+// sulle pareti lunghe che salgono al colmo, due manici con il foro che da chiusi stanno uno contro l'altro,
+// pareti corte a punta (timpano) con alette incollate sotto le falde.
+function genGableBox(L, W, H, glueW){
+  const gw = glueW || Math.round(Math.max(12, Math.min(L, W)*0.18));
+  const G = Math.round(W*0.55), R = Math.hypot(W/2, G), Hh = Math.max(30, Math.round(Math.min(L, H)*0.4));
+  const fw = Math.max(6, Math.min(12, W*0.1)), dustH = Math.round(W*0.45), T = Math.max(12, Math.round(W*0.15));
+  const x0 = gw, x1 = gw + L, x2 = gw + L + W, x3 = gw + 2*L + W, x4 = gw + 2*L + 2*W;
+  const top = R + Hh;                                        // il corpo parte a y = top
+  const Y = y=> y + top;
+  const P = [];
+  const push = (x, y)=> P.push([x, Y(y)]);
+  // aletta di colla a sinistra della prima parete lunga
+  const gt = Math.min(gw*0.6, H*0.15);
+  // falda + manico 1
+  push(x0, -R - Hh); push(x1, -R - Hh); push(x1, 0);
+  // timpano 1 con le sue due alette
+  const gable = (xa, xb)=>{
+    const apex = [(xa+xb)/2, -G], th = Math.atan((W/2)/G), ins = Math.min(Math.max(fw, fw/Math.tan(th) + 2), R*0.35);
+    const flapOn = (A, B, side)=>{ // aletta trapezoidale verso l'esterno del timpano sul lato A→B
+      const d = [B[0]-A[0], B[1]-A[1]], l = Math.hypot(d[0], d[1]), u = [d[0]/l, d[1]/l];
+      let n = [u[1], -u[0]]; if((n[0]*( (xa+xb)/2 - A[0]) + n[1]*(-G/2 - A[1])) > 0) n = [-n[0], -n[1]];
+      const a1 = [A[0]+u[0]*ins, A[1]+u[1]*ins], b1 = [B[0]-u[0]*fw, B[1]-u[1]*fw];
+      return [a1, [a1[0]+n[0]*fw+u[0]*fw*0.6, a1[1]+n[1]*fw+u[1]*fw*0.6], [b1[0]+n[0]*fw-u[0]*fw*0.6, b1[1]+n[1]*fw-u[1]*fw*0.6], b1, a1, b1];
+    };
+    const L1 = flapOn([xa,0], apex), L2 = flapOn(apex, [xb,0]);
+    [L1[0], L1[1], L1[2], L1[3]].forEach(q=> push(q[0], q[1])); push(apex[0], apex[1]);
+    [L2[0], L2[1], L2[2], L2[3]].forEach(q=> push(q[0], q[1])); push(xb, 0);
+    return [[L1[4], L1[5]], [L2[4], L2[5]]];
+  };
+  const gf1 = gable(x1, x2);
+  // falda + manico 2
+  push(x2, -R - Hh); push(x3, -R - Hh); push(x3, 0);
+  const gf2 = gable(x3, x4);
+  // lato destro, fondo: aletta antipolvere 2, nulla sotto la parete lunga 2, aletta antipolvere 1, fondo con linguetta
+  const ti = Math.min(W*0.15, dustH*0.4);
+  push(x4, H); push(x4 - ti, H + dustH); push(x3 + ti, H + dustH); push(x3, H);
+  push(x2, H);
+  push(x2, H); push(x2 - ti, H + dustH); push(x1 + ti, H + dustH); push(x1, H);
+  const tt = Math.min(L*0.12, T); push(x1, H + W); push(x1 - tt, H + W + T); push(x0 + tt, H + W + T); push(x0, H + W);
+  // aletta di colla
+  push(x0, H); push(0, H - gt); push(0, gt); push(x0, 0);
+  const dedup = P.filter((q,i)=> i===0 || Math.hypot(q[0]-P[i-1][0], q[1]-P[i-1][1]) > 1e-6);
+  const shapes = [boxPolyShape(dedup, 'cut')];
+  const fold = (a, b, order, ang, dir)=>{ const f = boxLineShape([a[0], Y(a[1])], [b[0], Y(b[1])], 'fold'); f.foldOrder = order; f._ang = ang; f._dir = dir; shapes.push(f); };
+  const beta = Math.atan((W/2)/G)*180/Math.PI;               // inclinazione delle falde rispetto alla verticale
+  [x0, x1, x2, x3].forEach(x=> fold([x, 0], [x, H], 1, 90));   // 1: il tubo (e l'aletta di colla)
+  fold([x1, H], [x2, H], 2, 90); fold([x3, H], [x4, H], 2, 90); // 2: alette antipolvere del fondo
+  fold([x0, H], [x1, H], 3, 90);                              // 3: fondo
+  fold([x0, H + W], [x1, H + W], 4, 90);                      // 4: linguetta del fondo
+  gf1.concat(gf2).forEach(([a, b])=> fold(a, b, 5, 90));      // 5: alette dei timpani, sotto le falde
+  fold([x0, 0], [x1, 0], 6, beta); fold([x2, 0], [x3, 0], 6, beta);           // 6: falde del tetto
+  fold([x0, -R], [x1, -R], 7, beta, 'valley'); fold([x2, -R], [x3, -R], 7, beta, 'valley'); // 7: manici, dritti uno contro l'altro
+  setDefaultFolds(shapes);
+  shapes.forEach(x=>{ if(x._ang!=null){ x.foldAngle = Math.round(x._ang*10)/10; if(x._dir) x.foldDir = x._dir; delete x._ang; delete x._dir; } });
+  shapes.push(glueZoneShape(0, Y(gt), gw, H - 2*gt));
+  // fori dei manici (asole arrotondate), allineati quando i manici si chiudono
+  const hw = Math.min(L*0.45, 90), hh = Math.min(Hh*0.4, 22);
+  [x0, x2].forEach(xa=>{ const cx = xa + L/2, cy = Y(-R - Hh*0.55);
+    const pts = makeCapsulePoints(hh, hw, 16).map(q=> [cx + q[1] - 0, cy + q[0]]);
+    const xs = pts.map(q=>q[0]), ys = pts.map(q=>q[1]), mx = (Math.min(...xs)+Math.max(...xs))/2, my = (Math.min(...ys)+Math.max(...ys))/2;
+    shapes.push(boxPolyShape(pts.map(q=> [q[0] - mx + cx, q[1] - my + cy]), 'cut')); });
+  return {shapes, totalW: x4, totalH: top + H + W + T, rootHint: [x0 + L/2, Y(H + W/2)]};
 }
 const BOX_TEMPLATES = {
+  clamshell: {label:'Scatola panino a conchiglia', base:true, gen:(L, W, H)=> genClamshell(L, W, H)},
+  gable: {label:'Scatola a casetta con manico', base:true, gen:(L, W, H, glueW)=> genGableBox(L, W, H, glueW)},
   tray: {label:'Vassoio', base:true, gen:(L, W, H)=>{ const shapes = []; const d = trayShapes(L, W, H, 0, 0, shapes); setDefaultFolds(shapes); return {shapes, totalW:d.w, totalH:d.h}; }},
   lidbox: {label:'Scatola con coperchio', base:true, gen:(L, W, H, glueW, t)=>{
     const shapes = [], a = trayShapes(L, W, H, 0, 0, shapes);
@@ -18639,6 +18756,7 @@ document.getElementById('boxGenApply').onclick = ()=>{
   doc.shapes = result.shapes;
   doc.page = { w: Math.ceil(result.totalW+10), h: Math.ceil(result.totalH+10), bg:'#ffffff' };
   if(BOX_TEMPLATES[type] && BOX_TEMPLATES[type].base) doc.page.view3dBase = true; // nel 3D il fondo va in basso
+  if(result.rootHint) doc.page.view3dRoot = result.rootHint;
   // il punto di partenza della cronologia è la scatola appena generata (non il foglio vuoto):
   // altrimenti il primo Ctrl+Z dopo una modifica cancellerebbe tutta la scatola
   doc.history = [JSON.stringify({shapes:doc.shapes, layers:doc.layers})]; doc.historyTimes = [Date.now()]; doc.histIndex = 0;
