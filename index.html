@@ -956,7 +956,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.56</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.57</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1521,7 +1521,18 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
           <option value="pyramid">Piramide a base quadrata</option>
           <option value="clamshell">Scatola panino a conchiglia (clamshell)</option>
           <option value="gable">Scatola a casetta con manico (menù bambini)</option>
+          <option value="toy">Scatola giocattoli tipo mattoncini (incastro invertito)</option>
+          <option value="toothpaste">Astuccio dentifricio (lungo)</option>
+          <option value="bottle">Scatola alta per bottiglia</option>
+          <option value="drawer">Scatola cioccolatini a cassetto (cassetto + fodero)</option>
+          <option value="hexagon">Scatola esagonale</option>
+          <option value="triangle">Scatola triangolare (prisma)</option>
+          <option value="diamond">Scatola a diamante</option>
+          <option value="basket">Cestino con manico</option>
+          <option value="mailer">Scatola mailer per spedizioni (e-commerce)</option>
+          <option value="petals">Scatola regalo con chiusura a petali</option>
         </select>
+        <div class="hint" id="boxGenNote" style="margin-top:4px;"></div>
       </div>
       <div class="field"><label>Larghezza L (mm)</label><input type="number" id="boxGenL" value="200" min="10"></div>
       <div class="field"><label>Profondità P (mm)</label><input type="number" id="boxGenW" value="150" min="10"></div>
@@ -2261,6 +2272,33 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Scatola giocattoli tipo mattoncini (incastro invertito)": "Toy brick box (reverse tuck)",
+    "Astuccio dentifricio (lungo)": "Toothpaste carton (long)",
+    "Scatola alta per bottiglia": "Tall bottle box",
+    "Scatola cioccolatini a cassetto (cassetto + fodero)": "Chocolate drawer box (tray + sleeve)",
+    "Scatola esagonale": "Hexagonal box",
+    "Scatola triangolare (prisma)": "Triangular box (prism)",
+    "Scatola a diamante": "Diamond box",
+    "Cestino con manico": "Basket with handle",
+    "Scatola mailer per spedizioni (e-commerce)": "Mailer box for shipping (e-commerce)",
+    "Scatola regalo con chiusura a petali": "Gift box with petal closure",
+    "Scatola giocattoli": "Toy box",
+    "Astuccio dentifricio": "Toothpaste carton",
+    "Scatola per bottiglia": "Bottle box",
+    "Scatola cioccolatini a cassetto": "Chocolate drawer box",
+    "Scatola triangolare": "Triangular box",
+    "Scatola mailer per spedizioni": "Mailer box",
+    "Scatola regalo a petali": "Petal gift box",
+    "Grande e piatta, chiusura a incastro invertita (linguetta in alto sul davanti, in basso sul retro).": "Large and flat, reverse tuck closure (top tuck on the front, bottom tuck on the back).",
+    "Lungo e stretto, chiusura a incastro alle due estremità. L = lunghezza dell’astuccio, P e H = sezione.": "Long and narrow, tuck closure at both ends. L = carton length, D and H = cross-section.",
+    "Alta, chiusura a incastro invertita.": "Tall, reverse tuck closure.",
+    "Cassetto e fodero sullo stesso foglio (nel 3D si piega il cassetto). Il fodero è più largo di 1 mm più due spessori.": "Drawer and sleeve on the same sheet (the 3D folds the drawer). The sleeve is 1 mm plus two thicknesses larger.",
+    "L = lato dell’esagono, H = altezza; P non si usa. Fondo incollato, coperchio a incastro.": "L = hexagon side, H = height; D is not used. Glued bottom, tuck lid.",
+    "Prisma triangolare (tipo barretta): L = lato del triangolo, H = lunghezza; P non si usa.": "Triangular prism (candy-bar style): L = triangle side, H = length; D is not used.",
+    "Bipiramide a 8 facce: L = diametro, H = altezza totale; P non si usa. Alette di colla su tutte le giunture.": "8-sided bipyramid: L = diameter, H = total height; D is not used. Glue flaps on every joint.",
+    "Vassoio con manico a ponte: le due strisce salgono dalle pareti corte e si incollano sopra al centro.": "Tray with an arched handle: the two strips rise from the short walls and are glued together at the top centre.",
+    "Vassoio con coperchio incernierato sul retro, alette laterali e linguetta che entra davanti.": "Tray with a lid hinged at the back, side flaps and a front tuck.",
+    "Tubo con fondo incollato e chiusura a 4 petali che si incontrano al centro.": "Tube with a glued bottom and a 4-petal closure meeting in the centre.",
     "Scatola panino a conchiglia (clamshell)": "Clamshell burger box",
     "Scatola a casetta con manico (menù bambini)": "Gable box with handle (kids' meal)",
     "Scatola panino a conchiglia": "Clamshell burger box",
@@ -3868,6 +3906,33 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Scatola giocattoli tipo mattoncini (incastro invertito)": "Spielzeug-Bausteinschachtel (gegenläufige Steckklappen)",
+    "Astuccio dentifricio (lungo)": "Zahnpasta-Faltschachtel (lang)",
+    "Scatola alta per bottiglia": "Hohe Flaschenschachtel",
+    "Scatola cioccolatini a cassetto (cassetto + fodero)": "Pralinen-Schubschachtel (Schublade + Hülle)",
+    "Scatola esagonale": "Sechseckige Schachtel",
+    "Scatola triangolare (prisma)": "Dreieckige Schachtel (Prisma)",
+    "Scatola a diamante": "Diamantschachtel",
+    "Cestino con manico": "Körbchen mit Henkel",
+    "Scatola mailer per spedizioni (e-commerce)": "Versandschachtel (E-Commerce)",
+    "Scatola regalo con chiusura a petali": "Geschenkschachtel mit Blütenverschluss",
+    "Scatola giocattoli": "Spielzeugschachtel",
+    "Astuccio dentifricio": "Zahnpasta-Faltschachtel",
+    "Scatola per bottiglia": "Flaschenschachtel",
+    "Scatola cioccolatini a cassetto": "Pralinen-Schubschachtel",
+    "Scatola triangolare": "Dreieckige Schachtel",
+    "Scatola mailer per spedizioni": "Versandschachtel",
+    "Scatola regalo a petali": "Geschenkschachtel mit Blüten",
+    "Grande e piatta, chiusura a incastro invertita (linguetta in alto sul davanti, in basso sul retro).": "Groß und flach, gegenläufige Steckverschlüsse (oben vorne, unten hinten).",
+    "Lungo e stretto, chiusura a incastro alle due estremità. L = lunghezza dell’astuccio, P e H = sezione.": "Lang und schmal, Steckverschluss an beiden Enden. L = Länge, T und H = Querschnitt.",
+    "Alta, chiusura a incastro invertita.": "Hoch, gegenläufige Steckverschlüsse.",
+    "Cassetto e fodero sullo stesso foglio (nel 3D si piega il cassetto). Il fodero è più largo di 1 mm più due spessori.": "Schublade und Hülle auf demselben Blatt (im 3D wird die Schublade gefaltet). Die Hülle ist 1 mm plus zwei Materialstärken größer.",
+    "L = lato dell’esagono, H = altezza; P non si usa. Fondo incollato, coperchio a incastro.": "L = Sechseckseite, H = Höhe; T wird nicht verwendet. Geklebter Boden, Steckdeckel.",
+    "Prisma triangolare (tipo barretta): L = lato del triangolo, H = lunghezza; P non si usa.": "Dreiecksprisma (Riegel-Stil): L = Dreieckseite, H = Länge; T wird nicht verwendet.",
+    "Bipiramide a 8 facce: L = diametro, H = altezza totale; P non si usa. Alette di colla su tutte le giunture.": "Doppelpyramide mit 8 Seiten: L = Durchmesser, H = Gesamthöhe; T wird nicht verwendet. Klebelaschen an allen Stößen.",
+    "Vassoio con manico a ponte: le due strisce salgono dalle pareti corte e si incollano sopra al centro.": "Schale mit Bügelgriff: Die zwei Streifen steigen von den kurzen Wänden auf und werden oben in der Mitte verklebt.",
+    "Vassoio con coperchio incernierato sul retro, alette laterali e linguetta che entra davanti.": "Schale mit hinten angelenktem Deckel, Seitenlaschen und vorderer Einstecklasche.",
+    "Tubo con fondo incollato e chiusura a 4 petali che si incontrano al centro.": "Röhre mit geklebtem Boden und 4-Blüten-Verschluss, der sich in der Mitte trifft.",
     "Scatola panino a conchiglia (clamshell)": "Burger-Klappschachtel (Clamshell)",
     "Scatola a casetta con manico (menù bambini)": "Giebelschachtel mit Griff (Kindermenü)",
     "Scatola panino a conchiglia": "Burger-Klappschachtel",
@@ -5475,6 +5540,33 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Scatola giocattoli tipo mattoncini (incastro invertito)": "Caja de juguetes tipo bloques (cierre invertido)",
+    "Astuccio dentifricio (lungo)": "Estuche de pasta de dientes (largo)",
+    "Scatola alta per bottiglia": "Caja alta para botella",
+    "Scatola cioccolatini a cassetto (cassetto + fodero)": "Caja de bombones con cajón (cajón + funda)",
+    "Scatola esagonale": "Caja hexagonal",
+    "Scatola triangolare (prisma)": "Caja triangular (prisma)",
+    "Scatola a diamante": "Caja en forma de diamante",
+    "Cestino con manico": "Cestita con asa",
+    "Scatola mailer per spedizioni (e-commerce)": "Caja mailer para envíos (e-commerce)",
+    "Scatola regalo con chiusura a petali": "Caja de regalo con cierre de pétalos",
+    "Scatola giocattoli": "Caja de juguetes",
+    "Astuccio dentifricio": "Estuche de pasta de dientes",
+    "Scatola per bottiglia": "Caja para botella",
+    "Scatola cioccolatini a cassetto": "Caja de bombones con cajón",
+    "Scatola triangolare": "Caja triangular",
+    "Scatola mailer per spedizioni": "Caja mailer para envíos",
+    "Scatola regalo a petali": "Caja de regalo de pétalos",
+    "Grande e piatta, chiusura a incastro invertita (linguetta in alto sul davanti, in basso sul retro).": "Grande y plana, cierre de encaje invertido (lengüeta arriba delante, abajo detrás).",
+    "Lungo e stretto, chiusura a incastro alle due estremità. L = lunghezza dell’astuccio, P e H = sezione.": "Largo y estrecho, cierre de encaje en ambos extremos. L = longitud del estuche, P y H = sección.",
+    "Alta, chiusura a incastro invertita.": "Alta, cierre de encaje invertido.",
+    "Cassetto e fodero sullo stesso foglio (nel 3D si piega il cassetto). Il fodero è più largo di 1 mm più due spessori.": "Cajón y funda en la misma hoja (en 3D se pliega el cajón). La funda es 1 mm más dos espesores más ancha.",
+    "L = lato dell’esagono, H = altezza; P non si usa. Fondo incollato, coperchio a incastro.": "L = lado del hexágono, H = altura; P no se usa. Fondo pegado, tapa de encaje.",
+    "Prisma triangolare (tipo barretta): L = lato del triangolo, H = lunghezza; P non si usa.": "Prisma triangular (tipo barrita): L = lado del triángulo, H = longitud; P no se usa.",
+    "Bipiramide a 8 facce: L = diametro, H = altezza totale; P non si usa. Alette di colla su tutte le giunture.": "Bipirámide de 8 caras: L = diámetro, H = altura total; P no se usa. Solapas de pegado en todas las uniones.",
+    "Vassoio con manico a ponte: le due strisce salgono dalle pareti corte e si incollano sopra al centro.": "Bandeja con asa de puente: las dos tiras suben desde las paredes cortas y se pegan arriba en el centro.",
+    "Vassoio con coperchio incernierato sul retro, alette laterali e linguetta che entra davanti.": "Bandeja con tapa con bisagra trasera, solapas laterales y lengüeta delantera.",
+    "Tubo con fondo incollato e chiusura a 4 petali che si incontrano al centro.": "Tubo con fondo pegado y cierre de 4 pétalos que se encuentran en el centro.",
     "Scatola panino a conchiglia (clamshell)": "Caja de hamburguesa tipo concha (clamshell)",
     "Scatola a casetta con manico (menù bambini)": "Caja tipo casita con asa (menú infantil)",
     "Scatola panino a conchiglia": "Caja de hamburguesa tipo concha",
@@ -7082,6 +7174,33 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Scatola giocattoli tipo mattoncini (incastro invertito)": "积木玩具盒（反向插舌）",
+    "Astuccio dentifricio (lungo)": "牙膏盒（长型）",
+    "Scatola alta per bottiglia": "高瓶盒",
+    "Scatola cioccolatini a cassetto (cassetto + fodero)": "抽屉式巧克力盒（抽屉 + 外套）",
+    "Scatola esagonale": "六角盒",
+    "Scatola triangolare (prisma)": "三角盒（棱柱）",
+    "Scatola a diamante": "钻石形盒",
+    "Cestino con manico": "带提手的篮子",
+    "Scatola mailer per spedizioni (e-commerce)": "快递邮寄盒（电商）",
+    "Scatola regalo con chiusura a petali": "花瓣封口礼盒",
+    "Scatola giocattoli": "玩具盒",
+    "Astuccio dentifricio": "牙膏盒",
+    "Scatola per bottiglia": "瓶盒",
+    "Scatola cioccolatini a cassetto": "抽屉式巧克力盒",
+    "Scatola triangolare": "三角盒",
+    "Scatola mailer per spedizioni": "快递邮寄盒",
+    "Scatola regalo a petali": "花瓣礼盒",
+    "Grande e piatta, chiusura a incastro invertita (linguetta in alto sul davanti, in basso sul retro).": "大而扁，反向插舌封口（上方插舌在正面，下方在背面）。",
+    "Lungo e stretto, chiusura a incastro alle due estremità. L = lunghezza dell’astuccio, P e H = sezione.": "细长型，两端插舌封口。L = 盒长，P 和 H = 截面。",
+    "Alta, chiusura a incastro invertita.": "高型，反向插舌封口。",
+    "Cassetto e fodero sullo stesso foglio (nel 3D si piega il cassetto). Il fodero è più largo di 1 mm più due spessori.": "抽屉和外套在同一张纸上（3D 中折叠抽屉）。外套比抽屉宽 1 毫米加两倍厚度。",
+    "L = lato dell’esagono, H = altezza; P non si usa. Fondo incollato, coperchio a incastro.": "L = 六边形边长，H = 高度；不使用 P。底部粘合，插舌盖。",
+    "Prisma triangolare (tipo barretta): L = lato del triangolo, H = lunghezza; P non si usa.": "三棱柱（巧克力棒式）：L = 三角形边长，H = 长度；不使用 P。",
+    "Bipiramide a 8 facce: L = diametro, H = altezza totale; P non si usa. Alette di colla su tutte le giunture.": "八面双锥：L = 直径，H = 总高；不使用 P。所有接缝都有粘合翼。",
+    "Vassoio con manico a ponte: le due strisce salgono dalle pareti corte e si incollano sopra al centro.": "带拱形提手的托盘：两条纸带从短边壁升起，在顶部中央粘合。",
+    "Vassoio con coperchio incernierato sul retro, alette laterali e linguetta che entra davanti.": "托盘带后侧铰接盖、侧翼和前插舌。",
+    "Tubo con fondo incollato e chiusura a 4 petali che si incontrano al centro.": "底部粘合的筒形，4 片花瓣在中央合拢封口。",
     "Scatola panino a conchiglia (clamshell)": "汉堡蛤壳盒",
     "Scatola a casetta con manico (menù bambini)": "带提手的屋顶形盒（儿童套餐）",
     "Scatola panino a conchiglia": "汉堡蛤壳盒",
@@ -8689,6 +8808,33 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Scatola giocattoli tipo mattoncini (incastro invertito)": "Boîte de jouets type briques (rabats inversés)",
+    "Astuccio dentifricio (lungo)": "Étui de dentifrice (long)",
+    "Scatola alta per bottiglia": "Boîte haute pour bouteille",
+    "Scatola cioccolatini a cassetto (cassetto + fodero)": "Boîte à chocolats tiroir (tiroir + fourreau)",
+    "Scatola esagonale": "Boîte hexagonale",
+    "Scatola triangolare (prisma)": "Boîte triangulaire (prisme)",
+    "Scatola a diamante": "Boîte diamant",
+    "Cestino con manico": "Panier avec anse",
+    "Scatola mailer per spedizioni (e-commerce)": "Boîte d'expédition mailer (e-commerce)",
+    "Scatola regalo con chiusura a petali": "Boîte cadeau à fermeture pétales",
+    "Scatola giocattoli": "Boîte de jouets",
+    "Astuccio dentifricio": "Étui de dentifrice",
+    "Scatola per bottiglia": "Boîte pour bouteille",
+    "Scatola cioccolatini a cassetto": "Boîte à chocolats tiroir",
+    "Scatola triangolare": "Boîte triangulaire",
+    "Scatola mailer per spedizioni": "Boîte d'expédition mailer",
+    "Scatola regalo a petali": "Boîte cadeau pétales",
+    "Grande e piatta, chiusura a incastro invertita (linguetta in alto sul davanti, in basso sul retro).": "Grande et plate, rabats inversés (languette en haut à l'avant, en bas à l'arrière).",
+    "Lungo e stretto, chiusura a incastro alle due estremità. L = lunghezza dell’astuccio, P e H = sezione.": "Long et étroit, fermeture à rabat aux deux extrémités. L = longueur de l'étui, P et H = section.",
+    "Alta, chiusura a incastro invertita.": "Haute, rabats inversés.",
+    "Cassetto e fodero sullo stesso foglio (nel 3D si piega il cassetto). Il fodero è più largo di 1 mm più due spessori.": "Tiroir et fourreau sur la même feuille (la 3D plie le tiroir). Le fourreau est plus large de 1 mm plus deux épaisseurs.",
+    "L = lato dell’esagono, H = altezza; P non si usa. Fondo incollato, coperchio a incastro.": "L = côté de l'hexagone, H = hauteur ; P n'est pas utilisé. Fond collé, couvercle à rabat.",
+    "Prisma triangolare (tipo barretta): L = lato del triangolo, H = lunghezza; P non si usa.": "Prisme triangulaire (type barre) : L = côté du triangle, H = longueur ; P n'est pas utilisé.",
+    "Bipiramide a 8 facce: L = diametro, H = altezza totale; P non si usa. Alette di colla su tutte le giunture.": "Bipyramide à 8 faces : L = diamètre, H = hauteur totale ; P n'est pas utilisé. Rabats de colle sur tous les joints.",
+    "Vassoio con manico a ponte: le due strisce salgono dalle pareti corte e si incollano sopra al centro.": "Plateau avec anse en pont : les deux bandes montent des parois courtes et se collent en haut au centre.",
+    "Vassoio con coperchio incernierato sul retro, alette laterali e linguetta che entra davanti.": "Plateau avec couvercle articulé à l'arrière, rabats latéraux et languette avant.",
+    "Tubo con fondo incollato e chiusura a 4 petali che si incontrano al centro.": "Tube à fond collé et fermeture à 4 pétales qui se rejoignent au centre.",
     "Scatola panino a conchiglia (clamshell)": "Boîte burger à clapet (clamshell)",
     "Scatola a casetta con manico (menù bambini)": "Boîte maisonnette à poignée (menu enfant)",
     "Scatola panino a conchiglia": "Boîte burger à clapet",
@@ -14086,7 +14232,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.56';
+const GUIDE_VERSION = '2.57';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -14324,7 +14470,7 @@ html:`<p>Ogni piega ha un numero di <b>passo</b>: nella simulazione 3D si chiudo
 <li>il pannello che si piega è colorato pieno, i pannelli attaccati a lui (che si muovono insieme) più tenui; l'evidenziazione si vede anche quando il pezzo è dietro ad altri pannelli;</li>
 <li>al contrario, <b>clic su un pannello nel 3D</b>: viene evidenziata la piega su cui si chiude e in basso compare "Passo 2 di 4 · piega a monte 90° · lunga …"; se la sequenza è aperta, la voce corrispondente si accende. Il pannello di base viene indicato come tale; un clic fuori dalla scatola toglie l'evidenziazione.</li></ul>` },
 
-{ id:'genera-scatola', cat:'Fustella e scatole', title:'Genera scatola', keys:'genera scatola americana rsc astuccio tuck box dimensioni larghezza profondità altezza automatica',
+{ id:'genera-scatola', cat:'Fustella e scatole', title:'Genera scatola', keys:'genera scatola americana rsc astuccio tuck box giocattoli mattoncini dentifricio bottiglia cioccolatini cassetto esagonale triangolare prisma diamante cestino manico mailer spedizioni petali regalo dimensioni larghezza profondità altezza automatica',
 html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profondità e Altezza in mm e scegli il tipo. La fustella viene creata in una nuova scheda.</p>
 <ul><li><b>Scatola americana (RSC)</b>: 4 pareti con aletta di incollaggio, alette sopra e sotto separate da tagli.</li>
 <li><b>Astuccio con coperchio a incastro</b>: alette antipolvere, aletta posteriore e linguetta di chiusura.</li>
@@ -14333,6 +14479,14 @@ html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profo
 <li><b>Fascia (sleeve)</b>: quattro pannelli L, P, L, P alti H, con l'aletta di incollaggio; senza fondo né coperchio.</li>
 <li><b>Scatola panino a conchiglia (clamshell)</b>: fondo e coperchio sono due vassoi (L×P, pareti alte H) uniti dalla cerniera posteriore; le alette d'angolo si incollano dentro le pareti; da chiusa le pareti del coperchio poggiano su quelle del fondo (altezza totale 2×H).</li>
 <li><b>Scatola a casetta con manico (menù bambini)</b>: quattro pareti in fila con l'aletta di colla, fondo a incastro (alette antipolvere e linguetta), due falde del tetto sulle pareti lunghe che salgono al colmo, due manici con il foro che da chiusi stanno uno contro l'altro (vanno incollati), pareti corte a punta con alette che si incollano sotto le falde. Gli angoli delle falde sono calcolati dalle misure.</li>
+<li><b>Scatola giocattoli tipo mattoncini</b> e <b>Scatola alta per bottiglia</b>: astucci con chiusura a incastro <b>invertita</b> (la linguetta sopra entra sul davanti, quella sotto sul retro), come le scatole dei giocattoli a mattoncini.</li>
+<li><b>Astuccio dentifricio</b>: astuccio lungo e stretto con incastro alle due estremità; L è la lunghezza, P e H la sezione.</li>
+<li><b>Scatola cioccolatini a cassetto</b>: cassetto (vassoio) e fodero (fascia più larga di 1 mm più due spessori) sullo stesso foglio; nel 3D si piega il cassetto.</li>
+<li><b>Scatola esagonale</b> e <b>Scatola triangolare (prisma)</b>: pareti in fila con aletta di colla, fondo incollato con alette e coperchio con alette a incastro; L è il lato del poligono, H l'altezza (P non si usa ed è disattivata).</li>
+<li><b>Scatola a diamante</b>: bipiramide a 8 facce (corona in alto, padiglione in basso) con alette di colla su ogni giuntura; L è il diametro, H l'altezza totale; gli angoli delle pieghe sono calcolati.</li>
+<li><b>Cestino con manico</b>: vassoio con due strisce che salgono dalle pareti corte e si incollano sopra al centro formando il manico.</li>
+<li><b>Scatola mailer per spedizioni</b>: vassoio con coperchio incernierato sul retro, alette laterali e linguetta che entra sul davanti (tipo e-commerce).</li>
+<li><b>Scatola regalo con chiusura a petali</b>: tubo con fondo incollato e quattro petali curvi che si chiudono al centro.</li>
 <li><b>Piramide a base quadrata</b>: base di lato L, altezza H; le pieghe hanno già gli angoli giusti (non 90°) e le alette di incollaggio stanno dentro.</li></ul>
 <p>Per vassoi, scatole con coperchio e piramidi l'<a data-topic="anteprima-3d">anteprima 3D</a> mostra il fondo in basso e le pareti che salgono.</p>
 <p><b>Spessore del cartone</b>: con 0 le misure sono quelle delle linee. Con uno spessore (es. 0,5 mm cartoncino, 3 mm ondulato onda B, 4 mm onda C) le misure scritte diventano <b>interne</b>: lunghezza e profondità crescono di uno spessore, l'altezza di due.</p>
@@ -14607,6 +14761,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.57</b> — Dieci nuovi modelli nel <a data-topic="genera-scatola">generatore</a>: scatola giocattoli a incastro invertito, astuccio dentifricio, scatola per bottiglia, cioccolatini a cassetto, esagonale, triangolare, diamante, cestino con manico, mailer per spedizioni e regalo a petali. Ogni modello mostra una nota e propone misure di partenza.</li>
 <li><b>2.56</b> — Nuovi modelli nel <a data-topic="genera-scatola">generatore</a>: scatola panino a conchiglia e scatola a casetta con manico.</li>
 <li><b>2.55</b> — Sequenza di piegatura: <a data-topic="ordine">"Una piega per passo"</a> e riepilogo delle pieghe usate e non usate nel 3D.</li>
 <li><b>2.54</b> — <a data-topic="lato-interno">Stampa dell'interno</a>: livelli Esterno/Interno, vista Interno con la fustella specchiata, sfondo interno, retro nelle esportazioni (PDF pagina 2, SVG, immagini), grafica interna nel 3D e nei modelli GLB/OBJ, imposizione e controllo anche del retro.</li>
@@ -15392,7 +15547,148 @@ function genGableBox(L, W, H, glueW){
     shapes.push(boxPolyShape(pts.map(q=> [q[0] - mx + cx, q[1] - my + cy]), 'cut')); });
   return {shapes, totalW: x4, totalH: top + H + W + T, rootHint: [x0 + L/2, Y(H + W/2)]};
 }
+// ---------- utilità per i modelli ----------
+function offsetShapes(shapes, dx, dy){ shapes.forEach(x=>{ if(x.points) x.points = x.points.map(q=>[q[0]+dx, q[1]+dy]); else if(x.x!=null){ x.x += dx; x.y += dy; } }); return shapes; }
+function mkFold(a, b, order, ang, dir){ const f = boxLineShape(a, b, 'fold'); f.foldOrder = order; f.foldDir = dir || 'mountain'; f.foldAngle = Math.round((ang==null ? 90 : ang)*10)/10; return f; }
+// aletta trapezoidale fuori dal lato A→B (lontano dal punto "inside"), profonda d; restituisce i 4 punti del contorno
+function flapPts(A, B, d, inside, ins){
+  const dx = B[0]-A[0], dy = B[1]-A[1], l = Math.hypot(dx,dy), u = [dx/l, dy/l]; let n = [-u[1], u[0]];
+  const m = [(A[0]+B[0])/2, (A[1]+B[1])/2]; if((inside[0]-m[0])*n[0] + (inside[1]-m[1])*n[1] > 0) n = [-n[0], -n[1]];
+  const k = Math.min(ins==null ? d : ins, l*0.3);
+  return [A, [A[0]+n[0]*d+u[0]*k, A[1]+n[1]*d+u[1]*k], [B[0]+n[0]*d-u[0]*k, B[1]+n[1]*d-u[1]*k], B];
+}
+// poligono regolare di lato L appoggiato sul lato A→B, dal lato opposto a "away"
+function regPolyOnEdge(A, B, N, away){
+  const L = dist(A, B), u = [(B[0]-A[0])/L, (B[1]-A[1])/L]; let n = [-u[1], u[0]];
+  const m = [(A[0]+B[0])/2, (A[1]+B[1])/2]; if((away[0]-m[0])*n[0] + (away[1]-m[1])*n[1] > 0) n = [-n[0], -n[1]];
+  const R = L/(2*Math.sin(Math.PI/N)), ap = L/(2*Math.tan(Math.PI/N)), C = [m[0]+n[0]*ap, m[1]+n[1]*ap];
+  const a0 = Math.atan2(A[1]-C[1], A[0]-C[0]), a1 = Math.atan2(B[1]-C[1], B[0]-C[0]);
+  let step = 2*Math.PI/N; const d = a1 - a0, dd = Math.atan2(Math.sin(d), Math.cos(d)); if(dd < 0) step = -step;
+  const pts = []; for(let k=0;k<N;k++){ const a = a0 + step*k; pts.push([C[0]+R*Math.cos(a), C[1]+R*Math.sin(a)]); } // pts[0]=A, pts[1]=B
+  return {pts, C};
+}
+// Prisma a N lati (triangolare, esagonale…): N pareti di lato L e altezza H in fila con l'aletta di colla;
+// fondo a N lati incollato con alette, coperchio a N lati con alette a incastro.
+function genPrism(L, W, H, glueW, N){
+  const gw = glueW || Math.round(Math.max(10, Math.min(L, H)*0.2)), ext = 360/N, fd = Math.max(8, Math.min(18, L*0.3, H*0.3));
+  const x = k=> gw + k*L, X1 = x(N), gt = Math.min(gw*0.6, H*0.15);
+  const shapes = [], P = [], folds = [];
+  const top = regPolyOnEdge([x(0),0], [x(1),0], N, [x(0)+L/2, H]);
+  const bot = regPolyOnEdge([x(1),H], [x(0),H], N, [x(0)+L/2, 0]);
+  const walk = (poly, from, to, order)=>{ // dal vertice "from" al vertice "to" lungo il poligono, con un'aletta su ogni lato
+    const n = poly.pts.length, path = []; for(let i=0;i<n;i++) path.push(poly.pts[(from - i + n) % n]);
+    for(let i=0;i<path.length-1;i++){ const f = flapPts(path[i], path[i+1], fd, poly.C); P.push(...f.slice(0,3)); folds.push(mkFold(path[i], path[i+1], order, 90)); }
+  };
+  P.push([x(0),0]); walk(top, 0, 1, 3); P.push([x(1),0]);
+  P.push([X1,0], [X1,H]);
+  P.push([x(1),H]); walk(bot, 0, 1, 1); P.push([x(0),H]);
+  P.push([0,H-gt], [0,gt]);
+  const clean = P.filter((q,i)=> i===0 || dist(q, P[i-1]) > 1e-6);
+  shapes.push(boxPolyShape(clean, 'cut'));
+  for(let k=1;k<N;k++) shapes.push(mkFold([x(k),0],[x(k),H],1, ext));
+  shapes.push(mkFold([x(0),0],[x(0),H],1, ext));                           // aletta di colla dentro l'ultima parete
+  shapes.push(mkFold([x(0),H],[x(1),H],2, 90)); shapes.push(mkFold([x(0),0],[x(1),0],4, 90));
+  shapes.push(...folds);
+  shapes.push(glueZoneShape(0, gt, gw, H-2*gt));
+  return {shapes, totalW: X1, totalH: H, rootHint: [x(0)+L/2, H/2]};
+}
+// Diamante: bipiramide a N facce (corona in alto, padiglione in basso). L = diametro, H = altezza totale.
+function genDiamond(L, W, H){
+  const N = 8, r = L/2, hu = H*0.3, hl = H - hu;
+  const E = k=> [r*Math.cos(2*Math.PI*k/N), r*Math.sin(2*Math.PI*k/N), 0], U = [0,0,hu], D = [0,0,-hl];
+  const sub = (a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]], cr = (a,b)=>[a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
+  const nrm = (a,b,c)=>{ let n = cr(sub(b,a), sub(c,a)); const cen = [(a[0]+b[0]+c[0])/3,(a[1]+b[1]+c[1])/3,(a[2]+b[2]+c[2])/3]; if(n[0]*cen[0]+n[1]*cen[1]+n[2]*cen[2] < 0) n = n.map(v=>-v); const l = Math.hypot(...n); return n.map(v=>v/l); };
+  const ang = (n1,n2)=> Math.acos(Math.max(-1, Math.min(1, n1[0]*n2[0]+n1[1]*n2[1]+n1[2]*n2[2])))*180/Math.PI;
+  const nu = k=> nrm(U, E(k), E(k+1)), nl = k=> nrm(D, E(k), E(k+1));
+  const aFan = ang(nu(0), nu(1)), aEq = ang(nu(0), nl(0)), aLow = ang(nl(0), nl(1));
+  const su = Math.hypot(r, hu), sl = Math.hypot(r, hl), e = 2*r*Math.sin(Math.PI/N), th = 2*Math.asin(e/(2*su)), hL = Math.sqrt(sl*sl - e*e/4);
+  const fd = Math.max(6, Math.min(12, e*0.3)), O = [0,0];
+  const Pk = k=>{ const a = -Math.PI/2 - th*N/2 + th*k; return [su*Math.cos(a), su*Math.sin(a)]; };
+  const Qk = k=>{ const A = Pk(k), B = Pk(k+1), m = [(A[0]+B[0])/2, (A[1]+B[1])/2], l = Math.hypot(m[0], m[1]); return [m[0] + m[0]/l*hL, m[1] + m[1]/l*hL]; };
+  const P = [O, Pk(0)], shapes = [];
+  for(let k=0;k<N;k++){ const f = flapPts(Qk(k), Pk(k+1), fd, Pk(k)); P.push(Qk(k), f[1], f[2], Pk(k+1)); shapes.push(mkFold(Qk(k), Pk(k+1), 1, aLow)); }
+  { const f = flapPts(Pk(N), O, fd, Pk(N-1)); P.push(f[1], f[2]); shapes.push(mkFold(Pk(N), O, 1, aFan)); }
+  for(let k=1;k<N;k++) shapes.push(mkFold(O, Pk(k), 2, aFan));
+  for(let k=0;k<N;k++) shapes.push(mkFold(Pk(k), Pk(k+1), 3, aEq));
+  shapes.unshift(boxPolyShape(P, 'cut'));
+  const xs = P.map(q=>q[0]), ys = P.map(q=>q[1]), mx = Math.min(...xs), my = Math.min(...ys);
+  offsetShapes(shapes, -mx, -my);
+  return {shapes, totalW: Math.max(...xs)-mx, totalH: Math.max(...ys)-my};
+}
+// Cestino: vassoio con un manico a ponte (due strisce dalle pareti corte, unite sopra al centro)
+function genBasket(L, W, H){
+  const t = trayParts(L, W, H), Hh = Math.max(40, Math.round(H*1.2)), hw = Math.max(15, Math.min(30, W*0.25)), ov = 15, cy = H + W/2, Lh = Hh + L/2 + ov;
+  const P = [];
+  t.P.forEach(q=>{
+    P.push(q);
+    if(q[0]===0 && q[1]===H+W) P.push([0, cy+hw/2], [-Lh, cy+hw/2], [-Lh, cy-hw/2], [0, cy-hw/2]);
+    if(q[0]===2*H+L && q[1]===H) P.push([2*H+L, cy-hw/2], [2*H+L+Lh, cy-hw/2], [2*H+L+Lh, cy+hw/2], [2*H+L, cy+hw/2]);
+  });
+  const shapes = [boxPolyShape(P, 'cut')];
+  t.folds.forEach(([a,b,o])=> shapes.push(mkFold(a, b, o, 90)));
+  shapes.push(mkFold([-Hh, cy-hw/2], [-Hh, cy+hw/2], 4, 90), mkFold([2*H+L+Hh, cy-hw/2], [2*H+L+Hh, cy+hw/2], 4, 90)); // 4: il manico si chiude sopra
+  t.glues.forEach(([x,y,w,h])=> shapes.push(glueZoneShape(x, y, w, h)));
+  shapes.push(glueZoneShape(-Lh + 1.5, cy - hw/2, 2*ov - 3, hw));
+  offsetShapes(shapes, Lh, 0);
+  return {shapes, totalW: L + 2*H + 2*Lh, totalH: W + 2*H, rootHint: [Lh + H + L/2, H + W/2]};
+}
+// Mailer per spedizioni: vassoio con coperchio sulla parete posteriore, alette laterali e linguetta sul davanti
+function genMailer(L, W, H){
+  const t = trayParts(L, W, H), sf = Math.max(6, H - 1.5), si = Math.min(W*0.08, 10), T = Math.max(10, H - 2), tt = Math.min(L*0.08, 12);
+  const lid = [[H,0],[H,-si],[H-sf,-si-sf*0.4],[H-sf,-W+si+sf*0.4],[H,-W+si],[H,-W],[H+tt,-W-T],[H+L-tt,-W-T],[H+L,-W],[H+L,-W+si],[H+L+sf,-W+si+sf*0.4],[H+L+sf,-si-sf*0.4],[H+L,-si]];
+  const P = t.P.slice(1).concat(lid);
+  const shapes = [boxPolyShape(P, 'cut')];
+  t.folds.forEach(([a,b,o])=> shapes.push(mkFold(a, b, o, 90)));
+  shapes.push(mkFold([H,0],[H+L,0],4,90), mkFold([H,-si],[H,-W+si],5,90), mkFold([H+L,-si],[H+L,-W+si],5,90), mkFold([H,-W],[H+L,-W],6,90));
+  t.glues.forEach(([x,y,w,h])=> shapes.push(glueZoneShape(x, y, w, h)));
+  offsetShapes(shapes, 0, W + T);
+  return {shapes, totalW: L + 2*H, totalH: 2*W + 2*H + T, rootHint: [H + L/2, W + T + H + W/2]};
+}
+// Scatola regalo con chiusura a petali: tubo di 4 pareti, fondo incollato, in alto 4 petali che si chiudono al centro
+function genPetals(L, W, H, glueW){
+  const gw = glueW || Math.round(Math.max(12, Math.min(L, W)*0.2)), fd = Math.max(8, Math.min(15, W*0.25));
+  const xs = [gw, gw+L, gw+L+W, gw+2*L+W, gw+2*L+2*W], gt = Math.min(gw*0.6, H*0.15);
+  const P = [], shapes = [];
+  const arcSide = (A, B, bulge, inside)=>{ // lato del petalo un po' bombato verso l'esterno
+    const m = [(A[0]+B[0])/2, (A[1]+B[1])/2], l = dist(A,B), u = [(B[0]-A[0])/l, (B[1]-A[1])/l]; let n = [-u[1], u[0]];
+    if((inside[0]-m[0])*n[0] + (inside[1]-m[1])*n[1] > 0) n = [-n[0], -n[1]];
+    const out = []; for(let i=1;i<10;i++){ const tt = i/10, b = bulge*l*4*tt*(1-tt); out.push([A[0]+(B[0]-A[0])*tt + n[0]*b, A[1]+(B[1]-A[1])*tt + n[1]*b]); } return out;
+  };
+  for(let k=0;k<4;k++){ // petali: triangoli alti metà del lato opposto, si chiudono esattamente al centro
+    const a = [xs[k],0], b = [xs[k+1],0], len = xs[k+1]-xs[k], h = (k%2===0 ? W : L)/2, apex = [(a[0]+b[0])/2, -h], cen = [(a[0]+b[0])/2, -h/3];
+    P.push(a, ...arcSide(a, apex, 0.08, cen), apex, ...arcSide(apex, b, 0.08, cen));
+    shapes.push(mkFold(a, b, 3 + k, 90));
+  }
+  P.push([xs[4],0],[xs[4],H],[xs[1],H]);
+  const bot = [[xs[1],H],[xs[1],H+W],[xs[0],H+W],[xs[0],H]], bc = [xs[0]+L/2, H+W/2];
+  for(let i=0;i<3;i++){ const f = flapPts(bot[i], bot[i+1], fd, bc); P.push(...f.slice(0,3)); shapes.push(mkFold(bot[i], bot[i+1], 1, 90)); }
+  P.push([xs[0],H],[0,H-gt],[0,gt]);
+  shapes.unshift(boxPolyShape(P.filter((q,i)=> i===0 || dist(q, P[i-1]) > 1e-6), 'cut'));
+  [xs[1],xs[2],xs[3],xs[0]].forEach(x=> shapes.push(mkFold([x,0],[x,H],1,90)));
+  shapes.push(mkFold([xs[0],H],[xs[1],H],2,90));
+  shapes.push(glueZoneShape(0, gt, gw, H-2*gt));
+  const top = Math.max(L, W)/2*1.1;
+  offsetShapes(shapes, 0, top);
+  return {shapes, totalW: xs[4], totalH: top + H + W + fd, rootHint: [xs[0]+L/2, top + H + W/2]};
+}
+// Scatola a cassetto: cassetto (vassoio) e fodero che ci scorre sopra, sullo stesso foglio
+function genDrawer(L, W, H, glueW, t){
+  const shapes = [], d = trayShapes(L, W, H, 0, 0, shapes); setDefaultFolds(shapes);
+  const c = 1 + 2*(t||0), sl = BOX_TEMPLATES.sleeve.gen(L + c, H + c, W, glueW);
+  offsetShapes(sl.shapes, d.w + 15, 0); shapes.push(...sl.shapes);
+  return {shapes, totalW: d.w + 15 + sl.totalW, totalH: Math.max(d.h, sl.totalH), rootHint: [H + L/2, H + W/2]};
+}
 const BOX_TEMPLATES = {
+  toy: {label:'Scatola giocattoli', defaults:[300, 70, 200], note:'Grande e piatta, chiusura a incastro invertita (linguetta in alto sul davanti, in basso sul retro).', gen:(L, W, H, glueW)=> generateTuckBox(L, W, H, glueW, true)},
+  toothpaste: {label:'Astuccio dentifricio', defaults:[190, 40, 35], note:'Lungo e stretto, chiusura a incastro alle due estremità. L = lunghezza dell’astuccio, P e H = sezione.', gen:(L, W, H, glueW)=> generateTuckBox(W, H, L, glueW)},
+  bottle: {label:'Scatola per bottiglia', defaults:[90, 90, 330], note:'Alta, chiusura a incastro invertita.', gen:(L, W, H, glueW)=> generateTuckBox(L, W, H, glueW, true)},
+  drawer: {label:'Scatola cioccolatini a cassetto', defaults:[160, 110, 30], base:true, note:'Cassetto e fodero sullo stesso foglio (nel 3D si piega il cassetto). Il fodero è più largo di 1 mm più due spessori.', gen:(L, W, H, glueW, t)=> genDrawer(L, W, H, glueW, t)},
+  hexagon: {label:'Scatola esagonale', defaults:[60, 0, 50], base:true, note:'L = lato dell’esagono, H = altezza; P non si usa. Fondo incollato, coperchio a incastro.', gen:(L, W, H, glueW)=> genPrism(L, W, H, glueW, 6)},
+  triangle: {label:'Scatola triangolare', defaults:[45, 0, 200], base:true, note:'Prisma triangolare (tipo barretta): L = lato del triangolo, H = lunghezza; P non si usa.', gen:(L, W, H, glueW)=> genPrism(L, W, H, glueW, 3)},
+  diamond: {label:'Scatola a diamante', defaults:[100, 0, 110], note:'Bipiramide a 8 facce: L = diametro, H = altezza totale; P non si usa. Alette di colla su tutte le giunture.', gen:(L, W, H)=> genDiamond(L, W, H)},
+  basket: {label:'Cestino con manico', defaults:[160, 100, 60], base:true, note:'Vassoio con manico a ponte: le due strisce salgono dalle pareti corte e si incollano sopra al centro.', gen:(L, W, H)=> genBasket(L, W, H)},
+  mailer: {label:'Scatola mailer per spedizioni', defaults:[250, 180, 70], base:true, note:'Vassoio con coperchio incernierato sul retro, alette laterali e linguetta che entra davanti.', gen:(L, W, H)=> genMailer(L, W, H)},
+  petals: {label:'Scatola regalo a petali', defaults:[80, 80, 80], base:true, note:'Tubo con fondo incollato e chiusura a 4 petali che si incontrano al centro.', gen:(L, W, H, glueW)=> genPetals(L, W, H, glueW)},
   clamshell: {label:'Scatola panino a conchiglia', base:true, gen:(L, W, H)=> genClamshell(L, W, H)},
   gable: {label:'Scatola a casetta con manico', base:true, gen:(L, W, H, glueW)=> genGableBox(L, W, H, glueW)},
   tray: {label:'Vassoio', base:true, gen:(L, W, H)=>{ const shapes = []; const d = trayShapes(L, W, H, 0, 0, shapes); setDefaultFolds(shapes); return {shapes, totalW:d.w, totalH:d.h}; }},
@@ -15466,7 +15762,7 @@ function setDefaultFolds(shapes){
 // Astuccio con coperchio a incastro (tuck box): stesso tubo di 4 pannelli,
 // ma sopra e sotto ha alette a trapezio (polvere) sui lati e un'aletta a
 // incastro davanti/dietro, invece di semplici alette rettangolari.
-function generateTuckBox(L, W, H, glueW){
+function generateTuckBox(L, W, H, glueW, reverse){
   glueW = glueW || Math.round(Math.max(15, Math.min(L,W)*0.4));
   const dustH = W*0.4, tuckH = Math.max(12, W*0.25);
   const totalW = glueW + 2*L + 2*W;
@@ -15493,17 +15789,19 @@ function generateTuckBox(L, W, H, glueW){
       ], 'cut'));
       const fd = boxLineShape([x0,y0],[x0+w,y0],'fold'); fd.foldOrder = 2; shapes.push(fd); // 2: alette antipolvere
     });
-    // aletta rettangolare sul pannello posteriore (back)
+    // incastro invertito (reverse): in basso la linguetta sta sul retro e l'aletta piatta sul davanti
+    const tuckX = (reverse && dir>0) ? xs.back : xs.front, flatX = tuckX===xs.front ? xs.back : xs.front;
+    // aletta rettangolare (sul retro, o sul davanti se invertito)
     shapes.push(boxPolyShape([
-      [xs.back, y0], [xs.back+L, y0], [xs.back+L, dustY], [xs.back, dustY]
+      [flatX, y0], [flatX+L, y0], [flatX+L, dustY], [flatX, dustY]
     ], 'cut'));
-    { const fb = boxLineShape([xs.back,y0],[xs.back+L,y0],'fold'); fb.foldOrder = 3; shapes.push(fb); } // 3: aletta posteriore
-    // aletta a incastro sul pannello frontale (front), leggermente più lunga e rastremata in punta
+    { const fb = boxLineShape([flatX,y0],[flatX+L,y0],'fold'); fb.foldOrder = 3; shapes.push(fb); } // 3: aletta piatta
+    // aletta a incastro, leggermente più lunga e rastremata in punta
     const tipInset = L*0.12;
     shapes.push(boxPolyShape([
-      [xs.front, y0], [xs.front+L, y0], [xs.front+L-tipInset, tuckY], [xs.front+tipInset, tuckY]
+      [tuckX, y0], [tuckX+L, y0], [tuckX+L-tipInset, tuckY], [tuckX+tipInset, tuckY]
     ], 'cut'));
-    { const ff = boxLineShape([xs.front,y0],[xs.front+L,y0],'fold'); ff.foldOrder = 4; shapes.push(ff); } // 4: linguetta di chiusura, per ultima
+    { const ff = boxLineShape([tuckX,y0],[tuckX+L,y0],'fold'); ff.foldOrder = 4; shapes.push(ff); } // 4: linguetta di chiusura, per ultima
   }
   addEnd(bodyY0, -1); // fasce superiori (sopra il corpo, y decrescente)
   addEnd(bodyY1, +1); // fasce inferiori (sotto il corpo, y crescente)
@@ -18729,6 +19027,11 @@ document.getElementById('fold3dReset').onclick = ()=>{ fold3d.yaw=-0.6; fold3d.p
 function closeBoxGenModal(){ document.getElementById('boxGenModal').classList.remove('open'); }
 document.getElementById('boxGenModalClose').onclick = closeBoxGenModal;
 setupOverlayClickClose(document.getElementById('boxGenModal'), closeBoxGenModal);
+document.getElementById('boxGenType').addEventListener('change', ()=>{ // misure di partenza e note del modello scelto
+  const tp = BOX_TEMPLATES[document.getElementById('boxGenType').value];
+  document.getElementById('boxGenNote').textContent = tp && tp.note ? translate(tp.note) : '';
+  if(tp && tp.defaults){ ['boxGenL','boxGenW','boxGenH'].forEach((id,i)=>{ if(tp.defaults[i]) document.getElementById(id).value = tp.defaults[i]; }); }
+});
 document.getElementById('boxGenApply').onclick = ()=>{
   ensureDocumentOpen();
   const err = document.getElementById('boxGenError');
@@ -18738,7 +19041,9 @@ document.getElementById('boxGenApply').onclick = ()=>{
   const H = parseFloat(document.getElementById('boxGenH').value);
   const glueRaw = document.getElementById('boxGenGlue').value;
   const glueW = glueRaw==='' ? null : parseFloat(glueRaw);
-  if([L,W,H].some(v=>isNaN(v) || v<10)){
+  const tplV = BOX_TEMPLATES[document.getElementById('boxGenType').value];
+  const noW = !!(tplV && tplV.defaults && tplV.defaults[1]===0);   // P non usata (prismi, diamante)
+  if((noW ? [L,H] : [L,W,H]).some(v=>isNaN(v) || v<10)){
     err.textContent = 'Inserisci Larghezza, Profondità e Altezza valide (almeno 10mm ciascuna).';
     err.style.display = '';
     return;
