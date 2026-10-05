@@ -616,6 +616,7 @@ mark.guide-hit{ background:#ffe066; color:#1c1200; border-radius:2px; padding:0 
 .seq-item.active{ background:rgba(255,159,10,.25); outline:2px solid #ff9f0a; }
 .seq-head.active{ background:rgba(255,159,10,.18); border-radius:6px; outline:2px solid #ff9f0a; }
 .seq-head:hover{ background:rgba(255,214,10,.12); border-radius:6px; }
+#seqRecBar{ position:fixed; top:58px; left:50%; transform:translateX(-50%); z-index:260; display:none; gap:8px; align-items:center; background:var(--panel, #2c2c2e); color:var(--ink, #fff); border:2px solid #34c759; border-radius:10px; padding:8px 12px; box-shadow:0 8px 28px rgba(0,0,0,.45); font-size:13px; max-width:96vw; flex-wrap:wrap; }
 #seqModal{ background:transparent; pointer-events:none; justify-content:flex-end; align-items:flex-start; z-index:230; }
 #seqModal .modal-box{ pointer-events:auto; width:460px !important; margin:64px 16px 0 0; box-shadow:0 10px 36px rgba(0,0,0,.55); }
 .seq-item.dragging, .seq-step.dragging{ opacity:.45; }
@@ -956,7 +957,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.57</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.58</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1281,6 +1282,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
       <div id="seqList"></div>
       <div style="display:flex;gap:8px;margin-top:12px;">
         <button class="btn primary" id="seqSimulate" style="width:auto;margin:0;">🧊 Simula nel 3D</button>
+        <button class="btn" id="seqRecord" style="width:auto;margin:0;" title="Clicca sui pezzi (pannelli, alette, linguette) nell'ordine in cui si chiudono: il primo diventa il passo 1, il secondo il 2… Shift+clic per metterne più d'uno nello stesso passo">👆 Crea cliccando</button>
         <button class="btn" id="seqSplitAll" style="width:auto;margin:0;" title="Ogni piega (ogni tratto tra due pannelli) diventa un passo a sé, nell'ordine attuale: nella simulazione si chiudono una alla volta">1️⃣ Una piega per passo</button>
       </div>
     </div>
@@ -1490,6 +1492,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
         <span style="font-size:12px;color:var(--ink-dim);white-space:nowrap;">Ordine automatico delle pieghe:</span>
         <select id="fold3dAutoOrder" style="flex:1;"></select>
         <button class="btn" id="fold3dAutoOrderApply" style="width:auto;margin:0;">Applica e simula</button>
+        <button class="btn" id="fold3dRecord" style="width:auto;margin:0;" title="Clicca sui pezzi (nel 3D o sul disegno) nell'ordine in cui si chiudono: il primo diventa il passo 1, il secondo il 2…">👆 Crea cliccando</button>
         <button class="btn" id="fold3dSeq" style="width:auto;margin:0;">📋 Sequenza…</button>
         <button class="btn" id="fold3dShot" style="width:auto;margin:0;" title="Salva la vista attuale come immagine PNG ad alta risoluzione">📷 Immagine</button>
         <button class="btn" id="fold3dVideo" style="width:auto;margin:0;" title="Registra un video: la scatola si piega e poi gira su se stessa">🎬 Video</button>
@@ -2272,6 +2275,21 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Fatto": "Done",
+    "base": "base",
+    "Annulla ultimo": "Undo last",
+    "Ricomincia": "Start over",
+    "👆 Crea cliccando": "👆 Create by clicking",
+    "Clicca sui pezzi (pannelli, alette, linguette) nell'ordine in cui si chiudono: il primo diventa il passo 1, il secondo il 2… Shift+clic per metterne più d'uno nello stesso passo": "Click the pieces (panels, flaps, tucks) in the order they close: the first becomes step 1, the second step 2… Shift+click to put several in the same step",
+    "Clicca sui pezzi (nel 3D o sul disegno) nell'ordine in cui si chiudono: il primo diventa il passo 1, il secondo il 2…": "Click the pieces (in 3D or on the drawing) in the order they close: the first becomes step 1, the second step 2…",
+    "Clicca sui pezzi nell'ordine in cui si chiudono: il primo diventa il passo 1. Shift+clic: stesso passo del precedente.": "Click the pieces in the order they close: the first becomes step 1. Shift+click: same step as the previous one.",
+    "Prossimo clic: passo {n} (Shift+clic: ancora passo {m})": "Next click: step {n} (Shift+click: step {m} again)",
+    "Clicca il primo pezzo che si chiude (passo 1)": "Click the first piece that closes (step 1)",
+    "Sequenza creata: {n} passi scelti con i clic, le altre pieghe dopo (Ctrl+Z per annullare).": "Sequence created: {n} steps chosen by clicking, the other folds after them (Ctrl+Z to undo).",
+    "Nessun pezzo cliccato: l'ordine non è cambiato.": "No piece clicked: the order has not changed.",
+    "Clicca dentro un pezzo della scatola.": "Click inside a piece of the box.",
+    "Questo pezzo non è collegato al resto da nessuna piega.": "This piece is not connected to the rest by any fold.",
+    "Questo pezzo era già al passo {n}.": "This piece was already at step {n}.",
     "Scatola giocattoli tipo mattoncini (incastro invertito)": "Toy brick box (reverse tuck)",
     "Astuccio dentifricio (lungo)": "Toothpaste carton (long)",
     "Scatola alta per bottiglia": "Tall bottle box",
@@ -3906,6 +3924,21 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Fatto": "Fertig",
+    "base": "Basis",
+    "Annulla ultimo": "Letzten rückgängig",
+    "Ricomincia": "Neu beginnen",
+    "👆 Crea cliccando": "👆 Durch Klicken erstellen",
+    "Clicca sui pezzi (pannelli, alette, linguette) nell'ordine in cui si chiudono: il primo diventa il passo 1, il secondo il 2… Shift+clic per metterne più d'uno nello stesso passo": "Klicke die Teile (Felder, Laschen, Einstecklaschen) in der Reihenfolge, in der sie sich schließen: das erste wird Schritt 1, das zweite Schritt 2… Umschalt+Klick für mehrere im selben Schritt",
+    "Clicca sui pezzi (nel 3D o sul disegno) nell'ordine in cui si chiudono: il primo diventa il passo 1, il secondo il 2…": "Klicke die Teile (im 3D oder in der Zeichnung) in der Reihenfolge, in der sie sich schließen: das erste wird Schritt 1, das zweite Schritt 2…",
+    "Clicca sui pezzi nell'ordine in cui si chiudono: il primo diventa il passo 1. Shift+clic: stesso passo del precedente.": "Klicke die Teile in der Reihenfolge, in der sie sich schließen: das erste wird Schritt 1. Umschalt+Klick: gleicher Schritt wie das vorige.",
+    "Prossimo clic: passo {n} (Shift+clic: ancora passo {m})": "Nächster Klick: Schritt {n} (Umschalt+Klick: wieder Schritt {m})",
+    "Clicca il primo pezzo che si chiude (passo 1)": "Klicke das erste Teil, das sich schließt (Schritt 1)",
+    "Sequenza creata: {n} passi scelti con i clic, le altre pieghe dopo (Ctrl+Z per annullare).": "Reihenfolge erstellt: {n} Schritte per Klick gewählt, die übrigen Rillen danach (Strg+Z zum Rückgängigmachen).",
+    "Nessun pezzo cliccato: l'ordine non è cambiato.": "Kein Teil angeklickt: Die Reihenfolge ist unverändert.",
+    "Clicca dentro un pezzo della scatola.": "Klicke in ein Teil der Schachtel.",
+    "Questo pezzo non è collegato al resto da nessuna piega.": "Dieses Teil ist durch keine Rille mit dem Rest verbunden.",
+    "Questo pezzo era già al passo {n}.": "Dieses Teil war bereits in Schritt {n}.",
     "Scatola giocattoli tipo mattoncini (incastro invertito)": "Spielzeug-Bausteinschachtel (gegenläufige Steckklappen)",
     "Astuccio dentifricio (lungo)": "Zahnpasta-Faltschachtel (lang)",
     "Scatola alta per bottiglia": "Hohe Flaschenschachtel",
@@ -5540,6 +5573,21 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Fatto": "Hecho",
+    "base": "base",
+    "Annulla ultimo": "Deshacer último",
+    "Ricomincia": "Empezar de nuevo",
+    "👆 Crea cliccando": "👆 Crear haciendo clic",
+    "Clicca sui pezzi (pannelli, alette, linguette) nell'ordine in cui si chiudono: il primo diventa il passo 1, il secondo il 2… Shift+clic per metterne più d'uno nello stesso passo": "Haz clic en las piezas (paneles, solapas, lengüetas) en el orden en que se cierran: la primera es el paso 1, la segunda el 2… Mayús+clic para poner varias en el mismo paso",
+    "Clicca sui pezzi (nel 3D o sul disegno) nell'ordine in cui si chiudono: il primo diventa il passo 1, il secondo il 2…": "Haz clic en las piezas (en 3D o en el dibujo) en el orden en que se cierran: la primera es el paso 1, la segunda el 2…",
+    "Clicca sui pezzi nell'ordine in cui si chiudono: il primo diventa il passo 1. Shift+clic: stesso passo del precedente.": "Haz clic en las piezas en el orden en que se cierran: la primera es el paso 1. Mayús+clic: mismo paso que la anterior.",
+    "Prossimo clic: passo {n} (Shift+clic: ancora passo {m})": "Próximo clic: paso {n} (Mayús+clic: de nuevo paso {m})",
+    "Clicca il primo pezzo che si chiude (passo 1)": "Haz clic en la primera pieza que se cierra (paso 1)",
+    "Sequenza creata: {n} passi scelti con i clic, le altre pieghe dopo (Ctrl+Z per annullare).": "Secuencia creada: {n} pasos elegidos con clics, los demás pliegues después (Ctrl+Z para deshacer).",
+    "Nessun pezzo cliccato: l'ordine non è cambiato.": "Ninguna pieza seleccionada: el orden no ha cambiado.",
+    "Clicca dentro un pezzo della scatola.": "Haz clic dentro de una pieza de la caja.",
+    "Questo pezzo non è collegato al resto da nessuna piega.": "Esta pieza no está unida al resto por ningún pliegue.",
+    "Questo pezzo era già al passo {n}.": "Esta pieza ya estaba en el paso {n}.",
     "Scatola giocattoli tipo mattoncini (incastro invertito)": "Caja de juguetes tipo bloques (cierre invertido)",
     "Astuccio dentifricio (lungo)": "Estuche de pasta de dientes (largo)",
     "Scatola alta per bottiglia": "Caja alta para botella",
@@ -7174,6 +7222,21 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Fatto": "完成",
+    "base": "底",
+    "Annulla ultimo": "撤销上一步",
+    "Ricomincia": "重新开始",
+    "👆 Crea cliccando": "👆 点击创建",
+    "Clicca sui pezzi (pannelli, alette, linguette) nell'ordine in cui si chiudono: il primo diventa il passo 1, il secondo il 2… Shift+clic per metterne più d'uno nello stesso passo": "按闭合顺序点击各部件（面板、翼片、插舌）：第一个成为第 1 步，第二个第 2 步…… Shift+点击可将多个放在同一步",
+    "Clicca sui pezzi (nel 3D o sul disegno) nell'ordine in cui si chiudono: il primo diventa il passo 1, il secondo il 2…": "按闭合顺序点击各部件（在 3D 中或图纸上）：第一个成为第 1 步，第二个第 2 步……",
+    "Clicca sui pezzi nell'ordine in cui si chiudono: il primo diventa il passo 1. Shift+clic: stesso passo del precedente.": "按闭合顺序点击各部件：第一个成为第 1 步。Shift+点击：与上一个同一步。",
+    "Prossimo clic: passo {n} (Shift+clic: ancora passo {m})": "下一次点击：第 {n} 步（Shift+点击：仍为第 {m} 步）",
+    "Clicca il primo pezzo che si chiude (passo 1)": "点击最先闭合的部件（第 1 步）",
+    "Sequenza creata: {n} passi scelti con i clic, le altre pieghe dopo (Ctrl+Z per annullare).": "顺序已创建：点击选择了 {n} 步，其余折线排在后面（Ctrl+Z 撤销）。",
+    "Nessun pezzo cliccato: l'ordine non è cambiato.": "未点击任何部件：顺序未改变。",
+    "Clicca dentro un pezzo della scatola.": "请点击盒子的某个部件内部。",
+    "Questo pezzo non è collegato al resto da nessuna piega.": "此部件没有通过任何折线与其他部分相连。",
+    "Questo pezzo era già al passo {n}.": "此部件已在第 {n} 步。",
     "Scatola giocattoli tipo mattoncini (incastro invertito)": "积木玩具盒（反向插舌）",
     "Astuccio dentifricio (lungo)": "牙膏盒（长型）",
     "Scatola alta per bottiglia": "高瓶盒",
@@ -8808,6 +8871,21 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Fatto": "Terminé",
+    "base": "base",
+    "Annulla ultimo": "Annuler le dernier",
+    "Ricomincia": "Recommencer",
+    "👆 Crea cliccando": "👆 Créer en cliquant",
+    "Clicca sui pezzi (pannelli, alette, linguette) nell'ordine in cui si chiudono: il primo diventa il passo 1, il secondo il 2… Shift+clic per metterne più d'uno nello stesso passo": "Cliquez sur les pièces (panneaux, rabats, languettes) dans l'ordre où elles se ferment : la première devient l'étape 1, la deuxième l'étape 2… Maj+clic pour en mettre plusieurs dans la même étape",
+    "Clicca sui pezzi (nel 3D o sul disegno) nell'ordine in cui si chiudono: il primo diventa il passo 1, il secondo il 2…": "Cliquez sur les pièces (en 3D ou sur le dessin) dans l'ordre où elles se ferment : la première devient l'étape 1, la deuxième l'étape 2…",
+    "Clicca sui pezzi nell'ordine in cui si chiudono: il primo diventa il passo 1. Shift+clic: stesso passo del precedente.": "Cliquez sur les pièces dans l'ordre où elles se ferment : la première devient l'étape 1. Maj+clic : même étape que la précédente.",
+    "Prossimo clic: passo {n} (Shift+clic: ancora passo {m})": "Prochain clic : étape {n} (Maj+clic : encore étape {m})",
+    "Clicca il primo pezzo che si chiude (passo 1)": "Cliquez sur la première pièce qui se ferme (étape 1)",
+    "Sequenza creata: {n} passi scelti con i clic, le altre pieghe dopo (Ctrl+Z per annullare).": "Séquence créée : {n} étapes choisies par clic, les autres plis ensuite (Ctrl+Z pour annuler).",
+    "Nessun pezzo cliccato: l'ordine non è cambiato.": "Aucune pièce cliquée : l'ordre n'a pas changé.",
+    "Clicca dentro un pezzo della scatola.": "Cliquez à l'intérieur d'une pièce de la boîte.",
+    "Questo pezzo non è collegato al resto da nessuna piega.": "Cette pièce n'est reliée au reste par aucun pli.",
+    "Questo pezzo era già al passo {n}.": "Cette pièce était déjà à l'étape {n}.",
     "Scatola giocattoli tipo mattoncini (incastro invertito)": "Boîte de jouets type briques (rabats inversés)",
     "Astuccio dentifricio (lungo)": "Étui de dentifrice (long)",
     "Scatola alta per bottiglia": "Boîte haute pour bouteille",
@@ -11574,6 +11652,7 @@ function renderFoldIndicators(){
       layerOverlay.appendChild(el('path', {d, fill:'none', stroke:'#3572d6', 'stroke-width':3, 'stroke-dasharray':'8,6', class:'fc-march', 'pointer-events':'none'})); }
   }
   renderFoldCheckOverlay();
+  renderSeqRecOverlay();
   renderSymAxis();
   const showOrders = state.shapes.some(s=>s.style && s.style.role==='fold' && foldOrderOf(s)>1);
   for(const s of state.shapes){
@@ -13909,6 +13988,118 @@ function seqMergeStep(from, into){
   steps[into].push(...steps[from]); steps[from] = [];
   writeSeq(steps.filter(a=>a.length));
 }
+/* ============================================================
+   CREA LA SEQUENZA CLICCANDO — si clicca sui pezzi (pannelli, alette,
+   linguette) nell'ordine in cui si chiudono: il primo diventa il passo 1,
+   il secondo il 2… Il pezzo cliccato si piega attorno alla piega che lo
+   unisce al resto. Shift+clic: stesso passo del pezzo precedente.
+   Le pieghe non cliccate restano dopo, nell'ordine che avevano.
+============================================================ */
+let seqRec = null; // {active:true} mentre si registra
+function seqRecStart(){
+  ensureOutsideView();
+  const folds = allFoldShapes();
+  if(!folds.length){ showToast('Nel disegno non ci sono pieghe.', true); return; }
+  folds.forEach(s=>{ s._recOrig = foldOrderOf(s); delete s._recStep; });
+  seqRec = {active:true};
+  pushHistory();
+  let bar = document.getElementById('seqRecBar');
+  if(!bar){
+    bar = document.createElement('div'); bar.id = 'seqRecBar';
+    bar.innerHTML = `<span id="seqRecTxt"></span>
+      <button class="btn" id="seqRecUndo" style="width:auto;margin:0;">↶ ${escapeHTML(translate('Annulla ultimo'))}</button>
+      <button class="btn" id="seqRecRestart" style="width:auto;margin:0;">⟲ ${escapeHTML(translate('Ricomincia'))}</button>
+      <button class="btn primary" id="seqRecDone" style="width:auto;margin:0;">✓ ${escapeHTML(translate('Fatto'))}</button>`;
+    document.body.appendChild(bar);
+    bar.addEventListener('mousedown', e=> e.stopPropagation());
+    document.getElementById('seqRecUndo').onclick = ()=>{ if(seqRecMaxStep()>0){ undo(); seqRecRefresh(); } };
+    document.getElementById('seqRecRestart').onclick = ()=>{ state.shapes.forEach(s=>{ delete s._recStep; }); seqRecApply(); pushHistory(); seqRecRefresh(); };
+    document.getElementById('seqRecDone').onclick = ()=> seqRecStop(false);
+  }
+  bar.style.display = 'flex';
+  seqRecRefresh();
+  showToast('Clicca sui pezzi nell\'ordine in cui si chiudono: il primo diventa il passo 1. Shift+clic: stesso passo del precedente.', false);
+}
+function seqRecMaxStep(){ return state.shapes.reduce((m,s)=> s._recStep>m ? s._recStep : m, 0); }
+// scrive l'ordine: prima i pezzi cliccati, poi le altre pieghe nell'ordine di partenza
+function seqRecApply(){
+  const folds = allFoldShapes(), n = seqRecMaxStep();
+  const rest = folds.filter(s=> !(s._recStep>0));
+  const origs = [...new Set(rest.map(s=> s._recOrig!=null ? s._recOrig : foldOrderOf(s)))].sort((a,b)=>a-b);
+  folds.forEach(s=>{ s.foldOrder = s._recStep>0 ? s._recStep : n + origs.indexOf(s._recOrig!=null ? s._recOrig : foldOrderOf(s)) + 1; });
+}
+function seqRecRefresh(){
+  const t = document.getElementById('seqRecTxt'); if(!t) return;
+  const n = seqRecMaxStep();
+  t.innerHTML = '👆 ' + escapeHTML(n ? tpl('Prossimo clic: passo {n} (Shift+clic: ancora passo {m})', {n:n+1, m:n}) : translate('Clicca il primo pezzo che si chiude (passo 1)'));
+  renderAll();
+  const sq = document.getElementById('seqModal'); if(sq && sq.classList.contains('open')) renderSeq();
+  const f3 = document.getElementById('fold3dModal');
+  if(f3 && f3.classList.contains('open')){ // il 3D resta fermo alla fine dell'ultimo passo scelto: i pezzi ancora da scegliere sono aperti
+    refreshFold3D(); stopFold3D();
+    const K = foldSteps(fold3d.model).length; setFold3DFrac(K ? Math.min(1, n/K) : 0);
+  }
+}
+function seqRecStop(silent){
+  if(!seqRec) return;
+  const n = seqRecMaxStep();
+  seqRec = null;
+  state.shapes.forEach(s=>{ delete s._recOrig; delete s._recStep; });
+  const bar = document.getElementById('seqRecBar'); if(bar) bar.style.display = 'none';
+  fold3d.highlight = null;
+  renderAll();
+  const f3 = document.getElementById('fold3dModal'); if(f3 && f3.classList.contains('open')) refreshFold3D(); // la scatola si chiude con la nuova sequenza
+  const sq = document.getElementById('seqModal'); if(sq && sq.classList.contains('open')) renderSeq();
+  if(!silent) showToast(n ? tpl('Sequenza creata: {n} passi scelti con i clic, le altre pieghe dopo (Ctrl+Z per annullare).', {n}) : translate('Nessun pezzo cliccato: l\'ordine non è cambiato.'), false);
+}
+// assegna il prossimo passo alla piega "h" di un modello (il pezzo cliccato si piega attorno a lei)
+function seqRecAssign(model, fi, same){
+  if(fi==null || fi<0){ showToast('Clicca dentro un pezzo della scatola.', false); return; }
+  const h = model.parentHinge[fi];
+  if(!h || !h.fold){ showToast(fi===model.root ? 'Pannello di base: resta fermo, gli altri si piegano attorno a lui.' : 'Questo pezzo non è collegato al resto da nessuna piega.', false); return; }
+  const a = model.nodes[h.i], b = model.nodes[h.j], m = [(a[0]+b[0])/2, (a[1]+b[1])/2];
+  const pieces = foldPieces().filter(en=> en.shape===h.fold);
+  const en = pieces.find(en=>{ if(!en.a) return true; const dx = en.b[0]-en.a[0], dy = en.b[1]-en.a[1], l2 = dx*dx+dy*dy, t = l2 ? Math.max(0, Math.min(1, ((m[0]-en.a[0])*dx + (m[1]-en.a[1])*dy)/l2)) : 0;
+    return Math.hypot(en.a[0]+dx*t-m[0], en.a[1]+dy*t-m[1]) < 0.5; }) || pieces[0];
+  const s = en ? seqEnsureOwnShape(en.key) : h.fold; if(!s) return;
+  const n = seqRecMaxStep();
+  delete s._recStep;
+  const nn = seqRecMaxStep(); // se era l'ultimo cliccato, riprende il suo numero
+  s._recStep = same && nn>0 ? nn : nn + 1;
+  seqRecApply();
+  pushHistory();
+  state.selection = new Set([s.id]);
+  fold3d.highlight = {id:s.id, a:[a[0],a[1]], b:[b[0],b[1]], label: tpl('Passo {n}', {n:s._recStep})}; fold3d.pickInfo = null;
+  seqRecRefresh();
+  if(n === s._recStep && !same) showToast(tpl('Questo pezzo era già al passo {n}.', {n:n}), false);
+}
+function seqRecFaceAt(model, pt){
+  let best = -1, area = Infinity;
+  model.faces.forEach((f,fi)=>{ if(f.area < area && pointInPoly(pt, f.nodes.map(v=> model.nodes[v]))){ area = f.area; best = fi; } });
+  return best;
+}
+function seqRecClickCanvas(pt, e){ const model = buildFoldModel(state.shapes); seqRecAssign(model, seqRecFaceAt(model, pt), e.shiftKey); }
+// numeri sui pezzi mentre si registra
+function renderSeqRecOverlay(){
+  if(!seqRec) return;
+  const model = buildFoldModel(state.shapes), sc = state.scale;
+  model.faces.forEach((f,fi)=>{
+    const poly = f.nodes.map(v=> model.nodes[v]); if(poly.length<3) return;
+    const h = model.parentHinge[fi];
+    let c = polygonCentroidApprox(poly);
+    if(f.tris && f.tris.length){ let A = 0, cx = 0, cy = 0; f.tris.forEach(tr=>{ const [p,q,r] = tr.map(k=> poly[k]); if(!p||!q||!r) return; const ar = Math.abs((q[0]-p[0])*(r[1]-p[1]) - (r[0]-p[0])*(q[1]-p[1])); A += ar; cx += ar*(p[0]+q[0]+r[0])/3; cy += ar*(p[1]+q[1]+r[1])/3; }); if(A>0) c = [cx/A, cy/A]; }
+    if(!pointInPoly(c, poly) && f.tris && f.tris.length){ // pezzo concavo: centro del triangolo più grande
+      let bestA = -1; f.tris.forEach(tr=>{ const [p,q,r] = tr.map(k=> poly[k]); if(!p||!q||!r) return; const ar = Math.abs((q[0]-p[0])*(r[1]-p[1]) - (r[0]-p[0])*(q[1]-p[1])); if(ar>bestA){ bestA = ar; c = [(p[0]+q[0]+r[0])/3, (p[1]+q[1]+r[1])/3]; } });
+    }
+    const rec = h && h.fold && h.fold._recStep>0, base = fi===model.root;
+    const txt = base ? translate('base') : (h && h.fold ? String(rec ? h.fold._recStep : foldOrderOf(h.fold)) : '–');
+    if(rec) layerOverlay.appendChild(el('path', {d:'M '+poly.map(q=>`${q[0]*sc} ${q[1]*sc}`).join(' L ')+' Z', fill:'#34c759', 'fill-opacity':0.18, stroke:'none', 'pointer-events':'none'}));
+    const r = base ? 17 : 12, col = base ? '#8e8e93' : (rec ? '#1f9d48' : '#b0b0b5');
+    layerOverlay.appendChild(el('circle', {cx:c[0]*sc, cy:c[1]*sc, r, fill:col, 'fill-opacity': rec||base ? 0.95 : 0.6, stroke:'#fff', 'stroke-width':1.5, 'pointer-events':'none'}));
+    const t = el('text', {x:c[0]*sc, y:c[1]*sc+0.5, 'font-size': base ? 10 : 12, 'font-weight':700, fill:'#fff', 'text-anchor':'middle', 'dominant-baseline':'middle', 'pointer-events':'none'});
+    t.textContent = txt; layerOverlay.appendChild(t);
+  });
+}
 function foldEntryLabel(en){
   const s = en.shape;
   let a = en.a, b = en.b, len = en.len;
@@ -13941,6 +14132,7 @@ function fold3DPick(x, y){
   const model = fold3d.model; if(!model || !fold3d.lastItems) return;
   let hit = null;
   for(let i=fold3d.lastItems.length-1;i>=0;i--){ if(pointInPoly([x,y], fold3d.lastItems[i].sp)){ hit = fold3d.lastItems[i]; break; } }
+  if(seqRec){ if(hit) seqRecAssign(model, hit.fi, fold3d.lastShift); else showToast('Clicca dentro un pezzo della scatola.', false); return; }
   if(!hit){ fold3d.highlight = null; fold3d.pickInfo = null; renderFold3D(); return; }
   const h = model.parentHinge[hit.fi];
   if(!h || !h.fold){ fold3d.highlight = null; fold3d.pickInfo = translate('Pannello di base: resta fermo, gli altri si piegano attorno a lui.'); renderFold3D(); return; }
@@ -14232,7 +14424,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.57';
+const GUIDE_VERSION = '2.58';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -14456,11 +14648,18 @@ html:`<p>Selezionando una linea con ruolo Piega, il pannello Proprietà permette
 <li>l'<b>angolo</b>: 90° è l'angolo retto di una parete, 180° una piega completa su se stessa.</li></ul>
 <p>A metà di ogni tratto compare una freccia a V con l'angolo. Le pieghe senza verso vengono considerate a monte, 90°. Per l'ordine in cui si chiudono vedi <a data-topic="ordine">Ordine di piegatura</a>.</p>` },
 
-{ id:'ordine', cat:'Fustella e scatole', title:'Ordine di piegatura e sequenza', keys:'ordine passo sequenza prima dopo linguetta chiude automatico trascinare frecce struttura',
+{ id:'ordine', cat:'Fustella e scatole', title:'Ordine di piegatura e sequenza', keys:'ordine passo sequenza prima dopo linguetta chiude automatico trascinare frecce struttura crea cliccando clic pezzi registra chiusura',
 html:`<p>Ogni piega ha un numero di <b>passo</b>: nella simulazione 3D si chiudono prima le pieghe con il numero più basso; quelle con lo stesso numero si chiudono insieme. Così una linguetta non si chiude prima delle alette che deve coprire.</p>
 <ul><li><b>A mano</b>: pannello Proprietà → "Ordine di piegatura", con − e +, anche su più pieghe insieme.</li>
 <li><b>Ordine automatico</b> ("Ordina" nel pannello, o "Applica e simula" nell'anteprima 3D): dal pannello principale verso l'esterno, da sinistra a destra, da destra a sinistra, dall'alto, dal basso, dal centro, oppure tutte insieme. Le pieghe alla stessa posizione (entro 2 mm) finiscono nello stesso passo.</li>
 <li><b>Sequenza di piegatura</b> (menu Strumenti, "📋 Sequenza…" nel 3D, o nel pannello): elenco dei passi, <b>pezzo per pezzo</b>: ogni tratto di piega tra due pannelli è una voce a sé ("tratto 2 di 3"), anche quando una sola linea attraversa più pannelli. Spostando un solo tratto, la linea viene divisa automaticamente nei suoi tratti. Le pieghe non usate nel 3D compaiono in grigio. <b>Un clic su una voce</b> la evidenzia nell'anteprima 3D (che si apre da sola, se serve): la cerniera diventa arancione, il pannello che vi si piega viene colorato e la simulazione si porta alla fine del passo di quella voce. La finestra della sequenza non oscura il resto e si apre sul lato destro, così vedi insieme elenco, 3D e disegno. Trascina una piega su un altro passo per spostarla, tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo o unirlo a un altro. Oppure usa le frecce ↑ ↓. Passando col mouse su una piega la vedi evidenziata sul disegno.</li></ul>
+<p><b>👆 Crea cliccando</b> (nella finestra Sequenza o nell'anteprima 3D): costruisci la sequenza <b>cliccando sui pezzi</b> (pannelli, alette, linguette) nell'ordine in cui si chiudono. Il primo pezzo cliccato diventa il <b>passo 1</b>, il secondo il <b>passo 2</b> e così via; ogni pezzo si piega attorno alla piega che lo unisce al resto della scatola.</p>
+<ul><li>Si clicca sul <b>disegno</b> o direttamente nel <b>3D</b>: nel 3D la scatola resta ferma alla fine dell'ultimo passo scelto, così i pezzi ancora da scegliere sono aperti e facili da cliccare;</li>
+<li>sul disegno ogni pezzo mostra un bollino: <b>verde</b> con il numero se l'hai già scelto, grigio con il passo attuale se non ancora, "base" sul pannello che resta fermo;</li>
+<li><b>Shift+clic</b>: il pezzo va nello <b>stesso passo</b> del precedente (si chiudono insieme);</li>
+<li>la barra in alto mostra il prossimo numero e ha <b>↶ Annulla ultimo</b>, <b>⟲ Ricomincia</b> e <b>✓ Fatto</b> (anche Esc);</li>
+<li>le pieghe che non clicchi vanno <b>dopo</b> quelle scelte, mantenendo l'ordine che avevano (automatico o fatto a mano). Si può partire da un ordine automatico e poi decidere con i clic solo i primi passi;</li>
+<li>se una piega attraversa più pannelli viene divisa nei suoi tratti, così ogni pezzo ha il suo passo.</li></ul>
 <p>Sul disegno il passo compare accanto all'angolo ("90° · passo 2"), nel 3D accanto al cursore ("Passo 2 di 3"). Ctrl+Z annulla ogni modifica.</p>
 <p><b>1️⃣ Una piega per passo</b> (nella finestra Sequenza): ogni tratto di piega diventa un passo a sé, nell'ordine attuale; le linee che attraversano più pannelli vengono divise nei loro tratti. Così nella simulazione alette, linguette e pareti si chiudono una alla volta e puoi riordinarle singolarmente. In cima all'elenco un riepilogo dice quanti tratti ci sono e se qualche piega non viene usata nel 3D (perché non divide due pannelli: di solito non arriva fino al taglio); "Mostrale sul disegno" le seleziona.</p>
 <p><b>Vedere i passi nel 3D</b>:</p>
@@ -14761,6 +14960,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.58</b> — <a data-topic="ordine">Sequenza di chiusura</a> creata <b>cliccando sui pezzi</b> (sul disegno o nel 3D): il primo diventa il passo 1, il secondo il 2…; Shift+clic per lo stesso passo, oltre agli ordini automatici.</li>
 <li><b>2.57</b> — Dieci nuovi modelli nel <a data-topic="genera-scatola">generatore</a>: scatola giocattoli a incastro invertito, astuccio dentifricio, scatola per bottiglia, cioccolatini a cassetto, esagonale, triangolare, diamante, cestino con manico, mailer per spedizioni e regalo a petali. Ogni modello mostra una nota e propone misure di partenza.</li>
 <li><b>2.56</b> — Nuovi modelli nel <a data-topic="genera-scatola">generatore</a>: scatola panino a conchiglia e scatola a casetta con manico.</li>
 <li><b>2.55</b> — Sequenza di piegatura: <a data-topic="ordine">"Una piega per passo"</a> e riepilogo delle pieghe usate e non usate nel 3D.</li>
@@ -16236,6 +16436,7 @@ stage.addEventListener('mousedown', (e)=>{
       return;
     }
     e.preventDefault(); // evita che il browser avvii una selezione testo/trascinamento nativa sul canvas
+    if(seqRec && e.button===0){ seqRecClickCanvas(clientToMM(e.clientX,e.clientY), e); return; } // registrazione della sequenza a clic
 
     // Rilevamento MANUALE del doppio clic (invece di affidarsi all'evento nativo
     // 'dblclick' del browser): ad ogni clic ridisegniamo il canvas per mostrare
@@ -19002,6 +19203,8 @@ document.getElementById('cadCf2').onclick = ()=> doCadExport('cf2');
 document.getElementById('seqModalClose').onclick = closeFoldSequence;
 setupOverlayClickClose(document.getElementById('seqModal'), closeFoldSequence);
 document.getElementById('seqSplitAll').onclick = seqSplitAll;
+document.getElementById('seqRecord').onclick = seqRecStart;
+document.getElementById('fold3dRecord').onclick = seqRecStart;
 document.getElementById('seqSimulate').onclick = ()=>{ closeFoldSequence(); const f3=document.getElementById('fold3dModal'); if(!f3.classList.contains('open')) openFold3D(); };
 document.getElementById('fold3dAutoOrder').innerHTML = autoOrderSelectHTML();
 document.getElementById('fold3dAutoOrderApply').onclick = ()=> applyAutoOrder(document.getElementById('fold3dAutoOrder').value, allFoldShapes(), true);
@@ -19012,7 +19215,7 @@ document.getElementById('fold3dReset').onclick = ()=>{ fold3d.yaw=-0.6; fold3d.p
   cv.addEventListener('mousedown', e=>{ fold3d.drag = {x:e.clientX, y:e.clientY}; fold3d.downAt = {x:e.clientX, y:e.clientY}; cv.style.cursor='grabbing'; });
   cv.addEventListener('click', e=>{ // clic senza trascinare: quale pannello e quale piega
     const d = fold3d.downAt; if(d && Math.hypot(e.clientX-d.x, e.clientY-d.y) > 4) return;
-    const r = cv.getBoundingClientRect(); fold3DPick(e.clientX - r.left, e.clientY - r.top);
+    const r = cv.getBoundingClientRect(); fold3d.lastShift = e.shiftKey; fold3DPick(e.clientX - r.left, e.clientY - r.top);
   });
   window.addEventListener('mousemove', e=>{
     if(!fold3d.drag) return;
@@ -25066,6 +25269,7 @@ document.addEventListener('mousedown', (e)=>{
   if(menu.style.display==='block' && !menu.contains(e.target)) hideContextMenu();
 }, true);
 document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') hideContextMenu(); });
+document.addEventListener('keydown', (e)=>{ if(seqRec && e.key==='Escape'){ e.preventDefault(); seqRecStop(false); } }, true);
 document.addEventListener('contextmenu', (e)=>{
   // un secondo tasto destro fuori da un'area gestita chiude il menu invece di
   // lasciarlo aperto sopra a quello nativo del browser
