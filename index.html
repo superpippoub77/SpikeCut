@@ -957,7 +957,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.58</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.59</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2275,6 +2275,15 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "dentro": "inside",
+    "entra dentro": "goes inside",
+    "⤵ Linguetta che entra dentro (infilata)": "⤵ Tuck that goes inside (tucked in)",
+    "Linguetta che entra dentro: nel 3D il pezzo che si piega qui sta dietro la parete su cui si appoggia (infilato), anche se si chiude per ultimo": "Tuck that goes inside: in 3D the piece folding here sits behind the wall it rests on (tucked in), even if it closes last",
+    "Linguetta che entra dentro: nel 3D sta dietro la parete su cui si appoggia.": "Tuck goes inside: in 3D it sits behind the wall it rests on.",
+    "La linguetta segue di nuovo la sequenza: resta dal lato da cui arriva.": "The tuck follows the sequence again: it stays on the side it comes from.",
+    "Il pezzo che si piega su questa linea, a scatola chiusa, sta dietro la parete su cui si appoggia (come una linguetta infilata), anche se si chiude per ultimo. Senza questa opzione resta dal lato da cui arriva, secondo la sequenza.": "With the box closed, the piece folding on this line sits behind the wall it rests on (like a tucked-in tab), even if it closes last. Without this option it stays on the side it comes from, according to the sequence.",
+    "Clicca sui pezzi nell'ordine in cui si chiudono: il primo diventa il passo 1. Shift+clic: stesso passo del precedente. Alt+clic: linguetta che entra dentro.": "Click the pieces in the order they close: the first becomes step 1. Shift+click: same step as the previous one. Alt+click: tuck that goes inside.",
+    "Prossimo clic: passo {n} (Shift+clic: ancora passo {m} · Alt+clic: entra dentro)": "Next click: step {n} (Shift+click: step {m} again · Alt+click: goes inside)",
     "Fatto": "Done",
     "base": "base",
     "Annulla ultimo": "Undo last",
@@ -3924,6 +3933,15 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "dentro": "innen",
+    "entra dentro": "geht nach innen",
+    "⤵ Linguetta che entra dentro (infilata)": "⤵ Einstecklasche geht nach innen (eingesteckt)",
+    "Linguetta che entra dentro: nel 3D il pezzo che si piega qui sta dietro la parete su cui si appoggia (infilato), anche se si chiude per ultimo": "Einstecklasche nach innen: Im 3D liegt das hier gefaltete Teil hinter der Wand, an der es anliegt (eingesteckt), auch wenn es zuletzt schließt",
+    "Linguetta che entra dentro: nel 3D sta dietro la parete su cui si appoggia.": "Einstecklasche nach innen: Im 3D liegt sie hinter der Wand, an der sie anliegt.",
+    "La linguetta segue di nuovo la sequenza: resta dal lato da cui arriva.": "Die Lasche folgt wieder der Reihenfolge: Sie bleibt auf der Seite, von der sie kommt.",
+    "Il pezzo che si piega su questa linea, a scatola chiusa, sta dietro la parete su cui si appoggia (come una linguetta infilata), anche se si chiude per ultimo. Senza questa opzione resta dal lato da cui arriva, secondo la sequenza.": "Bei geschlossener Schachtel liegt das an dieser Linie gefaltete Teil hinter der Wand, an der es anliegt (wie eine eingesteckte Lasche), auch wenn es zuletzt schließt. Ohne diese Option bleibt es auf der Seite, von der es kommt, gemäß der Reihenfolge.",
+    "Clicca sui pezzi nell'ordine in cui si chiudono: il primo diventa il passo 1. Shift+clic: stesso passo del precedente. Alt+clic: linguetta che entra dentro.": "Klicke die Teile in der Reihenfolge, in der sie sich schließen: das erste wird Schritt 1. Umschalt+Klick: gleicher Schritt wie das vorige. Alt+Klick: Lasche geht nach innen.",
+    "Prossimo clic: passo {n} (Shift+clic: ancora passo {m} · Alt+clic: entra dentro)": "Nächster Klick: Schritt {n} (Umschalt+Klick: wieder Schritt {m} · Alt+Klick: nach innen)",
     "Fatto": "Fertig",
     "base": "Basis",
     "Annulla ultimo": "Letzten rückgängig",
@@ -5573,6 +5591,15 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "dentro": "dentro",
+    "entra dentro": "entra dentro",
+    "⤵ Linguetta che entra dentro (infilata)": "⤵ Lengüeta que entra dentro (encajada)",
+    "Linguetta che entra dentro: nel 3D il pezzo che si piega qui sta dietro la parete su cui si appoggia (infilato), anche se si chiude per ultimo": "Lengüeta que entra dentro: en 3D la pieza que se pliega aquí queda detrás de la pared en la que se apoya (encajada), aunque se cierre la última",
+    "Linguetta che entra dentro: nel 3D sta dietro la parete su cui si appoggia.": "Lengüeta que entra dentro: en 3D queda detrás de la pared en la que se apoya.",
+    "La linguetta segue di nuovo la sequenza: resta dal lato da cui arriva.": "La lengüeta vuelve a seguir la secuencia: queda del lado del que llega.",
+    "Il pezzo che si piega su questa linea, a scatola chiusa, sta dietro la parete su cui si appoggia (come una linguetta infilata), anche se si chiude per ultimo. Senza questa opzione resta dal lato da cui arriva, secondo la sequenza.": "Con la caja cerrada, la pieza que se pliega en esta línea queda detrás de la pared en la que se apoya (como una lengüeta encajada), aunque se cierre la última. Sin esta opción queda del lado del que llega, según la secuencia.",
+    "Clicca sui pezzi nell'ordine in cui si chiudono: il primo diventa il passo 1. Shift+clic: stesso passo del precedente. Alt+clic: linguetta che entra dentro.": "Haz clic en las piezas en el orden en que se cierran: la primera es el paso 1. Mayús+clic: mismo paso que la anterior. Alt+clic: lengüeta que entra dentro.",
+    "Prossimo clic: passo {n} (Shift+clic: ancora passo {m} · Alt+clic: entra dentro)": "Próximo clic: paso {n} (Mayús+clic: de nuevo paso {m} · Alt+clic: entra dentro)",
     "Fatto": "Hecho",
     "base": "base",
     "Annulla ultimo": "Deshacer último",
@@ -7222,6 +7249,15 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "dentro": "内侧",
+    "entra dentro": "插入内侧",
+    "⤵ Linguetta che entra dentro (infilata)": "⤵ 插入内侧的插舌",
+    "Linguetta che entra dentro: nel 3D il pezzo che si piega qui sta dietro la parete su cui si appoggia (infilato), anche se si chiude per ultimo": "插入内侧的插舌：在 3D 中，在此折叠的部件位于其贴靠的壁面后方（插入），即使它最后闭合",
+    "Linguetta che entra dentro: nel 3D sta dietro la parete su cui si appoggia.": "插舌插入内侧：在 3D 中位于其贴靠的壁面后方。",
+    "La linguetta segue di nuovo la sequenza: resta dal lato da cui arriva.": "插舌重新按顺序处理：停留在其到来的一侧。",
+    "Il pezzo che si piega su questa linea, a scatola chiusa, sta dietro la parete su cui si appoggia (come una linguetta infilata), anche se si chiude per ultimo. Senza questa opzione resta dal lato da cui arriva, secondo la sequenza.": "盒子闭合时，沿此线折叠的部件位于其贴靠的壁面后方（像插入的插舌），即使它最后闭合。不勾选时，按顺序停留在其到来的一侧。",
+    "Clicca sui pezzi nell'ordine in cui si chiudono: il primo diventa il passo 1. Shift+clic: stesso passo del precedente. Alt+clic: linguetta che entra dentro.": "按闭合顺序点击各部件：第一个成为第 1 步。Shift+点击：与上一个同一步。Alt+点击：插入内侧的插舌。",
+    "Prossimo clic: passo {n} (Shift+clic: ancora passo {m} · Alt+clic: entra dentro)": "下一次点击：第 {n} 步（Shift+点击：仍为第 {m} 步 · Alt+点击：插入内侧）",
     "Fatto": "完成",
     "base": "底",
     "Annulla ultimo": "撤销上一步",
@@ -8871,6 +8907,15 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "dentro": "dedans",
+    "entra dentro": "rentre dedans",
+    "⤵ Linguetta che entra dentro (infilata)": "⤵ Languette qui rentre dedans (insérée)",
+    "Linguetta che entra dentro: nel 3D il pezzo che si piega qui sta dietro la parete su cui si appoggia (infilato), anche se si chiude per ultimo": "Languette qui rentre dedans : en 3D, la pièce pliée ici se place derrière la paroi sur laquelle elle s'appuie (insérée), même si elle se ferme en dernier",
+    "Linguetta che entra dentro: nel 3D sta dietro la parete su cui si appoggia.": "Languette qui rentre dedans : en 3D elle se place derrière la paroi sur laquelle elle s'appuie.",
+    "La linguetta segue di nuovo la sequenza: resta dal lato da cui arriva.": "La languette suit à nouveau la séquence : elle reste du côté d'où elle arrive.",
+    "Il pezzo che si piega su questa linea, a scatola chiusa, sta dietro la parete su cui si appoggia (come una linguetta infilata), anche se si chiude per ultimo. Senza questa opzione resta dal lato da cui arriva, secondo la sequenza.": "Boîte fermée, la pièce pliée sur cette ligne se place derrière la paroi sur laquelle elle s'appuie (comme une languette insérée), même si elle se ferme en dernier. Sans cette option, elle reste du côté d'où elle arrive, selon la séquence.",
+    "Clicca sui pezzi nell'ordine in cui si chiudono: il primo diventa il passo 1. Shift+clic: stesso passo del precedente. Alt+clic: linguetta che entra dentro.": "Cliquez sur les pièces dans l'ordre où elles se ferment : la première devient l'étape 1. Maj+clic : même étape que la précédente. Alt+clic : languette qui rentre dedans.",
+    "Prossimo clic: passo {n} (Shift+clic: ancora passo {m} · Alt+clic: entra dentro)": "Prochain clic : étape {n} (Maj+clic : encore étape {m} · Alt+clic : rentre dedans)",
     "Fatto": "Terminé",
     "base": "base",
     "Annulla ultimo": "Annuler le dernier",
@@ -11677,7 +11722,7 @@ function renderFoldIndicators(){
       if(s.foldAngle!=null){
         const labelPos = [mid[0]+normal[0]*(apexDist+3.5)*sign, mid[1]+normal[1]*(apexDist+3.5)*sign];
         const t = el('text', {x:labelPos[0]*state.scale, y:labelPos[1]*state.scale, 'font-size':9, fill:'#3572d6', 'text-anchor':'middle', 'dominant-baseline':'middle', 'pointer-events':'none'});
-        t.textContent = Math.round(s.foldAngle)+'°' + (showOrders ? ' · ' + tpl('passo {n}', {n: foldOrderOf(s)}) : '');
+        t.textContent = Math.round(s.foldAngle)+'°' + (showOrders ? ' · ' + tpl('passo {n}', {n: foldOrderOf(s)}) : '') + (s.foldInside ? ' · ⤵ ' + translate('dentro') : '');
         layerOverlay.appendChild(t);
       }
     }
@@ -12879,11 +12924,18 @@ function stopFold3D(){ if(fold3d.anim){ cancelAnimationFrame(fold3d.anim); fold3
 // all'esterno): per ogni coppia che si sovrappone sullo schermo guardo da che parte del piano dell'uno sta
 // l'altro rispetto a chi guarda. Pannelli sullo stesso piano (lembi sovrapposti, linguetta di incollaggio):
 // sta fuori quello piegato in un passo successivo o più lontano dal pannello di base.
-function sortFold3DFaces(items, model, E, proj, eps){
-  const steps = foldSteps(model);
+function sortFold3DFaces(items, model, E, proj, eps, toView){
+  const steps = foldSteps(model), K = steps.length;
   const treeDepth = fi=>{ let d = 0, x = fi; while(x!=null && model.parent[x]!=null && d<999){ x = model.parent[x]; d++; } return d; };
+  // passo in cui il pannello arriva al suo posto: l'ultimo tra le pieghe che lo muovono (la sua e quelle dei pannelli a cui è attaccato)
+  const arrival = fi=>{ let a = -1, x = fi, d = 0; while(x!=null && model.parentHinge[x] && d++<999){ a = Math.max(a, steps.indexOf(foldOrderOf(model.parentHinge[x].fold))); x = model.parent[x]; } return a; };
+  // "entra dentro": la piega (sua o di un pannello a cui è attaccato) è segnata come linguetta che si infila
+  const inside = fi=>{ let x = fi, d = 0; while(x!=null && model.parentHinge[x] && d++<999){ if(model.parentHinge[x].fold.foldInside) return true; x = model.parent[x]; } return false; };
+  const probes = new Map(); // posizione dei pannelli a metà di un passo, già nelle coordinate della vista
+  const probeAt = k=>{ if(!probes.has(k)){ const fs = foldModelAt(model, Math.min(1, (k + 0.5)/Math.max(1, K))); probes.set(k, fs.map(f=> f && f.pts ? f.pts.map(toView) : null)); } return probes.get(k); };
   items.forEach(it=>{
     const h = model.parentHinge[it.fi];
+    it.arr = arrival(it.fi); it.inside = inside(it.fi);
     it.rank = (h ? steps.indexOf(foldOrderOf(h.fold)) + 1 : 0)*1000 + treeDepth(it.fi);
     const sp = it.vs.map(proj);
     it.bb = [Math.min(...sp.map(q=>q[0])), Math.min(...sp.map(q=>q[1])), Math.max(...sp.map(q=>q[0])), Math.max(...sp.map(q=>q[1]))];
@@ -12897,6 +12949,26 @@ function sortFold3DFaces(items, model, E, proj, eps){
     if(pos && !neg) return 1;
     if(neg && !pos) return -1;
     if(!pos && !neg){ // stesso piano: dal lato stampato (esterno) si vede quello più esterno, dall'interno il contrario
+      // 1) linguetta segnata "entra dentro": sta dal lato non stampato dell'altro pannello
+      if(A.inside !== B.inside){
+        const I = A.inside ? A : B, O = A.inside ? B : A;
+        const eyeOut = (O.n[0]*(E[0]-O.vs[0][0]) + O.n[1]*(E[1]-O.vs[0][1]) + O.n[2]*(E[2]-O.vs[0][2])) >= 0; // chi guarda sta dal lato stampato di O
+        const iFront = !eyeOut; // da fuori la linguetta è dietro, da dentro è davanti
+        return (I===B) === iFront ? 1 : -1;
+      }
+      // 2) chi arriva per ultimo resta dal lato da cui è arrivato (come il cartone vero)
+      if(toView && A.arr !== B.arr && Math.max(A.arr, B.arr) >= 0){
+        const Lt = A.arr > B.arr ? A : B, Ot = Lt===A ? B : A;
+        const pr = probeAt(Lt.arr), pts = pr && pr[Lt.fi];
+        if(pts){
+          const sd = pts.reduce((sum,v)=> sum + Ot.n[0]*(v[0]-Ot.vs[0][0]) + Ot.n[1]*(v[1]-Ot.vs[0][1]) + Ot.n[2]*(v[2]-Ot.vs[0][2]), 0);
+          if(Math.abs(sd) > eps){
+            const eyeO = Math.sign(Ot.n[0]*(E[0]-Ot.vs[0][0]) + Ot.n[1]*(E[1]-Ot.vs[0][1]) + Ot.n[2]*(E[2]-Ot.vs[0][2])) || 1;
+            const lFront = Math.sign(sd) === eyeO; // arrivato dal lato di chi guarda: sta davanti
+            return (Lt===B) === lFront ? 1 : -1;
+          }
+        }
+      }
       if(A.rank===B.rank) return 0;
       const facing = Math.sign(side(A, E)) * (A.n[0]*B.n[0] + A.n[1]*B.n[1] + A.n[2]*B.n[2] >= 0 ? 1 : -1);
       return (B.rank > A.rank ? 1 : -1) * (facing >= 0 ? 1 : -1);
@@ -12955,7 +13027,7 @@ function renderFold3D(){
     const sl = f.split ? [] : (fold3d.model.slits||[]).filter(s=>s.face===f.fi).map(s=> [s.a, s.b].map(q=>{ const p = tfApply(faces0.T[f.fi], [q[0], -q[1], 0]); return rot([p[0]-C[0], p[1]-C[1], p[2]-C[2]]); }));
     return { fi: f.fi, vs, depth: vs.reduce((a,v)=>a+v[2],0)/vs.length, n: rot(f.normal), bad: f.unreached, flat: f.flat, tris: f.tris, sl };
   });
-  sortFold3DFaces(items, fold3d.model, [0,0,camDist], proj, radius*1e-3); // prima i pannelli dietro, poi quelli davanti
+  sortFold3DFaces(items, fold3d.model, [0,0,camDist], proj, radius*1e-3, p=> rot([p[0]-C[0], p[1]-C[1], p[2]-C[2]])); // prima i pannelli dietro, poi quelli davanti
   // Trasparenza: pannelli semitrasparenti per vedere le parti interne; i bordi restano marcati
   const xray = !!fold3d.xray, alpha = xray ? fold3d.xrayOpacity : 1;
   items.forEach(it=>{
@@ -14018,7 +14090,7 @@ function seqRecStart(){
   }
   bar.style.display = 'flex';
   seqRecRefresh();
-  showToast('Clicca sui pezzi nell\'ordine in cui si chiudono: il primo diventa il passo 1. Shift+clic: stesso passo del precedente.', false);
+  showToast('Clicca sui pezzi nell\'ordine in cui si chiudono: il primo diventa il passo 1. Shift+clic: stesso passo del precedente. Alt+clic: linguetta che entra dentro.', false);
 }
 function seqRecMaxStep(){ return state.shapes.reduce((m,s)=> s._recStep>m ? s._recStep : m, 0); }
 // scrive l'ordine: prima i pezzi cliccati, poi le altre pieghe nell'ordine di partenza
@@ -14031,7 +14103,7 @@ function seqRecApply(){
 function seqRecRefresh(){
   const t = document.getElementById('seqRecTxt'); if(!t) return;
   const n = seqRecMaxStep();
-  t.innerHTML = '👆 ' + escapeHTML(n ? tpl('Prossimo clic: passo {n} (Shift+clic: ancora passo {m})', {n:n+1, m:n}) : translate('Clicca il primo pezzo che si chiude (passo 1)'));
+  t.innerHTML = '👆 ' + escapeHTML(n ? tpl('Prossimo clic: passo {n} (Shift+clic: ancora passo {m} · Alt+clic: entra dentro)', {n:n+1, m:n}) : translate('Clicca il primo pezzo che si chiude (passo 1)'));
   renderAll();
   const sq = document.getElementById('seqModal'); if(sq && sq.classList.contains('open')) renderSeq();
   const f3 = document.getElementById('fold3dModal');
@@ -14053,7 +14125,7 @@ function seqRecStop(silent){
   if(!silent) showToast(n ? tpl('Sequenza creata: {n} passi scelti con i clic, le altre pieghe dopo (Ctrl+Z per annullare).', {n}) : translate('Nessun pezzo cliccato: l\'ordine non è cambiato.'), false);
 }
 // assegna il prossimo passo alla piega "h" di un modello (il pezzo cliccato si piega attorno a lei)
-function seqRecAssign(model, fi, same){
+function seqRecAssign(model, fi, same, inside){
   if(fi==null || fi<0){ showToast('Clicca dentro un pezzo della scatola.', false); return; }
   const h = model.parentHinge[fi];
   if(!h || !h.fold){ showToast(fi===model.root ? 'Pannello di base: resta fermo, gli altri si piegano attorno a lui.' : 'Questo pezzo non è collegato al resto da nessuna piega.', false); return; }
@@ -14066,6 +14138,7 @@ function seqRecAssign(model, fi, same){
   delete s._recStep;
   const nn = seqRecMaxStep(); // se era l'ultimo cliccato, riprende il suo numero
   s._recStep = same && nn>0 ? nn : nn + 1;
+  if(inside){ if(s.foldInside) delete s.foldInside; else s.foldInside = true; } // Alt+clic: linguetta che entra dentro (di nuovo: toglie)
   seqRecApply();
   pushHistory();
   state.selection = new Set([s.id]);
@@ -14078,7 +14151,7 @@ function seqRecFaceAt(model, pt){
   model.faces.forEach((f,fi)=>{ if(f.area < area && pointInPoly(pt, f.nodes.map(v=> model.nodes[v]))){ area = f.area; best = fi; } });
   return best;
 }
-function seqRecClickCanvas(pt, e){ const model = buildFoldModel(state.shapes); seqRecAssign(model, seqRecFaceAt(model, pt), e.shiftKey); }
+function seqRecClickCanvas(pt, e){ const model = buildFoldModel(state.shapes); seqRecAssign(model, seqRecFaceAt(model, pt), e.shiftKey, e.altKey); }
 // numeri sui pezzi mentre si registra
 function renderSeqRecOverlay(){
   if(!seqRec) return;
@@ -14092,13 +14165,20 @@ function renderSeqRecOverlay(){
       let bestA = -1; f.tris.forEach(tr=>{ const [p,q,r] = tr.map(k=> poly[k]); if(!p||!q||!r) return; const ar = Math.abs((q[0]-p[0])*(r[1]-p[1]) - (r[0]-p[0])*(q[1]-p[1])); if(ar>bestA){ bestA = ar; c = [(p[0]+q[0]+r[0])/3, (p[1]+q[1]+r[1])/3]; } });
     }
     const rec = h && h.fold && h.fold._recStep>0, base = fi===model.root;
-    const txt = base ? translate('base') : (h && h.fold ? String(rec ? h.fold._recStep : foldOrderOf(h.fold)) : '–');
+    const txt = base ? translate('base') : (h && h.fold ? String(rec ? h.fold._recStep : foldOrderOf(h.fold)) + (h.fold.foldInside ? '⤵' : '') : '–');
     if(rec) layerOverlay.appendChild(el('path', {d:'M '+poly.map(q=>`${q[0]*sc} ${q[1]*sc}`).join(' L ')+' Z', fill:'#34c759', 'fill-opacity':0.18, stroke:'none', 'pointer-events':'none'}));
     const r = base ? 17 : 12, col = base ? '#8e8e93' : (rec ? '#1f9d48' : '#b0b0b5');
     layerOverlay.appendChild(el('circle', {cx:c[0]*sc, cy:c[1]*sc, r, fill:col, 'fill-opacity': rec||base ? 0.95 : 0.6, stroke:'#fff', 'stroke-width':1.5, 'pointer-events':'none'}));
     const t = el('text', {x:c[0]*sc, y:c[1]*sc+0.5, 'font-size': base ? 10 : 12, 'font-weight':700, fill:'#fff', 'text-anchor':'middle', 'dominant-baseline':'middle', 'pointer-events':'none'});
     t.textContent = txt; layerOverlay.appendChild(t);
   });
+}
+function seqToggleInside(key){
+  const sh = seqEnsureOwnShape(key); if(!sh) return;
+  if(sh.foldInside) delete sh.foldInside; else sh.foldInside = true;
+  pushHistory(); renderAll(); renderSeq();
+  const f3 = document.getElementById('fold3dModal'); if(f3 && f3.classList.contains('open') && fold3d.model) renderFold3D();
+  showToast(sh.foldInside ? 'Linguetta che entra dentro: nel 3D sta dietro la parete su cui si appoggia.' : 'La linguetta segue di nuovo la sequenza: resta dal lato da cui arriva.', false);
 }
 function foldEntryLabel(en){
   const s = en.shape;
@@ -14112,6 +14192,7 @@ function foldEntryLabel(en){
   const dir = s.foldDir==='valley' ? translate('valle') : translate('monte');
   let out = txt + ' · ' + dir + ' ' + Math.round(s.foldAngle!=null ? s.foldAngle : 90) + '°';
   if(en.n>1) out = tpl('tratto {k} di {n}', {k:en.idx+1, n:en.n}) + ' · ' + out;
+  if(s.foldInside) out += ' · ⤵ ' + translate('entra dentro');
   if(en.unused) out += ' · ' + translate('(non usata nel 3D)');
   return out;
 }
@@ -14132,7 +14213,7 @@ function fold3DPick(x, y){
   const model = fold3d.model; if(!model || !fold3d.lastItems) return;
   let hit = null;
   for(let i=fold3d.lastItems.length-1;i>=0;i--){ if(pointInPoly([x,y], fold3d.lastItems[i].sp)){ hit = fold3d.lastItems[i]; break; } }
-  if(seqRec){ if(hit) seqRecAssign(model, hit.fi, fold3d.lastShift); else showToast('Clicca dentro un pezzo della scatola.', false); return; }
+  if(seqRec){ if(hit) seqRecAssign(model, hit.fi, fold3d.lastShift, fold3d.lastAlt); else showToast('Clicca dentro un pezzo della scatola.', false); return; }
   if(!hit){ fold3d.highlight = null; fold3d.pickInfo = null; renderFold3D(); return; }
   const h = model.parentHinge[hit.fi];
   if(!h || !h.fold){ fold3d.highlight = null; fold3d.pickInfo = translate('Pannello di base: resta fermo, gli altri si piegano attorno a lui.'); renderFold3D(); return; }
@@ -14140,7 +14221,7 @@ function fold3DPick(x, y){
   const a = model.nodes[h.i], b = model.nodes[h.j];
   fold3d.highlight = {id: h.fold.id, a: [a[0],a[1]], b: [b[0],b[1]], label: tpl('Passo {n}', {n: k+1})};
   const dir = h.fold.foldDir==='valley' ? translate('valle') : translate('monte');
-  fold3d.pickInfo = tpl('Passo {n} di {t} · piega a {d} {g}° · lunga {l}', {n: k+1, t: steps.length || 1, d: dir, g: Math.round(h.fold.foldAngle!=null ? h.fold.foldAngle : 90), l: fmtUnit(dist(a, b))});
+  fold3d.pickInfo = tpl('Passo {n} di {t} · piega a {d} {g}° · lunga {l}', {n: k+1, t: steps.length || 1, d: dir, g: Math.round(h.fold.foldAngle!=null ? h.fold.foldAngle : 90), l: fmtUnit(dist(a, b))}) + (h.fold.foldInside ? ' · ⤵ ' + translate('entra dentro') : '');
   state.selection = new Set([h.fold.id]); renderCanvasOnly();
   renderFold3D();
   const sq = document.getElementById('seqModal');
@@ -14240,6 +14321,8 @@ function renderSeq(){
       const lb = document.createElement('span'); lb.className='seq-grow'; lb.textContent = foldEntryLabel(en); it.appendChild(lb);
       it.appendChild(mkBtn('↑', 'Chiudi questa piega un passo prima', ()=>seqFoldStep(en.key, -1), k===0 && arr.length===1));
       it.appendChild(mkBtn('↓', 'Chiudi questa piega un passo dopo', ()=>seqFoldStep(en.key, +1), k===steps.length-1 && arr.length===1));
+      { const ib = mkBtn('⤵', 'Linguetta che entra dentro: nel 3D il pezzo che si piega qui sta dietro la parete su cui si appoggia (infilato), anche se si chiude per ultimo', ()=> seqToggleInside(en.key));
+        if(s.foldInside){ ib.style.background = '#ff9f0a'; ib.style.color = '#1c1c1e'; } it.appendChild(ib); }
       startDrag(it, {type:'fold', id:en.key});
       const hov = {id:s.id, a:en.a, b:en.b};
       it.dataset.shape = s.id; if(en.a){ it.dataset.a = JSON.stringify(en.a); it.dataset.b = JSON.stringify(en.b); }
@@ -14424,7 +14507,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.58';
+const GUIDE_VERSION = '2.59';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -14648,11 +14731,13 @@ html:`<p>Selezionando una linea con ruolo Piega, il pannello Proprietà permette
 <li>l'<b>angolo</b>: 90° è l'angolo retto di una parete, 180° una piega completa su se stessa.</li></ul>
 <p>A metà di ogni tratto compare una freccia a V con l'angolo. Le pieghe senza verso vengono considerate a monte, 90°. Per l'ordine in cui si chiudono vedi <a data-topic="ordine">Ordine di piegatura</a>.</p>` },
 
-{ id:'ordine', cat:'Fustella e scatole', title:'Ordine di piegatura e sequenza', keys:'ordine passo sequenza prima dopo linguetta chiude automatico trascinare frecce struttura crea cliccando clic pezzi registra chiusura',
+{ id:'ordine', cat:'Fustella e scatole', title:'Ordine di piegatura e sequenza', keys:'ordine passo sequenza prima dopo linguetta chiude automatico trascinare frecce struttura crea cliccando clic pezzi registra chiusura linguetta dentro fuori infilata sopra sotto sovrapposte',
 html:`<p>Ogni piega ha un numero di <b>passo</b>: nella simulazione 3D si chiudono prima le pieghe con il numero più basso; quelle con lo stesso numero si chiudono insieme. Così una linguetta non si chiude prima delle alette che deve coprire.</p>
 <ul><li><b>A mano</b>: pannello Proprietà → "Ordine di piegatura", con − e +, anche su più pieghe insieme.</li>
 <li><b>Ordine automatico</b> ("Ordina" nel pannello, o "Applica e simula" nell'anteprima 3D): dal pannello principale verso l'esterno, da sinistra a destra, da destra a sinistra, dall'alto, dal basso, dal centro, oppure tutte insieme. Le pieghe alla stessa posizione (entro 2 mm) finiscono nello stesso passo.</li>
 <li><b>Sequenza di piegatura</b> (menu Strumenti, "📋 Sequenza…" nel 3D, o nel pannello): elenco dei passi, <b>pezzo per pezzo</b>: ogni tratto di piega tra due pannelli è una voce a sé ("tratto 2 di 3"), anche quando una sola linea attraversa più pannelli. Spostando un solo tratto, la linea viene divisa automaticamente nei suoi tratti. Le pieghe non usate nel 3D compaiono in grigio. <b>Un clic su una voce</b> la evidenzia nell'anteprima 3D (che si apre da sola, se serve): la cerniera diventa arancione, il pannello che vi si piega viene colorato e la simulazione si porta alla fine del passo di quella voce. La finestra della sequenza non oscura il resto e si apre sul lato destro, così vedi insieme elenco, 3D e disegno. Trascina una piega su un altro passo per spostarla, tra due passi per crearne uno nuovo; trascina l'intestazione di un passo per spostarlo o unirlo a un altro. Oppure usa le frecce ↑ ↓. Passando col mouse su una piega la vedi evidenziata sul disegno.</li></ul>
+<p><b>Chi sta sopra e chi sta sotto</b>: quando due pezzi finiscono sullo stesso piano (una linguetta contro una parete, alette sovrapposte), nel 3D vale la regola del cartone vero: <b>il pezzo che arriva per ultimo resta dal lato da cui arriva</b>. Per esempio, se il coperchio si chiude prima della sua linguetta, la linguetta scende da fuori e resta fuori; se la linguetta viene piegata prima e poi si chiude il coperchio, la linguetta entra dentro la scatola. Quindi la sequenza conta: metti la linguetta <b>prima</b> del coperchio.</p>
+<p><b>⤵ Linguetta che entra dentro</b>: se vuoi chiudere la linguetta per ultima ma deve stare infilata, segna la sua piega come "entra dentro". Puoi farlo nel pannello Proprietà della piega, con il pulsante ⤵ accanto alla voce nella sequenza oppure con <b>Alt+clic</b> mentre crei la sequenza cliccando. Il pezzo (e quelli attaccati a lui) sta allora sempre dietro la parete su cui si appoggia, visto da fuori. Sul disegno la piega mostra "⤵ dentro". I modelli mailer e scatola a casetta hanno già le linguette segnate così.</p>
 <p><b>👆 Crea cliccando</b> (nella finestra Sequenza o nell'anteprima 3D): costruisci la sequenza <b>cliccando sui pezzi</b> (pannelli, alette, linguette) nell'ordine in cui si chiudono. Il primo pezzo cliccato diventa il <b>passo 1</b>, il secondo il <b>passo 2</b> e così via; ogni pezzo si piega attorno alla piega che lo unisce al resto della scatola.</p>
 <ul><li>Si clicca sul <b>disegno</b> o direttamente nel <b>3D</b>: nel 3D la scatola resta ferma alla fine dell'ultimo passo scelto, così i pezzi ancora da scegliere sono aperti e facili da cliccare;</li>
 <li>sul disegno ogni pezzo mostra un bollino: <b>verde</b> con il numero se l'hai già scelto, grigio con il passo attuale se non ancora, "base" sul pannello che resta fermo;</li>
@@ -14960,6 +15045,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.59</b> — 3D: nei pezzi sovrapposti vale la <a data-topic="ordine">sequenza</a> come nel cartone vero (chi arriva per ultimo resta dal lato da cui arriva: linguetta prima del coperchio = dentro). Nuova opzione <b>⤵ Linguetta che entra dentro</b> sulla piega (Proprietà, sequenza, Alt+clic). Corrette le alette del mailer e la linguetta del fondo della casetta.</li>
 <li><b>2.58</b> — <a data-topic="ordine">Sequenza di chiusura</a> creata <b>cliccando sui pezzi</b> (sul disegno o nel 3D): il primo diventa il passo 1, il secondo il 2…; Shift+clic per lo stesso passo, oltre agli ordini automatici.</li>
 <li><b>2.57</b> — Dieci nuovi modelli nel <a data-topic="genera-scatola">generatore</a>: scatola giocattoli a incastro invertito, astuccio dentifricio, scatola per bottiglia, cioccolatini a cassetto, esagonale, triangolare, diamante, cestino con manico, mailer per spedizioni e regalo a petali. Ogni modello mostra una nota e propone misure di partenza.</li>
 <li><b>2.56</b> — Nuovi modelli nel <a data-topic="genera-scatola">generatore</a>: scatola panino a conchiglia e scatola a casetta con manico.</li>
@@ -15733,6 +15819,7 @@ function genGableBox(L, W, H, glueW){
   fold([x1, H], [x2, H], 2, 90); fold([x3, H], [x4, H], 2, 90); // 2: alette antipolvere del fondo
   fold([x0, H], [x1, H], 3, 90);                              // 3: fondo
   fold([x0, H + W], [x1, H + W], 4, 90);                      // 4: linguetta del fondo
+  shapes[shapes.length-1].foldInside = true;                 //    che entra dentro la parete
   gf1.concat(gf2).forEach(([a, b])=> fold(a, b, 5, 90));      // 5: alette dei timpani, sotto le falde
   fold([x0, 0], [x1, 0], 6, beta); fold([x2, 0], [x3, 0], 6, beta);           // 6: falde del tetto
   fold([x0, -R], [x1, -R], 7, beta, 'valley'); fold([x2, -R], [x3, -R], 7, beta, 'valley'); // 7: manici, dritti uno contro l'altro
@@ -15839,7 +15926,8 @@ function genMailer(L, W, H){
   const P = t.P.slice(1).concat(lid);
   const shapes = [boxPolyShape(P, 'cut')];
   t.folds.forEach(([a,b,o])=> shapes.push(mkFold(a, b, o, 90)));
-  shapes.push(mkFold([H,0],[H+L,0],4,90), mkFold([H,-si],[H,-W+si],5,90), mkFold([H+L,-si],[H+L,-W+si],5,90), mkFold([H,-W],[H+L,-W],6,90));
+  shapes.push(mkFold([H,0],[H+L,0],4,90));
+  [mkFold([H,-si],[H,-W+si],5,90), mkFold([H+L,-si],[H+L,-W+si],5,90), mkFold([H,-W],[H+L,-W],6,90)].forEach(f=>{ f.foldInside = true; shapes.push(f); }); // alette e linguetta del coperchio entrano dentro le pareti
   t.glues.forEach(([x,y,w,h])=> shapes.push(glueZoneShape(x, y, w, h)));
   offsetShapes(shapes, 0, W + T);
   return {shapes, totalW: L + 2*H, totalH: 2*W + 2*H + T, rootHint: [H + L/2, W + T + H + W/2]};
@@ -19215,7 +19303,7 @@ document.getElementById('fold3dReset').onclick = ()=>{ fold3d.yaw=-0.6; fold3d.p
   cv.addEventListener('mousedown', e=>{ fold3d.drag = {x:e.clientX, y:e.clientY}; fold3d.downAt = {x:e.clientX, y:e.clientY}; cv.style.cursor='grabbing'; });
   cv.addEventListener('click', e=>{ // clic senza trascinare: quale pannello e quale piega
     const d = fold3d.downAt; if(d && Math.hypot(e.clientX-d.x, e.clientY-d.y) > 4) return;
-    const r = cv.getBoundingClientRect(); fold3d.lastShift = e.shiftKey; fold3DPick(e.clientX - r.left, e.clientY - r.top);
+    const r = cv.getBoundingClientRect(); fold3d.lastShift = e.shiftKey; fold3d.lastAlt = e.altKey; fold3DPick(e.clientX - r.left, e.clientY - r.top);
   });
   window.addEventListener('mousemove', e=>{
     if(!fold3d.drag) return;
@@ -20292,6 +20380,14 @@ function renderPropPanelInner(){
     angleInp.onchange = ()=> pushHistory();
     angleField.appendChild(angleInp);
     host.appendChild(angleField);
+
+    const inWrap = document.createElement('label');
+    inWrap.style.cssText = 'display:flex;align-items:center;gap:7px;margin-top:8px;font-size:12px;cursor:pointer;';
+    const inBox = document.createElement('input'); inBox.type='checkbox'; inBox.style.width='auto'; inBox.checked = !!s.foldInside;
+    inBox.onchange = ()=>{ if(inBox.checked) s.foldInside = true; else delete s.foldInside; pushHistory(); renderAll(); };
+    const inTxt = document.createElement('span'); inTxt.textContent = translate('⤵ Linguetta che entra dentro (infilata)');
+    inWrap.title = translate('Il pezzo che si piega su questa linea, a scatola chiusa, sta dietro la parete su cui si appoggia (come una linguetta infilata), anche se si chiude per ultimo. Senza questa opzione resta dal lato da cui arriva, secondo la sequenza.');
+    inWrap.appendChild(inBox); inWrap.appendChild(inTxt); host.appendChild(inWrap);
 
     const foldHint = document.createElement('div'); foldHint.className='hint'; foldHint.style.marginTop='6px';
     foldHint.textContent = 'La freccia e l\'angolo compaiono sul disegno solo se scegli un verso di piegatura. 90° = angolo retto (parete di scatola), 180° = piega completa su se stessa. Verso e angolo sono usati anche dall\'anteprima 3D.';
