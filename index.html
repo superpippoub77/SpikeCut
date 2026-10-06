@@ -957,7 +957,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.61</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.62</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2275,6 +2275,8 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Giustificato": "Justify",
+    "Giustificato: le righe occupano tutta la larghezza della casella (con il font fisso che va a capo) o della riga più lunga; l'ultima riga di ogni paragrafo resta a sinistra.": "Justify: lines fill the whole width of the box (with the fixed font that wraps) or of the longest line; the last line of each paragraph stays left-aligned.",
     "Ridimensionando la casella": "When resizing the box",
     "Scala il testo (cambia la dimensione)": "Scale the text (size changes)",
     "Font fisso: il testo va a capo": "Fixed font: text wraps",
@@ -3949,6 +3951,8 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Giustificato": "Blocksatz",
+    "Giustificato: le righe occupano tutta la larghezza della casella (con il font fisso che va a capo) o della riga più lunga; l'ultima riga di ogni paragrafo resta a sinistra.": "Blocksatz: Die Zeilen füllen die ganze Breite der Box (mit fester, umbrechender Schrift) oder der längsten Zeile; die letzte Zeile jedes Absatzes bleibt linksbündig.",
     "Ridimensionando la casella": "Beim Ändern der Box-Größe",
     "Scala il testo (cambia la dimensione)": "Text skalieren (Größe ändert sich)",
     "Font fisso: il testo va a capo": "Feste Schrift: Text bricht um",
@@ -5623,6 +5627,8 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Giustificato": "Justificado",
+    "Giustificato: le righe occupano tutta la larghezza della casella (con il font fisso che va a capo) o della riga più lunga; l'ultima riga di ogni paragrafo resta a sinistra.": "Justificado: las líneas ocupan todo el ancho del cuadro (con la fuente fija que se ajusta) o de la línea más larga; la última línea de cada párrafo queda a la izquierda.",
     "Ridimensionando la casella": "Al redimensionar el cuadro",
     "Scala il testo (cambia la dimensione)": "Escalar el texto (cambia el tamaño)",
     "Font fisso: il testo va a capo": "Fuente fija: el texto se ajusta a la línea",
@@ -7297,6 +7303,8 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Giustificato": "两端对齐",
+    "Giustificato: le righe occupano tutta la larghezza della casella (con il font fisso che va a capo) o della riga più lunga; l'ultima riga di ogni paragrafo resta a sinistra.": "两端对齐：各行占满文本框宽度（固定字号自动换行时）或最长一行的宽度；每段最后一行左对齐。",
     "Ridimensionando la casella": "调整文本框大小时",
     "Scala il testo (cambia la dimensione)": "缩放文字（字号改变）",
     "Font fisso: il testo va a capo": "固定字号：文字自动换行",
@@ -8971,6 +8979,8 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Giustificato": "Justifié",
+    "Giustificato: le righe occupano tutta la larghezza della casella (con il font fisso che va a capo) o della riga più lunga; l'ultima riga di ogni paragrafo resta a sinistra.": "Justifié : les lignes occupent toute la largeur du cadre (avec la police fixe qui revient à la ligne) ou de la ligne la plus longue ; la dernière ligne de chaque paragraphe reste à gauche.",
     "Ridimensionando la casella": "En redimensionnant le cadre",
     "Scala il testo (cambia la dimensione)": "Mettre le texte à l'échelle (la taille change)",
     "Font fisso: il testo va a capo": "Police fixe : le texte revient à la ligne",
@@ -11242,9 +11252,9 @@ function textWidthMM(s, str){ // larghezza reale di una riga (mm), con font, pes
 function wrapTextLines(s){
   const W = s.boxW, key = [s.text, s.fontSize, s.fontFamily, s.fontWeight, s.letterSpacing, s.widthPct, W].join('\u0001');
   if(_txtWrapCache.has(key)) return _txtWrapCache.get(key);
-  const out = [];
+  const out = [], ends = new Set();
   String(s.text||'').split('\n').forEach(par=>{
-    if(!par.length){ out.push(''); return; }
+    if(!par.length){ out.push(''); ends.add(out.length-1); return; }
     const words = par.split(/( +)/); let line = '';
     words.forEach(w=>{
       if(!w.length) return;
@@ -11257,13 +11267,15 @@ function wrapTextLines(s){
       }
     });
     out.push(line.trimEnd());
+    ends.add(out.length-1); // ultima riga del paragrafo: nel giustificato resta a sinistra
   });
+  out.ends = ends;
   if(_txtWrapCache.size > 500) _txtWrapCache.clear();
   _txtWrapCache.set(key, out);
   return out;
 }
 function textLines(s){ return textBoxMode(s)==='wrap' ? wrapTextLines(s) : String(s.text||'').split('\n'); }
-function textAnchor(s){ return s.align==='center' ? 'middle' : s.align==='right' ? 'end' : 'start'; }
+function textAnchor(s){ return s.align==='center' ? 'middle' : s.align==='right' ? 'end' : 'start'; } // giustificato: come sinistra, le parole vengono distribuite
 function textLineStep(s){ return (s.fontSize||6) * (s.lineHeight || 1.2); }
 // attributi comuni (k = mm → unità di destinazione: pixel dello schermo oppure mm nell'esportazione)
 function textAttrs(s, k){
@@ -11282,7 +11294,28 @@ function textTransform(s, k){
 }
 // righe come <tspan>: ogni riga riparte dal punto di allineamento, le righe vuote tengono il loro spazio
 function textTspans(s, k, xmlEscape){
-  return textLines(s).map((line, i)=>({ x: s.x*k, dy: i ? textLineStep(s)*k : 0, text: line.length ? line : '\u00a0' }));
+  const lines = textLines(s);
+  if(s.align==='justify') return justifiedTspans(s, k, lines);
+  return lines.map((line, i)=>({ x: s.x*k, dy: i ? textLineStep(s)*k : 0, text: line.length ? line : '\u00a0' }));
+}
+// Giustificato: ogni riga (tranne l'ultima di un paragrafo) occupa tutta la larghezza; le parole sono
+// tspan separati con la loro x. Larghezza: la casella (font fisso) oppure la riga più lunga.
+function justifiedTspans(s, k, lines){
+  const sx = (s.widthPct||100)/100, step = textLineStep(s);
+  const W = textBoxMode(s) ? s.boxW : Math.max(0, ...lines.map(l=> textWidthMM(s, l)));
+  const ends = lines.ends || new Set([lines.length-1]);
+  const out = [];
+  lines.forEach((line, i)=>{
+    const dy = i ? step*k : 0;
+    const words = line.trim().split(/ +/).filter(Boolean);
+    const lead = line.length - line.trimStart().length;
+    if(ends.has(i) || words.length < 2){ out.push({x: s.x*k, dy, text: line.length ? line : '\u00a0'}); return; }
+    const ww = words.map(w=> textWidthMM(s, w)), extra = (W - ww.reduce((a,b)=>a+b,0) - textWidthMM(s, ' '.repeat(lead))) / (words.length-1);
+    if(!(extra > 0)){ out.push({x: s.x*k, dy, text: line}); return; }
+    let pos = textWidthMM(s, ' '.repeat(lead));
+    words.forEach((w, j)=>{ out.push({x: (s.x + pos/sx)*k, dy: j ? 0 : dy, text: w}); pos += ww[j] + extra; });
+  });
+  return out;
 }
 // Assottiglia (0–100): per i font con un solo spessore (es. Hammer Fat) il browser non sa creare pesi più
 // sottili; erodo i bordi delle lettere in modo uniforme. Raggio massimo: 2,8% della dimensione del testo
@@ -11336,7 +11369,8 @@ function renderShapes(){
     try{
       const spans = node.querySelectorAll('tspan');
       const len = spans.length ? Math.max(...[...spans].map(t=>t.getComputedTextLength())) : node.getComputedTextLength();
-      if(len>0) s._measuredW = len/state.scale * ((s.widthPct||100)/100);
+      if(s.align==='justify') s._measuredW = Math.max(0, ...textLines(s).map(l=> textWidthMM(s, l)));
+      else if(len>0) s._measuredW = len/state.scale * ((s.widthPct||100)/100);
     }catch(err){ /* ambienti senza supporto alla misura reale: resta la stima */ }
   });
 }
@@ -14642,7 +14676,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.61';
+const GUIDE_VERSION = '2.62';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -14724,14 +14758,14 @@ html:`<p>Con lo strumento Arco (<b>A</b>): clic sul punto di <b>inizio</b>, clic
 <p><b>Modificare la curvatura</b>: selezionato l'arco, al centro della curva compare un <b>rombo</b>. Trascinalo verso l'esterno per incurvare di più l'arco (raggio più piccolo), verso la corda per appiattirlo (raggio più grande); oltre la corda l'arco si <b>ribalta</b> dall'altra parte. Le estremità restano ferme, quindi le linee collegate non si muovono. Durante il trascinamento compaiono raggio e freccia; con <b>Shift</b> il raggio scatta a millimetri interi. Nel pannello Proprietà puoi scrivere il <b>raggio</b> esatto (minimo: mezza circonferenza), usare <b>⇅ Inverti</b> per portare la curva dall'altra parte e <b>Arco corto / Arco lungo</b> per scegliere tra i due archi possibili con lo stesso raggio.</p>
 <p>Oltre al rombo, l'arco mostra solo le maniglie delle estremità: trascinandole, o spostando una linea collegata, viene ricalcolato e resta un arco. Le quote indicano lunghezza e raggio. Se aggiungi o togli un punto al suo interno, o lo unisci a un'altra linea, diventa una linea normale con la stessa forma.</p>` },
 
-{ id:'testo', cat:'Disegnare', title:'Testo e font', keys:'testo scritta font carattere tipo personalizzato caricare casella font fisso a capo continua larghezza ridimensiona',
+{ id:'testo', cat:'Disegnare', title:'Testo e font', keys:'testo scritta font carattere tipo personalizzato caricare casella font fisso a capo continua larghezza ridimensiona giustificato giustifica allineamento',
 html:`<p><b>Più righe</b>: scrivendo un testo, <b>Invio</b> va a capo; per finire fai clic fuori o premi Ctrl+Invio. Anche nel pannello Proprietà il campo Testo accetta più righe.</p>
 <p><b>Ridimensionando la casella</b> (pannello Proprietà del testo) decidi cosa succede trascinando la maniglia in basso a destra:</p>
 <ul><li><b>Scala il testo</b> (predefinito): cambia la dimensione del testo;</li>
 <li><b>Font fisso: il testo va a capo</b>: la dimensione resta quella scelta, cambia solo la larghezza della casella e le parole vanno a capo dentro di essa (una parola più lunga della casella viene spezzata);</li>
 <li><b>Font fisso: il testo continua sulla riga</b>: la dimensione resta fissa e le righe non vanno a capo, continuano anche oltre il bordo della casella.</li></ul>
 <p>Con il font fisso compare anche il campo <b>Larghezza casella</b> per scriverla in numero. Le righe automatiche valgono anche in esportazione, stampa, 3D e conversione in tracciati; gli a capo con Invio restano.</p>
-<ul><li><b>Allineamento</b>: sinistra, centro o destra; il blocco di testo resta dov'è e si riallineano le righe.</li>
+<ul><li><b>Allineamento</b>: sinistra, centro, destra o <b>giustificato</b>; il blocco di testo resta dov'è e si riallineano le righe. Nel giustificato le parole si distribuiscono su tutta la larghezza: quella della casella se usi "Font fisso: il testo va a capo", altrimenti quella della riga più lunga; l'ultima riga di ogni paragrafo resta a sinistra.</li>
 <li><b>Spessore carattere</b>: da Sottilissimo (100) a Nero (900). Il grassetto funziona con tutti i font; i pesi più sottili del normale solo se il font li contiene (per esempio Inter).</li>
 <li><b>Assottiglia</b>: rende più sottili i tratti delle lettere con qualsiasi font, anche con quelli che hanno un solo spessore (come Hammer Fat, che esiste solo in versione Regular). Vale sullo schermo, nel PDF e nella stampa; è un effetto di disegno, non cambia i contorni per il taglio.</li>
 <li><b>Spaziatura caratteri</b>: negativa per avvicinare le lettere, positiva per allontanarle.</li>
@@ -15188,6 +15222,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.62</b> — <a data-topic="testo">Testo</a>: allineamento <b>giustificato</b> (con la casella a font fisso le righe riempiono tutta la larghezza).</li>
 <li><b>2.61</b> — <a data-topic="testo">Testo</a>: opzione "Ridimensionando la casella" con font fisso, il testo va a capo dentro la casella oppure continua sulla riga.</li>
 <li><b>2.60</b> — 3D: le alette e le linguette non spuntano più sopra coperchi e pareti. Correzione dell'ordine di disegno (i pannelli che si toccano solo su uno spigolo non creano più conflitti), pezzi più piccoli dentro in automatico, scelta <a data-topic="ordine">⤵ Entra dentro / ⤴ Resta fuori</a> per ogni piega. L'astuccio (e giocattoli, dentifricio, bottiglia) ora ha un vero coperchio pieno con linguetta che si infila.</li>
 <li><b>2.59</b> — 3D: nei pezzi sovrapposti vale la <a data-topic="ordine">sequenza</a> come nel cartone vero (chi arriva per ultimo resta dal lato da cui arriva: linguetta prima del coperchio = dentro). Nuova opzione <b>⤵ Linguetta che entra dentro</b> sulla piega (Proprietà, sequenza, Alt+clic). Corrette le alette del mailer e la linguetta del fondo della casetta.</li>
@@ -20248,8 +20283,9 @@ function renderTextStyleSection(host, s){
   const wrap = document.createElement('div'); wrap.className='field'; wrap.style.marginTop='8px';
   wrap.innerHTML = `<label>${escapeHTML(translate('Allineamento'))}</label>`;
   const seg = document.createElement('div'); seg.className='seg3';
-  [['left','⯇ ' + translate('Sinistra')],['center','≡ ' + translate('Centro')],['right',translate('Destra') + ' ⯈']].forEach(([v,l])=>{
+  [['left','⯇ ' + translate('Sinistra')],['center','≡ ' + translate('Centro')],['right',translate('Destra') + ' ⯈'],['justify','☰ ' + translate('Giustificato')]].forEach(([v,l])=>{
     const b = document.createElement('button'); b.type='button'; b.textContent = l; b.dataset.align = v;
+    if(v==='justify') b.title = translate('Giustificato: le righe occupano tutta la larghezza della casella (con il font fisso che va a capo) o della riga più lunga; l\'ultima riga di ogni paragrafo resta a sinistra.');
     if((s.align||'left')===v) b.classList.add('active');
     b.onclick = ()=>{ setTextAlign(s, v); pushHistory(); renderAll(); };
     seg.appendChild(b);
