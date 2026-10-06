@@ -957,7 +957,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.63</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.64</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -14686,7 +14686,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.63';
+const GUIDE_VERSION = '2.64';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -15237,6 +15237,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.64</b> — Corretto l'<a data-topic="salvataggio">allineamento con la libreria</a>: i disegni con testi risultavano sempre "più avanti della libreria" anche appena salvati.</li>
 <li><b>2.63</b> — <a data-topic="salvataggio">Allineamento con la libreria</a> anche quando torni sulla pagina e ogni 2 minuti, con confronto del contenuto: le schede rimaste indietro si aggiornano da sole, quelle più avanti vengono segnalate da salvare.</li>
 <li><b>2.62</b> — <a data-topic="testo">Testo</a>: allineamento <b>giustificato</b> (con la casella a font fisso le righe riempiono tutta la larghezza).</li>
 <li><b>2.61</b> — <a data-topic="testo">Testo</a>: opzione "Ridimensionando la casella" con font fisso, il testo va a capo dentro la casella oppure continua sulla riga.</li>
@@ -25813,13 +25814,26 @@ async function tryRestore(){
 ============================================================ */
 // Impronta del contenuto (forme, livelli, foglio): serve a capire se una scheda è davvero diversa
 // dalla versione della libreria da cui deriva, senza fidarsi solo dell'indicatore "da salvare".
+const LIB_SIG_V = 'v2:';
 function libContentSig(o){
-  let str; try{ str = JSON.stringify({s:o.shapes||[], l:(o.layers||[]).map(x=>[x.id,x.name,x.side||'']), p:o.page||{}}); }catch(e){ return null; }
+  // i campi che iniziano con "_" sono dati di lavoro ricalcolati a ogni disegno (es. la larghezza misurata dei testi): non contano
+  const skip = (k, v)=> (k && k[0]==='_') ? undefined : v;
+  let str; try{ str = JSON.stringify({s:o.shapes||[], l:(o.layers||[]).map(x=>[x.id,x.name,x.side||'']), p:o.page||{}}, skip); }catch(e){ return null; }
   let h1 = 5381, h2 = 52711;
   for(let i=0;i<str.length;i++){ const c = str.charCodeAt(i); h1 = ((h1<<5) + h1) ^ c; h2 = ((h2<<5) + h2) ^ c; }
-  return (h1>>>0).toString(36) + (h2>>>0).toString(36) + ':' + str.length;
+  return LIB_SIG_V + (h1>>>0).toString(36) + (h2>>>0).toString(36) + ':' + str.length;
 }
 function docLibDirty(doc){ return doc.librarySig ? libContentSig(doc) !== doc.librarySig : !!doc.libraryDirty; }
+// impronta mancante o di una versione precedente: la ricostruisco dal contenuto vero della libreria
+async function verifyDirtyAgainstServer(doc){
+  try{
+    const data = await apiFetch('load.php?id=' + encodeURIComponent(doc.libraryId), {method:'GET'});
+    const proj = data.project || {}, shapes = proj.shapes || []; migrateLegacyArcs(shapes);
+    const layers = proj.layers && proj.layers.length ? proj.layers : doc.layers;
+    doc.librarySig = libContentSig({shapes, layers, page: proj.page || doc.page});
+    return libContentSig(doc) !== doc.librarySig;
+  }catch(err){ return !!doc.libraryDirty; }
+}
 let libCheckRunning = false;
 // opts.background: controllo periodico (ritorno sulla pagina, ogni 2 minuti): aggiorna in silenzio le schede
 // rimaste indietro e senza modifiche locali; i conflitti vengono solo segnalati, senza domande.
@@ -25844,10 +25858,12 @@ async function checkLibraryFreshness(opts){
         showToast(tpl('«{name}» non è più nella tua libreria: la scheda resta come disegno locale.', {name: doc.name}), false);
         continue;
       }
-      const dirty = docLibDirty(doc);
+      let dirty = docLibDirty(doc);
       // confronto come date (server e browser le scrivono in formati diversi); 1 s di tolleranza
       const serverNewer = !doc.libraryUpdated || (it.updated && Date.parse(it.updated) > Date.parse(doc.libraryUpdated) + 1000);
       if(!serverNewer){
+        const sigOk = doc.librarySig && doc.librarySig.indexOf(LIB_SIG_V)===0;
+        if(dirty && !sigOk) dirty = await verifyDirtyAgainstServer(doc);
         doc.libraryDirty = dirty; // più avanti della libreria (modifiche da salvare) oppure allineata
         if(dirty && !bg) aheadNames.push(doc.name);
         continue;
@@ -25875,7 +25891,7 @@ async function checkLibraryFreshness(opts){
       updatedNames.push(doc.name);
     }
     if(documents.some(d=>d.id===startActive) && activeDocId!==startActive) switchToDocument(startActive);
-    if(documents.find(d=>d.id===activeDocId)) state.libraryDirty = !!documents.find(d=>d.id===activeDocId).libraryDirty;
+    { const ad = documents.find(d=>d.id===activeDocId); if(ad){ state.libraryDirty = !!ad.libraryDirty; state.librarySig = ad.librarySig || null; } }
     renderTabBar(); scheduleAutosave(); updateSyncChip();
     if(updatedNames.length) showToast(tpl('Aggiornati all\'ultima versione della libreria: {names}.', {names: updatedNames.map(n=>'«'+n+'»').join(', ')}), false);
     if(aheadNames.length) showToast(tpl('Più avanti della libreria (modifiche non ancora salvate): {names}. Salvale con «● Da salvare in libreria» in alto.', {names: aheadNames.map(n=>'«'+n+'»').join(', ')}), false);
