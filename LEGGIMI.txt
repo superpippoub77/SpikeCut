@@ -30,6 +30,8 @@ COME METTERLO ONLINE (es. hosting Aruba o simile con supporto PHP)
          load.php
          delete.php
          versions.php
+         view_link.php
+         view.php
          load_version.php
          restore_version.php
          create_folder.php

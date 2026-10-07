@@ -478,3 +478,17 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'OPTIONS'
     && !in_array(basename($_SERVER['SCRIPT_NAME'] ?? ''), ['list.php', 'load.php', 'load_version.php', 'versions.php', 'me.php', 'admin_status.php', 'admin_users.php', 'admin_projects.php'], true)) {
     acquire_data_lock();
 }
+
+/* ============================================================
+   LINK PUBBLICI DI VISIONE — un token segreto (non indovinabile) che
+   permette a chiunque abbia il link di VEDERE l'ultima versione salvata
+   di un progetto e scaricarla (PDF, PNG, JPEG, SVG), senza account e
+   senza poterla modificare. Il proprietario può disattivarlo o
+   rigenerarlo (il vecchio link smette subito di funzionare).
+   Elenco a parte (non dentro l'indice dei progetti) così i salvataggi
+   successivi non lo toccano.
+============================================================ */
+define('VIEW_LINKS_FILE', LIBRARY_DIR . '/view_links.json');
+function read_view_links() { ensure_library_dir(); return read_json_list(VIEW_LINKS_FILE); }
+function write_view_links($links) { ensure_library_dir(); write_json_list(VIEW_LINKS_FILE, $links); }
+function safe_view_token($t) { return is_string($t) && preg_match('/^[a-f0-9]{32}$/', $t) === 1; }

@@ -511,6 +511,19 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 .fill-swatches button.swatch-clear{ background:repeating-conic-gradient(#c8c8c8 0 25%, #ffffff 0 50%) 0 0/8px 8px; position:relative; }
 .fill-swatches button.swatch-clear::after{ content:''; position:absolute; left:2px; right:2px; top:50%; border-top:1.5px solid #d1402c; transform:rotate(-30deg); }
 .fill-field{ margin-top:6px; padding:8px; border:1px solid var(--line); border-radius:8px; }
+body.viewer-mode #rail, body.viewer-mode #railResizer, body.viewer-mode #panel, body.viewer-mode #tabBar,
+body.viewer-mode #railToggle, body.viewer-mode #panelToggle, body.viewer-mode #topbar > .grp, body.viewer-mode #drawHint,
+body.viewer-mode #snapBadge, body.viewer-mode #emptyState, body.viewer-mode #status > *:not(:last-child){ display:none !important; }
+.viewer-bar{ display:none; }
+body.viewer-mode .viewer-bar{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex:1; min-width:0; order:2; }
+.viewer-bar .vb-title{ font-weight:600; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:40vw; }
+.viewer-bar .vb-sub{ font-size:11.5px; color:var(--ink-dim); white-space:nowrap; }
+.viewer-bar .vb-dl{ display:flex; gap:6px; margin-left:auto; flex-wrap:wrap; }
+.viewer-bar .vb-dl .btn{ width:auto; margin:0; padding:6px 12px; }
+.vl-row{ display:flex; gap:6px; align-items:center; margin-top:6px; }
+.vl-row input{ flex:1; min-width:0; font-size:12px; }
+.vl-row .btn{ width:auto; margin:0; white-space:nowrap; }
+.vl-row .vl-fmt{ width:52px; font-size:12px; font-weight:600; }
 .todo-box{ background:var(--bg-1); border:1px solid var(--line-soft); border-radius:8px; padding:8px; margin-bottom:6px; }
 .todo-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:12.5px; }
 .todo-bar{ height:5px; border-radius:3px; background:var(--line-soft); overflow:hidden; margin-bottom:6px; }
@@ -744,6 +757,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <div class="grp sidebar-grp"><button class="iconbtn" id="btnSidebar" aria-expanded="true" title="Comprimi o espandi la barra degli strumenti">
     <svg viewBox="0 0 22 22" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 6h14M4 11h14M4 16h14"/></svg>
   </button></div>
+  <div id="viewerBar" class="viewer-bar"></div>
   <div class="brand"><img src="assets/logo-horizontal-dark.png" alt="SpikeCut — CAD per scatole e fustelle" style="height:34px;width:auto;vertical-align:middle;"></div>
   <div class="grp">
     <input id="filename" type="text" value="disegno" title="Nome file">
@@ -823,6 +837,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
       <button data-action="open-library">Apri dalla libreria (server)</button>
       <button data-action="pin-version" title="Dai un nome a questo punto del progetto (es. «Approvata dal cliente»): resterà per sempre nella cronologia e potrai tornarci quando vuoi">📌 Fissa questa versione…</button>
       <button data-action="versions-current" title="Tutte le versioni salvate di questo progetto, con quelle fissate">🕐 Versioni di questo progetto…</button>
+      <button data-action="view-link" title="Un link da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account e senza poterlo modificare">🔗 Link pubblico per far vedere il disegno…</button>
       <div class="menu-sep"></div>
       <button data-action="save-project" title="Scarica sul tuo computer una copia completa del progetto: per archiviarla, passarla a qualcuno o riaprirla su un altro computer senza account">⬇ Scarica una copia del progetto (.json)</button>
       <button data-action="open-project" title="Apri un progetto salvato in precedenza come file .json">📂 Apri un progetto da file (.json)</button>
@@ -843,6 +858,8 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
       <button data-action="export-silhouette">✂ Esporta per Silhouette Cameo (DXF)…</button>
       <div class="menu-sep"></div>
       <button data-action="print-proof">Stampa di prova (A3/A4/A5)…</button>
+      <div class="menu-sep"></div>
+      <button data-action="view-link" title="Un link da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account e senza poterlo modificare">🔗 Link pubblico (PDF, PNG, JPEG, SVG)…</button>
     </div>
   </div>
   <div class="grp menuwrap">
@@ -967,7 +984,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.65</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.66</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1278,6 +1295,16 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
       <div class="hint" style="margin-top:8px;">In Silhouette Studio: File → Apri, scegli il DXF, seleziona tutto e verifica che nel pannello Invia le linee siano impostate su "Taglio". Controlla le misure con il righello prima di tagliare.</div>
       <button class="btn primary" id="silExport" style="width:100%;margin-top:12px;">Esporta</button>
     </div>
+  </div>
+</div>
+
+<div id="viewLinkModal" class="modal-overlay">
+  <div class="modal-box" style="width:560px;max-width:96vw;">
+    <div class="modal-head">
+      <h3>🔗 Link pubblico di visione</h3>
+      <button class="iconbtn" data-close title="Chiudi">✕</button>
+    </div>
+    <div class="modal-body" id="viewLinkBody" style="max-height:74vh;overflow:auto;"></div>
   </div>
 </div>
 
@@ -1960,6 +1987,8 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
 <script>
 (function(){
 "use strict";
+// link pubblico di visione (index.html?view=TOKEN): l'app si apre in sola lettura
+const VIEWER_TOKEN = (()=>{ try{ const t = new URLSearchParams(location.search).get('view'); return t && /^[a-f0-9]{32}$/.test(t) ? t : null; }catch(e){ return null; } })();
 
 /* ============================================================
    INTERNAZIONALIZZAZIONE (i18n) — l'italiano è la lingua sorgente:
@@ -2295,6 +2324,36 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "🔗 Link pubblico per far vedere il disegno…": "🔗 Public link to show the drawing…",
+    "🔗 Link pubblico (PDF, PNG, JPEG, SVG)…": "🔗 Public link (PDF, PNG, JPEG, SVG)…",
+    "Un link da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account e senza poterlo modificare": "A link to send to anyone: they see the drawing and download it as PDF, PNG, JPEG or SVG, without an account and without being able to edit it",
+    "🔗 Link pubblico di visione": "🔗 Public view link",
+    "Caricamento del disegno…": "Loading the drawing…",
+    "aggiornato il {d}": "updated {d}",
+    "sola visione": "view only",
+    "Scarica:": "Download:",
+    "Chi riceve il link vede il disegno e può scaricarlo in PDF, PNG, JPEG o SVG, senza account e senza poterlo modificare. Il link mostra sempre l'ultima versione salvata in libreria.": "Whoever receives the link sees the drawing and can download it as PDF, PNG, JPEG or SVG, without an account and without being able to edit it. The link always shows the latest version saved in the library.",
+    "Per creare un link pubblico accedi al tuo account e salva il disegno in libreria.": "To create a public link, sign in to your account and save the drawing to the library.",
+    "Questo disegno non è ancora nella tua libreria: salvalo prima, poi potrai creare il link.": "This drawing is not in your library yet: save it first, then you can create the link.",
+    "Ci sono modifiche non ancora salvate in libreria: chi apre il link vede la versione salvata prima.": "There are changes not yet saved to the library: whoever opens the link sees the previously saved version.",
+    "Salva ora in libreria": "Save to library now",
+    "🔗 Crea il link": "🔗 Create the link",
+    "Link copiato.": "Link copied.",
+    "Link di visione (con i pulsanti per scaricare)": "View link (with download buttons)",
+    "Link che scaricano subito un formato": "Links that download a format right away",
+    "↻ Nuovo link": "↻ New link",
+    "Crea un link diverso: quello vecchio smette subito di funzionare": "Create a different link: the old one stops working immediately",
+    "Creare un nuovo link? Chi ha quello vecchio non potrà più vedere il disegno.": "Create a new link? Whoever has the old one will no longer be able to see the drawing.",
+    "Nuovo link": "New link",
+    "✕ Disattiva il link": "✕ Disable the link",
+    "Disattivare il link? Chi lo ha ricevuto non potrà più vedere il disegno.": "Disable the link? Whoever received it will no longer be able to see the drawing.",
+    "Disattiva il link": "Disable the link",
+    "Il link è segreto ma chiunque lo riceve può aprirlo: mandalo solo a chi deve vedere il disegno. Le note e la lista delle cose da fare del progetto non vengono mostrate.": "The link is secret but anyone who receives it can open it: send it only to those who need to see the drawing. The project notes and to-do list are not shown.",
+    "Link disattivato.": "Link disabled.",
+    "Questo link non è più attivo: chiedi a chi te l'ha mandato un link nuovo.": "This link is no longer active: ask whoever sent it to you for a new one.",
+    "Il progetto non è più disponibile.": "The project is no longer available.",
+    "Link non valido.": "Invalid link.",
+    "Solo il proprietario può gestire il link pubblico di questo progetto.": "Only the owner can manage the public link of this project.",
     "☑ Cose da fare": "☑ To do",
     "{d} fatti su {n}": "{d} of {n} done",
     "nessun punto": "no items",
@@ -4012,6 +4071,36 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "🔗 Link pubblico per far vedere il disegno…": "🔗 Öffentlicher Link zum Zeigen der Zeichnung…",
+    "🔗 Link pubblico (PDF, PNG, JPEG, SVG)…": "🔗 Öffentlicher Link (PDF, PNG, JPEG, SVG)…",
+    "Un link da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account e senza poterlo modificare": "Ein Link für beliebige Personen: Sie sehen die Zeichnung und laden sie als PDF, PNG, JPEG oder SVG herunter, ohne Konto und ohne sie ändern zu können",
+    "🔗 Link pubblico di visione": "🔗 Öffentlicher Ansichtslink",
+    "Caricamento del disegno…": "Zeichnung wird geladen…",
+    "aggiornato il {d}": "aktualisiert am {d}",
+    "sola visione": "nur ansehen",
+    "Scarica:": "Herunterladen:",
+    "Chi riceve il link vede il disegno e può scaricarlo in PDF, PNG, JPEG o SVG, senza account e senza poterlo modificare. Il link mostra sempre l'ultima versione salvata in libreria.": "Wer den Link erhält, sieht die Zeichnung und kann sie als PDF, PNG, JPEG oder SVG herunterladen, ohne Konto und ohne sie ändern zu können. Der Link zeigt immer die zuletzt in der Bibliothek gespeicherte Version.",
+    "Per creare un link pubblico accedi al tuo account e salva il disegno in libreria.": "Um einen öffentlichen Link zu erstellen, melde dich an und speichere die Zeichnung in der Bibliothek.",
+    "Questo disegno non è ancora nella tua libreria: salvalo prima, poi potrai creare il link.": "Diese Zeichnung ist noch nicht in deiner Bibliothek: Speichere sie zuerst, dann kannst du den Link erstellen.",
+    "Ci sono modifiche non ancora salvate in libreria: chi apre il link vede la versione salvata prima.": "Es gibt noch nicht in der Bibliothek gespeicherte Änderungen: Wer den Link öffnet, sieht die zuvor gespeicherte Version.",
+    "Salva ora in libreria": "Jetzt in Bibliothek speichern",
+    "🔗 Crea il link": "🔗 Link erstellen",
+    "Link copiato.": "Link kopiert.",
+    "Link di visione (con i pulsanti per scaricare)": "Ansichtslink (mit Download-Schaltflächen)",
+    "Link che scaricano subito un formato": "Links, die sofort ein Format herunterladen",
+    "↻ Nuovo link": "↻ Neuer Link",
+    "Crea un link diverso: quello vecchio smette subito di funzionare": "Einen anderen Link erstellen: Der alte funktioniert sofort nicht mehr",
+    "Creare un nuovo link? Chi ha quello vecchio non potrà più vedere il disegno.": "Neuen Link erstellen? Wer den alten hat, kann die Zeichnung nicht mehr sehen.",
+    "Nuovo link": "Neuer Link",
+    "✕ Disattiva il link": "✕ Link deaktivieren",
+    "Disattivare il link? Chi lo ha ricevuto non potrà più vedere il disegno.": "Link deaktivieren? Wer ihn erhalten hat, kann die Zeichnung nicht mehr sehen.",
+    "Disattiva il link": "Link deaktivieren",
+    "Il link è segreto ma chiunque lo riceve può aprirlo: mandalo solo a chi deve vedere il disegno. Le note e la lista delle cose da fare del progetto non vengono mostrate.": "Der Link ist geheim, aber jeder, der ihn erhält, kann ihn öffnen: Schicke ihn nur an diejenigen, die die Zeichnung sehen sollen. Notizen und Aufgabenliste des Projekts werden nicht angezeigt.",
+    "Link disattivato.": "Link deaktiviert.",
+    "Questo link non è più attivo: chiedi a chi te l'ha mandato un link nuovo.": "Dieser Link ist nicht mehr aktiv: Bitte die Person, die ihn dir geschickt hat, um einen neuen.",
+    "Il progetto non è più disponibile.": "Das Projekt ist nicht mehr verfügbar.",
+    "Link non valido.": "Ungültiger Link.",
+    "Solo il proprietario può gestire il link pubblico di questo progetto.": "Nur der Eigentümer kann den öffentlichen Link dieses Projekts verwalten.",
     "☑ Cose da fare": "☑ Aufgaben",
     "{d} fatti su {n}": "{d} von {n} erledigt",
     "nessun punto": "keine Punkte",
@@ -5729,6 +5818,36 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "🔗 Link pubblico per far vedere il disegno…": "🔗 Enlace público para mostrar el dibujo…",
+    "🔗 Link pubblico (PDF, PNG, JPEG, SVG)…": "🔗 Enlace público (PDF, PNG, JPEG, SVG)…",
+    "Un link da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account e senza poterlo modificare": "Un enlace para enviar a cualquiera: ve el dibujo y lo descarga en PDF, PNG, JPEG o SVG, sin cuenta y sin poder modificarlo",
+    "🔗 Link pubblico di visione": "🔗 Enlace público de visualización",
+    "Caricamento del disegno…": "Cargando el dibujo…",
+    "aggiornato il {d}": "actualizado el {d}",
+    "sola visione": "solo lectura",
+    "Scarica:": "Descargar:",
+    "Chi riceve il link vede il disegno e può scaricarlo in PDF, PNG, JPEG o SVG, senza account e senza poterlo modificare. Il link mostra sempre l'ultima versione salvata in libreria.": "Quien recibe el enlace ve el dibujo y puede descargarlo en PDF, PNG, JPEG o SVG, sin cuenta y sin poder modificarlo. El enlace muestra siempre la última versión guardada en la biblioteca.",
+    "Per creare un link pubblico accedi al tuo account e salva il disegno in libreria.": "Para crear un enlace público, inicia sesión y guarda el dibujo en la biblioteca.",
+    "Questo disegno non è ancora nella tua libreria: salvalo prima, poi potrai creare il link.": "Este dibujo aún no está en tu biblioteca: guárdalo primero y luego podrás crear el enlace.",
+    "Ci sono modifiche non ancora salvate in libreria: chi apre il link vede la versione salvata prima.": "Hay cambios aún no guardados en la biblioteca: quien abra el enlace verá la versión guardada antes.",
+    "Salva ora in libreria": "Guardar ahora en la biblioteca",
+    "🔗 Crea il link": "🔗 Crear el enlace",
+    "Link copiato.": "Enlace copiado.",
+    "Link di visione (con i pulsanti per scaricare)": "Enlace de visualización (con botones para descargar)",
+    "Link che scaricano subito un formato": "Enlaces que descargan directamente un formato",
+    "↻ Nuovo link": "↻ Nuevo enlace",
+    "Crea un link diverso: quello vecchio smette subito di funzionare": "Crea un enlace distinto: el antiguo deja de funcionar al instante",
+    "Creare un nuovo link? Chi ha quello vecchio non potrà più vedere il disegno.": "¿Crear un enlace nuevo? Quien tenga el antiguo ya no podrá ver el dibujo.",
+    "Nuovo link": "Nuevo enlace",
+    "✕ Disattiva il link": "✕ Desactivar el enlace",
+    "Disattivare il link? Chi lo ha ricevuto non potrà più vedere il disegno.": "¿Desactivar el enlace? Quien lo recibió ya no podrá ver el dibujo.",
+    "Disattiva il link": "Desactivar el enlace",
+    "Il link è segreto ma chiunque lo riceve può aprirlo: mandalo solo a chi deve vedere il disegno. Le note e la lista delle cose da fare del progetto non vengono mostrate.": "El enlace es secreto, pero cualquiera que lo reciba puede abrirlo: envíalo solo a quien deba ver el dibujo. Las notas y la lista de tareas del proyecto no se muestran.",
+    "Link disattivato.": "Enlace desactivado.",
+    "Questo link non è più attivo: chiedi a chi te l'ha mandato un link nuovo.": "Este enlace ya no está activo: pide uno nuevo a quien te lo envió.",
+    "Il progetto non è più disponibile.": "El proyecto ya no está disponible.",
+    "Link non valido.": "Enlace no válido.",
+    "Solo il proprietario può gestire il link pubblico di questo progetto.": "Solo el propietario puede gestionar el enlace público de este proyecto.",
     "☑ Cose da fare": "☑ Tareas",
     "{d} fatti su {n}": "{d} de {n} hechos",
     "nessun punto": "ningún punto",
@@ -7446,6 +7565,36 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "🔗 Link pubblico per far vedere il disegno…": "🔗 用于展示图纸的公开链接……",
+    "🔗 Link pubblico (PDF, PNG, JPEG, SVG)…": "🔗 公开链接（PDF、PNG、JPEG、SVG）……",
+    "Un link da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account e senza poterlo modificare": "可发送给任何人的链接：无需账户即可查看图纸并下载为 PDF、PNG、JPEG 或 SVG，但无法修改",
+    "🔗 Link pubblico di visione": "🔗 公开查看链接",
+    "Caricamento del disegno…": "正在加载图纸……",
+    "aggiornato il {d}": "更新于 {d}",
+    "sola visione": "仅查看",
+    "Scarica:": "下载：",
+    "Chi riceve il link vede il disegno e può scaricarlo in PDF, PNG, JPEG o SVG, senza account e senza poterlo modificare. Il link mostra sempre l'ultima versione salvata in libreria.": "收到链接的人无需账户即可查看图纸并下载为 PDF、PNG、JPEG 或 SVG，但无法修改。链接始终显示库中最后保存的版本。",
+    "Per creare un link pubblico accedi al tuo account e salva il disegno in libreria.": "要创建公开链接，请登录账户并将图纸保存到库中。",
+    "Questo disegno non è ancora nella tua libreria: salvalo prima, poi potrai creare il link.": "此图纸尚未保存到你的库中：请先保存，然后即可创建链接。",
+    "Ci sono modifiche non ancora salvate in libreria: chi apre il link vede la versione salvata prima.": "有尚未保存到库中的修改：打开链接的人会看到之前保存的版本。",
+    "Salva ora in libreria": "立即保存到库",
+    "🔗 Crea il link": "🔗 创建链接",
+    "Link copiato.": "链接已复制。",
+    "Link di visione (con i pulsanti per scaricare)": "查看链接（带下载按钮）",
+    "Link che scaricano subito un formato": "直接下载某种格式的链接",
+    "↻ Nuovo link": "↻ 新链接",
+    "Crea un link diverso: quello vecchio smette subito di funzionare": "创建一个新链接：旧链接立即失效",
+    "Creare un nuovo link? Chi ha quello vecchio non potrà più vedere il disegno.": "创建新链接？持有旧链接的人将无法再查看图纸。",
+    "Nuovo link": "新链接",
+    "✕ Disattiva il link": "✕ 停用链接",
+    "Disattivare il link? Chi lo ha ricevuto non potrà più vedere il disegno.": "停用链接？收到链接的人将无法再查看图纸。",
+    "Disattiva il link": "停用链接",
+    "Il link è segreto ma chiunque lo riceve può aprirlo: mandalo solo a chi deve vedere il disegno. Le note e la lista delle cose da fare del progetto non vengono mostrate.": "链接是保密的，但任何收到的人都能打开：请只发送给需要查看图纸的人。项目备注和待办事项不会显示。",
+    "Link disattivato.": "链接已停用。",
+    "Questo link non è più attivo: chiedi a chi te l'ha mandato un link nuovo.": "此链接已失效：请向发送者索取新链接。",
+    "Il progetto non è più disponibile.": "该项目已不可用。",
+    "Link non valido.": "链接无效。",
+    "Solo il proprietario può gestire il link pubblico di questo progetto.": "只有所有者可以管理此项目的公开链接。",
     "☑ Cose da fare": "☑ 待办事项",
     "{d} fatti su {n}": "已完成 {d}/{n}",
     "nessun punto": "暂无事项",
@@ -9163,6 +9312,36 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "🔗 Link pubblico per far vedere il disegno…": "🔗 Lien public pour montrer le dessin…",
+    "🔗 Link pubblico (PDF, PNG, JPEG, SVG)…": "🔗 Lien public (PDF, PNG, JPEG, SVG)…",
+    "Un link da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account e senza poterlo modificare": "Un lien à envoyer à n'importe qui : il voit le dessin et le télécharge en PDF, PNG, JPEG ou SVG, sans compte et sans pouvoir le modifier",
+    "🔗 Link pubblico di visione": "🔗 Lien public de consultation",
+    "Caricamento del disegno…": "Chargement du dessin…",
+    "aggiornato il {d}": "mis à jour le {d}",
+    "sola visione": "consultation seule",
+    "Scarica:": "Télécharger :",
+    "Chi riceve il link vede il disegno e può scaricarlo in PDF, PNG, JPEG o SVG, senza account e senza poterlo modificare. Il link mostra sempre l'ultima versione salvata in libreria.": "Qui reçoit le lien voit le dessin et peut le télécharger en PDF, PNG, JPEG ou SVG, sans compte et sans pouvoir le modifier. Le lien montre toujours la dernière version enregistrée dans la bibliothèque.",
+    "Per creare un link pubblico accedi al tuo account e salva il disegno in libreria.": "Pour créer un lien public, connectez-vous et enregistrez le dessin dans la bibliothèque.",
+    "Questo disegno non è ancora nella tua libreria: salvalo prima, poi potrai creare il link.": "Ce dessin n'est pas encore dans votre bibliothèque : enregistrez-le d'abord, puis vous pourrez créer le lien.",
+    "Ci sono modifiche non ancora salvate in libreria: chi apre il link vede la versione salvata prima.": "Des modifications ne sont pas encore enregistrées dans la bibliothèque : qui ouvre le lien voit la version enregistrée auparavant.",
+    "Salva ora in libreria": "Enregistrer maintenant dans la bibliothèque",
+    "🔗 Crea il link": "🔗 Créer le lien",
+    "Link copiato.": "Lien copié.",
+    "Link di visione (con i pulsanti per scaricare)": "Lien de consultation (avec boutons de téléchargement)",
+    "Link che scaricano subito un formato": "Liens qui téléchargent directement un format",
+    "↻ Nuovo link": "↻ Nouveau lien",
+    "Crea un link diverso: quello vecchio smette subito di funzionare": "Créer un autre lien : l'ancien cesse aussitôt de fonctionner",
+    "Creare un nuovo link? Chi ha quello vecchio non potrà più vedere il disegno.": "Créer un nouveau lien ? Qui possède l'ancien ne pourra plus voir le dessin.",
+    "Nuovo link": "Nouveau lien",
+    "✕ Disattiva il link": "✕ Désactiver le lien",
+    "Disattivare il link? Chi lo ha ricevuto non potrà più vedere il disegno.": "Désactiver le lien ? Qui l'a reçu ne pourra plus voir le dessin.",
+    "Disattiva il link": "Désactiver le lien",
+    "Il link è segreto ma chiunque lo riceve può aprirlo: mandalo solo a chi deve vedere il disegno. Le note e la lista delle cose da fare del progetto non vengono mostrate.": "Le lien est secret mais quiconque le reçoit peut l'ouvrir : envoyez-le seulement à ceux qui doivent voir le dessin. Les notes et la liste des choses à faire du projet ne sont pas affichées.",
+    "Link disattivato.": "Lien désactivé.",
+    "Questo link non è più attivo: chiedi a chi te l'ha mandato un link nuovo.": "Ce lien n'est plus actif : demandez-en un nouveau à la personne qui vous l'a envoyé.",
+    "Il progetto non è più disponibile.": "Le projet n'est plus disponible.",
+    "Link non valido.": "Lien non valide.",
+    "Solo il proprietario può gestire il link pubblico di questo progetto.": "Seul le propriétaire peut gérer le lien public de ce projet.",
     "☑ Cose da fare": "☑ À faire",
     "{d} fatti su {n}": "{d} faits sur {n}",
     "nessun punto": "aucun point",
@@ -14908,7 +15087,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.65';
+const GUIDE_VERSION = '2.66';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -15272,6 +15451,15 @@ html:`<p>Dal menu <b>Strumenti</b>:</p>
 { id:'anteprima-taglio', cat:'Fustella e scatole', title:'Anteprima taglio', keys:'anteprima taglio fustella sagoma senza piegature',
 html:`<p>Menu <b>Strumenti → Anteprima taglio (fustella)</b>: mostra la sagoma che si ottiene tagliando i contorni con ruolo Taglio, senza le piegature. Segnala anche i tratti di taglio rimasti aperti.</p>` },
 
+{ id:'link-pubblico', cat:'Salvare ed esportare', title:'Link pubblico per far vedere il disegno', keys:'link pubblico condividere mandare cliente visione vedere scaricare pdf png jpeg jpg svg anteprima url indirizzo senza account',
+html:`<p>Per far vedere un disegno a qualcuno (un cliente, la tipografia) senza che debba avere un account: menu <b>File → 🔗 Link pubblico per far vedere il disegno…</b> (anche dal menu <b>Stampa</b>). Il disegno deve essere salvato nella tua <a data-topic="libreria">libreria</a>.</p>
+<ul><li><b>🔗 Crea il link</b>: viene creato un indirizzo segreto. <b>Copia</b> lo mette negli appunti, <b>Apri</b> lo prova in una nuova scheda.</li>
+<li>Chi apre il <b>link di visione</b> vede il disegno a tutto schermo, in sola lettura, con nome, autore e data dell'ultimo salvataggio, e i pulsanti <b>Scarica: PDF, PNG, JPEG, SVG</b>. Non può modificare nulla e non serve nessun account. Nel suo browser non resta salvato niente.</li>
+<li>Ci sono anche i <b>link che scaricano subito un formato</b> (PDF, PNG, JPEG o SVG): aprendoli il file si scarica appena il disegno è caricato.</li>
+<li>Il link mostra sempre l'<b>ultima versione salvata in libreria</b>: se hai modifiche non ancora salvate, la finestra lo segnala e offre <b>Salva ora in libreria</b>.</li>
+<li><b>↻ Nuovo link</b> crea un indirizzo diverso: quello vecchio smette subito di funzionare. <b>✕ Disattiva il link</b> lo spegne. Chi apre un link disattivato vede un messaggio che gli chiede un link nuovo. Se sposti il progetto nel Cestino il link smette di funzionare.</li>
+<li>Le note del progetto e la lista delle <a data-topic="descrizione">cose da fare</a> non vengono mai mostrate a chi apre il link.</li></ul>` },
+
 { id:'descrizione', cat:'Fustella e scatole', title:'Descrizione e istruzioni del progetto', keys:'descrizione istruzioni montaggio carta materiale tipo scatola passaggi cose da fare todo to do lista fatti checklist attività',
 html:`<p>Senza nessun oggetto selezionato, il pannello Proprietà mostra la scheda del progetto: tipo di scatola, carta o materiale consigliato, istruzioni di stampa e taglio, e i passaggi di montaggio uno per uno (riordinabili). Viene salvata con il progetto.</p>
 <p><b>☑ Cose da fare</b>, in cima alla scheda: la lista di quello che devi ancora fare sul progetto. Scrivi un punto e premi Invio per aggiungerlo; la spunta lo segna come <b>fatto</b> (barrato, finisce in fondo alla lista), di nuovo la spunta lo riporta tra quelli <b>da fare</b>. In alto vedi quanti punti sono fatti sul totale, con una barra verde; ✕ elimina un punto e <b>Togli i fatti</b> pulisce la lista. Il testo di ogni punto si modifica direttamente. La lista è salvata con il progetto (nel browser, in libreria e nel file .json) e conta anche per l'<a data-topic="salvataggio">allineamento con la libreria</a>.</p>` },
@@ -15463,6 +15651,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.66</b> — <a data-topic="link-pubblico">🔗 Link pubblico</a> da mandare a chiunque per vedere il disegno e scaricarlo in PDF, PNG, JPEG o SVG, senza account; si può rigenerare o disattivare.</li>
 <li><b>2.65</b> — <a data-topic="descrizione">☑ Cose da fare</a> nella scheda del progetto, con punti fatti e da fare. <a data-topic="genera-scatola">Fogli e oggetti in carta</a> nel generatore: biglietto, pieghevoli a 3 ante e a fisarmonica, busta, cartellina con tasca, segnaposto, segnalibro, bustina CD. Riempimento <a data-topic="colore-interno">trasparente</a> con cursore di opacità e <b>◌ Perfora gli oggetti sotto</b> fino a N oggetti o fino al foglio.</li>
 <li><b>2.64</b> — Corretto l'<a data-topic="salvataggio">allineamento con la libreria</a>: i disegni con testi risultavano sempre "più avanti della libreria" anche appena salvati.</li>
 <li><b>2.63</b> — <a data-topic="salvataggio">Allineamento con la libreria</a> anche quando torni sulla pagina e ogni 2 minuti, con confronto del contenuto: le schede rimaste indietro si aggiornano da sole, quelle più avanti vengono segnalate da salvare.</li>
@@ -17064,6 +17253,7 @@ stage.addEventListener('dblclick', (e)=>{
 ============================================================ */
 let canvasClipboardShapes = null; // array di forme copiate (con le coordinate originali)
 stage.addEventListener('contextmenu', (e)=>{
+  if(VIEWER_TOKEN){ e.preventDefault(); return; }
   try{
     e.preventDefault();
     if(state.tool !== 'select') return; // coerente con le altre interazioni: solo in modalità Selezione
@@ -17280,6 +17470,7 @@ function pointInPoly(p, pts){
 }
 
 function handleMouseDown(mm, e){
+  if(VIEWER_TOKEN) return; // modalità visione: niente modifiche
   const target = e.target;
   if(state.tool==='select'){
     if(state.refImageSelected && target.dataset && target.dataset.imgRotate){
@@ -17679,6 +17870,7 @@ function handleMouseUp(mm, e){
 }
 
 function handleDblClick(mm, e){
+  if(VIEWER_TOKEN) return;
   if(state.tool==='pen' && state.draft){
     finishPenDraft(false);
   } else if(state.tool==='select'){
@@ -17997,6 +18189,7 @@ function deleteSelection(){
 window.addEventListener('keydown', (e)=>{
   const tag = (e.target.tagName||'').toLowerCase();
   if(tag==='input' || tag==='textarea') return;
+  if(VIEWER_TOKEN) return; // modalità visione: nessuna scorciatoia di modifica
 
   // Input numerico durante il disegno di una linea: digitare dei numeri ne
   // impone la lunghezza esatta (nell'unità di misura corrente), lasciando
@@ -18424,6 +18617,7 @@ function handleMenuAction(e){
   if(['export-svg','export-pdf','export-pdf-print','export-pdf-tiled','export-image','export-cad','blade-report','export-silhouette','print-proof',
       'fold-3d','fold-sequence','imposition','bleed','preflight','cut-preview','check-closures','check-overlaps','weld-points','close-all-paths','symmetry','scale-drawing'].includes(action)) ensureOutsideView();
   if(action==='export-svg') exportSVG();
+  if(action==='view-link') openViewLinkModal();
   else if(action==='export-silhouette') openSilhouetteExport();
   else if(action==='export-pdf-print') openModal('pdfPrintModal');
   else if(action==='text-to-paths') textToPaths();
@@ -19786,7 +19980,7 @@ document.getElementById('preflightAgain').onclick = runPreflight;
 document.getElementById('impSheet').onchange = ()=>{ const v = document.getElementById('impSheet').value; if(v!=='custom'){ const [w,h] = v.split('x'); document.getElementById('impW').value = w; document.getElementById('impH').value = h; } impRefresh(); };
 ['impW','impH','impMargin','impGap','impRot','impNest'].forEach(id=>{ const e = document.getElementById(id); e.addEventListener('change', impRefresh); });
 document.getElementById('impGo').onclick = impCreate;
-['imgExpModal','cadModal','pdfPrintModal','bleedModal','preflightModal','impModal','codesModal'].forEach(id=>{ const m = document.getElementById(id); setupOverlayClickClose(m, ()=> m.classList.remove('open')); m.querySelector('[data-close]').onclick = ()=> m.classList.remove('open'); m.addEventListener('keydown', e=> e.stopPropagation()); });
+['viewLinkModal','imgExpModal','cadModal','pdfPrintModal','bleedModal','preflightModal','impModal','codesModal'].forEach(id=>{ const m = document.getElementById(id); setupOverlayClickClose(m, ()=> m.classList.remove('open')); m.querySelector('[data-close]').onclick = ()=> m.classList.remove('open'); m.addEventListener('keydown', e=> e.stopPropagation()); });
 ['imgExpFmt','imgExpDpi'].forEach(id=> document.getElementById(id).onchange = imgExpRefresh);
 document.getElementById('imgExpGo').onclick = doImageExport;
 document.getElementById('cadDxf').onclick = ()=> doCadExport('dxf');
@@ -26155,6 +26349,7 @@ async function idbGet(key){
 }
 const localSave = { at:0, error:null, pending:false };
 function scheduleAutosave(){
+  if(VIEWER_TOKEN) return; // modalità visione: nulla viene salvato nel browser
   clearTimeout(state.autosaveTimer);
   localSave.pending = true;
   state.autosaveTimer = setTimeout(doAutosave, 450);
@@ -26170,6 +26365,7 @@ function autosavePayload(){
   return JSON.stringify({ documents: documents.map(trimmedDocForAutosave), activeDocId, customFonts: state.customFonts, savedAt: Date.now() });
 }
 async function doAutosave(){
+  if(VIEWER_TOKEN) return;
   clearTimeout(state.autosaveTimer);
   let payload;
   try{ payload = autosavePayload(); }catch(err){ localSave.error = err.message; localSave.pending = false; updateSyncChip(); return; }
@@ -26187,6 +26383,7 @@ async function doAutosave(){
 }
 // quando la pagina si chiude o si aggiorna, salva subito (senza aspettare la pausa)
 function flushAutosaveNow(){
+  if(VIEWER_TOKEN) return;
   if(!localSave.pending) return;
   try{ const payload = autosavePayload(); idbPut(AUTOSAVE_KEY, payload).catch(()=>{ try{ localStorage.setItem(AUTOSAVE_KEY, payload); }catch(e){} }); }catch(e){}
 }
@@ -26577,6 +26774,122 @@ document.getElementById('filename').addEventListener('change', (e)=> renameDocum
 /* ============================================================
    INIT
 ============================================================ */
+/* ============================================================
+   LINK PUBBLICO DI VISIONE — il proprietario crea un link segreto
+   (index.html?view=TOKEN): chi lo apre vede l'ultima versione salvata in
+   libreria, in sola lettura, e la scarica in PDF, PNG, JPEG o SVG.
+   Con &f=pdf|png|jpg|svg il file si scarica subito all'apertura.
+============================================================ */
+const VIEW_FORMATS = [['pdf','PDF'],['png','PNG'],['jpg','JPEG'],['svg','SVG']];
+function viewLinkURL(token, fmt){
+  const u = location.origin + location.pathname.replace(/[^\/]*$/, '') + 'index.html?view=' + token;
+  return fmt ? u + '&f=' + fmt : u;
+}
+function viewerDownload(fmt){
+  if(fmt==='svg') return exportSVG();
+  if(fmt==='pdf') return exportPDF();
+  document.getElementById('imgExpFmt').value = fmt==='jpg' ? 'jpg' : 'png';
+  document.getElementById('imgExpDpi').value = '300';
+  document.getElementById('imgExpSide').value = 'outside';
+  document.getElementById('imgExpLines').checked = true;
+  doImageExport();
+}
+function fitViewToPage(){
+  const sc = document.getElementById('stage-scroll'); if(!sc) return;
+  const w = sc.clientWidth || window.innerWidth, h = sc.clientHeight || (window.innerHeight - 60);
+  state.scale = Math.max(0.2, Math.min((w - 40)/state.page.w, (h - 40)/state.page.h));
+  renderAll();
+}
+async function initViewer(){
+  document.body.classList.add('viewer-mode');
+  const doc = makeNewDocument(translate('Disegno'));
+  documents = [doc]; activeDocId = doc.id;
+  loadDocumentIntoState(doc);
+  applyI18n(document.body);
+  const bar = document.getElementById('viewerBar');
+  bar.innerHTML = `<span class="vb-title">${escapeHTML(translate('Caricamento del disegno…'))}</span>`;
+  let data;
+  try{ data = await apiFetch('view.php?t=' + encodeURIComponent(VIEWER_TOKEN), {method:'GET'}); }
+  catch(err){ bar.innerHTML = `<span class="vb-title">⚠ ${escapeHTML(translate(err.message))}</span>`; return; }
+  const proj = data.project || {};
+  state.shapes = proj.shapes || []; migrateLegacyArcs(state.shapes);
+  if(proj.page) state.page = proj.page;
+  restoreLayersFromProject(proj);
+  restoreFontsFromProject(proj);
+  state.selection = new Set();
+  const name = proj.name || translate('Disegno');
+  document.getElementById('filename').value = name; document.title = name + ' — SpikeCut';
+  const when = proj.updated ? new Date(proj.updated).toLocaleString(currentLang==='zh'?'zh-CN':currentLang) : '';
+  bar.innerHTML = `<span class="vb-title" title="${escapeHTML(name)}">${escapeHTML(name)}</span>`
+    + `<span class="vb-sub">${escapeHTML([proj.ownerName ? tpl('di {name}', {name: proj.ownerName}) : '', when ? tpl('aggiornato il {d}', {d: when}) : '', translate('sola visione')].filter(Boolean).join(' · '))}</span>`
+    + `<span class="vb-dl"><span class="vb-sub" style="align-self:center;">${escapeHTML(translate('Scarica:'))}</span>${VIEW_FORMATS.map(([f,l])=> `<button class="btn${f==='pdf'?' primary':''}" data-vdl="${f}">${l}</button>`).join('')}</span>`;
+  bar.querySelectorAll('[data-vdl]').forEach(b=> b.onclick = ()=> viewerDownload(b.dataset.vdl));
+  state.snapGrid = false; state.showEndpoints = false; state.showDimensions = false; // vista pulita, senza gli aiuti di disegno
+  fitViewToPage();
+  window.addEventListener('resize', ()=> fitViewToPage());
+  const f = new URLSearchParams(location.search).get('f');
+  if(f && VIEW_FORMATS.some(x=> x[0]===f)) setTimeout(()=> viewerDownload(f), 900); // lascia caricare i font
+}
+// finestra per creare, copiare, rigenerare o disattivare il link
+async function openViewLinkModal(){
+  const body = document.getElementById('viewLinkBody');
+  const show = ()=>{ openModal('viewLinkModal'); applyI18n(body); };
+  const p = (html)=>{ const d = document.createElement('div'); d.className = 'hint'; d.style.margin = '0 0 10px'; d.innerHTML = html; return d; };
+  body.innerHTML = '';
+  body.appendChild(p(escapeHTML(translate('Chi riceve il link vede il disegno e può scaricarlo in PDF, PNG, JPEG o SVG, senza account e senza poterlo modificare. Il link mostra sempre l\'ultima versione salvata in libreria.'))));
+  if(!currentUser){
+    body.appendChild(p(escapeHTML(translate('Per creare un link pubblico accedi al tuo account e salva il disegno in libreria.'))));
+    const b = document.createElement('button'); b.className = 'btn primary'; b.textContent = translate('Accedi'); b.onclick = ()=>{ document.getElementById('viewLinkModal').classList.remove('open'); openAccountModal('login'); };
+    body.appendChild(b); show(); return;
+  }
+  if(!state.libraryId){
+    body.appendChild(p(escapeHTML(translate('Questo disegno non è ancora nella tua libreria: salvalo prima, poi potrai creare il link.'))));
+    const b = document.createElement('button'); b.className = 'btn primary'; b.textContent = translate('Salva in libreria'); b.onclick = ()=>{ document.getElementById('viewLinkModal').classList.remove('open'); saveToLibrary(); };
+    body.appendChild(b); show(); return;
+  }
+  const id = state.libraryId;
+  const box = document.createElement('div'); box.textContent = translate('Caricamento…'); body.appendChild(box); show();
+  const render = (token)=>{
+    box.innerHTML = '';
+    if(state.libraryDirty){
+      const w = p('⚠ ' + escapeHTML(translate('Ci sono modifiche non ancora salvate in libreria: chi apre il link vede la versione salvata prima.')) + ' ');
+      const sb = document.createElement('button'); sb.className = 'btn'; sb.style.cssText = 'width:auto;margin:4px 0 0;'; sb.textContent = translate('Salva ora in libreria');
+      sb.onclick = async ()=>{ await quickSaveToLibrary(); render(token); }; w.appendChild(document.createElement('br')); w.appendChild(sb); box.appendChild(w);
+    }
+    if(!token){
+      const b = document.createElement('button'); b.className = 'btn primary'; b.textContent = translate('🔗 Crea il link');
+      b.onclick = ()=> act('create'); box.appendChild(b); return;
+    }
+    const mkRow = (label, url)=>{
+      const r = document.createElement('div'); r.className = 'vl-row';
+      const l = document.createElement('span'); l.className = 'vl-fmt'; l.textContent = label;
+      const inp = document.createElement('input'); inp.type = 'text'; inp.readOnly = true; inp.value = url; inp.onclick = ()=> inp.select();
+      const c = document.createElement('button'); c.className = 'btn'; c.textContent = translate('Copia');
+      c.onclick = async ()=>{ try{ await navigator.clipboard.writeText(url); }catch(e){ inp.select(); document.execCommand('copy'); } showToast(translate('Link copiato.'), false); };
+      const o = document.createElement('a'); o.className = 'btn'; o.textContent = translate('Apri'); o.href = url; o.target = '_blank'; o.rel = 'noopener'; o.style.textDecoration = 'none';
+      r.append(l, inp, c, o); box.appendChild(r);
+    };
+    const t1 = document.createElement('div'); t1.style.cssText = 'font-weight:600;font-size:12.5px;'; t1.textContent = translate('Link di visione (con i pulsanti per scaricare)'); box.appendChild(t1);
+    mkRow('👁', viewLinkURL(token));
+    const t2 = document.createElement('div'); t2.style.cssText = 'font-weight:600;font-size:12.5px;margin-top:12px;'; t2.textContent = translate('Link che scaricano subito un formato'); box.appendChild(t2);
+    VIEW_FORMATS.forEach(([f,l])=> mkRow(l, viewLinkURL(token, f)));
+    const act2 = document.createElement('div'); act2.style.cssText = 'display:flex;gap:6px;margin-top:14px;flex-wrap:wrap;';
+    const rn = document.createElement('button'); rn.className = 'btn'; rn.style.cssText = 'width:auto;margin:0;'; rn.textContent = translate('↻ Nuovo link');
+    rn.title = translate('Crea un link diverso: quello vecchio smette subito di funzionare');
+    rn.onclick = async ()=>{ if(await showConfirm(translate('Creare un nuovo link? Chi ha quello vecchio non potrà più vedere il disegno.'), translate('Nuovo link'))) act('renew'); };
+    const rv = document.createElement('button'); rv.className = 'btn'; rv.style.cssText = 'width:auto;margin:0;'; rv.textContent = translate('✕ Disattiva il link');
+    rv.onclick = async ()=>{ if(await showConfirm(translate('Disattivare il link? Chi lo ha ricevuto non potrà più vedere il disegno.'), translate('Disattiva il link'))) act('revoke'); };
+    act2.append(rn, rv); box.appendChild(act2);
+    box.appendChild(p(escapeHTML(translate('Il link è segreto ma chiunque lo riceve può aprirlo: mandalo solo a chi deve vedere il disegno. Le note e la lista delle cose da fare del progetto non vengono mostrate.'))));
+  };
+  const act = async (action)=>{
+    try{ const r = await apiFetch('view_link.php', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, action})}); render(r.token || null);
+      if(action==='revoke') showToast(translate('Link disattivato.'), false); }
+    catch(err){ showToast(translate(err.message), true); }
+  };
+  try{ const r = await apiFetch('view_link.php?id=' + encodeURIComponent(id), {method:'GET'}); render(r.token || null); }
+  catch(err){ box.textContent = translate(err.message); }
+}
 async function init(){
   buildRail();
   buildImageTab();
@@ -26611,6 +26924,7 @@ async function init(){
       document.getElementById('langSelect').value = savedLang;
     }
   }catch(err){ /* best-effort */ }
+  if(VIEWER_TOKEN){ await initViewer(); return; } // link pubblico: solo visione, niente schede né copia nel browser
   const authReady = checkAuthStatus();
   checkPasswordResetURLParam();
   const restored = await tryRestore();
