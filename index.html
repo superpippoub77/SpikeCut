@@ -508,7 +508,17 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 .fill-swatches button{ height:15px; border-radius:4px; border:1px solid rgba(128,128,128,.45); cursor:pointer; padding:0; }
 .fill-swatches button:hover{ transform:scale(1.12); }
 .fill-swatches button.active{ outline:2px solid var(--brass); outline-offset:1px; }
+.fill-swatches button.swatch-clear{ background:repeating-conic-gradient(#c8c8c8 0 25%, #ffffff 0 50%) 0 0/8px 8px; position:relative; }
+.fill-swatches button.swatch-clear::after{ content:''; position:absolute; left:2px; right:2px; top:50%; border-top:1.5px solid #d1402c; transform:rotate(-30deg); }
 .fill-field{ margin-top:6px; padding:8px; border:1px solid var(--line); border-radius:8px; }
+.todo-box{ background:var(--bg-1); border:1px solid var(--line-soft); border-radius:8px; padding:8px; margin-bottom:6px; }
+.todo-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:12.5px; }
+.todo-bar{ height:5px; border-radius:3px; background:var(--line-soft); overflow:hidden; margin-bottom:6px; }
+.todo-bar > div{ height:100%; background:#34c759; transition:width .2s; }
+.todo-row{ display:flex; align-items:center; gap:6px; margin-bottom:3px; }
+.todo-row input[type=text]{ flex:1; min-width:0; padding:4px 6px; font-size:12px; }
+.todo-row.done input[type=text]{ text-decoration:line-through; opacity:.55; }
+.todo-row .iconbtn{ padding:1px 6px; font-size:11px; }
 .seg3{ display:flex; border:1px solid var(--line); border-radius:7px; overflow:hidden; }
 .seg3 button{ flex:1; padding:5px 6px; background:transparent; border:0; border-right:1px solid var(--line); color:var(--ink-dim); cursor:pointer; font-size:12px; }
 .seg3 button:last-child{ border-right:0; }
@@ -957,7 +967,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.64</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.65</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1534,6 +1544,16 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
           <option value="basket">Cestino con manico</option>
           <option value="mailer">Scatola mailer per spedizioni (e-commerce)</option>
           <option value="petals">Scatola regalo con chiusura a petali</option>
+          <optgroup label="Fogli e oggetti in carta">
+            <option value="card2">Biglietto pieghevole a 2 ante</option>
+            <option value="trifold">Pieghevole a 3 ante (brochure)</option>
+            <option value="accordion">Pieghevole a fisarmonica (4 ante)</option>
+            <option value="envelope">Busta da lettera</option>
+            <option value="folder">Cartellina con tasca</option>
+            <option value="tent">Segnaposto / cavaliere da tavolo</option>
+            <option value="bookmark">Segnalibro con foro</option>
+            <option value="cdsleeve">Bustina porta CD</option>
+          </optgroup>
         </select>
         <div class="hint" id="boxGenNote" style="margin-top:4px;"></div>
       </div>
@@ -2275,6 +2295,45 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "☑ Cose da fare": "☑ To do",
+    "{d} fatti su {n}": "{d} of {n} done",
+    "nessun punto": "no items",
+    "Segna come da fare": "Mark as to do",
+    "Segna come fatto": "Mark as done",
+    "Nuovo punto da fare… (Invio per aggiungere)": "New to-do item… (Enter to add)",
+    "Togli i {n} fatti": "Remove the {n} done",
+    "Trasparente": "Transparent",
+    "Opacità del riempimento": "Fill opacity",
+    "0% = trasparente, 100% = pieno. Doppio clic: pieno.": "0% = transparent, 100% = solid. Double-click: solid.",
+    "◌ Perfora gli oggetti sotto": "◌ Punch through the objects below",
+    "La forma fa un buco nella grafica che sta sotto di lei (immagini, testi, forme): si vede quello che c'è ancora più sotto, o il foglio. Le linee di taglio e piega non vengono toccate.": "The shape makes a hole in the artwork below it (images, texts, shapes): you see what lies further below, or the sheet. Cut and fold lines are not touched.",
+    "Fino a": "Up to",
+    "oggetti sotto": "objects below",
+    "tutti, fino al foglio": "all, down to the sheet",
+    "Ora buca {n} oggetti.": "It now punches {n} objects.",
+    "Sotto questa forma non c'è grafica da bucare.": "There is no artwork to punch under this shape.",
+    "Si contano solo gli oggetti che la toccano, dal più vicino. Il buco segue la forma anche se la sposti; il suo riempimento (anche trasparente o semitrasparente) resta visibile sopra il buco.": "Only objects touching it are counted, starting from the nearest. The hole follows the shape even when you move it; its fill (even transparent or semi-transparent) stays visible over the hole.",
+    "Fogli e oggetti in carta": "Sheets and paper objects",
+    "Biglietto pieghevole a 2 ante": "Folded card (2 panels)",
+    "Pieghevole a 3 ante (brochure)": "Tri-fold leaflet (brochure)",
+    "Pieghevole a 3 ante": "Tri-fold leaflet",
+    "Pieghevole a fisarmonica (4 ante)": "Accordion fold leaflet (4 panels)",
+    "Pieghevole a fisarmonica": "Accordion fold leaflet",
+    "Busta da lettera": "Letter envelope",
+    "Cartellina con tasca": "Presentation folder with pocket",
+    "Segnaposto / cavaliere da tavolo": "Place card / table tent",
+    "Segnaposto da tavolo": "Table tent card",
+    "Segnalibro con foro": "Bookmark with hole",
+    "Segnalibro": "Bookmark",
+    "Bustina porta CD": "CD sleeve",
+    "L = larghezza del biglietto chiuso, H = altezza; P non si usa. Una piega al centro.": "L = width of the closed card, H = height; D is not used. One fold in the middle.",
+    "Piegatura a portafoglio: L = larghezza di un’anta, H = altezza; l’anta interna è 2 mm più stretta. P non si usa.": "Roll fold: L = width of one panel, H = height; the inner panel is 2 mm narrower. D is not used.",
+    "4 ante con pieghe alternate monte/valle. L = larghezza di un’anta, H = altezza; P non si usa.": "4 panels with alternating mountain/valley folds. L = width of one panel, H = height; D is not used.",
+    "L × H = misure della busta chiusa; P non si usa. Alette laterali, fondo incollato sulle laterali, aletta di chiusura in alto.": "L × H = size of the closed envelope; D is not used. Side flaps, bottom glued over the side flaps, closing flap at the top.",
+    "L × H = una copertina, P = altezza della tasca. Tasca con alette di colla sulla copertina destra.": "L × H = one cover, D = pocket height. Pocket with glue flaps on the right cover.",
+    "L = larghezza, H = altezza di una faccia; P non si usa. Prisma triangolare con aletta di colla sotto.": "L = width, H = height of one face; D is not used. Triangular prism with a glue flap underneath.",
+    "L × H, con foro per il nastrino; P non si usa.": "L × H, with a hole for the ribbon; D is not used.",
+    "L × H = interno della bustina (CD: 125 × 125); P non si usa. Alette di colla sui lati e aletta di chiusura che resta fuori.": "L × H = inside of the sleeve (CD: 125 × 125); D is not used. Glue flaps on the sides and a closing flap that stays outside.",
     "«{name}»: in libreria c'è una versione più recente, ma qui ci sono modifiche non salvate. Ricarica la pagina o apri la libreria per scegliere quale tenere.": "«{name}»: there is a newer version in the library, but there are unsaved changes here. Reload the page or open the library to choose which one to keep.",
     "Più avanti della libreria (modifiche non ancora salvate): {names}. Salvale con «● Da salvare in libreria» in alto.": "Ahead of the library (changes not yet saved): {names}. Save them with «● Save to library» at the top.",
     "Giustificato": "Justify",
@@ -3953,6 +4012,45 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "☑ Cose da fare": "☑ Aufgaben",
+    "{d} fatti su {n}": "{d} von {n} erledigt",
+    "nessun punto": "keine Punkte",
+    "Segna come da fare": "Als offen markieren",
+    "Segna come fatto": "Als erledigt markieren",
+    "Nuovo punto da fare… (Invio per aggiungere)": "Neue Aufgabe… (Enter zum Hinzufügen)",
+    "Togli i {n} fatti": "Die {n} erledigten entfernen",
+    "Trasparente": "Transparent",
+    "Opacità del riempimento": "Deckkraft der Füllung",
+    "0% = trasparente, 100% = pieno. Doppio clic: pieno.": "0 % = transparent, 100 % = deckend. Doppelklick: deckend.",
+    "◌ Perfora gli oggetti sotto": "◌ Objekte darunter durchstanzen",
+    "La forma fa un buco nella grafica che sta sotto di lei (immagini, testi, forme): si vede quello che c'è ancora più sotto, o il foglio. Le linee di taglio e piega non vengono toccate.": "Die Form stanzt ein Loch in die Grafik darunter (Bilder, Texte, Formen): Man sieht, was noch weiter unten liegt, oder das Blatt. Schnitt- und Rilllinien bleiben unberührt.",
+    "Fino a": "Bis zu",
+    "oggetti sotto": "Objekte darunter",
+    "tutti, fino al foglio": "alle, bis zum Blatt",
+    "Ora buca {n} oggetti.": "Stanzt jetzt {n} Objekte.",
+    "Sotto questa forma non c'è grafica da bucare.": "Unter dieser Form gibt es keine Grafik zum Durchstanzen.",
+    "Si contano solo gli oggetti che la toccano, dal più vicino. Il buco segue la forma anche se la sposti; il suo riempimento (anche trasparente o semitrasparente) resta visibile sopra il buco.": "Gezählt werden nur Objekte, die sie berühren, vom nächsten an. Das Loch folgt der Form auch beim Verschieben; ihre Füllung (auch transparent oder halbtransparent) bleibt über dem Loch sichtbar.",
+    "Fogli e oggetti in carta": "Blätter und Papierobjekte",
+    "Biglietto pieghevole a 2 ante": "Klappkarte (2 Seiten)",
+    "Pieghevole a 3 ante (brochure)": "Dreifach-Falzflyer (Broschüre)",
+    "Pieghevole a 3 ante": "Dreifach-Falzflyer",
+    "Pieghevole a fisarmonica (4 ante)": "Leporello-Flyer (4 Seiten)",
+    "Pieghevole a fisarmonica": "Leporello-Flyer",
+    "Busta da lettera": "Briefumschlag",
+    "Cartellina con tasca": "Präsentationsmappe mit Tasche",
+    "Segnaposto / cavaliere da tavolo": "Tischkarte / Tischaufsteller",
+    "Segnaposto da tavolo": "Tischaufsteller",
+    "Segnalibro con foro": "Lesezeichen mit Loch",
+    "Segnalibro": "Lesezeichen",
+    "Bustina porta CD": "CD-Hülle",
+    "L = larghezza del biglietto chiuso, H = altezza; P non si usa. Una piega al centro.": "L = Breite der geschlossenen Karte, H = Höhe; T wird nicht verwendet. Ein Falz in der Mitte.",
+    "Piegatura a portafoglio: L = larghezza di un’anta, H = altezza; l’anta interna è 2 mm più stretta. P non si usa.": "Wickelfalz: L = Breite einer Seite, H = Höhe; die innere Seite ist 2 mm schmaler. T wird nicht verwendet.",
+    "4 ante con pieghe alternate monte/valle. L = larghezza di un’anta, H = altezza; P non si usa.": "4 Seiten mit abwechselnden Berg-/Talfalzen. L = Breite einer Seite, H = Höhe; T wird nicht verwendet.",
+    "L × H = misure della busta chiusa; P non si usa. Alette laterali, fondo incollato sulle laterali, aletta di chiusura in alto.": "L × H = Maße des geschlossenen Umschlags; T wird nicht verwendet. Seitenlaschen, Boden auf die Seitenlaschen geklebt, Verschlusslasche oben.",
+    "L × H = una copertina, P = altezza della tasca. Tasca con alette di colla sulla copertina destra.": "L × H = ein Deckel, T = Höhe der Tasche. Tasche mit Klebelaschen auf dem rechten Deckel.",
+    "L = larghezza, H = altezza di una faccia; P non si usa. Prisma triangolare con aletta di colla sotto.": "L = Breite, H = Höhe einer Seite; T wird nicht verwendet. Dreiecksprisma mit Klebelasche unten.",
+    "L × H, con foro per il nastrino; P non si usa.": "L × H, mit Loch für das Bändchen; T wird nicht verwendet.",
+    "L × H = interno della bustina (CD: 125 × 125); P non si usa. Alette di colla sui lati e aletta di chiusura che resta fuori.": "L × H = Innenmaß der Hülle (CD: 125 × 125); T wird nicht verwendet. Klebelaschen an den Seiten und eine Verschlusslasche, die außen bleibt.",
     "«{name}»: in libreria c'è una versione più recente, ma qui ci sono modifiche non salvate. Ricarica la pagina o apri la libreria per scegliere quale tenere.": "«{name}»: In der Bibliothek gibt es eine neuere Version, aber hier gibt es ungespeicherte Änderungen. Lade die Seite neu oder öffne die Bibliothek, um zu wählen, welche du behältst.",
     "Più avanti della libreria (modifiche non ancora salvate): {names}. Salvale con «● Da salvare in libreria» in alto.": "Weiter als die Bibliothek (noch nicht gespeicherte Änderungen): {names}. Speichere sie oben mit «● In Bibliothek speichern».",
     "Giustificato": "Blocksatz",
@@ -5631,6 +5729,45 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "☑ Cose da fare": "☑ Tareas",
+    "{d} fatti su {n}": "{d} de {n} hechos",
+    "nessun punto": "ningún punto",
+    "Segna come da fare": "Marcar como pendiente",
+    "Segna come fatto": "Marcar como hecho",
+    "Nuovo punto da fare… (Invio per aggiungere)": "Nueva tarea… (Intro para añadir)",
+    "Togli i {n} fatti": "Quitar los {n} hechos",
+    "Trasparente": "Transparente",
+    "Opacità del riempimento": "Opacidad del relleno",
+    "0% = trasparente, 100% = pieno. Doppio clic: pieno.": "0% = transparente, 100% = lleno. Doble clic: lleno.",
+    "◌ Perfora gli oggetti sotto": "◌ Perforar los objetos de debajo",
+    "La forma fa un buco nella grafica che sta sotto di lei (immagini, testi, forme): si vede quello che c'è ancora più sotto, o il foglio. Le linee di taglio e piega non vengono toccate.": "La forma hace un agujero en el gráfico que tiene debajo (imágenes, textos, formas): se ve lo que hay más abajo, o la hoja. Las líneas de corte y pliegue no se tocan.",
+    "Fino a": "Hasta",
+    "oggetti sotto": "objetos debajo",
+    "tutti, fino al foglio": "todos, hasta la hoja",
+    "Ora buca {n} oggetti.": "Ahora perfora {n} objetos.",
+    "Sotto questa forma non c'è grafica da bucare.": "Bajo esta forma no hay gráfico que perforar.",
+    "Si contano solo gli oggetti che la toccano, dal più vicino. Il buco segue la forma anche se la sposti; il suo riempimento (anche trasparente o semitrasparente) resta visibile sopra il buco.": "Solo se cuentan los objetos que la tocan, desde el más cercano. El agujero sigue a la forma aunque la muevas; su relleno (incluso transparente o semitransparente) sigue visible sobre el agujero.",
+    "Fogli e oggetti in carta": "Hojas y objetos de papel",
+    "Biglietto pieghevole a 2 ante": "Tarjeta plegable de 2 caras",
+    "Pieghevole a 3 ante (brochure)": "Díptico de 3 caras (folleto)",
+    "Pieghevole a 3 ante": "Folleto de 3 caras",
+    "Pieghevole a fisarmonica (4 ante)": "Folleto en acordeón (4 caras)",
+    "Pieghevole a fisarmonica": "Folleto en acordeón",
+    "Busta da lettera": "Sobre de carta",
+    "Cartellina con tasca": "Carpeta con bolsillo",
+    "Segnaposto / cavaliere da tavolo": "Marcasitio / tarjeta de mesa",
+    "Segnaposto da tavolo": "Tarjeta de mesa",
+    "Segnalibro con foro": "Marcapáginas con agujero",
+    "Segnalibro": "Marcapáginas",
+    "Bustina porta CD": "Funda para CD",
+    "L = larghezza del biglietto chiuso, H = altezza; P non si usa. Una piega al centro.": "L = ancho de la tarjeta cerrada, H = altura; P no se usa. Un pliegue en el centro.",
+    "Piegatura a portafoglio: L = larghezza di un’anta, H = altezza; l’anta interna è 2 mm più stretta. P non si usa.": "Plegado envolvente: L = ancho de una cara, H = altura; la cara interior es 2 mm más estrecha. P no se usa.",
+    "4 ante con pieghe alternate monte/valle. L = larghezza di un’anta, H = altezza; P non si usa.": "4 caras con pliegues alternos monte/valle. L = ancho de una cara, H = altura; P no se usa.",
+    "L × H = misure della busta chiusa; P non si usa. Alette laterali, fondo incollato sulle laterali, aletta di chiusura in alto.": "L × H = medidas del sobre cerrado; P no se usa. Solapas laterales, fondo pegado sobre las laterales, solapa de cierre arriba.",
+    "L × H = una copertina, P = altezza della tasca. Tasca con alette di colla sulla copertina destra.": "L × H = una tapa, P = altura del bolsillo. Bolsillo con solapas de pegado en la tapa derecha.",
+    "L = larghezza, H = altezza di una faccia; P non si usa. Prisma triangolare con aletta di colla sotto.": "L = ancho, H = altura de una cara; P no se usa. Prisma triangular con solapa de pegado debajo.",
+    "L × H, con foro per il nastrino; P non si usa.": "L × H, con agujero para la cinta; P no se usa.",
+    "L × H = interno della bustina (CD: 125 × 125); P non si usa. Alette di colla sui lati e aletta di chiusura che resta fuori.": "L × H = interior de la funda (CD: 125 × 125); P no se usa. Solapas de pegado en los lados y solapa de cierre que queda fuera.",
     "«{name}»: in libreria c'è una versione più recente, ma qui ci sono modifiche non salvate. Ricarica la pagina o apri la libreria per scegliere quale tenere.": "«{name}»: en la biblioteca hay una versión más reciente, pero aquí hay cambios sin guardar. Recarga la página o abre la biblioteca para elegir cuál conservar.",
     "Più avanti della libreria (modifiche non ancora salvate): {names}. Salvale con «● Da salvare in libreria» in alto.": "Más avanzados que la biblioteca (cambios aún sin guardar): {names}. Guárdalos con «● Guardar en la biblioteca» arriba.",
     "Giustificato": "Justificado",
@@ -7309,6 +7446,45 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "☑ Cose da fare": "☑ 待办事项",
+    "{d} fatti su {n}": "已完成 {d}/{n}",
+    "nessun punto": "暂无事项",
+    "Segna come da fare": "标记为待办",
+    "Segna come fatto": "标记为已完成",
+    "Nuovo punto da fare… (Invio per aggiungere)": "新的待办事项……（回车添加）",
+    "Togli i {n} fatti": "移除 {n} 个已完成",
+    "Trasparente": "透明",
+    "Opacità del riempimento": "填充不透明度",
+    "0% = trasparente, 100% = pieno. Doppio clic: pieno.": "0% = 透明，100% = 实色。双击：实色。",
+    "◌ Perfora gli oggetti sotto": "◌ 镂空下方对象",
+    "La forma fa un buco nella grafica che sta sotto di lei (immagini, testi, forme): si vede quello che c'è ancora più sotto, o il foglio. Le linee di taglio e piega non vengono toccate.": "该形状会在其下方的图形（图片、文字、形状）上开孔：可以看到更下层的内容或纸张。切割线和折线不受影响。",
+    "Fino a": "最多",
+    "oggetti sotto": "个下方对象",
+    "tutti, fino al foglio": "全部，直到纸张",
+    "Ora buca {n} oggetti.": "当前镂空 {n} 个对象。",
+    "Sotto questa forma non c'è grafica da bucare.": "此形状下方没有可镂空的图形。",
+    "Si contano solo gli oggetti che la toccano, dal più vicino. Il buco segue la forma anche se la sposti; il suo riempimento (anche trasparente o semitrasparente) resta visibile sopra il buco.": "只计算与其接触的对象，从最近的开始。移动形状时孔会跟随；其填充（包括透明或半透明）仍显示在孔上方。",
+    "Fogli e oggetti in carta": "纸张与纸制品",
+    "Biglietto pieghevole a 2 ante": "双折卡片",
+    "Pieghevole a 3 ante (brochure)": "三折页（宣传册）",
+    "Pieghevole a 3 ante": "三折页",
+    "Pieghevole a fisarmonica (4 ante)": "风琴折页（4 页）",
+    "Pieghevole a fisarmonica": "风琴折页",
+    "Busta da lettera": "信封",
+    "Cartellina con tasca": "带口袋的文件夹",
+    "Segnaposto / cavaliere da tavolo": "桌签 / 三角台卡",
+    "Segnaposto da tavolo": "三角台卡",
+    "Segnalibro con foro": "带孔书签",
+    "Segnalibro": "书签",
+    "Bustina porta CD": "CD 纸套",
+    "L = larghezza del biglietto chiuso, H = altezza; P non si usa. Una piega al centro.": "L = 合上后卡片宽度，H = 高度；不使用 P。中间一道折线。",
+    "Piegatura a portafoglio: L = larghezza di un’anta, H = altezza; l’anta interna è 2 mm più stretta. P non si usa.": "卷折：L = 单页宽度，H = 高度；内页窄 2 毫米。不使用 P。",
+    "4 ante con pieghe alternate monte/valle. L = larghezza di un’anta, H = altezza; P non si usa.": "4 页，山折/谷折交替。L = 单页宽度，H = 高度；不使用 P。",
+    "L × H = misure della busta chiusa; P non si usa. Alette laterali, fondo incollato sulle laterali, aletta di chiusura in alto.": "L × H = 信封闭合尺寸；不使用 P。两侧翼片，底部粘在侧翼上，顶部为封口翼。",
+    "L × H = una copertina, P = altezza della tasca. Tasca con alette di colla sulla copertina destra.": "L × H = 单个封面，P = 口袋高度。口袋带粘合翼，位于右封面。",
+    "L = larghezza, H = altezza di una faccia; P non si usa. Prisma triangolare con aletta di colla sotto.": "L = 宽度，H = 单面高度；不使用 P。底部带粘合翼的三棱柱。",
+    "L × H, con foro per il nastrino; P non si usa.": "L × H，带丝带孔；不使用 P。",
+    "L × H = interno della bustina (CD: 125 × 125); P non si usa. Alette di colla sui lati e aletta di chiusura che resta fuori.": "L × H = 纸套内尺寸（CD：125 × 125）；不使用 P。两侧粘合翼，封口翼留在外侧。",
     "«{name}»: in libreria c'è una versione più recente, ma qui ci sono modifiche non salvate. Ricarica la pagina o apri la libreria per scegliere quale tenere.": "«{name}»：库中有更新的版本，但这里有未保存的修改。请刷新页面或打开库，选择保留哪一个。",
     "Più avanti della libreria (modifiche non ancora salvate): {names}. Salvale con «● Da salvare in libreria» in alto.": "比库中更新（修改尚未保存）：{names}。请点击顶部的“● 保存到库”保存。",
     "Giustificato": "两端对齐",
@@ -8987,6 +9163,45 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "☑ Cose da fare": "☑ À faire",
+    "{d} fatti su {n}": "{d} faits sur {n}",
+    "nessun punto": "aucun point",
+    "Segna come da fare": "Marquer comme à faire",
+    "Segna come fatto": "Marquer comme fait",
+    "Nuovo punto da fare… (Invio per aggiungere)": "Nouveau point à faire… (Entrée pour ajouter)",
+    "Togli i {n} fatti": "Retirer les {n} faits",
+    "Trasparente": "Transparent",
+    "Opacità del riempimento": "Opacité du remplissage",
+    "0% = trasparente, 100% = pieno. Doppio clic: pieno.": "0 % = transparent, 100 % = plein. Double-clic : plein.",
+    "◌ Perfora gli oggetti sotto": "◌ Perforer les objets en dessous",
+    "La forma fa un buco nella grafica che sta sotto di lei (immagini, testi, forme): si vede quello che c'è ancora più sotto, o il foglio. Le linee di taglio e piega non vengono toccate.": "La forme perce un trou dans le graphisme en dessous (images, textes, formes) : on voit ce qui se trouve plus bas, ou la feuille. Les lignes de découpe et de pli ne sont pas touchées.",
+    "Fino a": "Jusqu'à",
+    "oggetti sotto": "objets en dessous",
+    "tutti, fino al foglio": "tous, jusqu'à la feuille",
+    "Ora buca {n} oggetti.": "Perce actuellement {n} objets.",
+    "Sotto questa forma non c'è grafica da bucare.": "Il n'y a pas de graphisme à percer sous cette forme.",
+    "Si contano solo gli oggetti che la toccano, dal più vicino. Il buco segue la forma anche se la sposti; il suo riempimento (anche trasparente o semitrasparente) resta visibile sopra il buco.": "Seuls les objets qui la touchent sont comptés, à partir du plus proche. Le trou suit la forme même si vous la déplacez ; son remplissage (même transparent ou semi-transparent) reste visible au-dessus du trou.",
+    "Fogli e oggetti in carta": "Feuilles et objets en papier",
+    "Biglietto pieghevole a 2 ante": "Carte pliée à 2 volets",
+    "Pieghevole a 3 ante (brochure)": "Dépliant 3 volets (brochure)",
+    "Pieghevole a 3 ante": "Dépliant 3 volets",
+    "Pieghevole a fisarmonica (4 ante)": "Dépliant accordéon (4 volets)",
+    "Pieghevole a fisarmonica": "Dépliant accordéon",
+    "Busta da lettera": "Enveloppe",
+    "Cartellina con tasca": "Chemise à rabat avec pochette",
+    "Segnaposto / cavaliere da tavolo": "Marque-place / chevalet de table",
+    "Segnaposto da tavolo": "Chevalet de table",
+    "Segnalibro con foro": "Marque-page avec trou",
+    "Segnalibro": "Marque-page",
+    "Bustina porta CD": "Pochette CD",
+    "L = larghezza del biglietto chiuso, H = altezza; P non si usa. Una piega al centro.": "L = largeur de la carte fermée, H = hauteur ; P n'est pas utilisé. Un pli au centre.",
+    "Piegatura a portafoglio: L = larghezza di un’anta, H = altezza; l’anta interna è 2 mm più stretta. P non si usa.": "Pli roulé : L = largeur d'un volet, H = hauteur ; le volet intérieur est 2 mm plus étroit. P n'est pas utilisé.",
+    "4 ante con pieghe alternate monte/valle. L = larghezza di un’anta, H = altezza; P non si usa.": "4 volets avec plis alternés montagne/vallée. L = largeur d'un volet, H = hauteur ; P n'est pas utilisé.",
+    "L × H = misure della busta chiusa; P non si usa. Alette laterali, fondo incollato sulle laterali, aletta di chiusura in alto.": "L × H = dimensions de l'enveloppe fermée ; P n'est pas utilisé. Rabats latéraux, fond collé sur les rabats latéraux, rabat de fermeture en haut.",
+    "L × H = una copertina, P = altezza della tasca. Tasca con alette di colla sulla copertina destra.": "L × H = une couverture, P = hauteur de la pochette. Pochette avec rabats de colle sur la couverture droite.",
+    "L = larghezza, H = altezza di una faccia; P non si usa. Prisma triangolare con aletta di colla sotto.": "L = largeur, H = hauteur d'une face ; P n'est pas utilisé. Prisme triangulaire avec rabat de colle dessous.",
+    "L × H, con foro per il nastrino; P non si usa.": "L × H, avec un trou pour le ruban ; P n'est pas utilisé.",
+    "L × H = interno della bustina (CD: 125 × 125); P non si usa. Alette di colla sui lati e aletta di chiusura che resta fuori.": "L × H = intérieur de la pochette (CD : 125 × 125) ; P n'est pas utilisé. Rabats de colle sur les côtés et rabat de fermeture qui reste à l'extérieur.",
     "«{name}»: in libreria c'è una versione più recente, ma qui ci sono modifiche non salvate. Ricarica la pagina o apri la libreria per scegliere quale tenere.": "« {name} » : la bibliothèque contient une version plus récente, mais il y a ici des modifications non enregistrées. Rechargez la page ou ouvrez la bibliothèque pour choisir laquelle garder.",
     "Più avanti della libreria (modifiche non ancora salvate): {names}. Salvale con «● Da salvare in libreria» in alto.": "En avance sur la bibliothèque (modifications pas encore enregistrées) : {names}. Enregistrez-les avec « ● À enregistrer dans la bibliothèque » en haut.",
     "Giustificato": "Justifié",
@@ -11367,8 +11582,15 @@ function renderShapes(){
     });
     layerArt.appendChild(ref);
   }
+  const pmap = punchMap();
   for(const s of shapesInZOrder()){
-    layerArt.appendChild(shapeToNode(s));
+    const ps = pmap.get(s.id), node = shapeToNode(s);
+    if(ps && ps.length && node.getAttribute('display')!=='none'){ // bucato da una forma sopra (Perfora)
+      const g = el('g', {}), id = 'pms-' + s.id;
+      g.innerHTML = punchMaskSVG(id, ps, state.scale);
+      const inner = el('g', {mask:`url(#${id})`}); inner.appendChild(node); g.appendChild(inner);
+      layerArt.appendChild(g);
+    } else layerArt.appendChild(node);
   }
   // I nodi <text> sono ora davvero nel DOM: ne misuro la larghezza resa dal
   // font e dalla dimensione ATTUALI (la stima per numero di caratteri usata
@@ -14686,7 +14908,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.64';
+const GUIDE_VERSION = '2.65';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -14941,7 +15163,7 @@ html:`<p>Ogni piega ha un numero di <b>passo</b>: nella simulazione 3D si chiudo
 <li>il pannello che si piega è colorato pieno, i pannelli attaccati a lui (che si muovono insieme) più tenui; l'evidenziazione si vede anche quando il pezzo è dietro ad altri pannelli;</li>
 <li>al contrario, <b>clic su un pannello nel 3D</b>: viene evidenziata la piega su cui si chiude e in basso compare "Passo 2 di 4 · piega a monte 90° · lunga …"; se la sequenza è aperta, la voce corrispondente si accende. Il pannello di base viene indicato come tale; un clic fuori dalla scatola toglie l'evidenziazione.</li></ul>` },
 
-{ id:'genera-scatola', cat:'Fustella e scatole', title:'Genera scatola', keys:'genera scatola americana rsc astuccio tuck box giocattoli mattoncini dentifricio bottiglia cioccolatini cassetto esagonale triangolare prisma diamante cestino manico mailer spedizioni petali regalo dimensioni larghezza profondità altezza automatica',
+{ id:'genera-scatola', cat:'Fustella e scatole', title:'Genera scatola', keys:'genera scatola americana rsc astuccio tuck box biglietto pieghevole brochure fisarmonica busta cartellina tasca segnaposto segnalibro bustina cd fogli oggetti carta giocattoli mattoncini dentifricio bottiglia cioccolatini cassetto esagonale triangolare prisma diamante cestino manico mailer spedizioni petali regalo dimensioni larghezza profondità altezza automatica',
 html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profondità e Altezza in mm e scegli il tipo. La fustella viene creata in una nuova scheda.</p>
 <ul><li><b>Scatola americana (RSC)</b>: 4 pareti con aletta di incollaggio, alette sopra e sotto separate da tagli.</li>
 <li><b>Astuccio con coperchio a incastro</b>: a ogni estremità due alette antipolvere sui fianchi, un coperchio pieno (L×P) e una linguetta rastremata che si infila dentro la parete opposta. Lo stesso schema vale per giocattoli, dentifricio e bottiglia.</li>
@@ -14958,6 +15180,7 @@ html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profo
 <li><b>Cestino con manico</b>: vassoio con due strisce che salgono dalle pareti corte e si incollano sopra al centro formando il manico.</li>
 <li><b>Scatola mailer per spedizioni</b>: vassoio con coperchio incernierato sul retro, alette laterali e linguetta che entra sul davanti (tipo e-commerce).</li>
 <li><b>Scatola regalo con chiusura a petali</b>: tubo con fondo incollato e quattro petali curvi che si chiudono al centro.</li>
+<li><b>Fogli e oggetti in carta</b> (in fondo all'elenco, non sono scatole): <b>biglietto pieghevole a 2 ante</b>; <b>pieghevole a 3 ante</b> a portafoglio (l'anta interna è 2 mm più stretta); <b>pieghevole a fisarmonica</b> a 4 ante con pieghe alternate monte/valle; <b>busta da lettera</b> con alette laterali, fondo incollato e aletta di chiusura; <b>cartellina con tasca</b> (P = altezza della tasca, alette di colla sulla copertina destra); <b>segnaposto da tavolo</b> a prisma triangolare con aletta di colla; <b>segnalibro</b> con foro per il nastrino; <b>bustina porta CD</b> con alette di colla e aletta di chiusura che resta fuori. Anche questi si vedono piegati nell'anteprima 3D.</li>
 <li><b>Piramide a base quadrata</b>: base di lato L, altezza H; le pieghe hanno già gli angoli giusti (non 90°) e le alette di incollaggio stanno dentro.</li></ul>
 <p>Per vassoi, scatole con coperchio e piramidi l'<a data-topic="anteprima-3d">anteprima 3D</a> mostra il fondo in basso e le pareti che salgono.</p>
 <p><b>Spessore del cartone</b>: con 0 le misure sono quelle delle linee. Con uno spessore (es. 0,5 mm cartoncino, 3 mm ondulato onda B, 4 mm onda C) le misure scritte diventano <b>interne</b>: lunghezza e profondità crescono di uno spessore, l'altezza di due.</p>
@@ -15015,12 +15238,14 @@ html:`<p>Lo strumento <b>Inserisci punto (I)</b>, nella sezione Modifica della b
 <li><b>⋯ Dividi il tratto in parti uguali…</b>: mette punti equidistanti (2, 3, 4… parti).</li></ul>
 <p>Col tasto destro su un <b>punto</b> esistente c'è anche <b>✂ Spezza la linea nel punto</b>. Per dividere un'intera forma in tutti i suoi lati c'è <b>Dividi in segmenti</b> nella barra a sinistra. Gli archi si modificano con il rombo al centro: per mettere punti su un arco trasformalo prima con Dividi in segmenti.</p>` },
 
-{ id:'colore-interno', cat:'Modificare', title:'Colorare l\'interno di una forma', keys:'colore interno riempimento riempire colorare forma chiusa figura percorso sfondo trasparenza opacità fill secchiello zona linee separate pannello',
+{ id:'colore-interno', cat:'Modificare', title:'Colorare l\'interno di una forma', keys:'colore interno riempimento riempire colorare forma chiusa figura percorso sfondo trasparenza opacità fill secchiello zona linee separate pannello trasparente gradazione perfora perforare buco bucare livelli sotto maschera finestra',
 html:`<p><b>Secchiello (K)</b>: per colorare una zona chiusa <b>formata da più linee separate</b> (per esempio un pannello di una fustella, chiuso da tagli e pieghe, o una sagoma disegnata a pezzi) scegli il secchiello nella barra a sinistra e fai clic dentro la zona. Viene creata una forma colorata esattamente di quella zona, messa sotto le linee; le figure chiuse al suo interno restano vuote (fori). Se il contorno ha una piccola apertura (fino a circa 1 mm) si chiude da sola; se è più grande l'app lo segnala. Il colore del secchiello si sceglie nel pannello quando lo strumento è attivo.</p>
 <p>Per una forma singola già chiusa: selezionala (rettangoli, ellissi, figure disegnate con la penna, tracciati importati) e nel pannello Proprietà attiva <b>Colora l'interno</b>:</p>
 <ul><li>scegli il colore con il quadratino (vedi <a data-topic="selettore-colore">colore e trasparenza</a>) o con uno dei <b>12 colori rapidi</b>;</li>
-<li>nello stesso quadratino l'<b>opacità</b> rende il colore trasparente, per vedere quello che c'è sotto;</li>
+<li>nello stesso quadratino, o con il cursore <b>Opacità del riempimento</b> (0% trasparente, 100% pieno, doppio clic = pieno), la <b>gradazione di opacità</b> lascia vedere quello che c'è sotto;</li>
+<li>il quadratino a scacchi <b>Trasparente</b> rende il colore invisibile ma la forma resta: si seleziona cliccando dentro e può forare quello che sta sotto;</li>
 <li>togliendo la spunta la forma torna senza colore.</li></ul>
+<p><b>◌ Perfora gli oggetti sotto</b> (pannello Proprietà, per qualunque oggetto di grafica): la forma fa un <b>buco</b> nella grafica che sta sotto di lei (immagini, testi, forme colorate), così si vede quello che c'è ancora più sotto o il foglio. Scegli <b>fino a quanti oggetti</b> bucare (contando solo quelli che la toccano, dal più vicino) oppure <b>tutti, fino al foglio</b>. Il pannello dice quanti oggetti sta bucando. Non distrugge nulla: è una maschera che segue la forma quando la sposti, vale sullo schermo, nelle esportazioni, nelle stampe e nel 3D, e togliendo la spunta gli oggetti tornano interi. Le linee di taglio, piega e colla non vengono mai bucate. Il riempimento della forma che buca (anche trasparente o semitrasparente) resta visibile sopra il buco: per esempio una finestra colorata al 30% che lascia vedere il fondo. Per forare i pixel delle immagini in modo definitivo c'è anche l'<a data-topic="estrusione">estrusione tra immagini</a>.</p>
 <p>Se la forma è una <b>linea aperta</b>, il pannello lo segnala e il pulsante <b>Chiudi la forma</b> la trasforma in una figura chiusa. Sulle linee di taglio e di piega il colore interno è solo visivo: si vede sullo schermo e in stampa, ma non cambia il taglio né le pieghe. Il colore vale anche nelle esportazioni SVG e PDF.</p>` },
 
 { id:'componenti', cat:'Disegnare', title:'Forme pronte e componenti condivisi', keys:'forme pronte galleria componenti condivisi community trascinare triangolo quadrato esagono pentagono ottagono poligono stella cerchio ellisse cuore freccia croce ingranaggio asola foro europeo maniglia linguetta gancio finestra sombrero tasto f',
@@ -15047,8 +15272,9 @@ html:`<p>Dal menu <b>Strumenti</b>:</p>
 { id:'anteprima-taglio', cat:'Fustella e scatole', title:'Anteprima taglio', keys:'anteprima taglio fustella sagoma senza piegature',
 html:`<p>Menu <b>Strumenti → Anteprima taglio (fustella)</b>: mostra la sagoma che si ottiene tagliando i contorni con ruolo Taglio, senza le piegature. Segnala anche i tratti di taglio rimasti aperti.</p>` },
 
-{ id:'descrizione', cat:'Fustella e scatole', title:'Descrizione e istruzioni del progetto', keys:'descrizione istruzioni montaggio carta materiale tipo scatola passaggi',
-html:`<p>Senza nessun oggetto selezionato, il pannello Proprietà mostra la scheda del progetto: tipo di scatola, carta o materiale consigliato, istruzioni di stampa e taglio, e i passaggi di montaggio uno per uno (riordinabili). Viene salvata con il progetto.</p>` },
+{ id:'descrizione', cat:'Fustella e scatole', title:'Descrizione e istruzioni del progetto', keys:'descrizione istruzioni montaggio carta materiale tipo scatola passaggi cose da fare todo to do lista fatti checklist attività',
+html:`<p>Senza nessun oggetto selezionato, il pannello Proprietà mostra la scheda del progetto: tipo di scatola, carta o materiale consigliato, istruzioni di stampa e taglio, e i passaggi di montaggio uno per uno (riordinabili). Viene salvata con il progetto.</p>
+<p><b>☑ Cose da fare</b>, in cima alla scheda: la lista di quello che devi ancora fare sul progetto. Scrivi un punto e premi Invio per aggiungerlo; la spunta lo segna come <b>fatto</b> (barrato, finisce in fondo alla lista), di nuovo la spunta lo riporta tra quelli <b>da fare</b>. In alto vedi quanti punti sono fatti sul totale, con una barra verde; ✕ elimina un punto e <b>Togli i fatti</b> pulisce la lista. Il testo di ogni punto si modifica direttamente. La lista è salvata con il progetto (nel browser, in libreria e nel file .json) e conta anche per l'<a data-topic="salvataggio">allineamento con la libreria</a>.</p>` },
 
 /* ---------------- ANTEPRIMA 3D ---------------- */
 { id:'anteprima-3d', cat:'Anteprima 3D', title:'Anteprima 3D piegata', keys:'3d anteprima simulazione piegare ruotare zoom pannelli modello animazione asola linguetta incastro infilare fessura trasparenza trasparente raggi x interno nascosto',
@@ -15237,6 +15463,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.65</b> — <a data-topic="descrizione">☑ Cose da fare</a> nella scheda del progetto, con punti fatti e da fare. <a data-topic="genera-scatola">Fogli e oggetti in carta</a> nel generatore: biglietto, pieghevoli a 3 ante e a fisarmonica, busta, cartellina con tasca, segnaposto, segnalibro, bustina CD. Riempimento <a data-topic="colore-interno">trasparente</a> con cursore di opacità e <b>◌ Perfora gli oggetti sotto</b> fino a N oggetti o fino al foglio.</li>
 <li><b>2.64</b> — Corretto l'<a data-topic="salvataggio">allineamento con la libreria</a>: i disegni con testi risultavano sempre "più avanti della libreria" anche appena salvati.</li>
 <li><b>2.63</b> — <a data-topic="salvataggio">Allineamento con la libreria</a> anche quando torni sulla pagina e ogni 2 minuti, con confronto del contenuto: le schede rimaste indietro si aggiornano da sole, quelle più avanti vengono segnalate da salvare.</li>
 <li><b>2.62</b> — <a data-topic="testo">Testo</a>: allineamento <b>giustificato</b> (con la casella a font fisso le righe riempiono tutta la larghezza).</li>
@@ -16163,7 +16390,81 @@ function genDrawer(L, W, H, glueW, t){
   offsetShapes(sl.shapes, d.w + 15, 0); shapes.push(...sl.shapes);
   return {shapes, totalW: d.w + 15 + sl.totalW, totalH: Math.max(d.h, sl.totalH), rootHint: [H + L/2, H + W/2]};
 }
+// ---------- fogli e oggetti in carta (non scatole) ----------
+const rectPts = (x, y, w, h)=> [[x,y],[x+w,y],[x+w,y+h],[x,y+h]];
+function genCardBifold(L, H){ // biglietto a 2 ante: si chiude a libro
+  const shapes = [boxPolyShape(rectPts(0, 0, 2*L, H), 'cut'), mkFold([L,0],[L,H],1,175)];
+  return {shapes, totalW: 2*L, totalH: H, rootHint: [L*1.5, H/2]};
+}
+function genTrifold(L, H){ // pieghevole a portafoglio: l'anta interna è 2 mm più stretta
+  const a = L - 2;
+  const shapes = [boxPolyShape(rectPts(0, 0, a + 2*L, H), 'cut'), mkFold([a,0],[a,H],1,176), mkFold([a+L,0],[a+L,H],2,178)];
+  return {shapes, totalW: a + 2*L, totalH: H, rootHint: [a + L/2, H/2]};
+}
+function genAccordion(L, H, n){ // fisarmonica: pieghe alternate monte / valle
+  n = n || 4;
+  const shapes = [boxPolyShape(rectPts(0, 0, n*L, H), 'cut')];
+  for(let k=1;k<n;k++) shapes.push(mkFold([k*L,0],[k*L,H],1,150, k%2 ? 'mountain' : 'valley'));
+  return {shapes, totalW: n*L, totalH: H, rootHint: [L/2, H/2]};
+}
+function genEnvelope(L, H){ // busta: alette laterali, fondo incollato sulle laterali, aletta di chiusura
+  const sd = Math.min(40, L*0.22), td = H*0.5, bd = H*0.62, sx = sd, ty = td, cut = H*0.15;
+  const P = [[sx,ty],[sx+L*0.38,0],[sx+L*0.62,0],[sx+L,ty],                    // aletta di chiusura (in alto)
+             [sx+L+sd,ty+cut],[sx+L+sd,ty+H-cut],[sx+L,ty+H],                   // aletta destra
+             [sx+L-L*0.06,ty+H+bd],[sx+L*0.06,ty+H+bd],[sx,ty+H],              // fondo
+             [0,ty+H-cut],[0,ty+cut]];                                          // aletta sinistra
+  const shapes = [boxPolyShape(P, 'cut'),
+    mkFold([sx,ty],[sx,ty+H],1,178), mkFold([sx+L,ty],[sx+L,ty+H],1,178),       // 1: alette laterali
+    mkFold([sx,ty+H],[sx+L,ty+H],2,178),                                         // 2: fondo, incollato sopra le laterali
+    mkFold([sx,ty],[sx+L,ty],3,176)];                                            // 3: chiusura
+  const gw = Math.max(5, sd*0.5);
+  shapes.push(glueZoneShape(sx+L*0.07, ty+H+3, gw, bd*0.75), glueZoneShape(sx+L-L*0.07-gw, ty+H+3, gw, bd*0.75));
+  return {shapes, totalW: L + 2*sd, totalH: td + H + bd, rootHint: [sx + L/2, ty + H/2]};
+}
+function genFolder(L, P, H){ // cartellina: due copertine e tasca con alette di colla sulla copertina destra
+  const g = 12, x0 = L + 2, x1 = 2*L, pk = Math.min(P, H*0.6);
+  const pts = [[0,0],[2*L,0],[2*L,H],[x1,H+3],[x1+g,H+3+g],[x1+g,H+pk-g*0.4],[x1,H+pk],
+               [x0,H+pk],[x0-g,H+pk-g*0.4],[x0-g,H+3+g],[x0,H+3],[x0,H],[0,H]];
+  const shapes = [boxPolyShape(pts, 'cut'),
+    mkFold([x1,H+3],[x1,H+pk],1,178), mkFold([x0,H+3],[x0,H+pk],1,178),       // 1: alette di colla della tasca
+    mkFold([x0,H],[x1,H],2,178),                                               // 2: la tasca sale dentro la copertina
+    mkFold([L,0],[L,H],3,150)];                                                // 3: dorso
+  shapes.push(glueZoneShape(x1+1, H+4+g, g-3, pk-g*1.5-2), glueZoneShape(x0-g+2, H+4+g, g-3, pk-g*1.5-2));
+  return {shapes, totalW: 2*L + g, totalH: H + pk, rootHint: [L*1.5, H/2]};
+}
+function genTentCard(L, H){ // segnaposto: prisma triangolare con aletta di colla
+  const apex = 50, b = 2*H*Math.sin(apex/2*Math.PI/180), tb = Math.min(15, H*0.22), base = (180-apex)/2;
+  const shapes = [boxPolyShape(rectPts(0, 0, L, 2*H + b + tb), 'cut'),
+    mkFold([0,H],[L,H],1,180-apex), mkFold([0,2*H],[L,2*H],1,180-base), mkFold([0,2*H+b],[L,2*H+b],1,180-base)];
+  shapes.push(glueZoneShape(2, 2*H+b+2, L-4, tb-4));
+  return {shapes, totalW: L, totalH: 2*H + b + tb, rootHint: [L/2, H/2]};
+}
+function genBookmark(L, H){ // segnalibro con foro per il nastrino
+  const r = Math.min(3, L*0.08), cy = Math.min(12, H*0.08), hole = [];
+  for(let k=0;k<24;k++){ const a = k/24*Math.PI*2; hole.push([L/2 + r*Math.cos(a), cy + r*Math.sin(a)]); }
+  return {shapes: [boxPolyShape(rectPts(0, 0, L, H), 'cut'), boxPolyShape(hole, 'cut')], totalW: L, totalH: H};
+}
+function genCDSleeve(L, H){ // bustina: davanti, retro con alette di colla, aletta di chiusura che resta fuori
+  const g = 12, fl = Math.min(40, H*0.28);
+  const pts = [[g,0],[g+L,0],[g+L,H],[g+L,H+2],[2*g+L,H+2+g],[2*g+L,2*H-g*0.4],[g+L,2*H],
+               [g+L-L*0.08,2*H+fl],[g+L*0.08,2*H+fl],[g,2*H],[0,2*H-g*0.4],[0,H+2+g],[g,H+2],[g,H]];
+  // retro e chiusura piegati a 180° (sullo stesso piano del davanti): così l'aletta si appoggia sul davanti, all'esterno
+  const flap = mkFold([g,2*H],[g+L,2*H],3,180); flap.foldOutside = true;
+  const shapes = [boxPolyShape(pts, 'cut'),
+    mkFold([g+L,H+2],[g+L,2*H],1,180), mkFold([g,H+2],[g,2*H],1,180),       // 1: alette di colla
+    mkFold([g,H],[g+L,H],2,180), flap];                                       // 2: il retro sale dietro al davanti
+  shapes.push(glueZoneShape(g+L+1, H+3+g, g-3, H-g*1.6), glueZoneShape(2, H+3+g, g-3, H-g*1.6));
+  return {shapes, totalW: L + 2*g, totalH: 2*H + fl, rootHint: [g + L/2, H/2]};
+}
 const BOX_TEMPLATES = {
+  card2: {label:'Biglietto pieghevole a 2 ante', defaults:[105, 0, 148], note:'L = larghezza del biglietto chiuso, H = altezza; P non si usa. Una piega al centro.', gen:(L, W, H)=> genCardBifold(L, H)},
+  trifold: {label:'Pieghevole a 3 ante', defaults:[99, 0, 210], note:'Piegatura a portafoglio: L = larghezza di un’anta, H = altezza; l’anta interna è 2 mm più stretta. P non si usa.', gen:(L, W, H)=> genTrifold(L, H)},
+  accordion: {label:'Pieghevole a fisarmonica', defaults:[99, 0, 210], note:'4 ante con pieghe alternate monte/valle. L = larghezza di un’anta, H = altezza; P non si usa.', gen:(L, W, H)=> genAccordion(L, H, 4)},
+  envelope: {label:'Busta da lettera', defaults:[220, 0, 110], note:'L × H = misure della busta chiusa; P non si usa. Alette laterali, fondo incollato sulle laterali, aletta di chiusura in alto.', gen:(L, W, H)=> genEnvelope(L, H)},
+  folder: {label:'Cartellina con tasca', defaults:[220, 100, 310], note:'L × H = una copertina, P = altezza della tasca. Tasca con alette di colla sulla copertina destra.', gen:(L, W, H)=> genFolder(L, W, H)},
+  tent: {label:'Segnaposto da tavolo', defaults:[90, 0, 55], note:'L = larghezza, H = altezza di una faccia; P non si usa. Prisma triangolare con aletta di colla sotto.', gen:(L, W, H)=> genTentCard(L, H)},
+  bookmark: {label:'Segnalibro', defaults:[50, 0, 180], note:'L × H, con foro per il nastrino; P non si usa.', gen:(L, W, H)=> genBookmark(L, H)},
+  cdsleeve: {label:'Bustina porta CD', defaults:[125, 0, 125], note:'L × H = interno della bustina (CD: 125 × 125); P non si usa. Alette di colla sui lati e aletta di chiusura che resta fuori.', gen:(L, W, H)=> genCDSleeve(L, H)},
   toy: {label:'Scatola giocattoli', defaults:[300, 70, 200], note:'Grande e piatta, chiusura a incastro invertita (linguetta in alto sul davanti, in basso sul retro).', gen:(L, W, H, glueW)=> generateTuckBox(L, W, H, glueW, true)},
   toothpaste: {label:'Astuccio dentifricio', defaults:[190, 40, 35], note:'Lungo e stretto, chiusura a incastro alle due estremità. L = lunghezza dell’astuccio, P e H = sezione.', gen:(L, W, H, glueW)=> generateTuckBox(W, H, L, glueW)},
   bottle: {label:'Scatola per bottiglia', defaults:[90, 90, 330], note:'Alta, chiusura a incastro invertita.', gen:(L, W, H, glueW)=> generateTuckBox(L, W, H, glueW, true)},
@@ -20510,6 +20811,7 @@ function renderPropPanelInner(){
     crow.appendChild(none); cf.appendChild(crow); host.appendChild(cf);
     renderFillSection(host, ids);
   }
+  renderPunchSection(host, ids);
 
   const row = document.createElement('div'); row.className='row';
   const f1 = document.createElement('div'); f1.className='field';
@@ -20790,6 +21092,60 @@ function renderRefImagePropPanel(host){
   host.appendChild(delBtn);
 }
 /* ============================================================
+   COSE DA FARE DEL PROGETTO — lista con punti fatti e da fare,
+   salvata con il progetto (nel browser, in libreria e nel file).
+============================================================ */
+function renderProjectTodoSection(host, info){
+  if(!Array.isArray(info.todos)) info.todos = [];
+  const box = document.createElement('div'); box.className = 'todo-box';
+  host.appendChild(box);
+  const save = ()=>{ pushHistory(); scheduleAutosave(); };
+  function render(){
+    box.innerHTML = '';
+    const todos = info.todos, done = todos.filter(t=>t.done).length;
+    const head = document.createElement('div'); head.className = 'todo-head';
+    const ttl = document.createElement('span'); ttl.textContent = translate('☑ Cose da fare'); ttl.style.fontWeight = '600';
+    const cnt = document.createElement('span'); cnt.className = 'hint'; cnt.style.margin = '0';
+    cnt.textContent = todos.length ? tpl('{d} fatti su {n}', {d: done, n: todos.length}) : translate('nessun punto');
+    head.appendChild(ttl); head.appendChild(cnt); box.appendChild(head);
+    if(todos.length){
+      const bar = document.createElement('div'); bar.className = 'todo-bar';
+      const fill = document.createElement('div'); fill.style.width = Math.round(done/todos.length*100) + '%'; bar.appendChild(fill); box.appendChild(bar);
+    }
+    const list = document.createElement('div'); box.appendChild(list);
+    // prima quelli da fare, poi quelli fatti (l'ordine interno resta quello in cui li hai scritti)
+    const order = todos.map((t,i)=>i).sort((a,b)=> (todos[a].done?1:0) - (todos[b].done?1:0) || a-b);
+    order.forEach(i=>{
+      const t = todos[i];
+      const row = document.createElement('div'); row.className = 'todo-row' + (t.done ? ' done' : '');
+      const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = !!t.done; cb.style.width = 'auto';
+      cb.title = t.done ? translate('Segna come da fare') : translate('Segna come fatto');
+      cb.onchange = ()=>{ t.done = cb.checked; t.doneAt = cb.checked ? Date.now() : null; save(); render(); };
+      const inp = document.createElement('input'); inp.type = 'text'; inp.value = t.text || '';
+      inp.oninput = ()=>{ t.text = inp.value; };
+      inp.onchange = save;
+      inp.addEventListener('keydown', e=>{ e.stopPropagation(); if(e.key==='Enter'){ inp.blur(); } });
+      const del = document.createElement('button'); del.type = 'button'; del.className = 'iconbtn'; del.textContent = '✕'; del.title = translate('Elimina questo punto');
+      del.onclick = ()=>{ todos.splice(i, 1); save(); render(); };
+      row.appendChild(cb); row.appendChild(inp); row.appendChild(del); list.appendChild(row);
+    });
+    const add = document.createElement('div'); add.className = 'todo-row todo-add';
+    const plus = document.createElement('span'); plus.textContent = '+'; plus.style.cssText = 'width:16px;text-align:center;color:var(--ink-dim);';
+    const ni = document.createElement('input'); ni.type = 'text'; ni.placeholder = translate('Nuovo punto da fare… (Invio per aggiungere)');
+    const addIt = ()=>{ const v = ni.value.trim(); if(!v) return; todos.push({id: uid(), text: v, done: false, at: Date.now()}); save(); render(); const nx = box.querySelector('.todo-add input'); if(nx) nx.focus(); };
+    ni.addEventListener('keydown', e=>{ e.stopPropagation(); if(e.key==='Enter'){ e.preventDefault(); addIt(); } });
+    const ab = document.createElement('button'); ab.type = 'button'; ab.className = 'iconbtn'; ab.textContent = '↵'; ab.title = translate('Aggiungi'); ab.onclick = addIt;
+    add.appendChild(plus); add.appendChild(ni); add.appendChild(ab); box.appendChild(add);
+    if(done){
+      const clr = document.createElement('button'); clr.type = 'button'; clr.className = 'btn'; clr.style.cssText = 'width:auto;margin:6px 0 0;font-size:11px;padding:3px 8px;';
+      clr.textContent = tpl('Togli i {n} fatti', {n: done});
+      clr.onclick = ()=>{ info.todos = todos.filter(t=>!t.done); save(); render(); };
+      box.appendChild(clr);
+    }
+  }
+  render();
+}
+/* ============================================================
    DESCRIZIONE E ISTRUZIONI DEL PROGETTO — mostrata al posto del
    messaggio vuoto quando non c'è nessun oggetto selezionato: tipo di
    scatola, carta/stampa consigliata, montaggio passo dopo passo.
@@ -20805,6 +21161,9 @@ function renderProjectInfoSection(host){
   const sub = document.createElement('div'); sub.className='hint'; sub.style.marginBottom='10px';
   sub.textContent = 'Nessun oggetto selezionato: qui puoi documentare la scatola — utile a te o a chi dovrà stamparla e montarla.';
   host.appendChild(sub);
+
+  renderProjectTodoSection(host, info);
+  host.appendChild(document.createElement('hr')).className='sep';
 
   const f1 = document.createElement('div'); f1.className='field';
   f1.innerHTML = '<label>Tipo di scatola</label>';
@@ -21538,10 +21897,26 @@ function renderFillSection(host, ids){
       onInput: (c, a)=>{ state.lastFill = c; sel.forEach(x=>{ x.style.fill = c; x.style.fillOpacity = a; syncT(x); }); renderCanvasOnly(); },
       onChange: ()=>{ pushHistory(); renderPropPanel(); }});
     const sw = document.createElement('div'); sw.className='fill-swatches';
+    const curOp = s.style.fillOpacity!=null ? s.style.fillOpacity : 1;
+    { // trasparente: la forma resta (si seleziona cliccando dentro, può forare quelle sotto) ma il colore non si vede
+      const b = document.createElement('button'); b.type='button'; b.className = 'swatch-clear'; b.title = translate('Trasparente');
+      if(curOp===0) b.classList.add('active');
+      b.onclick = ()=> apply(x=>{ x.style.fillOpacity = 0; }, true); sw.appendChild(b);
+    }
     FILL_SWATCHES.forEach(col=>{ const b = document.createElement('button'); b.type='button'; b.style.background = col; b.title = col;
-      if(col.toLowerCase()===String(cur).toLowerCase()) b.classList.add('active');
-      b.onclick = ()=>{ state.lastFill = col; apply(x=> x.style.fill = col, true); }; sw.appendChild(b); });
+      if(col.toLowerCase()===String(cur).toLowerCase() && curOp>0) b.classList.add('active');
+      b.onclick = ()=>{ state.lastFill = col; apply(x=>{ x.style.fill = col; if(!(x.style.fillOpacity>0)) x.style.fillOpacity = 1; }, true); }; sw.appendChild(b); });
     row.append(inp, sw); f.appendChild(row);
+    // gradazione di opacità del riempimento
+    const ol = document.createElement('label'); ol.style.cssText='margin-top:8px;display:flex;justify-content:space-between;text-transform:none;letter-spacing:0;';
+    const ov = document.createElement('span'); ov.style.color='var(--ink-dim)'; ov.textContent = Math.round(curOp*100) + '%';
+    const ot = document.createElement('span'); ot.textContent = translate('Opacità del riempimento'); ol.append(ot, ov);
+    const orng = document.createElement('input'); orng.type='range'; orng.min='0'; orng.max='100'; orng.step='1'; orng.value = Math.round(curOp*100); orng.style.width='100%';
+    orng.title = translate('0% = trasparente, 100% = pieno. Doppio clic: pieno.');
+    orng.oninput = ()=>{ ov.textContent = orng.value + '%'; sel.forEach(x=>{ x.style.fillOpacity = parseInt(orng.value,10)/100; syncT(x); }); renderCanvasOnly(); };
+    orng.onchange = ()=>{ pushHistory(); renderPropPanel(); };
+    orng.ondblclick = ()=>{ orng.value = 100; orng.oninput(); orng.onchange(); };
+    f.append(ol, orng);
   }
   // linea aperta: il colore ha senso su una figura chiusa
   const open = sel.filter(x=> x.type==='path' && !x.closed);
@@ -21561,6 +21936,39 @@ function renderFillSection(host, ids){
   host.appendChild(f);
 }
 
+// Perfora: la forma buca la grafica che sta sotto di lei, fino a N oggetti (o tutti)
+function renderPunchSection(host, ids){
+  const sel = ids.map(id=>state.shapes.find(x=>x.id===id)).filter(x=> x && !x.guide && x.style && !['cut','fold','diecut','glue'].includes(x.style.role));
+  if(!sel.length) return;
+  const s = sel[0], on = sel.some(x=> x.punch>0);
+  const f = document.createElement('div'); f.className='field fill-field';
+  const head = document.createElement('label'); head.style.cssText='display:flex;align-items:center;gap:8px;cursor:pointer;text-transform:none;letter-spacing:0;';
+  const chk = document.createElement('input'); chk.type='checkbox'; chk.checked = on; chk.style.cssText='width:auto;margin:0;';
+  head.append(chk, document.createTextNode(translate('◌ Perfora gli oggetti sotto')));
+  head.title = translate('La forma fa un buco nella grafica che sta sotto di lei (immagini, testi, forme): si vede quello che c\'è ancora più sotto, o il foglio. Le linee di taglio e piega non vengono toccate.');
+  f.appendChild(head);
+  chk.onchange = ()=>{ sel.forEach(x=>{ if(chk.checked) x.punch = x.punch>0 ? x.punch : 1; else delete x.punch; }); pushHistory(); renderAll(); };
+  if(on){
+    const all = s.punch>=PUNCH_ALL;
+    const row = document.createElement('div'); row.style.cssText='display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap;';
+    const lab = document.createElement('span'); lab.style.fontSize='12px'; lab.textContent = translate('Fino a');
+    const nIn = document.createElement('input'); nIn.type='number'; nIn.min='1'; nIn.max='50'; nIn.step='1'; nIn.style.width='64px'; nIn.value = all ? '' : (s.punch||1); nIn.disabled = all;
+    const unit = document.createElement('span'); unit.style.fontSize='12px'; unit.textContent = translate('oggetti sotto');
+    const allL = document.createElement('label'); allL.style.cssText='display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;text-transform:none;letter-spacing:0;margin:0;';
+    const allC = document.createElement('input'); allC.type='checkbox'; allC.checked = all; allC.style.cssText='width:auto;margin:0;';
+    allL.append(allC, document.createTextNode(translate('tutti, fino al foglio')));
+    nIn.oninput = ()=>{ const v = Math.max(1, Math.min(50, parseInt(nIn.value,10)||1)); sel.forEach(x=> x.punch = v); renderCanvasOnly(); };
+    nIn.onchange = ()=>{ pushHistory(); renderPropPanel(); };
+    allC.onchange = ()=>{ sel.forEach(x=> x.punch = allC.checked ? PUNCH_ALL : 1); pushHistory(); renderAll(); };
+    row.append(lab, nIn, unit, allL); f.appendChild(row);
+    const n = punchTargetsOf(s).length;
+    const h = document.createElement('div'); h.className='hint'; h.style.marginTop='6px';
+    h.textContent = (n ? tpl('Ora buca {n} oggetti.', {n}) : translate('Sotto questa forma non c\'è grafica da bucare.')) + ' '
+      + translate('Si contano solo gli oggetti che la toccano, dal più vicino. Il buco segue la forma anche se la sposti; il suo riempimento (anche trasparente o semitrasparente) resta visibile sopra il buco.');
+    f.appendChild(h);
+  }
+  host.appendChild(f);
+}
 function renderImageShapeSection(host, s){
   const f = document.createElement('div'); f.className='field fill-field';
   f.innerHTML = `<label>🖼 ${escapeHTML(translate('Immagine'))}</label>`;
@@ -24472,7 +24880,58 @@ function buildExportSVG(){
   const totalH = h + (legendItems.length ? legendItems.length*5+8 : 0);
   return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="${w}mm" height="${totalH}mm" viewBox="0 0 ${w} ${totalH}">\n${body}\n</svg>`;
 }
+/* ============================================================
+   PERFORA — una forma con s.punch = N buca la grafica che sta sotto di lei: i primi N oggetti (immagini,
+   testi, forme di disegno) che la toccano, partendo dal più vicino. Le linee di taglio, piega e colla non
+   vengono mai bucate. Non distrugge nulla: è una maschera, vale sullo schermo, nelle esportazioni, nelle
+   stampe e nel 3D; togliendo l'opzione gli oggetti sotto tornano interi.
+============================================================ */
+const PUNCH_ALL = 999;
+let _punchCache = null;
+function isPunchTarget(x){ return !!x && !x.guide && isShapeEffVisible(x) && !(x.style && ['cut','fold','diecut','glue'].includes(x.style.role)); }
+function bboxTouch(a, b){ return !!a && !!b && a.x <= b.x+b.w && b.x <= a.x+a.w && a.y <= b.y+b.h && b.y <= a.y+a.h; }
+function punchMap(){
+  if(_punchCache) return _punchCache;
+  const map = new Map();
+  if(state.shapes.some(x=> x.punch>0)){
+    const z = shapesInZOrder();
+    z.forEach((p, ip)=>{
+      if(!(p.punch>0) || !isShapeEffVisible(p)) return;
+      const pb = shapeBBox(p); let left = p.punch;
+      for(let j=ip-1; j>=0 && left>0; j--){
+        const t = z[j]; if(!isPunchTarget(t) || !bboxTouch(pb, shapeBBox(t))) continue;
+        if(!map.has(t.id)) map.set(t.id, []);
+        map.get(t.id).push(p); left--;
+      }
+    });
+  }
+  _punchCache = map; queueMicrotask(()=>{ _punchCache = null; }); // valida per il disegno in corso
+  return map;
+}
+function punchTargetsOf(p){ const m = punchMap(), out = []; m.forEach((ps, id)=>{ if(ps.includes(p)) out.push(id); }); return out; }
+// sagoma nera della forma che buca (in mm)
+function punchCutterSVG(p){
+  const ring = shapeToRing(p);
+  if(ring) return `<path d="M ${ring.map(q=> sN(q[0])+' '+sN(q[1])).join(' L ')} Z" fill="#000" stroke="none"/>`;
+  if(p.points && p.points.length>=3) return `<path d="${buildSmoothPathD(p.points, true, p.smooth, 1)}" fill="#000" stroke="none"/>`;
+  if(p.type==='text'){ const c = JSON.parse(JSON.stringify(p)); c.style = Object.assign({}, c.style, {stroke:'#000', strokeOpacity:1}); return exportNodeRaw(c); }
+  if(p.type==='tracedpath'){ const c = JSON.parse(JSON.stringify(p)); c.paths.forEach(pp=>{ if(pp.fill && pp.fill!=='none') pp.fill = '#000'; pp.stroke = 'none'; }); c.style = Object.assign({}, c.style, {fillOpacity:1}); return exportNodeRaw(c); }
+  const b = shapeBBox(p); if(!b) return '';
+  const rot = p.rotation ? ` transform="rotate(${sN(p.rotation)} ${sN(b.x+b.w/2)} ${sN(b.y+b.h/2)})"` : '';
+  return `<rect x="${sN(b.x)}" y="${sN(b.y)}" width="${sN(b.w)}" height="${sN(b.h)}" fill="#000"${rot}/>`;
+}
+function punchMaskSVG(id, punchers, k){
+  const B = 1e6;
+  return `<mask id="${id}" maskUnits="userSpaceOnUse" x="${-B}" y="${-B}" width="${2*B}" height="${2*B}"><rect x="${-B}" y="${-B}" width="${2*B}" height="${2*B}" fill="#fff"/>`
+    + `<g${k && k!==1 ? ` transform="scale(${k})"` : ''}>${punchers.map(punchCutterSVG).join('')}</g></mask>`;
+}
 function exportNode(s){
+  const inner = exportNodeRaw(s), ps = punchMap().get(s.id);
+  if(!ps || !ps.length || !inner) return inner;
+  const id = 'pm-' + s.id;
+  return punchMaskSVG(id, ps, 1) + `<g mask="url(#${id})">${inner}</g>`;
+}
+function exportNodeRaw(s){
   const st = s.style;
   const common = `stroke="${st.stroke}" stroke-width="${sN(st.strokeWidth)}"${st.strokeOpacity!=null && st.strokeOpacity<1 ? ` stroke-opacity="${st.strokeOpacity}"` : ''} fill="${st.fill||'none'}" fill-opacity="${st.fillOpacity!=null?st.fillOpacity:1}" ${st.dash&&st.dash!=='none'?`stroke-dasharray="${st.dash}"`:''} stroke-linejoin="round" stroke-linecap="round"`;
   if(s.type==='path'||s.type==='freehand'||s.type==='line'){
@@ -25814,11 +26273,18 @@ async function tryRestore(){
 ============================================================ */
 // Impronta del contenuto (forme, livelli, foglio): serve a capire se una scheda è davvero diversa
 // dalla versione della libreria da cui deriva, senza fidarsi solo dell'indicatore "da salvare".
-const LIB_SIG_V = 'v2:';
+const LIB_SIG_V = 'v3:';
+// descrizione e cose da fare del progetto, senza i campi vuoti (aprire la sezione non deve sembrare una modifica)
+function normProjectInfo(pi){
+  if(!pi) return null;
+  const o = {};
+  Object.keys(pi).sort().forEach(k=>{ const v = pi[k]; if(v==null || v==='' || (Array.isArray(v) && !v.length)) return; o[k] = v; });
+  return Object.keys(o).length ? o : null;
+}
 function libContentSig(o){
   // i campi che iniziano con "_" sono dati di lavoro ricalcolati a ogni disegno (es. la larghezza misurata dei testi): non contano
   const skip = (k, v)=> (k && k[0]==='_') ? undefined : v;
-  let str; try{ str = JSON.stringify({s:o.shapes||[], l:(o.layers||[]).map(x=>[x.id,x.name,x.side||'']), p:o.page||{}}, skip); }catch(e){ return null; }
+  let str; try{ str = JSON.stringify({s:o.shapes||[], l:(o.layers||[]).map(x=>[x.id,x.name,x.side||'']), p:o.page||{}, i:normProjectInfo(o.projectInfo)}, skip); }catch(e){ return null; }
   let h1 = 5381, h2 = 52711;
   for(let i=0;i<str.length;i++){ const c = str.charCodeAt(i); h1 = ((h1<<5) + h1) ^ c; h2 = ((h2<<5) + h2) ^ c; }
   return LIB_SIG_V + (h1>>>0).toString(36) + (h2>>>0).toString(36) + ':' + str.length;
@@ -25830,7 +26296,7 @@ async function verifyDirtyAgainstServer(doc){
     const data = await apiFetch('load.php?id=' + encodeURIComponent(doc.libraryId), {method:'GET'});
     const proj = data.project || {}, shapes = proj.shapes || []; migrateLegacyArcs(shapes);
     const layers = proj.layers && proj.layers.length ? proj.layers : doc.layers;
-    doc.librarySig = libContentSig({shapes, layers, page: proj.page || doc.page});
+    doc.librarySig = libContentSig({shapes, layers, page: proj.page || doc.page, projectInfo: proj.projectInfo || null});
     return libContentSig(doc) !== doc.librarySig;
   }catch(err){ return !!doc.libraryDirty; }
 }
