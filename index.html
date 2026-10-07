@@ -524,6 +524,11 @@ body.viewer-mode .viewer-bar{ display:flex; align-items:center; gap:8px; flex-wr
 .vl-row input{ flex:1; min-width:0; font-size:12px; }
 .vl-row .btn{ width:auto; margin:0; white-space:nowrap; }
 .vl-row .vl-fmt{ width:52px; font-size:12px; font-weight:600; }
+.imgmask-grid{ display:grid; grid-template-columns:repeat(8, 1fr); gap:4px; max-height:150px; overflow:auto; padding:2px; }
+.imgmask-grid button{ aspect-ratio:1; padding:3px; border:1px solid var(--line-soft); border-radius:5px; background:var(--bg-1); color:var(--ink-dim); cursor:pointer; }
+.imgmask-grid button svg{ width:100%; height:100%; display:block; }
+.imgmask-grid button:hover{ color:var(--ink); border-color:var(--brass); }
+.imgmask-grid button.active{ color:var(--brass); outline:2px solid var(--brass); outline-offset:0; }
 .todo-box{ background:var(--bg-1); border:1px solid var(--line-soft); border-radius:8px; padding:8px; margin-bottom:6px; }
 .todo-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:12.5px; }
 .todo-bar{ height:5px; border-radius:3px; background:var(--line-soft); overflow:hidden; margin-bottom:6px; }
@@ -984,7 +989,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.66</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.67</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2324,6 +2329,14 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "✂ Forma dell'immagine": "✂ Image shape",
+    "Nessuna: tutto il riquadro": "None: the whole frame",
+    "Mantieni le proporzioni": "Keep proportions",
+    "Riempi tutto il riquadro": "Fill the whole frame",
+    "Crea la linea di taglio con questa forma": "Create the cut line with this shape",
+    "Aggiunge una linea di Taglio che segue esattamente la forma dell'immagine: la fustellatrice o il plotter taglieranno lungo il bordo.": "Adds a Cut line that follows the image shape exactly: the die cutter or plotter will cut along the edge.",
+    "Linea di taglio creata sulla forma dell'immagine.": "Cut line created on the image shape.",
+    "L'immagine si vede solo dentro la forma scelta (fuori resta trasparente). La forma segue spostamenti, ridimensionamenti, rotazione e ribaltamenti, e vale anche in esportazioni, stampe e 3D.": "The image is only visible inside the chosen shape (outside stays transparent). The shape follows moves, resizing, rotation and flips, and also applies to exports, prints and 3D.",
     "🔗 Link pubblico per far vedere il disegno…": "🔗 Public link to show the drawing…",
     "🔗 Link pubblico (PDF, PNG, JPEG, SVG)…": "🔗 Public link (PDF, PNG, JPEG, SVG)…",
     "Un link da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account e senza poterlo modificare": "A link to send to anyone: they see the drawing and download it as PDF, PNG, JPEG or SVG, without an account and without being able to edit it",
@@ -4071,6 +4084,14 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "✂ Forma dell'immagine": "✂ Bildform",
+    "Nessuna: tutto il riquadro": "Keine: der ganze Rahmen",
+    "Mantieni le proporzioni": "Proportionen beibehalten",
+    "Riempi tutto il riquadro": "Ganzen Rahmen füllen",
+    "Crea la linea di taglio con questa forma": "Schnittlinie mit dieser Form erstellen",
+    "Aggiunge una linea di Taglio che segue esattamente la forma dell'immagine: la fustellatrice o il plotter taglieranno lungo il bordo.": "Fügt eine Schnittlinie hinzu, die genau der Bildform folgt: Stanze oder Plotter schneiden entlang des Randes.",
+    "Linea di taglio creata sulla forma dell'immagine.": "Schnittlinie auf der Bildform erstellt.",
+    "L'immagine si vede solo dentro la forma scelta (fuori resta trasparente). La forma segue spostamenti, ridimensionamenti, rotazione e ribaltamenti, e vale anche in esportazioni, stampe e 3D.": "Das Bild ist nur innerhalb der gewählten Form sichtbar (außen bleibt transparent). Die Form folgt Verschieben, Größenänderung, Drehung und Spiegelung und gilt auch für Exporte, Drucke und 3D.",
     "🔗 Link pubblico per far vedere il disegno…": "🔗 Öffentlicher Link zum Zeigen der Zeichnung…",
     "🔗 Link pubblico (PDF, PNG, JPEG, SVG)…": "🔗 Öffentlicher Link (PDF, PNG, JPEG, SVG)…",
     "Un link da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account e senza poterlo modificare": "Ein Link für beliebige Personen: Sie sehen die Zeichnung und laden sie als PDF, PNG, JPEG oder SVG herunter, ohne Konto und ohne sie ändern zu können",
@@ -5818,6 +5839,14 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "✂ Forma dell'immagine": "✂ Forma de la imagen",
+    "Nessuna: tutto il riquadro": "Ninguna: todo el recuadro",
+    "Mantieni le proporzioni": "Mantener proporciones",
+    "Riempi tutto il riquadro": "Llenar todo el recuadro",
+    "Crea la linea di taglio con questa forma": "Crear la línea de corte con esta forma",
+    "Aggiunge una linea di Taglio che segue esattamente la forma dell'immagine: la fustellatrice o il plotter taglieranno lungo il bordo.": "Añade una línea de Corte que sigue exactamente la forma de la imagen: la troqueladora o el plóter cortarán por el borde.",
+    "Linea di taglio creata sulla forma dell'immagine.": "Línea de corte creada sobre la forma de la imagen.",
+    "L'immagine si vede solo dentro la forma scelta (fuori resta trasparente). La forma segue spostamenti, ridimensionamenti, rotazione e ribaltamenti, e vale anche in esportazioni, stampe e 3D.": "La imagen solo se ve dentro de la forma elegida (fuera queda transparente). La forma sigue los movimientos, cambios de tamaño, rotación y volteos, y vale también en exportaciones, impresiones y 3D.",
     "🔗 Link pubblico per far vedere il disegno…": "🔗 Enlace público para mostrar el dibujo…",
     "🔗 Link pubblico (PDF, PNG, JPEG, SVG)…": "🔗 Enlace público (PDF, PNG, JPEG, SVG)…",
     "Un link da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account e senza poterlo modificare": "Un enlace para enviar a cualquiera: ve el dibujo y lo descarga en PDF, PNG, JPEG o SVG, sin cuenta y sin poder modificarlo",
@@ -7565,6 +7594,14 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "✂ Forma dell'immagine": "✂ 图片形状",
+    "Nessuna: tutto il riquadro": "无：整个框",
+    "Mantieni le proporzioni": "保持比例",
+    "Riempi tutto il riquadro": "填满整个框",
+    "Crea la linea di taglio con questa forma": "按此形状创建切割线",
+    "Aggiunge una linea di Taglio che segue esattamente la forma dell'immagine: la fustellatrice o il plotter taglieranno lungo il bordo.": "添加一条与图片形状完全一致的切割线：模切机或绘图仪会沿边缘切割。",
+    "Linea di taglio creata sulla forma dell'immagine.": "已按图片形状创建切割线。",
+    "L'immagine si vede solo dentro la forma scelta (fuori resta trasparente). La forma segue spostamenti, ridimensionamenti, rotazione e ribaltamenti, e vale anche in esportazioni, stampe e 3D.": "图片只在所选形状内显示（外部透明）。形状会跟随移动、缩放、旋转和翻转，并适用于导出、打印和 3D。",
     "🔗 Link pubblico per far vedere il disegno…": "🔗 用于展示图纸的公开链接……",
     "🔗 Link pubblico (PDF, PNG, JPEG, SVG)…": "🔗 公开链接（PDF、PNG、JPEG、SVG）……",
     "Un link da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account e senza poterlo modificare": "可发送给任何人的链接：无需账户即可查看图纸并下载为 PDF、PNG、JPEG 或 SVG，但无法修改",
@@ -9312,6 +9349,14 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "✂ Forma dell'immagine": "✂ Forme de l'image",
+    "Nessuna: tutto il riquadro": "Aucune : tout le cadre",
+    "Mantieni le proporzioni": "Garder les proportions",
+    "Riempi tutto il riquadro": "Remplir tout le cadre",
+    "Crea la linea di taglio con questa forma": "Créer la ligne de découpe avec cette forme",
+    "Aggiunge una linea di Taglio che segue esattamente la forma dell'immagine: la fustellatrice o il plotter taglieranno lungo il bordo.": "Ajoute une ligne de Découpe qui suit exactement la forme de l'image : la découpeuse ou le traceur couperont le long du bord.",
+    "Linea di taglio creata sulla forma dell'immagine.": "Ligne de découpe créée sur la forme de l'image.",
+    "L'immagine si vede solo dentro la forma scelta (fuori resta trasparente). La forma segue spostamenti, ridimensionamenti, rotazione e ribaltamenti, e vale anche in esportazioni, stampe e 3D.": "L'image n'est visible qu'à l'intérieur de la forme choisie (à l'extérieur elle reste transparente). La forme suit déplacements, redimensionnements, rotation et retournements, et vaut aussi pour les exports, impressions et la 3D.",
     "🔗 Link pubblico per far vedere il disegno…": "🔗 Lien public pour montrer le dessin…",
     "🔗 Link pubblico (PDF, PNG, JPEG, SVG)…": "🔗 Lien public (PDF, PNG, JPEG, SVG)…",
     "Un link da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account e senza poterlo modificare": "Un lien à envoyer à n'importe qui : il voit le dessin et le télécharge en PDF, PNG, JPEG ou SVG, sans compte et sans pouvoir le modifier",
@@ -11495,6 +11540,54 @@ function imageFilterSVG(s, fid){
   return p ? `<filter id="${fid}" color-interpolation-filters="sRGB" x="-5%" y="-5%" width="110%" height="110%">${p}</filter>` : '';
 }
 // k = unità per mm (scala dello schermo, oppure 1 nei file esportati). ghost: mostra in trasparenza le parti tagliate
+/* ---------- forma di ritaglio delle immagini ----------
+   s.maskShape = chiave di una delle Forme pronte (rettangolo arrotondato, ellisse, stella, cuore…): l'immagine
+   si vede solo dentro quella forma, adattata al riquadro dell'immagine (s.maskFit: 'contain' = mantiene le
+   proporzioni della forma, 'stretch' = la allarga a tutto il riquadro). Segue spostamenti, rotazione e ribaltamenti,
+   e vale anche in esportazioni, stampe e 3D. */
+function imageMaskDefs(){ return SHAPE_LIBRARY.filter(d=>{ try{ return shapeLibParts(d, d.fixed ? 0 : 100).some(p=> p.ell || (p.closed && p.pts.length>=3)); }catch(e){ return false; } }); }
+function imageMaskGeom(s){
+  const def = s.maskShape && SHAPE_LIBRARY.find(d=>d.key===s.maskShape); if(!def) return null;
+  const parts = shapeLibParts(def, def.fixed ? 0 : 100).filter(p=> p.ell || (p.closed && p.pts.length>=3));
+  if(!parts.length) return null;
+  const bb = shapeLibBBox(parts); if(!(bb.w>0 && bb.h>0)) return null;
+  let sx = s.w/bb.w, sy = s.h/bb.h, ox = s.x, oy = s.y;
+  if(s.maskFit!=='stretch'){ const m = Math.min(sx, sy); ox += (s.w - bb.w*m)/2; oy += (s.h - bb.h*m)/2; sx = sy = m; }
+  const T = q=> [ox + (q[0]-bb.x0)*sx, oy + (q[1]-bb.y0)*sy];
+  // rettangolo con gli angoli smussati: per il ritaglio uso angoli tondi veri (raggio = smussatura)
+  if(parts.length===1 && !parts[0].ell && parts[0].pts.length===4 && parts[0].smooth && parts[0].smooth.every(v=> v>0)){
+    const q = parts[0].pts.map(T), x0 = Math.min(...q.map(a=>a[0])), x1 = Math.max(...q.map(a=>a[0])), y0 = Math.min(...q.map(a=>a[1])), y1 = Math.max(...q.map(a=>a[1]));
+    const r = Math.min(parts[0].smooth[0]*Math.min(sx, sy)*1.6, (x1-x0)/2, (y1-y0)/2), pts = [];
+    [[x1-r,y0+r,-90],[x1-r,y1-r,0],[x0+r,y1-r,90],[x0+r,y0+r,180]].forEach(([cx,cy,a0])=>{ for(let k=0;k<=8;k++){ const a = (a0 + k*90/8)*Math.PI/180; pts.push([cx + r*Math.cos(a), cy + r*Math.sin(a)]); } });
+    return [{pts, smooth: pts.map(()=>0)}];
+  }
+  return parts.map(p=> p.ell
+    ? {ell:{cx: ox + (p.ell.cx-bb.x0)*sx, cy: oy + (p.ell.cy-bb.y0)*sy, rx: p.ell.w/2*sx, ry: p.ell.h/2*sy}}
+    : {pts: p.pts.map(T), smooth: p.smooth ? p.smooth.map(v=> v*Math.min(sx, sy)) : p.pts.map(()=>0)});
+}
+function imageMaskPathD(s, k){
+  const g = imageMaskGeom(s); if(!g) return null;
+  const N = v=> +(+v).toFixed(3);
+  return g.map(p=>{
+    if(!p.ell) return buildSmoothPathD(p.pts, true, p.smooth, k);
+    const e = p.ell;
+    return `M ${N((e.cx-e.rx)*k)} ${N(e.cy*k)} A ${N(e.rx*k)} ${N(e.ry*k)} 0 1 0 ${N((e.cx+e.rx)*k)} ${N(e.cy*k)} A ${N(e.rx*k)} ${N(e.ry*k)} 0 1 0 ${N((e.cx-e.rx)*k)} ${N(e.cy*k)} Z`;
+  }).join(' ');
+}
+// la forma di ritaglio diventa una linea vera (es. Taglio), nelle coordinate del foglio
+function imageMaskToShapes(s, role){
+  const g = imageMaskGeom(s); if(!g) return [];
+  const cx = s.x + s.w/2, cy = s.y + s.h/2;
+  const tf = q=>{ let x = q[0], y = q[1]; if(s.flipH) x = 2*cx - x; if(s.flipV) y = 2*cy - y; return s.rotation ? rotatePointAround([x,y], [cx,cy], s.rotation) : [x,y]; };
+  return g.map(p=>{
+    const st = newStyle(role);
+    if(p.ell){
+      const c = tf([p.ell.cx, p.ell.cy]);
+      return makeShape('ellipse', {x: c[0]-p.ell.rx, y: c[1]-p.ell.ry, w: 2*p.ell.rx, h: 2*p.ell.ry, rotation: s.rotation || 0, style: st, layerId: s.layerId});
+    }
+    return makeShape('path', {points: p.pts.map(tf), closed: true, smooth: p.smooth.slice(), style: st, layerId: s.layerId});
+  });
+}
 function imageShapeSVG(s, k, ghost){
   const c = imgCrop(s), cw = Math.max(1e-4, 1-c.l-c.r), ch = Math.max(1e-4, 1-c.t-c.b), f = imgFx(s);
   const fid = 'imgfx-' + s.id, filt = imageFilterSVG(s, fid), N = v=> +(+v).toFixed(4);
@@ -11505,7 +11598,10 @@ function imageShapeSVG(s, k, ghost){
     const fw = s.w/cw, fh = s.h/ch;
     out += `<svg x="${N((s.x - c.l*fw)*k)}" y="${N((s.y - c.t*fh)*k)}" width="${N(fw*k)}" height="${N(fh*k)}" viewBox="0 0 1 1" preserveAspectRatio="none" opacity="0.3">${img('')}</svg>`;
   }
-  out += `<svg x="${N(s.x*k)}" y="${N(s.y*k)}" width="${N(s.w*k)}" height="${N(s.h*k)}" viewBox="${N(c.l)} ${N(c.t)} ${N(cw)} ${N(ch)}" preserveAspectRatio="none"${f.opacity<100 ? ` opacity="${N(f.opacity/100)}"` : ''}>${img(filt ? ` filter="url(#${fid})"` : '')}</svg>`;
+  let main = `<svg x="${N(s.x*k)}" y="${N(s.y*k)}" width="${N(s.w*k)}" height="${N(s.h*k)}" viewBox="${N(c.l)} ${N(c.t)} ${N(cw)} ${N(ch)}" preserveAspectRatio="none"${f.opacity<100 ? ` opacity="${N(f.opacity/100)}"` : ''}>${img(filt ? ` filter="url(#${fid})"` : '')}</svg>`;
+  const md = imageMaskPathD(s, k);
+  if(md){ const cid = 'imgclip-' + s.id; out += `<defs><clipPath id="${cid}"><path d="${md}" clip-rule="evenodd"/></clipPath></defs>`; main = `<g clip-path="url(#${cid})">${main}</g>`; }
+  out += main;
   return out;
 }
 function makeShape(type, extra){
@@ -15087,7 +15183,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.66';
+const GUIDE_VERSION = '2.67';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -15376,9 +15472,10 @@ html:`<p>Con il pulsante <b>⇪</b> in alto, trascinando il file sul foglio o <b
 <p><b>Immagini copiate da Google Disegni, Documenti o pagine web</b>: lì gli appunti contengono un collegamento invece del file; SpikeCut lo scarica e apre la finestra. Se il sito non lo permette, propone di inserirla <b>collegata</b> al suo indirizzo (si vede finché il link è valido e può mancare nei PNG/PDF): meglio salvarla sul computer e importarla.</p>
 <p>Con <b>Tieni l'immagine sotto il disegno</b> l'originale resta visibile in trasparenza per confrontarlo con le linee ottenute. Le scelte vengono ricordate per la volta successiva.</p>` },
 
-{ id:'immagine-forma', cat:'Disegnare', title:'Ritagliare e regolare le immagini', keys:'immagine ritaglio ritagliare crop effetti opacità luminosità contrasto saturazione tonalità bianco nero seppia inversione negativo sfocatura bilanciamento colore ricolora',
+{ id:'immagine-forma', cat:'Disegnare', title:'Ritagliare e regolare le immagini', keys:'immagine forma maschera sagoma cuore stella cerchio rettangolo arrotondato ellisse taglio incollata catturata ritaglio ritagliare crop effetti opacità luminosità contrasto saturazione tonalità bianco nero seppia inversione negativo sfocatura bilanciamento colore ricolora',
 html:`<p>Un'immagine inserita "così com'è" (vedi <a data-topic="importa-immagine">Importare un'immagine</a>) è una forma: selezionala e nel pannello Proprietà trovi la sezione <b>🖼 Immagine</b>.</p>
 <ul><li><b>✂ Ritaglia</b>: le maniglie tagliano i bordi invece di ridimensionare; la parte tolta resta visibile in trasparenza e si può rimettere. <b>✔ Fine ritaglio</b> per tornare a ridimensionare; <b>Togli il ritaglio</b> riporta l'immagine intera.</li>
+<li><b>✂ Forma dell'immagine</b>: una griglia con tutte le <a data-topic="componenti">Forme pronte</a> (rettangolo, rettangolo arrotondato, ellisse, cerchio, triangoli, poligoni, stelle, cuore, goccia, corona, frecce, fumetto, scudo, ingranaggio, fiore, finestre e fori di packaging…). Scegline una e l'immagine si vede <b>solo dentro quella forma</b>; fuori resta trasparente. Vale per le immagini importate, incollate o catturate. <b>Mantieni le proporzioni</b> centra la forma nel riquadro senza deformarla (un cerchio resta un cerchio); <b>Riempi tutto il riquadro</b> la allarga a tutta l'immagine (il cerchio diventa un'ellisse). La forma segue spostamenti, ridimensionamenti, rotazione e ribaltamenti e vale anche in esportazioni, stampe e 3D. Il primo riquadro tratteggiato toglie la forma. <b>Crea la linea di taglio con questa forma</b> aggiunge una linea di Taglio che segue esattamente il bordo, per fustellatrice o plotter.</li>
 <li><b>Effetti</b>: opacità, luminosità, contrasto, saturazione, tonalità, bianco e nero, seppia, inversione, sfocatura (in mm), <b>bilanciamento</b> rosso/verde/blu e <b>Ricolora con</b> un colore (l'immagine diventa una tinta di quel colore). Doppio clic su un cursore lo riporta al valore iniziale; <b>Ripristina gli effetti</b> li azzera tutti.</li></ul>
 <p>Ritaglio ed effetti valgono anche in SVG, PDF, immagini, stampe e nel 3D.</p>
 <p>Per togliere da un'immagine la forma di quella che le sta sopra vedi <a data-topic="estrusione">Estrusione tra immagini</a>.</p>` },
@@ -15651,6 +15748,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.67</b> — <a data-topic="immagine-forma">Forma dell'immagine</a>: le immagini (importate, incollate o catturate) si ritagliano con una qualunque delle Forme pronte, e la forma può diventare la linea di taglio.</li>
 <li><b>2.66</b> — <a data-topic="link-pubblico">🔗 Link pubblico</a> da mandare a chiunque per vedere il disegno e scaricarlo in PDF, PNG, JPEG o SVG, senza account; si può rigenerare o disattivare.</li>
 <li><b>2.65</b> — <a data-topic="descrizione">☑ Cose da fare</a> nella scheda del progetto, con punti fatti e da fare. <a data-topic="genera-scatola">Fogli e oggetti in carta</a> nel generatore: biglietto, pieghevoli a 3 ante e a fisarmonica, busta, cartellina con tasca, segnaposto, segnalibro, bustina CD. Riempimento <a data-topic="colore-interno">trasparente</a> con cursore di opacità e <b>◌ Perfora gli oggetti sotto</b> fino a N oggetti o fino al foglio.</li>
 <li><b>2.64</b> — Corretto l'<a data-topic="salvataggio">allineamento con la libreria</a>: i disegni con testi risultavano sempre "più avanti della libreria" anche appena salvati.</li>
@@ -22184,6 +22282,36 @@ function renderImageShapeSection(host, s){
       const fw = s.w/(1-c.l-c.r), fh = s.h/(1-c.t-c.b), dl = s.flipH ? c.r : c.l, dt = s.flipV ? c.b : c.t;
       return {x: s.x - dl*fw, y: s.y - dt*fh, w: fw, h: fh}; })()); s.crop = null; pushHistory(); renderAll(); };
     f.appendChild(rb);
+  }
+  { // forma di ritaglio: una delle Forme pronte
+    const ml = document.createElement('label'); ml.style.cssText = 'margin-top:10px;display:block;'; ml.textContent = translate('✂ Forma dell\'immagine');
+    f.appendChild(ml);
+    const grid = document.createElement('div'); grid.className = 'imgmask-grid';
+    const mk = (key, title, svg)=>{
+      const b = document.createElement('button'); b.type = 'button'; b.title = translate(title); b.innerHTML = svg;
+      if((s.maskShape||'')===key) b.classList.add('active');
+      b.onclick = ()=>{ if(key) s.maskShape = key; else { delete s.maskShape; delete s.maskFit; } pushHistory(); renderAll(); };
+      grid.appendChild(b);
+    };
+    mk('', 'Nessuna: tutto il riquadro', `<svg viewBox="0 0 10 10"><rect x="1" y="1" width="8" height="8" fill="none" stroke="currentColor" stroke-dasharray="1.5 1"/></svg>`);
+    imageMaskDefs().forEach(d=> mk(d.key, d.label, shapeLibThumb(d)));
+    f.appendChild(grid);
+    if(s.maskShape){
+      const fitRow = document.createElement('div'); fitRow.className = 'seg3'; fitRow.style.marginTop = '6px';
+      [['contain','Mantieni le proporzioni'],['stretch','Riempi tutto il riquadro']].forEach(([v,l])=>{
+        const b = document.createElement('button'); b.type = 'button'; b.textContent = translate(l);
+        if((s.maskFit||'contain')===v) b.classList.add('active');
+        b.onclick = ()=>{ s.maskFit = v; pushHistory(); renderAll(); }; fitRow.appendChild(b);
+      });
+      f.appendChild(fitRow);
+      const cutB = document.createElement('button'); cutB.className = 'btn'; cutB.style.marginTop = '6px'; cutB.textContent = translate('Crea la linea di taglio con questa forma');
+      cutB.title = translate('Aggiunge una linea di Taglio che segue esattamente la forma dell\'immagine: la fustellatrice o il plotter taglieranno lungo il bordo.');
+      cutB.onclick = ()=>{ const made = imageMaskToShapes(s, 'cut'); if(!made.length) return; const at = state.shapes.indexOf(s); state.shapes.splice(at+1, 0, ...made); state.selection = new Set(made.map(x=>x.id)); pushHistory(); renderAll(); showToast(translate('Linea di taglio creata sulla forma dell\'immagine.'), false); };
+      f.appendChild(cutB);
+    }
+    const mh = document.createElement('div'); mh.className = 'hint'; mh.style.marginTop = '4px';
+    mh.textContent = translate('L\'immagine si vede solo dentro la forma scelta (fuori resta trasparente). La forma segue spostamenti, ridimensionamenti, rotazione e ribaltamenti, e vale anche in esportazioni, stampe e 3D.');
+    f.appendChild(mh);
   }
   // effetti
   const fx = imgFx(s);
