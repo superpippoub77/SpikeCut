@@ -777,6 +777,9 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
     <button class="iconbtn" id="btnOpenLibraryTop" disabled title="Accedi al tuo account per aprire la libreria (server)">📂 Apri libreria</button>
   </div>
   <div class="grp">
+    <button class="iconbtn" id="btnShareLinkTop" title="Link pubblico da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account">🔗 Condividi</button>
+  </div>
+  <div class="grp">
     <button class="iconbtn" id="btnUndo" title="Annulla (Ctrl+Z)">↶</button>
     <button class="iconbtn" id="btnRedo" title="Ripeti (Ctrl+Shift+Z)">↷</button>
     <button class="iconbtn" id="btnHistory" title="Cronologia visuale: salta direttamente a uno stato precedente">🕐</button>
@@ -989,7 +992,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.67</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.68</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2329,6 +2332,8 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "🔗 Condividi": "🔗 Share",
+    "Link pubblico da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account": "Public link to send to anyone: they see the drawing and download it as PDF, PNG, JPEG or SVG, without an account",
     "✂ Forma dell'immagine": "✂ Image shape",
     "Nessuna: tutto il riquadro": "None: the whole frame",
     "Mantieni le proporzioni": "Keep proportions",
@@ -4084,6 +4089,8 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "🔗 Condividi": "🔗 Teilen",
+    "Link pubblico da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account": "Öffentlicher Link für beliebige Personen: Sie sehen die Zeichnung und laden sie als PDF, PNG, JPEG oder SVG herunter, ohne Konto",
     "✂ Forma dell'immagine": "✂ Bildform",
     "Nessuna: tutto il riquadro": "Keine: der ganze Rahmen",
     "Mantieni le proporzioni": "Proportionen beibehalten",
@@ -5839,6 +5846,8 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "🔗 Condividi": "🔗 Compartir",
+    "Link pubblico da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account": "Enlace público para enviar a cualquiera: ve el dibujo y lo descarga en PDF, PNG, JPEG o SVG, sin cuenta",
     "✂ Forma dell'immagine": "✂ Forma de la imagen",
     "Nessuna: tutto il riquadro": "Ninguna: todo el recuadro",
     "Mantieni le proporzioni": "Mantener proporciones",
@@ -7594,6 +7603,8 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "🔗 Condividi": "🔗 分享",
+    "Link pubblico da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account": "可发送给任何人的公开链接：无需账户即可查看图纸并下载为 PDF、PNG、JPEG 或 SVG",
     "✂ Forma dell'immagine": "✂ 图片形状",
     "Nessuna: tutto il riquadro": "无：整个框",
     "Mantieni le proporzioni": "保持比例",
@@ -9349,6 +9360,8 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "🔗 Condividi": "🔗 Partager",
+    "Link pubblico da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account": "Lien public à envoyer à n'importe qui : il voit le dessin et le télécharge en PDF, PNG, JPEG ou SVG, sans compte",
     "✂ Forma dell'immagine": "✂ Forme de l'image",
     "Nessuna: tutto il riquadro": "Aucune : tout le cadre",
     "Mantieni le proporzioni": "Garder les proportions",
@@ -15183,7 +15196,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.67';
+const GUIDE_VERSION = '2.68';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -15549,7 +15562,7 @@ html:`<p>Dal menu <b>Strumenti</b>:</p>
 html:`<p>Menu <b>Strumenti → Anteprima taglio (fustella)</b>: mostra la sagoma che si ottiene tagliando i contorni con ruolo Taglio, senza le piegature. Segnala anche i tratti di taglio rimasti aperti.</p>` },
 
 { id:'link-pubblico', cat:'Salvare ed esportare', title:'Link pubblico per far vedere il disegno', keys:'link pubblico condividere mandare cliente visione vedere scaricare pdf png jpeg jpg svg anteprima url indirizzo senza account',
-html:`<p>Per far vedere un disegno a qualcuno (un cliente, la tipografia) senza che debba avere un account: menu <b>File → 🔗 Link pubblico per far vedere il disegno…</b> (anche dal menu <b>Stampa</b>). Il disegno deve essere salvato nella tua <a data-topic="libreria">libreria</a>.</p>
+html:`<p>Per far vedere un disegno a qualcuno (un cliente, la tipografia) senza che debba avere un account: pulsante <b>🔗 Condividi</b> nella barra in alto (oppure menu <b>File → 🔗 Link pubblico per far vedere il disegno…</b>, o menu <b>Stampa</b>). Il disegno deve essere salvato nella tua <a data-topic="libreria">libreria</a>.</p>
 <ul><li><b>🔗 Crea il link</b>: viene creato un indirizzo segreto. <b>Copia</b> lo mette negli appunti, <b>Apri</b> lo prova in una nuova scheda.</li>
 <li>Chi apre il <b>link di visione</b> vede il disegno a tutto schermo, in sola lettura, con nome, autore e data dell'ultimo salvataggio, e i pulsanti <b>Scarica: PDF, PNG, JPEG, SVG</b>. Non può modificare nulla e non serve nessun account. Nel suo browser non resta salvato niente.</li>
 <li>Ci sono anche i <b>link che scaricano subito un formato</b> (PDF, PNG, JPEG o SVG): aprendoli il file si scarica appena il disegno è caricato.</li>
@@ -15748,6 +15761,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.68</b> — Pulsante <b>🔗 Condividi</b> nella barra in alto per il <a data-topic="link-pubblico">link pubblico</a>.</li>
 <li><b>2.67</b> — <a data-topic="immagine-forma">Forma dell'immagine</a>: le immagini (importate, incollate o catturate) si ritagliano con una qualunque delle Forme pronte, e la forma può diventare la linea di taglio.</li>
 <li><b>2.66</b> — <a data-topic="link-pubblico">🔗 Link pubblico</a> da mandare a chiunque per vedere il disegno e scaricarlo in PDF, PNG, JPEG o SVG, senza account; si può rigenerare o disattivare.</li>
 <li><b>2.65</b> — <a data-topic="descrizione">☑ Cose da fare</a> nella scheda del progetto, con punti fatti e da fare. <a data-topic="genera-scatola">Fogli e oggetti in carta</a> nel generatore: biglietto, pieghevoli a 3 ante e a fisarmonica, busta, cartellina con tasca, segnaposto, segnalibro, bustina CD. Riempimento <a data-topic="colore-interno">trasparente</a> con cursore di opacità e <b>◌ Perfora gli oggetti sotto</b> fino a N oggetti o fino al foglio.</li>
@@ -18658,6 +18672,7 @@ const topbarBar = makePriorityBar(document.getElementById('topbar'), [
   {el: grpOf('btnNew'), prio: 70},
   {el: grpOf('btnOpenLibraryTop'), prio: 74},
   {el: grpOf('btnSaveLibraryTop'), prio: 75},
+  {el: grpOf('btnShareLinkTop'), prio: 76},
   {el: grpOf('btnQuickSave'), prio: 80},
   {el: grpOf('btnUndo'), prio: 95},
   {el: grpOf('btnPrintMenu'), prio: 97},
@@ -26549,6 +26564,7 @@ document.getElementById('btnQuickSave').onclick = ()=>{
 };
 document.getElementById('btnSaveLibraryTop').onclick = quickSaveToLibrary;
 document.getElementById('btnOpenLibraryTop').onclick = openLibraryModal;
+document.getElementById('btnShareLinkTop').onclick = openViewLinkModal;
 function restoreFromPayload(raw){
   const data = JSON.parse(raw);
   if(Array.isArray(data.documents) && !data.documents.length && data.savedAt){ // tutte le schede erano state chiuse
