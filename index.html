@@ -1004,7 +1004,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.77</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.78</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1015,7 +1015,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
     </div>
     <div class="modal-body">
 
-      <div id="acctViewLogin">
+      <form id="acctViewLogin" onsubmit="return false" novalidate>
         <div class="field"><label>Nome utente o email</label><input type="text" id="loginIdentifier" autocomplete="username"></div>
         <div class="field"><label>Password</label><div class="pwfield"><input type="password" id="loginPassword" autocomplete="current-password"><button type="button" class="pweye" data-target="loginPassword" title="Mostra/nascondi password">👁</button></div></div>
         <div class="field">
@@ -1030,16 +1030,16 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
           <a href="#" id="linkGotoForgot">Password dimenticata?</a><br>
           Non hai un account? <a href="#" id="linkGotoRegister">Registrati</a>
         </div>
-      </div>
+      </form>
 
-      <div id="acctViewRegister" style="display:none;">
+      <form id="acctViewRegister" onsubmit="return false" novalidate style="display:none;">
         <div class="field"><label>Nome utente</label><input type="text" id="regUsername" autocomplete="username"></div>
         <div class="field"><label>Email</label><input type="email" id="regEmail" autocomplete="email"></div>
         <div class="field"><label>Password (almeno 6 caratteri)</label><div class="pwfield"><input type="password" id="regPassword" autocomplete="new-password"><button type="button" class="pweye" data-target="regPassword" title="Mostra/nascondi password">👁</button></div></div>
         <div id="registerError" class="hint" style="color:var(--cut);display:none;"></div>
         <button class="btn primary" id="registerSubmit">Crea account</button>
         <div class="hint" style="margin-top:10px;">Hai già un account? <a href="#" id="linkGotoLogin1">Accedi</a></div>
-      </div>
+      </form>
 
       <div id="acctViewForgot" style="display:none;">
         <div class="hint" style="margin-bottom:8px;">Inserisci l'email del tuo account: se registrata, riceverai un link per reimpostare la password.</div>
@@ -1050,13 +1050,13 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
         <div class="hint" style="margin-top:10px;"><a href="#" id="linkGotoLogin2">Torna al login</a></div>
       </div>
 
-      <div id="acctViewReset" style="display:none;">
+      <form id="acctViewReset" onsubmit="return false" novalidate style="display:none;">
         <div class="hint" style="margin-bottom:8px;">Scegli la nuova password per il tuo account.</div>
         <div class="field"><label>Nuova password (almeno 6 caratteri)</label><div class="pwfield"><input type="password" id="resetPassword" autocomplete="new-password"><button type="button" class="pweye" data-target="resetPassword" title="Mostra/nascondi password">👁</button></div></div>
         <div class="field"><label>Conferma password</label><div class="pwfield"><input type="password" id="resetPasswordConfirm" autocomplete="new-password"><button type="button" class="pweye" data-target="resetPasswordConfirm" title="Mostra/nascondi password">👁</button></div></div>
         <div id="resetError" class="hint" style="color:var(--cut);display:none;"></div>
         <button class="btn primary" id="resetSubmit">Imposta nuova password</button>
-      </div>
+      </form>
 
       <div id="acctViewLoggedIn" style="display:none;">
         <div class="hint" style="margin-bottom:12px;">Sei collegato come <b id="acctLoggedUsername"></b> (<span id="acctLoggedEmail"></span>).</div>
@@ -15641,7 +15641,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.77';
+const GUIDE_VERSION = '2.78';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -16231,6 +16231,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.78</b> — Corretto: salvando (per esempio dopo aver scritto una voce nelle Cose da fare) il browser proponeva di salvare una password con valori sbagliati. I campi di accesso ora sono separati dal resto e la password viene cancellata quando chiudi la finestra Account.</li>
 <li><b>2.77</b> — Interruttore <a data-topic="foglio">✂ fustella</a> (Shift+F) per evidenziare taglio e pieghe sopra la grafica; l'<a data-topic="anteprima-taglio">anteprima taglio</a> funziona anche con fustelle fatte di tante linee separate e spiega cosa manca.</li>
 <li><b>2.76</b> — <a data-topic="foglio">Griglia automatica</a>: il colore si adatta allo sfondo (scura sul nero, chiara sul bianco); interruttore <b>auto</b> nella barra di stato.</li>
 <li><b>2.75</b> — Il <a data-topic="foglio">foglio trasparente</a> si vede su una scacchiera scura (meno abbagliante); casella <b>Su nero</b> per tornare a quella chiara.</li>
@@ -21488,7 +21489,10 @@ function openAccountModal(view){
   }
   openModal('accountModal');
 }
-function closeAccountModal(){ document.getElementById('accountModal').classList.remove('open'); }
+// chiudendo la finestra le password scritte vengono cancellate: se restassero nei campi nascosti, il browser
+// potrebbe scambiare un salvataggio qualsiasi (es. una voce delle Cose da fare) per un accesso e proporre di salvare la password
+function clearAuthPasswords(){ ['loginPassword','regPassword','resetPassword','resetPasswordConfirm'].forEach(id=>{ const i = document.getElementById(id); if(i) i.value = ''; }); }
+function closeAccountModal(){ document.getElementById('accountModal').classList.remove('open'); clearAuthPasswords(); }
 document.getElementById('accountModalClose').onclick = closeAccountModal;
 setupOverlayClickClose(document.getElementById('accountModal'), closeAccountModal);
 document.getElementById('btnAccount').onclick = ()=> openAccountModal(currentUser ? 'loggedin' : 'login');
