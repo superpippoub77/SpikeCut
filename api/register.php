@@ -42,5 +42,5 @@ $user = [
 $users[] = $user;
 write_users($users);
 
-$token = issue_jwt($user, JWT_TTL_DEFAULT);
-json_ok(['user' => public_user($user), 'token' => $token, 'expiresIn' => JWT_TTL_DEFAULT]);
+$token = issue_jwt($user, JWT_TTL_REMEMBER, true); // appena registrato: resta collegato come con "Ricordami"
+json_ok(['user' => public_user($user), 'token' => $token, 'expiresIn' => JWT_TTL_REMEMBER]);

@@ -30,16 +30,21 @@ if ($pos === null) {
     $path = project_path($id);
     if (file_exists($path)) { $p = json_decode(file_get_contents($path), true); $ownerId = is_array($p) ? ($p['ownerId'] ?? null) : null; }
 }
-if ($ownerId !== $user['id']) json_error('Non puoi eliminare un progetto che non ti appartiene.', 403);
+// il proprietario elimina i propri progetti; un amministratore può eliminare anche quelli degli altri
+// (finiscono nel Cestino del proprietario, che può ancora ripristinarli, salvo eliminazione definitiva)
+$byAdmin = $ownerId !== $user['id'];
+if ($byAdmin && !is_admin($user)) json_error('Non puoi eliminare un progetto che non ti appartiene.', 403);
 
 if ($permanent) {
     purge_project_files($id);
     if ($pos !== null) { array_splice($index, $pos, 1); write_index($index); }
-    json_ok(['id' => $id, 'permanent' => true]);
+    json_ok(['id' => $id, 'permanent' => true, 'byAdmin' => $byAdmin]);
 }
 if ($pos === null) json_error('Progetto non trovato.', 404);
 $index[$pos]['trashed'] = true;
 $index[$pos]['trashedAt'] = date('c');
 $index[$pos]['trashedFrom'] = $index[$pos]['folderId'] ?? null; // per il ripristino nella cartella d'origine
+$index[$pos]['trashedBy'] = $user['username'];
+$index[$pos]['trashedByAdmin'] = $byAdmin;
 write_index($index);
-json_ok(['id' => $id, 'trashed' => true]);
+json_ok(['id' => $id, 'trashed' => true, 'byAdmin' => $byAdmin]);

@@ -840,6 +840,7 @@ load_version.php        → apre una versione storica specifica (sola lettura)
 restore_version.php     → ripristina una versione storica come stato attuale (solo proprietario)
 view_link.php           → crea / rigenera / disattiva il link pubblico di visione di un progetto (solo proprietario)
 view.php                → visione pubblica tramite link (?t=token): niente login, solo i dati per disegnare
+prefs.php               → preferenze dell'utente (griglia, calamita, unità…) salvate nell'account
 ```
 
 Ogni progetto è un file `.json` in `library/`, ogni versione storica un

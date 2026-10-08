@@ -992,7 +992,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.68</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.69</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2332,6 +2332,20 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Spostato nel livello «{name}» per poterlo mettere {where}.": "Moved to layer «{name}» to place it {where}.",
+    "sopra": "above",
+    "sotto": "below",
+    "È già sopra a tutti gli oggetti che tocca.": "It is already above all the objects it touches.",
+    "È già sotto a tutti gli oggetti che tocca.": "It is already below all the objects it touches.",
+    "Ordine di sovrapposizione": "Stacking order",
+    "Porta sopra a tutti gli oggetti che tocca": "Bring above all the objects it touches",
+    "Porta sotto a tutti gli oggetti che tocca": "Send below all the objects it touches",
+    "Porta sopra al prossimo oggetto che tocca": "Bring above the next object it touches",
+    "Porta sotto al precedente oggetto che tocca": "Send below the previous object it touches",
+    "Sei amministratore: stai eliminando {n} progetti di altri utenti: {names}. Finiranno nel Cestino del loro proprietario, che potrà ripristinarli per 30 giorni.": "You are an administrator: you are deleting {n} projects of other users: {names}. They will go to their owner's Trash, who can restore them for 30 days.",
+    "Elimina (amministratore)": "Delete (administrator)",
+    "🗑 Elimina (amministratore)": "🗑 Delete (administrator)",
+    "✖ Elimina definitivamente (amministratore)": "✖ Delete permanently (administrator)",
     "🔗 Condividi": "🔗 Share",
     "Link pubblico da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account": "Public link to send to anyone: they see the drawing and download it as PDF, PNG, JPEG or SVG, without an account",
     "✂ Forma dell'immagine": "✂ Image shape",
@@ -4089,6 +4103,20 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Spostato nel livello «{name}» per poterlo mettere {where}.": "In die Ebene «{name}» verschoben, um es {where} zu legen.",
+    "sopra": "darüber",
+    "sotto": "darunter",
+    "È già sopra a tutti gli oggetti che tocca.": "Es liegt bereits über allen Objekten, die es berührt.",
+    "È già sotto a tutti gli oggetti che tocca.": "Es liegt bereits unter allen Objekten, die es berührt.",
+    "Ordine di sovrapposizione": "Stapelreihenfolge",
+    "Porta sopra a tutti gli oggetti che tocca": "Über alle berührten Objekte legen",
+    "Porta sotto a tutti gli oggetti che tocca": "Unter alle berührten Objekte legen",
+    "Porta sopra al prossimo oggetto che tocca": "Über das nächste berührte Objekt legen",
+    "Porta sotto al precedente oggetto che tocca": "Unter das vorherige berührte Objekt legen",
+    "Sei amministratore: stai eliminando {n} progetti di altri utenti: {names}. Finiranno nel Cestino del loro proprietario, che potrà ripristinarli per 30 giorni.": "Du bist Administrator: Du löschst {n} Projekte anderer Benutzer: {names}. Sie landen im Papierkorb ihres Eigentümers, der sie 30 Tage lang wiederherstellen kann.",
+    "Elimina (amministratore)": "Löschen (Administrator)",
+    "🗑 Elimina (amministratore)": "🗑 Löschen (Administrator)",
+    "✖ Elimina definitivamente (amministratore)": "✖ Endgültig löschen (Administrator)",
     "🔗 Condividi": "🔗 Teilen",
     "Link pubblico da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account": "Öffentlicher Link für beliebige Personen: Sie sehen die Zeichnung und laden sie als PDF, PNG, JPEG oder SVG herunter, ohne Konto",
     "✂ Forma dell'immagine": "✂ Bildform",
@@ -5846,6 +5874,20 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Spostato nel livello «{name}» per poterlo mettere {where}.": "Movido a la capa «{name}» para ponerlo {where}.",
+    "sopra": "encima",
+    "sotto": "debajo",
+    "È già sopra a tutti gli oggetti che tocca.": "Ya está encima de todos los objetos que toca.",
+    "È già sotto a tutti gli oggetti che tocca.": "Ya está debajo de todos los objetos que toca.",
+    "Ordine di sovrapposizione": "Orden de apilamiento",
+    "Porta sopra a tutti gli oggetti che tocca": "Llevar encima de todos los objetos que toca",
+    "Porta sotto a tutti gli oggetti che tocca": "Llevar debajo de todos los objetos que toca",
+    "Porta sopra al prossimo oggetto che tocca": "Llevar encima del siguiente objeto que toca",
+    "Porta sotto al precedente oggetto che tocca": "Llevar debajo del objeto anterior que toca",
+    "Sei amministratore: stai eliminando {n} progetti di altri utenti: {names}. Finiranno nel Cestino del loro proprietario, che potrà ripristinarli per 30 giorni.": "Eres administrador: estás eliminando {n} proyectos de otros usuarios: {names}. Irán a la papelera de su propietario, que podrá restaurarlos durante 30 días.",
+    "Elimina (amministratore)": "Eliminar (administrador)",
+    "🗑 Elimina (amministratore)": "🗑 Eliminar (administrador)",
+    "✖ Elimina definitivamente (amministratore)": "✖ Eliminar definitivamente (administrador)",
     "🔗 Condividi": "🔗 Compartir",
     "Link pubblico da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account": "Enlace público para enviar a cualquiera: ve el dibujo y lo descarga en PDF, PNG, JPEG o SVG, sin cuenta",
     "✂ Forma dell'immagine": "✂ Forma de la imagen",
@@ -7603,6 +7645,20 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Spostato nel livello «{name}» per poterlo mettere {where}.": "已移到图层“{name}”，以便放在{where}。",
+    "sopra": "上方",
+    "sotto": "下方",
+    "È già sopra a tutti gli oggetti che tocca.": "它已位于所有接触对象的上方。",
+    "È già sotto a tutti gli oggetti che tocca.": "它已位于所有接触对象的下方。",
+    "Ordine di sovrapposizione": "叠放顺序",
+    "Porta sopra a tutti gli oggetti che tocca": "移到所有接触对象的上方",
+    "Porta sotto a tutti gli oggetti che tocca": "移到所有接触对象的下方",
+    "Porta sopra al prossimo oggetto che tocca": "移到下一个接触对象的上方",
+    "Porta sotto al precedente oggetto che tocca": "移到上一个接触对象的下方",
+    "Sei amministratore: stai eliminando {n} progetti di altri utenti: {names}. Finiranno nel Cestino del loro proprietario, che potrà ripristinarli per 30 giorni.": "你是管理员：你正在删除其他用户的 {n} 个项目：{names}。它们会进入所有者的回收站，所有者可在 30 天内恢复。",
+    "Elimina (amministratore)": "删除（管理员）",
+    "🗑 Elimina (amministratore)": "🗑 删除（管理员）",
+    "✖ Elimina definitivamente (amministratore)": "✖ 永久删除（管理员）",
     "🔗 Condividi": "🔗 分享",
     "Link pubblico da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account": "可发送给任何人的公开链接：无需账户即可查看图纸并下载为 PDF、PNG、JPEG 或 SVG",
     "✂ Forma dell'immagine": "✂ 图片形状",
@@ -9360,6 +9416,20 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Spostato nel livello «{name}» per poterlo mettere {where}.": "Déplacé dans le calque « {name} » pour le placer {where}.",
+    "sopra": "au-dessus",
+    "sotto": "en dessous",
+    "È già sopra a tutti gli oggetti che tocca.": "Il est déjà au-dessus de tous les objets qu'il touche.",
+    "È già sotto a tutti gli oggetti che tocca.": "Il est déjà en dessous de tous les objets qu'il touche.",
+    "Ordine di sovrapposizione": "Ordre de superposition",
+    "Porta sopra a tutti gli oggetti che tocca": "Placer au-dessus de tous les objets qu'il touche",
+    "Porta sotto a tutti gli oggetti che tocca": "Placer en dessous de tous les objets qu'il touche",
+    "Porta sopra al prossimo oggetto che tocca": "Placer au-dessus du prochain objet qu'il touche",
+    "Porta sotto al precedente oggetto che tocca": "Placer en dessous de l'objet précédent qu'il touche",
+    "Sei amministratore: stai eliminando {n} progetti di altri utenti: {names}. Finiranno nel Cestino del loro proprietario, che potrà ripristinarli per 30 giorni.": "Vous êtes administrateur : vous supprimez {n} projets d'autres utilisateurs : {names}. Ils iront dans la corbeille de leur propriétaire, qui pourra les restaurer pendant 30 jours.",
+    "Elimina (amministratore)": "Supprimer (administrateur)",
+    "🗑 Elimina (amministratore)": "🗑 Supprimer (administrateur)",
+    "✖ Elimina definitivamente (amministratore)": "✖ Supprimer définitivement (administrateur)",
     "🔗 Condividi": "🔗 Partager",
     "Link pubblico da mandare a chiunque: vede il disegno e lo scarica in PDF, PNG, JPEG o SVG, senza account": "Lien public à envoyer à n'importe qui : il voit le dessin et le télécharge en PDF, PNG, JPEG ou SVG, sans compte",
     "✂ Forma dell'immagine": "✂ Forme de l'image",
@@ -11082,49 +11152,55 @@ function shapesInZOrder(){
    ORDINE DI SOVRAPPOSIZIONE ENTRO LO STESSO LIVELLO
    (come "porta avanti/indietro" nei classici programmi di disegno)
 ============================================================ */
+// Gli oggetti che l'oggetto tocca davvero (riquadri che si sovrappongono), in ordine dal basso verso l'alto:
+// avanti/indietro e primo/secondo piano lavorano su questi, così ogni clic cambia qualcosa di visibile.
+// Se l'oggetto da superare sta in un altro livello, l'oggetto passa in quel livello (e un messaggio lo dice).
+function zTouching(s){
+  const b = shapeBBox(s);
+  return shapesInZOrder().filter(x=> x!==s && !x.guide && isShapeEffVisible(x) && bboxTouch(b, shapeBBox(x)));
+}
+function zPlace(s, target, above){
+  const oldLayer = s.layerId;
+  state.shapes.splice(state.shapes.indexOf(s), 1);
+  const ti = state.shapes.indexOf(target);
+  s.layerId = target.layerId;
+  state.shapes.splice(above ? ti + 1 : ti, 0, s);
+  pushHistory(); renderAll();
+  if(oldLayer !== s.layerId){
+    const L = state.layers.find(l=> l.id===s.layerId);
+    showToast(tpl('Spostato nel livello «{name}» per poterlo mettere {where}.', {name: L ? L.name : '', where: translate(above ? 'sopra' : 'sotto')}), false);
+  }
+}
+function zDoneToast(above){ showToast(translate(above ? 'È già sopra a tutti gli oggetti che tocca.' : 'È già sotto a tutti gli oggetti che tocca.'), false); }
 function bringToFront(shapeId){
-  const idx = state.shapes.findIndex(s=>s.id===shapeId);
-  if(idx<0) return;
-  const s = state.shapes[idx];
-  let lastSameLayer = -1;
-  state.shapes.forEach((sh,i)=>{ if(sh.layerId===s.layerId) lastSameLayer=i; });
-  if(idx===lastSameLayer) return; // già in cima al suo livello
-  state.shapes.splice(idx,1);
-  let insertAt = -1;
-  state.shapes.forEach((sh,i)=>{ if(sh.layerId===s.layerId) insertAt=i; });
-  state.shapes.splice(insertAt+1, 0, s);
+  const s = state.shapes.find(x=>x.id===shapeId); if(!s) return;
+  const z = shapesInZOrder(), i = z.indexOf(s), above = zTouching(s).filter(x=> z.indexOf(x) > i);
+  if(above.length) return zPlace(s, above[above.length-1], true);
+  const lastSame = state.shapes.filter(x=> x.layerId===s.layerId).pop();
+  if(lastSame===s) return zDoneToast(true);
+  state.shapes.splice(state.shapes.indexOf(s), 1); state.shapes.splice(state.shapes.indexOf(lastSame) + 1, 0, s);
   pushHistory(); renderAll();
 }
 function sendToBack(shapeId){
-  const idx = state.shapes.findIndex(s=>s.id===shapeId);
-  if(idx<0) return;
-  const s = state.shapes[idx];
-  const firstSameLayer = state.shapes.findIndex(sh=>sh.layerId===s.layerId);
-  if(idx===firstSameLayer) return; // già in fondo al suo livello
-  state.shapes.splice(idx,1);
-  const insertAt = Math.max(0, state.shapes.findIndex(sh=>sh.layerId===s.layerId));
-  state.shapes.splice(insertAt, 0, s);
+  const s = state.shapes.find(x=>x.id===shapeId); if(!s) return;
+  const z = shapesInZOrder(), i = z.indexOf(s), below = zTouching(s).filter(x=> z.indexOf(x) < i);
+  if(below.length) return zPlace(s, below[0], false);
+  const firstSame = state.shapes.find(x=> x.layerId===s.layerId);
+  if(firstSame===s) return zDoneToast(false);
+  state.shapes.splice(state.shapes.indexOf(s), 1); state.shapes.splice(state.shapes.indexOf(firstSame), 0, s);
   pushHistory(); renderAll();
 }
 function bringForward(shapeId){
-  const idx = state.shapes.findIndex(s=>s.id===shapeId);
-  if(idx<0) return;
-  const s = state.shapes[idx];
-  let nextIdx = -1;
-  for(let i=idx+1;i<state.shapes.length;i++){ if(state.shapes[i].layerId===s.layerId){ nextIdx=i; break; } }
-  if(nextIdx<0) return; // già in cima al suo livello
-  [state.shapes[idx], state.shapes[nextIdx]] = [state.shapes[nextIdx], state.shapes[idx]];
-  pushHistory(); renderAll();
+  const s = state.shapes.find(x=>x.id===shapeId); if(!s) return;
+  const z = shapesInZOrder(), i = z.indexOf(s), next = zTouching(s).find(x=> z.indexOf(x) > i);
+  if(!next) return zDoneToast(true);
+  zPlace(s, next, true);
 }
 function sendBackward(shapeId){
-  const idx = state.shapes.findIndex(s=>s.id===shapeId);
-  if(idx<0) return;
-  const s = state.shapes[idx];
-  let prevIdx = -1;
-  for(let i=idx-1;i>=0;i--){ if(state.shapes[i].layerId===s.layerId){ prevIdx=i; break; } }
-  if(prevIdx<0) return; // già in fondo al suo livello
-  [state.shapes[idx], state.shapes[prevIdx]] = [state.shapes[prevIdx], state.shapes[idx]];
-  pushHistory(); renderAll();
+  const s = state.shapes.find(x=>x.id===shapeId); if(!s) return;
+  const z = shapesInZOrder(), i = z.indexOf(s), prev = zTouching(s).filter(x=> z.indexOf(x) < i).pop();
+  if(!prev) return zDoneToast(false);
+  zPlace(s, prev, false);
 }
 
 function ensureActiveLayer(){
@@ -15196,7 +15272,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.68';
+const GUIDE_VERSION = '2.69';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -15227,7 +15303,7 @@ html:`<p><b>Chiudere le schede</b>: la ✕ di ogni scheda la chiude; il pulsante
 { id:'foglio', cat:'Per iniziare', title:'Foglio, unità, griglia, righelli e zoom', keys:'pagina formato dimensione sfondo trasparente unità mm cm pollici griglia passo righello zoom rotella',
 html:`<ul><li><b>Formato del foglio</b>: dal pannello Proprietà senza selezione, oppure trascinando la maniglia nell'angolo del foglio. Lo sfondo può avere un colore (anche semitrasparente, vedi <a data-topic="selettore-colore">colore e trasparenza</a>) o essere trasparente. La casella <b>Applica</b> accanto al colore decide se lo sfondo entra anche in esportazioni, stampe e nella grafica dell'<a data-topic="grafica-3d">anteprima 3D</a>: senza spunta il colore si vede solo mentre disegni.</li>
 <li><b>Unità di misura</b> (mm, cm, m, pollici): dalla barra di stato. Tutti i campi numerici usano l'unità scelta.</li>
-<li><b>Griglia</b> millimetrica o centimetrica, con aggancio: tasto <b>G</b> o "▦ griglia" nella barra di stato. Il quadratino accanto al passo sceglie <b>colore e opacità</b> delle linee della griglia (bianco all'inizio: si vede sugli sfondi colorati); la scelta viene ricordata.</li>
+<li><b>Griglia</b> millimetrica o centimetrica, con aggancio: tasto <b>G</b> o "▦ griglia" nella barra di stato. Il quadratino accanto al passo sceglie <b>colore e opacità</b> delle linee della griglia (bianco all'inizio: si vede sugli sfondi colorati); la scelta viene ricordata. Griglia (colore, opacità, passo, attiva o no), calamita, punti, quote e unità di misura <b>vengono ricordati</b>: nel browser e, quando hai fatto l'accesso, anche nel tuo account, così li ritrovi uguali su ogni browser e computer.</li>
 <li><b>Zoom</b>: Ctrl + rotella (centrato sul cursore), oppure <b>+</b>, <b>−</b> e <b>0</b> per reimpostarlo.</li>
 <li><b>Quote</b> (📐) e <b>punti</b> (●) dalla barra di stato: le quote mostrano le misure dei tratti; i punti evidenziano le estremità libere (arancio) o collegate (verde) e gli angoli tra i tratti.</li></ul>` },
 
@@ -15402,7 +15478,7 @@ html:`<ul><li><b>Raggruppa</b>: seleziona due o più oggetti e premi <b>Ctrl+G</
 { id:'copia', cat:'Modificare', title:'Copiare, incollare, duplicare, ordinare', keys:'copia incolla taglia duplica elimina ordine sovrapposizione primo piano secondo piano bloccare',
 html:`<ul><li><b>Ctrl+C / Ctrl+X / Ctrl+V</b> copiano, tagliano e incollano la selezione; tasto destro sull'area vuota → "Incolla qui" incolla nel punto cliccato.</li>
 <li>Tasto destro su una forma: <b>Duplica</b>, <b>Elimina</b>, <b>Blocca/Sblocca</b>.</li>
-<li><b>Ordine di sovrapposizione</b> nello stesso livello: Ctrl+] / Ctrl+[ avanti/indietro, Ctrl+Shift+] / [ primo/secondo piano.</li>
+<li><b>Ordine di sovrapposizione</b> (pannello Proprietà, menu col tasto destro, o Ctrl+] / Ctrl+[ avanti/indietro, Ctrl+Shift+] / [ primo/secondo piano): vale per tutti gli oggetti, immagini comprese, e considera solo gli oggetti che quello selezionato <b>tocca davvero</b>. <b>Avanti</b> lo porta sopra al prossimo oggetto che tocca, <b>Indietro</b> sotto al precedente, <b>Primo piano</b> sopra a tutti quelli che tocca e <b>Secondo piano</b> sotto a tutti, così ogni clic cambia qualcosa di visibile. Se l'oggetto da superare sta in un altro livello, quello selezionato passa in quel livello e un messaggio lo dice. Se è già in cima o in fondo, il messaggio lo avvisa.</li>
 <li><b>Canc</b> o Backspace elimina la selezione.</li></ul>` },
 
 { id:'cronologia', cat:'Modificare', title:'Annulla, ripeti e cronologia', keys:'annulla ripeti undo redo ctrl+z cronologia storico tornare indietro',
@@ -15638,7 +15714,7 @@ Se il progetto è stato eliminato dalla libreria, la scheda resta come disegno l
 html:`<p>Per tenere da parte un punto preciso della storia di un progetto vedi <a data-topic="versioni">Versioni e versioni fissate</a>.</p>
 <p>La finestra della libreria funziona come Esplora file. In alto c'è la <b>barra dei comandi</b>: Su, Nuova cartella, Apri, Rinomina, Duplica, Elimina, Taglia, Copia, Incolla, <b>Sposta in…</b>, <b>Copia in…</b> e Proprietà; i pulsanti si attivano secondo quello che è selezionato. Gli stessi comandi sono nel tasto destro e sulla tastiera: Invio apri, F2 rinomina, Ctrl+D duplica, Ctrl+C / Ctrl+X / Ctrl+V copia, taglia e incolla, Ctrl+A seleziona tutto, Ctrl+Shift+N nuova cartella, Backspace cartella superiore, F5 aggiorna; clic, Ctrl+clic e Shift+clic per selezionare più elementi; trascinamento sulle cartelle per spostare.</p>
 <p><b>Cestino</b>: <b>Canc</b> sposta i progetti nel Cestino (in fondo all'albero delle cartelle), da cui si possono <b>ripristinare</b> nella loro cartella per 30 giorni; poi vengono cancellati. <b>Shift+Canc</b> elimina definitivamente, senza passare dal Cestino. Nel Cestino ci sono anche "Elimina definitivamente" e "Svuota Cestino". Le cartelle non vanno nel Cestino: eliminandole, il loro contenuto sale nella cartella superiore e non si perde nulla.</p>
-<ul><li><b>Account</b>: registrazione, accesso (anche "ricordami"), recupero della password via email. Il pulsante in alto mostra il tuo nome quando sei collegato, "Accedi" quando non lo sei. Uscendo dall'account (o se l'accesso scade) tutto ciò che era stato scaricato dalla libreria viene cancellato dal browser e le finestre della libreria, delle versioni e del salvataggio si chiudono, anche se erano ridotte a icona. I progetti già aperti nelle schede restano: sono il tuo lavoro in corso.</li>
+<ul><li><b>Account</b>: registrazione, accesso (anche "ricordami"), recupero della password via email. Con <b>Ricordami</b> (già spuntato), e subito dopo la registrazione, resti collegato anche chiudendo e riaprendo il browser: l'accesso dura 30 giorni e si <b>rinnova da solo</b> ogni volta che apri il programma. <b>Esci</b> chiude l'accesso solo su quel computer o browser; gli altri restano collegati (un cambio password invece chiude tutti gli accessi). Usa sempre lo stesso indirizzo del sito (per esempio sempre con www): per il browser indirizzi diversi sono siti diversi, ognuno con il suo accesso e i suoi dati. Il pulsante in alto mostra il tuo nome quando sei collegato, "Accedi" quando non lo sei. Uscendo dall'account (o se l'accesso scade) tutto ciò che era stato scaricato dalla libreria viene cancellato dal browser e le finestre della libreria, delle versioni e del salvataggio si chiudono, anche se erano ridotte a icona. I progetti già aperti nelle schede restano: sono il tuo lavoro in corso.</li>
 <li><b>☁ Libreria</b>: se il progetto è già collegato alla libreria, un clic lo sovrascrive subito; la prima volta chiede nome, cartella e condivisione. File → "Salva in libreria (server)" riapre sempre la finestra completa (per salvare con un altro nome).</li>
 <li><b>Libreria progetti</b> in stile Esplora risorse: cartelle annidate, trascinamento, tasto destro con copia, taglia, incolla, rinomina, elimina.</li>
 <li><b>🔍 Ricerca</b>: la casella in alto nella finestra della libreria cerca in <b>tutte le cartelle</b> insieme, anche nella libreria comune, senza sapere dove si trova il file. Cerca nel nome del progetto, nei nomi delle cartelle e nell'autore dei progetti condivisi; ignora maiuscole e accenti e trova i progetti che contengono tutte le parole scritte (anche solo una parte: "scatol" trova "scatola" e "scatole"). Sotto ogni risultato c'è il suo percorso: un clic porta nella cartella. Esc o "✕ Annulla ricerca" tornano all'elenco normale.</li>
@@ -15658,7 +15734,7 @@ html:`<p>Gli <b>amministratori</b> trovano nella finestra dell'account (👤) il
 <ul><li><b>Stato del database</b>: un indicatore verde "Connesso" (o rosso "Non connesso") con il database in uso (SQLite o MySQL), la versione, il file e la sua dimensione, la modalità, la data della migrazione dai vecchi file, le copie di sicurezza giornaliere e quanti utenti, progetti (pubblici, privati, generici) e cartelle contiene. Se il database configurato non è disponibile e il server sta usando i file JSON, compare un avviso arancione.</li>
 <li><b>Utenti</b>: tutti gli utenti registrati con email, data di registrazione, ultimo accesso, ultimo salvataggio e numero di progetti (pubblici e privati) e cartelle. Si cerca per nome o email e si ordina cliccando sull'intestazione delle colonne.</li></ul>
 <ul><li><b>Progetti</b>: tutti i progetti di tutti gli utenti, <b>privati compresi</b>, con proprietario, cartella, visibilità e data di modifica; si cercano per nome, proprietario o cartella, si filtrano con "Solo privati" e un clic su un utente nella tabella degli utenti mostra solo i suoi. Il pulsante di ogni riga rende il progetto <b>pubblico</b> o <b>privato</b> (per i progetti di altri chiede conferma). Resta traccia di chi ha fatto l'ultimo cambio e quando ("cambiato da … (amministratore)"). I progetti generici restano sempre pubblici.</li></ul>
-<p>Anche nella libreria, col tasto destro su un progetto pubblico di un altro utente, l'amministratore trova "Rendi privato (amministratore)". Gli utenti normali, invece, cambiano la visibilità solo dei propri progetti (vedi <a data-topic="libreria">Libreria</a>). All'uscita dall'account la finestra si chiude e i dati vengono cancellati dal browser.</p>` },
+<p>Anche nella libreria, col tasto destro su un progetto pubblico di un altro utente, l'amministratore trova "Rendi privato (amministratore)". Gli utenti normali, invece, cambiano la visibilità solo dei propri progetti (vedi <a data-topic="libreria">Libreria</a>). All'uscita dall'account la finestra si chiude e i dati vengono cancellati dal browser. L'amministratore può anche <b>eliminare</b> i progetti degli altri utenti (pubblici o generici): dalla libreria seleziona il progetto e premi Elimina (o Canc), oppure tasto destro → <b>🗑 Elimina (amministratore)</b>. Dopo una conferma il progetto finisce nel <b>Cestino del suo proprietario</b>, che può ripristinarlo per 30 giorni; <b>✖ Elimina definitivamente (amministratore)</b> (o Shift+Canc) lo cancella per sempre. Gli utenti normali possono eliminare solo i propri progetti.</p>` },
 
 { id:'esporta', cat:'Salvare ed esportare', title:'Esportare e stampare', keys:'esportare svg pdf multipagina stampa di prova formato a4 a3 scala reale',
 html:`<p>Dal menu <b>Stampa</b>:</p>
@@ -15761,6 +15837,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.69</b> — Griglia, calamita, punti, quote e unità ricordati anche nell'account. Accesso che resta (30 giorni, si rinnova da solo; Esci chiude solo quel browser). <a data-topic="copia">Primo piano / avanti / indietro</a> funzionano su tutti gli oggetti che si toccano, anche le immagini e tra livelli. L'<a data-topic="amministrazione">amministratore</a> può eliminare i progetti degli altri utenti.</li>
 <li><b>2.68</b> — Pulsante <b>🔗 Condividi</b> nella barra in alto per il <a data-topic="link-pubblico">link pubblico</a>.</li>
 <li><b>2.67</b> — <a data-topic="immagine-forma">Forma dell'immagine</a>: le immagini (importate, incollate o catturate) si ritagliano con una qualunque delle Forme pronte, e la forma può diventare la linea di taglio.</li>
 <li><b>2.66</b> — <a data-topic="link-pubblico">🔗 Link pubblico</a> da mandare a chiunque per vedere il disegno e scaricarlo in PDF, PNG, JPEG o SVG, senza account; si può rigenerare o disattivare.</li>
@@ -18413,8 +18490,42 @@ window.addEventListener('keyup', (e)=>{
 ============================================================ */
 function zoomBy(f){ state.scale = clamp(state.scale*f, 0.6, 20); renderAll(); }
 function resetZoom(){ state.scale=3; renderAll(); }
-function toggleGrid(){ state.snapGrid = !state.snapGrid; updateStatusToggles(); renderAll(); }
-function toggleMagnet(){ state.snapMagnet = !state.snapMagnet; updateStatusToggles(); }
+/* ---------- preferenze dell'utente: griglia (colore, opacità, passo, attiva), calamita, punti, quote, unità ----------
+   Restano nel browser (spikecut-prefs) e, con l'accesso fatto, anche nell'account: così sono uguali su ogni
+   browser e computer, e non si perdono se il browser cancella i dati del sito. */
+const PREFS_KEY = 'spikecut-prefs';
+function gatherPrefs(){
+  return { gridColor: state.gridColor, gridOpacity: state.gridOpacity!=null ? state.gridOpacity : 1, grid: state.grid,
+           snapGrid: !!state.snapGrid, snapMagnet: !!state.snapMagnet, showEndpoints: !!state.showEndpoints, showDimensions: !!state.showDimensions,
+           unit: state.unit, savedAt: Date.now() };
+}
+function applyPrefs(p){
+  if(!p || typeof p!=='object') return;
+  if(/^#[0-9a-f]{6}$/i.test(p.gridColor||'')){ state.gridColor = p.gridColor; const g = document.getElementById('gridColor'); if(g) g.value = p.gridColor; }
+  if(p.gridOpacity>=0 && p.gridOpacity<=1) state.gridOpacity = p.gridOpacity;
+  if(p.grid===1 || p.grid===10){ state.grid = p.grid; const gs = document.getElementById('gridStepSelect'); if(gs) gs.value = String(p.grid); }
+  ['snapGrid','snapMagnet','showEndpoints','showDimensions'].forEach(k=>{ if(typeof p[k]==='boolean') state[k] = p[k]; });
+  if(p.unit && UNITS[p.unit]){ state.unit = p.unit; const us = document.getElementById('unitSelect'); if(us) us.value = p.unit; if(typeof refreshShapeLibUnit==='function') refreshShapeLibUnit(); }
+  try{ if(typeof gridPicker!=='undefined' && gridPicker) gridPicker.syncFromNative(); }catch(e){}
+  updateStatusToggles();
+}
+let _prefsTimer = null;
+function savePrefs(){
+  if(typeof VIEWER_TOKEN!=='undefined' && VIEWER_TOKEN) return;
+  const p = gatherPrefs();
+  try{ localStorage.setItem(PREFS_KEY, JSON.stringify(p)); }catch(e){}
+  clearTimeout(_prefsTimer);
+  _prefsTimer = setTimeout(()=>{ if(currentUser) apiFetch('prefs.php', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({prefs: p})}).catch(()=>{}); }, 800);
+}
+function loadLocalPrefs(){ try{ const raw = localStorage.getItem(PREFS_KEY); if(raw) applyPrefs(JSON.parse(raw)); }catch(e){} }
+// dopo l'accesso: vince la copia più recente tra account e browser
+function syncPrefsWithAccount(serverPrefs){
+  let local = null; try{ local = JSON.parse(localStorage.getItem(PREFS_KEY) || 'null'); }catch(e){}
+  if(serverPrefs && (!local || (serverPrefs.savedAt||0) >= (local.savedAt||0))){ applyPrefs(serverPrefs); try{ localStorage.setItem(PREFS_KEY, JSON.stringify(serverPrefs)); }catch(e){} renderAll(); }
+  else if(local && currentUser) apiFetch('prefs.php', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({prefs: local})}).catch(()=>{});
+}
+function toggleGrid(){ state.snapGrid = !state.snapGrid; updateStatusToggles(); renderAll(); savePrefs(); }
+function toggleMagnet(){ state.snapMagnet = !state.snapMagnet; updateStatusToggles(); savePrefs(); }
 function updateStatusToggles(){
   document.getElementById('toggleGrid').classList.toggle('on', state.snapGrid);
   document.getElementById('toggleMagnet').classList.toggle('on', state.snapMagnet);
@@ -18428,12 +18539,12 @@ document.getElementById('toggleMagnet').onclick = toggleMagnet;
 document.getElementById('toggleEndpoints').onclick = ()=>{
   state.showEndpoints = !state.showEndpoints;
   updateStatusToggles();
-  renderCanvasOnly();
+  renderCanvasOnly(); savePrefs();
 };
 document.getElementById('toggleDimensions').onclick = ()=>{
   state.showDimensions = !state.showDimensions;
   updateStatusToggles();
-  renderCanvasOnly();
+  renderCanvasOnly(); savePrefs();
 };
 document.getElementById('toggleTileGuides').onclick = ()=>{
   if(state.showTileGuides){
@@ -19387,6 +19498,8 @@ function libEmptyTrash(){
   return libPurgeIds(libCacheTrash.map(x=>x.id), tpl('Svuotare il Cestino? {n} progetti verranno eliminati definitivamente.', {n: libCacheTrash.length}));
 }
 /* ---------- barra dei comandi ---------- */
+// si può eliminare: i propri elementi; un amministratore anche i progetti degli altri
+function libCanDelete(x){ return x && x.type!=='trash' && (x.mine || (x.type==='project' && !!(currentUser && currentUser.isAdmin))); }
 function libUpdateToolbar(){
   const tb = document.getElementById('libToolbar'); if(!tb) return;
   const sel = libSelected(), mine = sel.filter(x=>x.mine), one = sel.length===1;
@@ -19396,7 +19509,7 @@ function libUpdateToolbar(){
   en('open', sel.length>0 && sel.every(x=>x.type!=='trash'));
   en('rename', one && mine.length===1 && sel[0].type!=='trash');
   en('duplicate', mine.length>0);
-  en('delete', mine.length>0);
+  en('delete', sel.some(libCanDelete));
   en('cut', mine.length>0);
   en('copy', sel.length>0);
   en('paste', !!libClipboard && !libInTrash);
@@ -19631,8 +19744,13 @@ function libStartRename(key){
 }
 async function libDeleteSelected(permanent){
   if(libInTrash){ return libPurgeSelected(); }
-  const sel = libSelected(), mine = sel.filter(x=>x.mine && x.type!=='trash'), others = sel.length - mine.length;
+  const sel = libSelected(), mine = sel.filter(libCanDelete), others = sel.length - mine.length;
   if(!mine.length){ if(others) showToast('Puoi eliminare solo i tuoi progetti e le tue cartelle.', true); return; }
+  const foreign = mine.filter(x=> !x.mine);
+  if(foreign.length && !permanent){ // amministratore: conferma esplicita per i progetti degli altri
+    const names = foreign.slice(0,5).map(x=> '«' + x.name + '»' + (x.obj && x.obj.ownerName ? ' (' + x.obj.ownerName + ')' : '')).join(', ') + (foreign.length>5 ? '…' : '');
+    if(!(await showConfirm(tpl('Sei amministratore: stai eliminando {n} progetti di altri utenti: {names}. Finiranno nel Cestino del loro proprietario, che potrà ripristinarli per 30 giorni.', {n: foreign.length, names}), translate('Elimina (amministratore)')))) return;
+  }
   const projs = mine.filter(x=>x.type==='project'), folders = mine.filter(x=>x.type==='folder');
   if(permanent && projs.length){ // Shift+Canc: eliminazione definitiva, come in Esplora file
     await libPurgeIds(projs.map(x=>x.id), projs.length===1 ? tpl('Eliminare definitivamente «{name}»? Non passerà dal Cestino e non si potrà recuperare.', {name: projs[0].name})
@@ -19836,6 +19954,11 @@ function libProjectContextItems(it){
       {label:'🗑 Sposta nel Cestino (Canc)', action:()=> deleteFromLibrary(it.id)},
       {label:'✖ Elimina definitivamente (Shift+Canc)', action:()=>{ libSel = new Set([key]); libDeleteSelected(true); }}
     );
+  } else if(currentUser && currentUser.isAdmin){ // progetto di un altro utente: l'amministratore può eliminarlo
+    items.push('sep', {label:'📋 Copia nella mia libreria (Ctrl+C)', action:()=> setClipboard('copy','project', it.id, it.name)},
+      {label:'⬇ Scarica (.json)', action:()=> libDownloadProject(it.id)}, {label:'ℹ Proprietà', action:()=> libShowProperties(key)},
+      'sep', {label: translate('🗑 Elimina (amministratore)'), action:()=>{ libSel = new Set([key]); libDeleteSelected(false); }},
+      {label: translate('✖ Elimina definitivamente (amministratore)'), action:()=>{ libSel = new Set([key]); libDeleteSelected(true); }});
   } else {
     items.push('sep', {label:'📋 Copia nella mia libreria (Ctrl+C)', action:()=> setClipboard('copy','project', it.id, it.name)},
       {label:'⬇ Scarica (.json)', action:()=> libDownloadProject(it.id)}, {label:'ℹ Proprietà', action:()=> libShowProperties(key)});
@@ -20353,6 +20476,8 @@ async function checkAuthStatus(){
   try{
     const data = await apiFetch('me.php', {method:'GET'});
     currentUser = data.user || null;
+    if(currentUser && data.token) setAuthToken(data.token); // accesso rinnovato dal server (Ricordami)
+    if(currentUser) syncPrefsWithAccount(data.prefs || null);
     if(!currentUser){ setAuthToken(null); clearPrivateLibraryData(); } // il token salvato non è (più) valido: lo scarto
   }catch(err){ currentUser = null; clearPrivateLibraryData(); }
   updateAccountUI();
@@ -20401,6 +20526,7 @@ document.getElementById('loginSubmit').onclick = async ()=>{
     setAuthToken(data.token);
     clearPrivateLibraryData(); // nessun dato di un utente precedente deve restare visibile
     currentUser = data.user; updateAccountUI(); closeAccountModal();
+    apiFetch('prefs.php', {method:'GET'}).then(r=> syncPrefsWithAccount(r.prefs || null)).catch(()=>{});
     checkLibraryFreshness();
     showToast('Accesso effettuato, ciao ' + currentUser.username + '!', false);
   }catch(err){ errEl.textContent = err.message; errEl.style.display=''; }
@@ -20430,6 +20556,7 @@ document.getElementById('registerSubmit').onclick = async ()=>{
     setAuthToken(data.token);
     clearPrivateLibraryData(); // nessun dato di un utente precedente deve restare visibile
     currentUser = data.user; updateAccountUI(); closeAccountModal();
+    apiFetch('prefs.php', {method:'GET'}).then(r=> syncPrefsWithAccount(r.prefs || null)).catch(()=>{});
     checkLibraryFreshness();
     showToast('Account creato, benvenuto ' + currentUser.username + '!', false);
   }catch(err){ errEl.textContent = err.message; errEl.style.display=''; }
@@ -20827,6 +20954,7 @@ document.getElementById('btnCustomPage').onclick = openCustomPageModal;
 document.getElementById('unitSelect').addEventListener('change', (e)=>{
   state.unit = e.target.value;
   try{ localStorage.setItem('spikecut-unit', state.unit); }catch(err){ /* best-effort */ }
+  savePrefs();
   if(typeof refreshShapeLibUnit==='function') refreshShapeLibUnit();
   renderAll();
 });
@@ -20835,11 +20963,14 @@ var gridPicker = attachColorAlpha('gridColor', ()=> state.gridOpacity!=null ? st
 document.getElementById('gridColor').addEventListener('input', (e)=>{
   state.gridColor = e.target.value;
   try{ localStorage.setItem('spikecut-gridcolor', state.gridColor); localStorage.setItem('spikecut-gridopacity', String(state.gridOpacity!=null ? state.gridOpacity : 1)); }catch(err){ /* best-effort */ }
+  savePrefs();
   renderCanvasOnly();
 });
+document.getElementById('gridColor').addEventListener('change', ()=> savePrefs());
 document.getElementById('gridStepSelect').addEventListener('change', (e)=>{
   state.grid = parseFloat(e.target.value) || 10;
   try{ localStorage.setItem('spikecut-gridstep', String(state.grid)); }catch(err){ /* best-effort */ }
+  savePrefs();
   renderCanvasOnly();
 });
 document.getElementById('pageModalClose').onclick = closeCustomPageModal;
@@ -21138,7 +21269,7 @@ function renderPropPanelInner(){
 
   if(ids.length===1){
     const orderField = document.createElement('div'); orderField.className='field';
-    orderField.innerHTML = `<label>Ordine nel livello</label>`;
+    orderField.innerHTML = `<label>Ordine di sovrapposizione</label>`;
     const orderGrid = document.createElement('div');
     orderGrid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:6px;';
     const mkOrderBtn = (label, title, fn)=>{
@@ -21146,10 +21277,10 @@ function renderPropPanelInner(){
       b.onclick = ()=> fn(s.id);
       return b;
     };
-    orderGrid.appendChild(mkOrderBtn('⤒ Primo piano', 'Porta in primo piano nel livello', bringToFront));
-    orderGrid.appendChild(mkOrderBtn('⤓ Secondo piano', 'Porta in fondo nel livello', sendToBack));
-    orderGrid.appendChild(mkOrderBtn('▲ Avanti', 'Porta avanti di una posizione', bringForward));
-    orderGrid.appendChild(mkOrderBtn('▼ Indietro', 'Porta indietro di una posizione', sendBackward));
+    orderGrid.appendChild(mkOrderBtn('⤒ Primo piano', 'Porta sopra a tutti gli oggetti che tocca', bringToFront));
+    orderGrid.appendChild(mkOrderBtn('⤓ Secondo piano', 'Porta sotto a tutti gli oggetti che tocca', sendToBack));
+    orderGrid.appendChild(mkOrderBtn('▲ Avanti', 'Porta sopra al prossimo oggetto che tocca', bringForward));
+    orderGrid.appendChild(mkOrderBtn('▼ Indietro', 'Porta sotto al precedente oggetto che tocca', sendBackward));
     orderField.appendChild(orderGrid);
     host.appendChild(orderField);
   }
@@ -27061,6 +27192,7 @@ async function init(){
       document.getElementById('gridStepSelect').value = savedGrid;
     }
   }catch(err){ /* best-effort */ }
+  loadLocalPrefs(); // le preferenze complete (griglia attiva, calamita, punti, quote…) dopo le vecchie chiavi singole
   try{
     const savedLang = localStorage.getItem('spikecut-lang');
     if(savedLang && I18N[savedLang]){

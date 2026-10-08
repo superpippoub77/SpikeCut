@@ -29,6 +29,6 @@ foreach ($users as $i => $u) {
 write_users($users);
 
 $ttl = !empty($body['remember']) ? JWT_TTL_REMEMBER : JWT_TTL_DEFAULT;
-$token = issue_jwt($user, $ttl);
+$token = issue_jwt($user, $ttl, !empty($body['remember']));
 
 json_ok(['user' => public_user($user), 'token' => $token, 'expiresIn' => $ttl]);

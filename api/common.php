@@ -400,13 +400,27 @@ function jwt_from_request() {
 
 // Rilascia un nuovo token per l'utente indicato. $rememberSeconds è la
 // durata: usa JWT_TTL_REMEMBER con "Ricordami", altrimenti JWT_TTL_DEFAULT.
-function issue_jwt($user, $ttlSeconds) {
+// Ogni token ha un identificativo (jti): l'uscita da un dispositivo revoca solo quel token, non gli
+// accessi aperti sugli altri. "rem" = accesso con Ricordami: si rinnova da solo mentre lo si usa.
+function issue_jwt($user, $ttlSeconds, $remember = false) {
     $now = time();
     return jwt_encode([
         'sub' => $user['id'],
         'iat' => $now,
         'exp' => $now + $ttlSeconds,
+        'jti' => bin2hex(random_bytes(8)),
+        'rem' => $remember ? 1 : 0,
     ]);
+}
+// token in uso nella richiesta (dopo current_user())
+function current_jwt_payload() { return $GLOBALS['__spikecut_jwt'] ?? null; }
+// Rinnovo automatico: un accesso con Ricordami a cui resta meno di metà durata riceve un token nuovo
+// (stessa durata piena), così chi usa il programma non viene mai buttato fuori.
+function refreshed_token_for($user) {
+    $p = current_jwt_payload();
+    if (!$p || empty($p['rem'])) return null;
+    if (($p['exp'] - time()) > JWT_TTL_REMEMBER / 2) return null;
+    return issue_jwt($user, JWT_TTL_REMEMBER, true);
 }
 
 // Utente attualmente autenticato in base al token presentato, oppure null.
@@ -422,6 +436,10 @@ function current_user() {
     if (!$u) return null;
     $validAfter = $u['tokenValidAfter'] ?? 0;
     if (($payload['iat'] ?? 0) <= $validAfter) return null; // token emesso prima o nello stesso istante di un logout/reset password
+    if (!empty($payload['jti']) && !empty($u['revokedJti']) && is_array($u['revokedJti'])) {
+        foreach ($u['revokedJti'] as $r) if (($r['jti'] ?? null) === $payload['jti']) return null; // uscito da quel dispositivo
+    }
+    $GLOBALS['__spikecut_jwt'] = $payload;
     return $u;
 }
 
