@@ -992,7 +992,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.72</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.73</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1595,6 +1595,12 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
             <option value="chinesecheckers">Dama cinese (stella con 121 fori)</option>
             <option value="propertygame">Gioco delle proprietà (tipo Monopoli)</option>
             <option value="carddeck">Mazzo di carte francesi con scatola</option>
+            <option value="napoletane">Carte napoletane (40)</option>
+            <option value="piacentine">Carte piacentine (40)</option>
+            <option value="siciliane">Carte siciliane (40)</option>
+            <option value="tarot">Tarocchi (78 carte)</option>
+            <option value="colorcards">Carte colori (tipo UNO, 108)</option>
+            <option value="blankcards">Carte da personalizzare (vuote)</option>
             <option value="die">Dado a 6 facce da costruire</option>
             <option value="goose">Gioco dell'oca</option>
             <option value="snakes">Scale e serpenti</option>
@@ -2351,6 +2357,18 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Carte napoletane (40)": "Neapolitan cards (40)",
+    "Carte piacentine (40)": "Piacentine cards (40)",
+    "Carte siciliane (40)": "Sicilian cards (40)",
+    "Tarocchi (78 carte)": "Tarot (78 cards)",
+    "Carte colori (tipo UNO, 108)": "Colour cards (UNO style, 108)",
+    "Carte da personalizzare (vuote)": "Custom cards (blank)",
+    "L × H = misura di una carta; P non si usa. 40 carte (denari, coppe, spade e bastoni: dall'asso al 7, fante, cavallo e re) in stile napoletano semplificato, retro e scatola a incastro.": "L × H = size of one card; D is not used. 40 cards (coins, cups, swords and clubs: ace to 7, knave, knight and king) in a simplified Neapolitan style, back and tuck box.",
+    "L × H = misura di una carta; P non si usa. 40 carte (denari, coppe, spade e bastoni: dall'asso al 7, fante, cavallo e re) in stile piacentino semplificato, retro e scatola a incastro.": "L × H = size of one card; D is not used. 40 cards (coins, cups, swords and clubs: ace to 7, knave, knight and king) in a simplified Piacentine style, back and tuck box.",
+    "L × H = misura di una carta; P non si usa. 40 carte (denari, coppe, spade e bastoni: dall'asso al 7, fante, cavallo e re) in stile siciliano semplificato, retro e scatola a incastro.": "L × H = size of one card; D is not used. 40 cards (coins, cups, swords and clubs: ace to 7, knave, knight and king) in a simplified Sicilian style, back and tuck box.",
+    "L × H = misura di una carta; P non si usa. 22 arcani maggiori e 56 minori (4 semi dall'asso al 10, fante, cavallo, regina e re), retro e scatola a incastro.": "L × H = size of one card; D is not used. 22 major and 56 minor arcana (4 suits from ace to 10, knave, knight, queen and king), back and tuck box.",
+    "L × H = misura di una carta; P non si usa. 108 carte in 4 colori: numeri da 0 a 9, salta turno, cambio giro, +2, jolly cambia colore e +4; retro e scatola a incastro.": "L × H = size of one card; D is not used. 108 cards in 4 colours: numbers 0 to 9, skip, reverse, +2, wild and wild +4; back and tuck box.",
+    "L × H = misura di una carta, P = numero di carte (almeno 10). Spazio per titolo, immagine e testo, retro e scatola a incastro.": "L × H = size of one card, D = number of cards (at least 10). Space for title, image and text, back and tuck box.",
     "Gioco dell'oca": "Game of the Goose",
     "Scale e serpenti": "Snakes and ladders",
     "Tris": "Tic-tac-toe",
@@ -4162,6 +4180,18 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Carte napoletane (40)": "Neapolitanische Karten (40)",
+    "Carte piacentine (40)": "Piacentiner Karten (40)",
+    "Carte siciliane (40)": "Sizilianische Karten (40)",
+    "Tarocchi (78 carte)": "Tarot (78 Karten)",
+    "Carte colori (tipo UNO, 108)": "Farbkarten (wie UNO, 108)",
+    "Carte da personalizzare (vuote)": "Eigene Karten (leer)",
+    "L × H = misura di una carta; P non si usa. 40 carte (denari, coppe, spade e bastoni: dall'asso al 7, fante, cavallo e re) in stile napoletano semplificato, retro e scatola a incastro.": "L × H = Größe einer Karte; T wird nicht verwendet. 40 Karten (Münzen, Kelche, Schwerter und Stäbe: Ass bis 7, Bube, Reiter und König) im vereinfachten neapolitanischen Stil, Rückseite und Steckschachtel.",
+    "L × H = misura di una carta; P non si usa. 40 carte (denari, coppe, spade e bastoni: dall'asso al 7, fante, cavallo e re) in stile piacentino semplificato, retro e scatola a incastro.": "L × H = Größe einer Karte; T wird nicht verwendet. 40 Karten (Münzen, Kelche, Schwerter und Stäbe: Ass bis 7, Bube, Reiter und König) im vereinfachten Piacentiner Stil, Rückseite und Steckschachtel.",
+    "L × H = misura di una carta; P non si usa. 40 carte (denari, coppe, spade e bastoni: dall'asso al 7, fante, cavallo e re) in stile siciliano semplificato, retro e scatola a incastro.": "L × H = Größe einer Karte; T wird nicht verwendet. 40 Karten (Münzen, Kelche, Schwerter und Stäbe: Ass bis 7, Bube, Reiter und König) im vereinfachten sizilianischen Stil, Rückseite und Steckschachtel.",
+    "L × H = misura di una carta; P non si usa. 22 arcani maggiori e 56 minori (4 semi dall'asso al 10, fante, cavallo, regina e re), retro e scatola a incastro.": "L × H = Größe einer Karte; T wird nicht verwendet. 22 große und 56 kleine Arkana (4 Farben von Ass bis 10, Bube, Reiter, Dame und König), Rückseite und Steckschachtel.",
+    "L × H = misura di una carta; P non si usa. 108 carte in 4 colori: numeri da 0 a 9, salta turno, cambio giro, +2, jolly cambia colore e +4; retro e scatola a incastro.": "L × H = Größe einer Karte; T wird nicht verwendet. 108 Karten in 4 Farben: Zahlen 0 bis 9, Aussetzen, Richtungswechsel, +2, Farbwahl und +4; Rückseite und Steckschachtel.",
+    "L × H = misura di una carta, P = numero di carte (almeno 10). Spazio per titolo, immagine e testo, retro e scatola a incastro.": "L × H = Größe einer Karte, T = Anzahl der Karten (mindestens 10). Platz für Titel, Bild und Text, Rückseite und Steckschachtel.",
     "Gioco dell'oca": "Gänsespiel",
     "Scale e serpenti": "Leiterspiel (Schlangen und Leitern)",
     "Tris": "Tic-Tac-Toe",
@@ -5973,6 +6003,18 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Carte napoletane (40)": "Naipes napolitanos (40)",
+    "Carte piacentine (40)": "Naipes piacentinos (40)",
+    "Carte siciliane (40)": "Naipes sicilianos (40)",
+    "Tarocchi (78 carte)": "Tarot (78 cartas)",
+    "Carte colori (tipo UNO, 108)": "Cartas de colores (tipo UNO, 108)",
+    "Carte da personalizzare (vuote)": "Cartas personalizables (en blanco)",
+    "L × H = misura di una carta; P non si usa. 40 carte (denari, coppe, spade e bastoni: dall'asso al 7, fante, cavallo e re) in stile napoletano semplificato, retro e scatola a incastro.": "L × H = tamaño de una carta; P no se usa. 40 cartas (oros, copas, espadas y bastos: del as al 7, sota, caballo y rey) en estilo napolitano simplificado, reverso y caja.",
+    "L × H = misura di una carta; P non si usa. 40 carte (denari, coppe, spade e bastoni: dall'asso al 7, fante, cavallo e re) in stile piacentino semplificato, retro e scatola a incastro.": "L × H = tamaño de una carta; P no se usa. 40 cartas (oros, copas, espadas y bastos: del as al 7, sota, caballo y rey) en estilo piacentino simplificado, reverso y caja.",
+    "L × H = misura di una carta; P non si usa. 40 carte (denari, coppe, spade e bastoni: dall'asso al 7, fante, cavallo e re) in stile siciliano semplificato, retro e scatola a incastro.": "L × H = tamaño de una carta; P no se usa. 40 cartas (oros, copas, espadas y bastos: del as al 7, sota, caballo y rey) en estilo siciliano simplificado, reverso y caja.",
+    "L × H = misura di una carta; P non si usa. 22 arcani maggiori e 56 minori (4 semi dall'asso al 10, fante, cavallo, regina e re), retro e scatola a incastro.": "L × H = tamaño de una carta; P no se usa. 22 arcanos mayores y 56 menores (4 palos del as al 10, sota, caballo, reina y rey), reverso y caja.",
+    "L × H = misura di una carta; P non si usa. 108 carte in 4 colori: numeri da 0 a 9, salta turno, cambio giro, +2, jolly cambia colore e +4; retro e scatola a incastro.": "L × H = tamaño de una carta; P no se usa. 108 cartas en 4 colores: números del 0 al 9, salta, cambio de sentido, +2, comodín y comodín +4; reverso y caja.",
+    "L × H = misura di una carta, P = numero di carte (almeno 10). Spazio per titolo, immagine e testo, retro e scatola a incastro.": "L × H = tamaño de una carta, P = número de cartas (al menos 10). Espacio para título, imagen y texto, reverso y caja.",
     "Gioco dell'oca": "Juego de la oca",
     "Scale e serpenti": "Serpientes y escaleras",
     "Tris": "Tres en raya",
@@ -7784,6 +7826,18 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Carte napoletane (40)": "那不勒斯纸牌（40 张）",
+    "Carte piacentine (40)": "皮亚琴察纸牌（40 张）",
+    "Carte siciliane (40)": "西西里纸牌（40 张）",
+    "Tarocchi (78 carte)": "塔罗牌（78 张）",
+    "Carte colori (tipo UNO, 108)": "彩色牌（UNO 类，108 张）",
+    "Carte da personalizzare (vuote)": "自定义卡片（空白）",
+    "L × H = misura di una carta; P non si usa. 40 carte (denari, coppe, spade e bastoni: dall'asso al 7, fante, cavallo e re) in stile napoletano semplificato, retro e scatola a incastro.": "L × H = 单张牌尺寸；不使用 P。40 张牌（金币、圣杯、宝剑、权杖：A 至 7、侍从、骑士和国王），简化那不勒斯风格，含背面和插口盒。",
+    "L × H = misura di una carta; P non si usa. 40 carte (denari, coppe, spade e bastoni: dall'asso al 7, fante, cavallo e re) in stile piacentino semplificato, retro e scatola a incastro.": "L × H = 单张牌尺寸；不使用 P。40 张牌（金币、圣杯、宝剑、权杖：A 至 7、侍从、骑士和国王），简化皮亚琴察风格，含背面和插口盒。",
+    "L × H = misura di una carta; P non si usa. 40 carte (denari, coppe, spade e bastoni: dall'asso al 7, fante, cavallo e re) in stile siciliano semplificato, retro e scatola a incastro.": "L × H = 单张牌尺寸；不使用 P。40 张牌（金币、圣杯、宝剑、权杖：A 至 7、侍从、骑士和国王），简化西西里风格，含背面和插口盒。",
+    "L × H = misura di una carta; P non si usa. 22 arcani maggiori e 56 minori (4 semi dall'asso al 10, fante, cavallo, regina e re), retro e scatola a incastro.": "L × H = 单张牌尺寸；不使用 P。22 张大阿卡那和 56 张小阿卡那（4 种花色，A 至 10、侍从、骑士、王后和国王），含背面和插口盒。",
+    "L × H = misura di una carta; P non si usa. 108 carte in 4 colori: numeri da 0 a 9, salta turno, cambio giro, +2, jolly cambia colore e +4; retro e scatola a incastro.": "L × H = 单张牌尺寸；不使用 P。4 种颜色共 108 张：数字 0 至 9、跳过、反转、+2、变色和 +4；含背面和插口盒。",
+    "L × H = misura di una carta, P = numero di carte (almeno 10). Spazio per titolo, immagine e testo, retro e scatola a incastro.": "L × H = 单张卡片尺寸，P = 卡片数量（至少 10）。留有标题、图片和文字的位置，含背面和插口盒。",
     "Gioco dell'oca": "鹅棋",
     "Scale e serpenti": "蛇梯棋",
     "Tris": "井字棋",
@@ -9595,6 +9649,18 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Carte napoletane (40)": "Cartes napolitaines (40)",
+    "Carte piacentine (40)": "Cartes de Plaisance (40)",
+    "Carte siciliane (40)": "Cartes siciliennes (40)",
+    "Tarocchi (78 carte)": "Tarot (78 cartes)",
+    "Carte colori (tipo UNO, 108)": "Cartes de couleurs (type UNO, 108)",
+    "Carte da personalizzare (vuote)": "Cartes à personnaliser (vierges)",
+    "L × H = misura di una carta; P non si usa. 40 carte (denari, coppe, spade e bastoni: dall'asso al 7, fante, cavallo e re) in stile napoletano semplificato, retro e scatola a incastro.": "L × H = taille d'une carte ; P n'est pas utilisé. 40 cartes (deniers, coupes, épées et bâtons : de l'as au 7, valet, cavalier et roi) en style napolitain simplifié, dos et étui.",
+    "L × H = misura di una carta; P non si usa. 40 carte (denari, coppe, spade e bastoni: dall'asso al 7, fante, cavallo e re) in stile piacentino semplificato, retro e scatola a incastro.": "L × H = taille d'une carte ; P n'est pas utilisé. 40 cartes (deniers, coupes, épées et bâtons : de l'as au 7, valet, cavalier et roi) en style de Plaisance simplifié, dos et étui.",
+    "L × H = misura di una carta; P non si usa. 40 carte (denari, coppe, spade e bastoni: dall'asso al 7, fante, cavallo e re) in stile siciliano semplificato, retro e scatola a incastro.": "L × H = taille d'une carte ; P n'est pas utilisé. 40 cartes (deniers, coupes, épées et bâtons : de l'as au 7, valet, cavalier et roi) en style sicilien simplifié, dos et étui.",
+    "L × H = misura di una carta; P non si usa. 22 arcani maggiori e 56 minori (4 semi dall'asso al 10, fante, cavallo, regina e re), retro e scatola a incastro.": "L × H = taille d'une carte ; P n'est pas utilisé. 22 arcanes majeurs et 56 mineurs (4 couleurs de l'as au 10, valet, cavalier, reine et roi), dos et étui.",
+    "L × H = misura di una carta; P non si usa. 108 carte in 4 colori: numeri da 0 a 9, salta turno, cambio giro, +2, jolly cambia colore e +4; retro e scatola a incastro.": "L × H = taille d'une carte ; P n'est pas utilisé. 108 cartes en 4 couleurs : chiffres de 0 à 9, passe ton tour, inversion, +2, joker et joker +4 ; dos et étui.",
+    "L × H = misura di una carta, P = numero di carte (almeno 10). Spazio per titolo, immagine e testo, retro e scatola a incastro.": "L × H = taille d'une carte, P = nombre de cartes (au moins 10). Espace pour titre, image et texte, dos et étui.",
     "Gioco dell'oca": "Jeu de l'oie",
     "Scale e serpenti": "Serpents et échelles",
     "Tris": "Morpion",
@@ -15492,7 +15558,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.72';
+const GUIDE_VERSION = '2.73';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -15747,7 +15813,7 @@ html:`<p>Ogni piega ha un numero di <b>passo</b>: nella simulazione 3D si chiudo
 <li>il pannello che si piega è colorato pieno, i pannelli attaccati a lui (che si muovono insieme) più tenui; l'evidenziazione si vede anche quando il pezzo è dietro ad altri pannelli;</li>
 <li>al contrario, <b>clic su un pannello nel 3D</b>: viene evidenziata la piega su cui si chiude e in basso compare "Passo 2 di 4 · piega a monte 90° · lunga …"; se la sequenza è aperta, la voce corrispondente si accende. Il pannello di base viene indicato come tale; un clic fuori dalla scatola toglie l'evidenziazione.</li></ul>` },
 
-{ id:'genera-scatola', cat:'Fustella e scatole', title:'Genera scatola', keys:'genera scatola americana rsc astuccio tuck box giochi gioco tavolo scacchi dama cinese monopoli proprietà carte mazzo poker dado tabellone pedine oca scale serpenti tris forza 4 battaglia navale memory tangram puzzle domino filetto mulino tavola reale backgammon biglietto pieghevole brochure fisarmonica busta cartellina tasca segnaposto segnalibro bustina cd fogli oggetti carta giocattoli mattoncini dentifricio bottiglia cioccolatini cassetto esagonale triangolare prisma diamante cestino manico mailer spedizioni petali regalo dimensioni larghezza profondità altezza automatica',
+{ id:'genera-scatola', cat:'Fustella e scatole', title:'Genera scatola', keys:'genera scatola americana rsc astuccio tuck box giochi gioco tavolo scacchi dama cinese monopoli proprietà carte mazzo poker napoletane piacentine siciliane scopa briscola tarocchi uno colori personalizzate vuote flashcard dado tabellone pedine oca scale serpenti tris forza 4 battaglia navale memory tangram puzzle domino filetto mulino tavola reale backgammon biglietto pieghevole brochure fisarmonica busta cartellina tasca segnaposto segnalibro bustina cd fogli oggetti carta giocattoli mattoncini dentifricio bottiglia cioccolatini cassetto esagonale triangolare prisma diamante cestino manico mailer spedizioni petali regalo dimensioni larghezza profondità altezza automatica',
 html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profondità e Altezza in mm e scegli il tipo. La fustella viene creata in una nuova scheda; se la scheda attiva è un disegno vuoto mai toccato, la scatola prende il suo posto. Aprire la finestra non crea nessuna scheda.</p>
 <ul><li><b>Scatola americana (RSC)</b>: 4 pareti con aletta di incollaggio, alette sopra e sotto separate da tagli.</li>
 <li><b>Astuccio con coperchio a incastro</b>: a ogni estremità due alette antipolvere sui fianchi, un coperchio pieno (L×P) e una linguetta rastremata che si infila dentro la parete opposta. Lo stesso schema vale per giocattoli, dentifricio e bottiglia.</li>
@@ -15771,6 +15837,10 @@ html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profo
 <li><b>Dama cinese</b>: stella a sei punte colorate con 121 fori e 60 pedine in 6 colori;</li>
 <li><b>Gioco delle proprietà (tipo Monopoli)</b>: tabellone con 40 caselle (VIA, prigione, parcheggio, stazioni, servizi, tasse, Sorpresa e Opportunità), 16 carte Sorpresa, 16 Opportunità, 28 contratti con gli affitti, 6 pedine e 2 dadi da costruire. Nomi delle vie, testi e grafica sono inventati (non è il gioco originale): modificali come vuoi;</li>
 <li><b>Mazzo di carte francesi</b>: 52 carte e 2 jolly con angoli arrotondati (L × H = misura di una carta: poker 63 × 88, bridge 57 × 88), un modello del retro e la scatola a incastro su misura del mazzo;</li>
+<li><b>Carte napoletane, piacentine e siciliane</b>: le 40 carte regionali (denari, coppe, spade e bastoni; dall'asso al 7, poi fante, cavallo e re) con i semi disegnati a vettori in uno stile semplificato, il retro e la scatola a incastro. L × H = misura di una carta. Vanno bene per scopa, briscola, tressette.</li>
+<li><b>Tarocchi</b>: 78 carte, cioè i 22 arcani maggiori (dal Matto al Mondo, con numero romano e nome) e i 56 arcani minori a semi italiani con fante, cavallo, regina e re.</li>
+<li><b>Carte colori (tipo UNO)</b>: 108 carte in 4 colori con numeri da 0 a 9, salta turno (⊘), cambio giro (⇄), +2, jolly cambia colore e jolly +4.</li>
+<li><b>Carte da personalizzare</b>: carte vuote con lo spazio per titolo, immagine e testo; qui <b>P è il numero di carte</b> (almeno 10). Utili per flashcard, giochi inventati, quiz.</li>
 <li><b>Dado a 6 facce</b>: croce da piegare con i punti, le facce opposte sommano 7, con alette di colla; si vede chiuso nell'anteprima 3D;</li>
 <li><b>Gioco dell'oca</b>: spirale di 64 caselle (partenza, oche che raddoppiano, ponte, locanda, pozzo, labirinto, prigione, scheletro, arrivo) e 6 pedine;</li>
 <li><b>Scale e serpenti</b>: caselle da 1 a 100 a serpentina, 8 scale e 8 serpenti, 6 pedine;</li>
@@ -16076,6 +16146,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.73</b> — Nuovi <a data-topic="genera-scatola">mazzi di carte</a>: napoletane, piacentine, siciliane, tarocchi, carte colori (tipo UNO) e carte vuote da personalizzare, ognuno con retro e scatola.</li>
 <li><b>2.72</b> — <a data-topic="genera-scatola">Genera scatola</a> non crea più una scheda "Disegno" vuota: la scheda nasce solo quando premi Crea, e un disegno vuoto viene sostituito.</li>
 <li><b>2.71</b> — Altri <a data-topic="genera-scatola">giochi di carta</a>: gioco dell'oca, scale e serpenti, tris, forza 4, battaglia navale, memory, tangram, puzzle a incastro, domino, filetto (mulino) e tavola reale.</li>
 <li><b>2.70</b> — <a data-topic="genera-scatola">Giochi da tavolo</a> nel generatore: scacchi, dama, dama cinese, gioco delle proprietà (tipo Monopoli, con carte e contratti), mazzo di carte francesi con scatola e dado da costruire.</li>
@@ -17318,6 +17389,142 @@ function genCardDeck(L, H){
   offsetShapes(box.shapes, cw + 20, by); shapes.push(...box.shapes);
   return {shapes, totalW: Math.max(perRow*(cw + gap), cw + 20 + box.totalW), totalH: by + Math.max(ch, box.totalH)};
 }
+// ---------- altri mazzi: carte regionali italiane, tarocchi, carte colori, carte da personalizzare ----------
+// retro (modello) e scatola a incastro, in fondo a ogni mazzo
+function deckFinish(shapes, count, cw, ch, perRow, gap, r, backCol, accent){
+  const rows = Math.ceil(count/perRow), yb = rows*(ch + gap) + 6, by = yb + 6;
+  shapes.push(GM.text(perRow*(cw+gap)/2, yb, 'Retro delle carte (modello) e scatola a incastro per il mazzo', 5, '#333333', {weight:700}));
+  shapes.push(GM.poly(GM.roundRect(0, by, cw, ch, r), backCol, backCol, 0.3), GM.poly(GM.roundRect(3, by + 3, cw - 6, ch - 6, r*0.7), 'none', '#ffffff', 0.6));
+  for(let k=1;k<6;k++) shapes.push(GM.poly([[cw/2, by + k*ch/6 - 4], [cw/2 + 4, by + k*ch/6], [cw/2, by + k*ch/6 + 4], [cw/2 - 4, by + k*ch/6]], accent));
+  shapes.push(GM.cutRound(0, by, cw, ch, r));
+  const deckT = Math.max(15, Math.round(count*0.31) + 2);                         // spessore del mazzo (≈0,3 mm per carta) + gioco
+  const box = generateTuckBox(cw + 2, deckT, ch + 2);
+  offsetShapes(box.shapes, cw + 20, by); shapes.push(...box.shapes);
+  return {shapes, totalW: Math.max(perRow*(cw + gap), cw + 20 + box.totalW), totalH: by + Math.max(ch, box.totalH)};
+}
+// semi italiani (denari, coppe, spade, bastoni): [colore principale, colore dei dettagli]
+const LATIN_STYLES = {
+  napoletane: {frame:'#c8102e', bg:'#fffdf4', denari:['#f2c230','#c8102e'], coppe:['#c8102e','#f2c230'], spade:['#2f6fd0','#f2c230'], bastoni:['#3fa34d','#8a5a2b']},
+  piacentine: {frame:'#1f4fa0', bg:'#ffffff', denari:['#e8b923','#3fa34d'], coppe:['#e8b923','#c8102e'], spade:['#5a6680','#e8b923'], bastoni:['#8a5a2b','#3fa34d']},
+  siciliane:  {frame:'#2f8a3a', bg:'#fffaf0', denari:['#e8b923','#d1402c'], coppe:['#d1402c','#e8b923'], spade:['#2a6fb0','#d1402c'], bastoni:['#a0522d','#3fa34d']},
+  tarocchi:   {frame:'#6b4fbf', bg:'#fbf3df', denari:['#e8b923','#c8102e'], coppe:['#c8102e','#e8b923'], spade:['#3572d6','#e8b923'], bastoni:['#3fa34d','#8a5a2b']},
+};
+// un seme disegnato a vettori, alto circa s, centrato in (cx, cy) e ruotato di rot gradi
+function latinPip(shapes, suit, cx, cy, s, rot, pal){
+  const [c1, c2] = pal[suit], ink = '#4a3412', T = pts=> pts.map(([u, v])=> GM.rot([cx + u*s, cy + v*s], [cx, cy], rot || 0));
+  if(suit==='denari'){
+    shapes.push(GM.circ(cx, cy, s*0.45, c1, ink, s*0.03), GM.circ(cx, cy, s*0.29, c2), GM.circ(cx, cy, s*0.13, c1));
+    for(let k=0;k<8;k++){ const a = k*Math.PI/4; shapes.push(GM.circ(cx + Math.cos(a)*s*0.37, cy + Math.sin(a)*s*0.37, s*0.035, ink)); }
+  } else if(suit==='coppe'){
+    shapes.push(GM.poly(T([[-0.36,-0.42],[0.36,-0.42],[0.32,-0.2],[0.2,-0.04],[0.07,0.02],[0.07,0.26],[0.26,0.38],[0.26,0.46],[-0.26,0.46],[-0.26,0.38],[-0.07,0.26],[-0.07,0.02],[-0.2,-0.04],[-0.32,-0.2]]), c1, ink, s*0.03));
+    shapes.push(GM.poly(T([[-0.36,-0.42],[0.36,-0.42],[0.34,-0.32],[-0.34,-0.32]]), c2), GM.poly(T([[-0.12,0.12],[0.12,0.12],[0.12,0.18],[-0.12,0.18]]), c2));
+  } else if(suit==='spade'){
+    shapes.push(GM.poly(T([[0,-0.5],[0.07,-0.4],[0.07,0.22],[-0.07,0.22],[-0.07,-0.4]]), c1, '#333333', s*0.025));
+    shapes.push(GM.poly(T([[-0.26,0.22],[0.26,0.22],[0.26,0.29],[-0.26,0.29]]), c2, '#333333', s*0.02), GM.poly(T([[-0.04,0.29],[0.04,0.29],[0.04,0.42],[-0.04,0.42]]), ink));
+    const pm = T([[0, 0.46]])[0]; shapes.push(GM.circ(pm[0], pm[1], s*0.05, c2, '#333333', s*0.02));
+  } else { // bastoni
+    shapes.push(GM.poly(T([[-0.07,0.5],[-0.13,-0.38],[-0.06,-0.5],[0.06,-0.5],[0.13,-0.38],[0.07,0.5]]), c1, '#3b2a14', s*0.03));
+    [[-0.11,-0.2],[0.1,0.02],[-0.09,0.24]].forEach(q=>{ const p = T([q])[0]; shapes.push(GM.circ(p[0], p[1], s*0.035, c2)); });
+  }
+}
+// posizione dei semi sulle carte numerate (frazioni della carta)
+const LATIN_LAY = {1:[[.5,.5]], 2:[[.5,.28],[.5,.72]], 3:[[.5,.24],[.5,.5],[.5,.76]], 4:[[.32,.27],[.68,.27],[.32,.73],[.68,.73]],
+  5:[[.32,.25],[.68,.25],[.5,.5],[.32,.75],[.68,.75]], 6:[[.32,.24],[.68,.24],[.32,.5],[.68,.5],[.32,.76],[.68,.76]],
+  7:[[.32,.18],[.68,.18],[.5,.34],[.32,.5],[.68,.5],[.32,.8],[.68,.8]], 8:[[.32,.2],[.68,.2],[.32,.4],[.68,.4],[.32,.6],[.68,.6],[.32,.8],[.68,.8]],
+  9:[[.32,.2],[.68,.2],[.32,.4],[.68,.4],[.5,.5],[.32,.6],[.68,.6],[.32,.8],[.68,.8]], 10:[[.32,.18],[.68,.18],[.5,.3],[.32,.42],[.68,.42],[.32,.58],[.68,.58],[.5,.7],[.32,.82],[.68,.82]]};
+// carta a semi italiani: cd = {suit, idx, n} per le numerate, {suit, idx, court, glyph} per le figure
+function latinCard(shapes, x, y, cw, ch, r, cd, pal){
+  shapes.push(GM.poly(GM.roundRect(x, y, cw, ch, r), pal.bg, '#bbbbbb', 0.25));
+  const m = cw*0.05, fs = cw*(cd.idx.length > 1 ? 0.1 : 0.13);
+  shapes.push(GM.poly(GM.roundRect(x + m, y + m, cw - 2*m, ch - 2*m, r*0.6), 'none', pal.frame, 0.35));
+  shapes.push(GM.text(x + m + fs*0.65, y + m + fs*0.8, cd.idx, fs, pal.frame, {weight:700}), GM.text(x + cw - m - fs*0.65, y + ch - m - fs*0.8, cd.idx, fs, pal.frame, {weight:700, rot:180}));
+  if(cd.court){
+    const fx = x + cw*0.2, fy = y + ch*0.14, fw = cw*0.6, fh = ch*0.72;
+    shapes.push(GM.rect(fx, fy, fw, fh, '#f7efe0', pal.frame, 0.4));
+    shapes.push(GM.text(x + cw/2, fy + fh*0.32, cd.glyph, fw*0.6, pal.frame, {font: SYMBOL_FONT}));
+    latinPip(shapes, cd.suit, x + cw/2, fy + fh*0.68, Math.min(fw*0.42, fh*0.26), 0, pal);
+    shapes.push(GM.text(x + cw/2, fy + fh*0.91, cd.court.toUpperCase(), fw*0.13, pal.frame, {weight:700}));
+  } else {
+    const n = cd.n, s = n===1 ? cw*0.6 : Math.min(cw*0.3, ch*(n<=3 ? 0.2 : n<=6 ? 0.16 : n===7 ? 0.13 : 0.11));
+    LATIN_LAY[n].forEach(q=> latinPip(shapes, cd.suit, x + q[0]*cw, y + q[1]*ch, s, q[1] > 0.55 ? 180 : 0, pal));
+  }
+}
+// carte da gioco regionali: 40 carte, dall'asso al 7 più fante, cavallo e re (8, 9, 10)
+function genItalianDeck(L, H, style){
+  const pal = LATIN_STYLES[style], shapes = [], cw = L, ch = H, gap = 4, perRow = 10, r = Math.min(3, cw*0.05);
+  const courts = {8:['Fante','♟'], 9:['Cavallo','♞'], 10:['Re','♚']};
+  let i = 0;
+  ['denari','coppe','spade','bastoni'].forEach(su=>{ for(let n=1;n<=10;n++){
+    const x = (i % perRow)*(cw + gap), y = Math.floor(i/perRow)*(ch + gap); i++;
+    const c = courts[n];
+    latinCard(shapes, x, y, cw, ch, r, c ? {suit: su, idx: String(n), court: c[0], glyph: c[1]} : {suit: su, idx: String(n), n}, pal);
+    shapes.push(GM.cutRound(x, y, cw, ch, r));
+  } });
+  return deckFinish(shapes, 40, cw, ch, perRow, gap, r, pal.frame, '#f2c230');
+}
+// Tarocchi: 22 arcani maggiori + 56 minori (asso–10, fante, cavallo, regina, re per seme)
+const TAROT_TRUMPS = [['Il Matto','☺'],['Il Bagatto','✦'],['La Papessa','✝'],["L'Imperatrice",'♛'],["L'Imperatore",'♚'],['Il Papa','☩'],['Gli Amanti','♥'],['Il Carro','⚑'],
+  ['La Giustizia','⚖'],["L'Eremita",'✧'],['La Ruota','☸'],['La Forza','♌'],["L'Appeso",'☥'],['La Morte','☠'],['La Temperanza','⚱'],['Il Diavolo','♆'],
+  ['La Torre','♜'],['Le Stelle','★'],['La Luna','☾'],['Il Sole','☀'],['Il Giudizio','♪'],['Il Mondo','⊕']];
+const ROMAN_NUM = ['0','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI'];
+function genTarot(L, H){
+  const pal = LATIN_STYLES.tarocchi, shapes = [], cw = L, ch = H, gap = 4, perRow = 13, r = Math.min(3.5, cw*0.05);
+  let i = 0;
+  const pos = ()=>{ const p = [(i % perRow)*(cw + gap), Math.floor(i/perRow)*(ch + gap)]; i++; return p; };
+  TAROT_TRUMPS.forEach(([name, glyph], k)=>{
+    const [x, y] = pos(), m = cw*0.05, col = GAME_COLORS[k % GAME_COLORS.length];
+    shapes.push(GM.poly(GM.roundRect(x, y, cw, ch, r), pal.bg, '#bbbbbb', 0.25), GM.poly(GM.roundRect(x + m, y + m, cw - 2*m, ch - 2*m, r*0.6), 'none', pal.frame, 0.5));
+    shapes.push(GM.rect(x + m*2, y + m*2, cw - 4*m, ch*0.1, pal.frame), GM.text(x + cw/2, y + m*2 + ch*0.05, ROMAN_NUM[k], ch*0.06, '#ffffff', {weight:700}));
+    shapes.push(GM.circ(x + cw/2, y + ch*0.47, cw*0.3, '#ffffff', col, 0.6), GM.text(x + cw/2, y + ch*0.47, glyph, cw*0.36, col, {font: SYMBOL_FONT}));
+    shapes.push(GM.rect(x + m*2, y + ch*0.8, cw - 4*m, ch*0.1, '#ffffff', pal.frame, 0.4), GM.text(x + cw/2, y + ch*0.85, name.toUpperCase(), Math.min(ch*0.045, cw*1.25/Math.max(8, name.length)), pal.frame, {weight:700}));
+    shapes.push(GM.cutRound(x, y, cw, ch, r));
+  });
+  const courts = {11:['Fante','♟','F'], 12:['Cavallo','♞','C'], 13:['Regina','♛','D'], 14:['Re','♚','R']};
+  ['coppe','denari','spade','bastoni'].forEach(su=>{ for(let n=1;n<=14;n++){
+    const [x, y] = pos(), c = courts[n];
+    latinCard(shapes, x, y, cw, ch, r, c ? {suit: su, idx: c[2], court: c[0], glyph: c[1]} : {suit: su, idx: String(n), n}, pal);
+    shapes.push(GM.cutRound(x, y, cw, ch, r));
+  } });
+  return deckFinish(shapes, 78, cw, ch, perRow, gap, r, pal.frame, '#e8b923');
+}
+// Carte colori (tipo UNO): 4 colori × (0, 1–9 ×2, salta, cambio giro, +2 ×2) + 4 jolly + 4 jolly +4 = 108 carte
+function genColorCards(L, H){
+  const shapes = [], cw = L, ch = H, gap = 4, perRow = 12, r = Math.min(4, cw*0.08);
+  const cols = ['#d1402c','#f2c230','#3fa34d','#3572d6'], cards = [];
+  cols.forEach(c=>{ cards.push({c, v:'0'}); for(let k=0;k<2;k++){ for(let n=1;n<=9;n++) cards.push({c, v: String(n)}); cards.push({c, v:'⊘'}, {c, v:'⇄'}, {c, v:'+2'}); } });
+  for(let k=0;k<4;k++) cards.push({wild:true, v:''}); for(let k=0;k<4;k++) cards.push({wild:true, v:'+4'});
+  // ovale inclinato al centro della carta; da a0 ad a1 gradi per gli spicchi del jolly
+  const oval = (cx, cy, a0, a1)=>{ const pts = a1 - a0 < 360 ? [[cx, cy]] : [], rx = cw*0.36, ry = ch*0.33;
+    for(let a=a0;a<=a1;a+=10){ const t = a*Math.PI/180; pts.push(GM.rot([cx + rx*Math.cos(t), cy + ry*Math.sin(t)], [cx, cy], 30)); } return pts; };
+  cards.forEach((cd, i)=>{
+    const x = (i % perRow)*(cw + gap), y = Math.floor(i/perRow)*(ch + gap), m = cw*0.06, cx = x + cw/2, cy = y + ch/2, fill = cd.wild ? '#111111' : cd.c;
+    const sym = /[⊘⇄]/.test(cd.v) ? {font: SYMBOL_FONT, weight:800} : {weight:800}, fc = cw*0.16;
+    shapes.push(GM.poly(GM.roundRect(x, y, cw, ch, r), '#ffffff', '#bbbbbb', 0.25), GM.poly(GM.roundRect(x + m, y + m, cw - 2*m, ch - 2*m, r*0.7), fill));
+    shapes.push(GM.poly(oval(cx, cy, 0, 360), '#ffffff'));
+    if(cd.wild) cols.forEach((c, k)=> shapes.push(GM.poly(oval(cx, cy, k*90 + 2, k*90 + 88), c)));
+    if(cd.v){
+      if(cd.wild) shapes.push(GM.circ(cx, cy, cw*0.2, '#ffffff'));
+      shapes.push(GM.text(cx, cy, cd.v, cw*(cd.v.length > 1 ? 0.34 : 0.44), cd.wild ? '#111111' : cd.c, sym));
+      shapes.push(GM.text(x + m + fc*0.7, y + m + fc*0.85, cd.v, fc, '#ffffff', sym), GM.text(x + cw - m - fc*0.7, y + ch - m - fc*0.85, cd.v, fc, '#ffffff', Object.assign({rot:180}, sym)));
+    }
+    shapes.push(GM.cutRound(x, y, cw, ch, r));
+  });
+  return deckFinish(shapes, cards.length, cw, ch, perRow, gap, r, '#111111', '#d1402c');
+}
+// Carte da personalizzare: spazio per titolo, immagine e testo; P = quante carte
+function genBlankCards(L, N, H){
+  const shapes = [], cw = L, ch = H, gap = 4, r = Math.min(3.5, cw*0.06), n = Math.max(1, Math.min(300, Math.round(N)));
+  const perRow = Math.max(1, Math.min(n, Math.ceil(Math.sqrt(n*ch/cw))));
+  for(let i=0;i<n;i++){
+    const x = (i % perRow)*(cw + gap), y = Math.floor(i/perRow)*(ch + gap), m = cw*0.07;
+    shapes.push(GM.poly(GM.roundRect(x, y, cw, ch, r), '#ffffff', '#bbbbbb', 0.25), GM.poly(GM.roundRect(x + m*0.6, y + m*0.6, cw - 1.2*m, ch - 1.2*m, r*0.7), 'none', '#3572d6', 0.4));
+    shapes.push(GM.line([[x + m, y + ch*0.15], [x + cw - m, y + ch*0.15]], '#c8c8c8', 0.3));
+    shapes.push(GM.rect(x + m, y + ch*0.2, cw - 2*m, ch*0.4, '#f3f6fb', '#c8c8c8', 0.3), GM.text(x + cw/2, y + ch*0.4, 'immagine', cw*0.08, '#b5bccb'));
+    for(let k=0;k<4;k++) shapes.push(GM.line([[x + m, y + ch*(0.7 + k*0.065)], [x + cw - m, y + ch*(0.7 + k*0.065)]], '#dddddd', 0.3));
+    shapes.push(GM.cutRound(x, y, cw, ch, r));
+  }
+  return deckFinish(shapes, n, cw, ch, perRow, gap, r, '#3572d6', '#f2c230');
+}
 // ---------- altri giochi di carta ----------
 GM.line = (pts, color, w)=> makeShape('path', {points: pts.map(p=>[p[0],p[1]]), closed:false, noAngles:true, style: GM.st('none', color || '#111111', w || 0.5)});
 GM.curve = (pts, color, w)=> makeShape('path', {points: pts.map(p=>[p[0],p[1]]), closed:false, noAngles:true, smooth: pts.map((p,i)=> i===0 || i===pts.length-1 ? 0 : 4), style: GM.st('none', color || '#111111', w || 0.5)});
@@ -17513,6 +17720,12 @@ const BOX_TEMPLATES = {
   chinesecheckers: {label:'Dama cinese', defaults:[300, 0, 14], note:'L = diametro del tabellone, H = diametro delle pedine; P non si usa. Stella con 121 fori e 60 pedine in 6 colori.', gen:(L, W, H)=> genChineseCheckers(L, H)},
   propertygame: {dims:'L', label:'Gioco delle proprietà (tipo Monopoli)', defaults:[500, 0, 22], note:'L = lato del tabellone; P e H non si usano. Tabellone con 40 caselle, 32 carte Sorpresa e Opportunità, 28 contratti, pedine e 2 dadi. Nomi e grafica sono inventati: personalizzali come vuoi.', gen:(L)=> genPropertyGame(L)},
   carddeck: {label:'Mazzo di carte francesi', defaults:[63, 0, 88], note:'L × H = misura di una carta (poker 63 × 88, bridge 57 × 88); P non si usa. 52 carte + 2 jolly, modello del retro e scatola a incastro per il mazzo.', gen:(L, W, H)=> genCardDeck(L, H)},
+  napoletane: {label:'Carte napoletane (40)', defaults:[53, 0, 93], note:'L × H = misura di una carta; P non si usa. 40 carte (denari, coppe, spade e bastoni: dall\'asso al 7, fante, cavallo e re) in stile napoletano semplificato, retro e scatola a incastro.', gen:(L, W, H)=> genItalianDeck(L, H, 'napoletane')},
+  piacentine: {label:'Carte piacentine (40)', defaults:[58, 0, 98], note:'L × H = misura di una carta; P non si usa. 40 carte (denari, coppe, spade e bastoni: dall\'asso al 7, fante, cavallo e re) in stile piacentino semplificato, retro e scatola a incastro.', gen:(L, W, H)=> genItalianDeck(L, H, 'piacentine')},
+  siciliane: {label:'Carte siciliane (40)', defaults:[58, 0, 98], note:'L × H = misura di una carta; P non si usa. 40 carte (denari, coppe, spade e bastoni: dall\'asso al 7, fante, cavallo e re) in stile siciliano semplificato, retro e scatola a incastro.', gen:(L, W, H)=> genItalianDeck(L, H, 'siciliane')},
+  tarot: {label:'Tarocchi (78 carte)', defaults:[70, 0, 120], note:'L × H = misura di una carta; P non si usa. 22 arcani maggiori e 56 minori (4 semi dall\'asso al 10, fante, cavallo, regina e re), retro e scatola a incastro.', gen:(L, W, H)=> genTarot(L, H)},
+  colorcards: {label:'Carte colori (tipo UNO, 108)', defaults:[56, 0, 87], note:'L × H = misura di una carta; P non si usa. 108 carte in 4 colori: numeri da 0 a 9, salta turno, cambio giro, +2, jolly cambia colore e +4; retro e scatola a incastro.', gen:(L, W, H)=> genColorCards(L, H)},
+  blankcards: {dims:'LH', label:'Carte da personalizzare (vuote)', defaults:[63, 20, 88], note:'L × H = misura di una carta, P = numero di carte (almeno 10). Spazio per titolo, immagine e testo, retro e scatola a incastro.', gen:(L, W, H, g, t)=> genBlankCards(L, W - (t || 0), H)},
   die: {dims:'L', label:'Dado a 6 facce', defaults:[20, 0, 20], note:'L = lato del dado; P e H non si usano. Croce da piegare con i punti (le facce opposte sommano 7) e alette di colla.', gen:(L)=> genDie(L)},
   card2: {label:'Biglietto pieghevole a 2 ante', defaults:[105, 0, 148], note:'L = larghezza del biglietto chiuso, H = altezza; P non si usa. Una piega al centro.', gen:(L, W, H)=> genCardBifold(L, H)},
   trifold: {label:'Pieghevole a 3 ante', defaults:[99, 0, 210], note:'Piegatura a portafoglio: L = larghezza di un’anta, H = altezza; l’anta interna è 2 mm più stretta. P non si usa.', gen:(L, W, H)=> genTrifold(L, H)},
