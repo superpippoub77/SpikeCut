@@ -992,7 +992,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.69</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.70</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1588,6 +1588,14 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
             <option value="tent">Segnaposto / cavaliere da tavolo</option>
             <option value="bookmark">Segnalibro con foro</option>
             <option value="cdsleeve">Bustina porta CD</option>
+          </optgroup>
+          <optgroup label="Giochi da tavolo">
+            <option value="chess">Scacchi (tabellone pieghevole e 32 pezzi)</option>
+            <option value="checkers">Dama (tabellone e pedine)</option>
+            <option value="chinesecheckers">Dama cinese (stella con 121 fori)</option>
+            <option value="propertygame">Gioco delle proprietà (tipo Monopoli)</option>
+            <option value="carddeck">Mazzo di carte francesi con scatola</option>
+            <option value="die">Dado a 6 facce da costruire</option>
           </optgroup>
         </select>
         <div class="hint" id="boxGenNote" style="margin-top:4px;"></div>
@@ -2332,6 +2340,23 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Giochi da tavolo": "Board games",
+    "Scacchi (tabellone pieghevole e 32 pezzi)": "Chess (folding board and 32 pieces)",
+    "Dama (tabellone e pedine)": "Draughts (board and pieces)",
+    "Dama cinese (stella con 121 fori)": "Chinese checkers (star with 121 holes)",
+    "Gioco delle proprietà (tipo Monopoli)": "Property trading game (Monopoly style)",
+    "Mazzo di carte francesi con scatola": "Deck of French playing cards with box",
+    "Dado a 6 facce da costruire": "6-sided die to build",
+    "Scacchi (tabellone e pezzi)": "Chess (board and pieces)",
+    "Dama cinese": "Chinese checkers",
+    "Mazzo di carte francesi": "Deck of French playing cards",
+    "Dado a 6 facce": "6-sided die",
+    "L = lato del tabellone, H = diametro dei pezzi; P non si usa. Tabellone pieghevole con coordinate e 32 pezzi tondi da ritagliare.": "L = board side, H = piece diameter; D is not used. Folding board with coordinates and 32 round pieces to cut out.",
+    "L = lato del tabellone, H = diametro delle pedine; P non si usa. 24 pedine più 4 dame di ricambio.": "L = board side, H = piece diameter; D is not used. 24 pieces plus 4 spare kings.",
+    "L = diametro del tabellone, H = diametro delle pedine; P non si usa. Stella con 121 fori e 60 pedine in 6 colori.": "L = board diameter, H = piece diameter; D is not used. Star with 121 holes and 60 pieces in 6 colours.",
+    "L = lato del tabellone; P e H non si usano. Tabellone con 40 caselle, 32 carte Sorpresa e Opportunità, 28 contratti, pedine e 2 dadi. Nomi e grafica sono inventati: personalizzali come vuoi.": "L = board side; D and H are not used. Board with 40 squares, 32 Surprise and Opportunity cards, 28 title deeds, tokens and 2 dice. Names and artwork are invented: customise them as you like.",
+    "L × H = misura di una carta (poker 63 × 88, bridge 57 × 88); P non si usa. 52 carte + 2 jolly, modello del retro e scatola a incastro per il mazzo.": "L × H = size of one card (poker 63 × 88, bridge 57 × 88); D is not used. 52 cards + 2 jokers, back design template and tuck box for the deck.",
+    "L = lato del dado; P e H non si usano. Croce da piegare con i punti (le facce opposte sommano 7) e alette di colla.": "L = side of the die; D and H are not used. Cross net to fold with pips (opposite faces add up to 7) and glue flaps.",
     "Spostato nel livello «{name}» per poterlo mettere {where}.": "Moved to layer «{name}» to place it {where}.",
     "sopra": "above",
     "sotto": "below",
@@ -4103,6 +4128,23 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Giochi da tavolo": "Brettspiele",
+    "Scacchi (tabellone pieghevole e 32 pezzi)": "Schach (Klappbrett und 32 Figuren)",
+    "Dama (tabellone e pedine)": "Dame (Brett und Steine)",
+    "Dama cinese (stella con 121 fori)": "Halma / Sternhalma (Stern mit 121 Löchern)",
+    "Gioco delle proprietà (tipo Monopoli)": "Immobilienspiel (im Stil von Monopoly)",
+    "Mazzo di carte francesi con scatola": "Französisches Kartenspiel mit Schachtel",
+    "Dado a 6 facce da costruire": "Sechsseitiger Würfel zum Basteln",
+    "Scacchi (tabellone e pezzi)": "Schach (Brett und Figuren)",
+    "Dama cinese": "Halma",
+    "Mazzo di carte francesi": "Französisches Kartenspiel",
+    "Dado a 6 facce": "Sechsseitiger Würfel",
+    "L = lato del tabellone, H = diametro dei pezzi; P non si usa. Tabellone pieghevole con coordinate e 32 pezzi tondi da ritagliare.": "L = Brettseite, H = Figurendurchmesser; T wird nicht verwendet. Klappbrett mit Koordinaten und 32 runden Figuren zum Ausschneiden.",
+    "L = lato del tabellone, H = diametro delle pedine; P non si usa. 24 pedine più 4 dame di ricambio.": "L = Brettseite, H = Steindurchmesser; T wird nicht verwendet. 24 Steine plus 4 Ersatzdamen.",
+    "L = diametro del tabellone, H = diametro delle pedine; P non si usa. Stella con 121 fori e 60 pedine in 6 colori.": "L = Brettdurchmesser, H = Steindurchmesser; T wird nicht verwendet. Stern mit 121 Löchern und 60 Steinen in 6 Farben.",
+    "L = lato del tabellone; P e H non si usano. Tabellone con 40 caselle, 32 carte Sorpresa e Opportunità, 28 contratti, pedine e 2 dadi. Nomi e grafica sono inventati: personalizzali come vuoi.": "L = Brettseite; T und H werden nicht verwendet. Brett mit 40 Feldern, 32 Überraschungs- und Gelegenheitskarten, 28 Besitzrechtkarten, Spielfiguren und 2 Würfeln. Namen und Grafik sind erfunden: passe sie nach Belieben an.",
+    "L × H = misura di una carta (poker 63 × 88, bridge 57 × 88); P non si usa. 52 carte + 2 jolly, modello del retro e scatola a incastro per il mazzo.": "L × H = Größe einer Karte (Poker 63 × 88, Bridge 57 × 88); T wird nicht verwendet. 52 Karten + 2 Joker, Rückseitenvorlage und Steckschachtel für das Kartenspiel.",
+    "L = lato del dado; P e H non si usano. Croce da piegare con i punti (le facce opposte sommano 7) e alette di colla.": "L = Würfelseite; T und H werden nicht verwendet. Kreuznetz zum Falten mit Augen (gegenüberliegende Seiten ergeben 7) und Klebelaschen.",
     "Spostato nel livello «{name}» per poterlo mettere {where}.": "In die Ebene «{name}» verschoben, um es {where} zu legen.",
     "sopra": "darüber",
     "sotto": "darunter",
@@ -5874,6 +5916,23 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Giochi da tavolo": "Juegos de mesa",
+    "Scacchi (tabellone pieghevole e 32 pezzi)": "Ajedrez (tablero plegable y 32 piezas)",
+    "Dama (tabellone e pedine)": "Damas (tablero y fichas)",
+    "Dama cinese (stella con 121 fori)": "Damas chinas (estrella con 121 agujeros)",
+    "Gioco delle proprietà (tipo Monopoli)": "Juego de propiedades (tipo Monopoly)",
+    "Mazzo di carte francesi con scatola": "Baraja francesa con caja",
+    "Dado a 6 facce da costruire": "Dado de 6 caras para montar",
+    "Scacchi (tabellone e pezzi)": "Ajedrez (tablero y piezas)",
+    "Dama cinese": "Damas chinas",
+    "Mazzo di carte francesi": "Baraja francesa",
+    "Dado a 6 facce": "Dado de 6 caras",
+    "L = lato del tabellone, H = diametro dei pezzi; P non si usa. Tabellone pieghevole con coordinate e 32 pezzi tondi da ritagliare.": "L = lado del tablero, H = diámetro de las piezas; P no se usa. Tablero plegable con coordenadas y 32 piezas redondas para recortar.",
+    "L = lato del tabellone, H = diametro delle pedine; P non si usa. 24 pedine più 4 dame di ricambio.": "L = lado del tablero, H = diámetro de las fichas; P no se usa. 24 fichas más 4 damas de repuesto.",
+    "L = diametro del tabellone, H = diametro delle pedine; P non si usa. Stella con 121 fori e 60 pedine in 6 colori.": "L = diámetro del tablero, H = diámetro de las fichas; P no se usa. Estrella con 121 agujeros y 60 fichas en 6 colores.",
+    "L = lato del tabellone; P e H non si usano. Tabellone con 40 caselle, 32 carte Sorpresa e Opportunità, 28 contratti, pedine e 2 dadi. Nomi e grafica sono inventati: personalizzali come vuoi.": "L = lado del tablero; P y H no se usan. Tablero con 40 casillas, 32 cartas Sorpresa y Oportunidad, 28 títulos de propiedad, fichas y 2 dados. Nombres y gráficos son inventados: personalízalos como quieras.",
+    "L × H = misura di una carta (poker 63 × 88, bridge 57 × 88); P non si usa. 52 carte + 2 jolly, modello del retro e scatola a incastro per il mazzo.": "L × H = tamaño de una carta (póker 63 × 88, bridge 57 × 88); P no se usa. 52 cartas + 2 comodines, modelo del reverso y caja de encaje para la baraja.",
+    "L = lato del dado; P e H non si usano. Croce da piegare con i punti (le facce opposte sommano 7) e alette di colla.": "L = lado del dado; P y H no se usan. Desarrollo en cruz para plegar con los puntos (las caras opuestas suman 7) y solapas de pegado.",
     "Spostato nel livello «{name}» per poterlo mettere {where}.": "Movido a la capa «{name}» para ponerlo {where}.",
     "sopra": "encima",
     "sotto": "debajo",
@@ -7645,6 +7704,23 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Giochi da tavolo": "桌游",
+    "Scacchi (tabellone pieghevole e 32 pezzi)": "国际象棋（折叠棋盘和 32 枚棋子）",
+    "Dama (tabellone e pedine)": "跳棋（棋盘和棋子）",
+    "Dama cinese (stella con 121 fori)": "中国跳棋（121 孔星形棋盘）",
+    "Gioco delle proprietà (tipo Monopoli)": "地产游戏（大富翁风格）",
+    "Mazzo di carte francesi con scatola": "法式扑克牌（带盒）",
+    "Dado a 6 facce da costruire": "可组装的六面骰子",
+    "Scacchi (tabellone e pezzi)": "国际象棋（棋盘和棋子）",
+    "Dama cinese": "中国跳棋",
+    "Mazzo di carte francesi": "法式扑克牌",
+    "Dado a 6 facce": "六面骰子",
+    "L = lato del tabellone, H = diametro dei pezzi; P non si usa. Tabellone pieghevole con coordinate e 32 pezzi tondi da ritagliare.": "L = 棋盘边长，H = 棋子直径；不使用 P。带坐标的折叠棋盘和 32 枚可裁切的圆形棋子。",
+    "L = lato del tabellone, H = diametro delle pedine; P non si usa. 24 pedine più 4 dame di ricambio.": "L = 棋盘边长，H = 棋子直径；不使用 P。24 枚棋子另加 4 枚备用王。",
+    "L = diametro del tabellone, H = diametro delle pedine; P non si usa. Stella con 121 fori e 60 pedine in 6 colori.": "L = 棋盘直径，H = 棋子直径；不使用 P。121 孔星形棋盘和 6 种颜色共 60 枚棋子。",
+    "L = lato del tabellone; P e H non si usano. Tabellone con 40 caselle, 32 carte Sorpresa e Opportunità, 28 contratti, pedine e 2 dadi. Nomi e grafica sono inventati: personalizzali come vuoi.": "L = 棋盘边长；不使用 P 和 H。含 40 格棋盘、32 张惊喜卡和机会卡、28 张地契、棋子和 2 颗骰子。名称和图案均为原创：可随意修改。",
+    "L × H = misura di una carta (poker 63 × 88, bridge 57 × 88); P non si usa. 52 carte + 2 jolly, modello del retro e scatola a incastro per il mazzo.": "L × H = 单张牌尺寸（扑克 63 × 88，桥牌 57 × 88）；不使用 P。52 张牌 + 2 张王牌、背面模板和牌盒。",
+    "L = lato del dado; P e H non si usano. Croce da piegare con i punti (le facce opposte sommano 7) e alette di colla.": "L = 骰子边长；不使用 P 和 H。十字形展开图，带点数（相对面之和为 7）和粘合翼。",
     "Spostato nel livello «{name}» per poterlo mettere {where}.": "已移到图层“{name}”，以便放在{where}。",
     "sopra": "上方",
     "sotto": "下方",
@@ -9416,6 +9492,23 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Giochi da tavolo": "Jeux de société",
+    "Scacchi (tabellone pieghevole e 32 pezzi)": "Échecs (plateau pliant et 32 pièces)",
+    "Dama (tabellone e pedine)": "Dames (plateau et pions)",
+    "Dama cinese (stella con 121 fori)": "Dames chinoises (étoile à 121 trous)",
+    "Gioco delle proprietà (tipo Monopoli)": "Jeu de propriétés (style Monopoly)",
+    "Mazzo di carte francesi con scatola": "Jeu de cartes françaises avec boîte",
+    "Dado a 6 facce da costruire": "Dé à 6 faces à monter",
+    "Scacchi (tabellone e pezzi)": "Échecs (plateau et pièces)",
+    "Dama cinese": "Dames chinoises",
+    "Mazzo di carte francesi": "Jeu de cartes françaises",
+    "Dado a 6 facce": "Dé à 6 faces",
+    "L = lato del tabellone, H = diametro dei pezzi; P non si usa. Tabellone pieghevole con coordinate e 32 pezzi tondi da ritagliare.": "L = côté du plateau, H = diamètre des pièces ; P n'est pas utilisé. Plateau pliant avec coordonnées et 32 pièces rondes à découper.",
+    "L = lato del tabellone, H = diametro delle pedine; P non si usa. 24 pedine più 4 dame di ricambio.": "L = côté du plateau, H = diamètre des pions ; P n'est pas utilisé. 24 pions plus 4 dames de rechange.",
+    "L = diametro del tabellone, H = diametro delle pedine; P non si usa. Stella con 121 fori e 60 pedine in 6 colori.": "L = diamètre du plateau, H = diamètre des pions ; P n'est pas utilisé. Étoile à 121 trous et 60 pions en 6 couleurs.",
+    "L = lato del tabellone; P e H non si usano. Tabellone con 40 caselle, 32 carte Sorpresa e Opportunità, 28 contratti, pedine e 2 dadi. Nomi e grafica sono inventati: personalizzali come vuoi.": "L = côté du plateau ; P et H ne sont pas utilisés. Plateau à 40 cases, 32 cartes Surprise et Opportunité, 28 titres de propriété, pions et 2 dés. Noms et graphismes sont inventés : personnalisez-les comme vous voulez.",
+    "L × H = misura di una carta (poker 63 × 88, bridge 57 × 88); P non si usa. 52 carte + 2 jolly, modello del retro e scatola a incastro per il mazzo.": "L × H = taille d'une carte (poker 63 × 88, bridge 57 × 88) ; P n'est pas utilisé. 52 cartes + 2 jokers, modèle du dos et boîte à rabat pour le jeu.",
+    "L = lato del dado; P e H non si usano. Croce da piegare con i punti (le facce opposte sommano 7) e alette di colla.": "L = côté du dé ; P et H ne sont pas utilisés. Patron en croix à plier avec les points (les faces opposées font 7) et rabats de colle.",
     "Spostato nel livello «{name}» per poterlo mettere {where}.": "Déplacé dans le calque « {name} » pour le placer {where}.",
     "sopra": "au-dessus",
     "sotto": "en dessous",
@@ -12487,7 +12580,7 @@ function renderFoldIndicators(){
 function renderCornerAngles(){
   const rays = [];
   state.shapes.forEach(s=>{
-    if(!s.points || !isShapeEffVisible(s) || s.fromBucket) return; // le zone del secchiello non hanno angoli da mostrare
+    if(!s.points || !isShapeEffVisible(s) || s.fromBucket || s.noAngles) return; // le zone del secchiello (e la grafica dei giochi) non hanno angoli da mostrare
     const n = s.points.length;
     if(n<2) return;
     for(let i=0;i<n;i++){
@@ -15272,7 +15365,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.69';
+const GUIDE_VERSION = '2.70';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -15527,7 +15620,7 @@ html:`<p>Ogni piega ha un numero di <b>passo</b>: nella simulazione 3D si chiudo
 <li>il pannello che si piega è colorato pieno, i pannelli attaccati a lui (che si muovono insieme) più tenui; l'evidenziazione si vede anche quando il pezzo è dietro ad altri pannelli;</li>
 <li>al contrario, <b>clic su un pannello nel 3D</b>: viene evidenziata la piega su cui si chiude e in basso compare "Passo 2 di 4 · piega a monte 90° · lunga …"; se la sequenza è aperta, la voce corrispondente si accende. Il pannello di base viene indicato come tale; un clic fuori dalla scatola toglie l'evidenziazione.</li></ul>` },
 
-{ id:'genera-scatola', cat:'Fustella e scatole', title:'Genera scatola', keys:'genera scatola americana rsc astuccio tuck box biglietto pieghevole brochure fisarmonica busta cartellina tasca segnaposto segnalibro bustina cd fogli oggetti carta giocattoli mattoncini dentifricio bottiglia cioccolatini cassetto esagonale triangolare prisma diamante cestino manico mailer spedizioni petali regalo dimensioni larghezza profondità altezza automatica',
+{ id:'genera-scatola', cat:'Fustella e scatole', title:'Genera scatola', keys:'genera scatola americana rsc astuccio tuck box giochi gioco tavolo scacchi dama cinese monopoli proprietà carte mazzo poker dado tabellone pedine biglietto pieghevole brochure fisarmonica busta cartellina tasca segnaposto segnalibro bustina cd fogli oggetti carta giocattoli mattoncini dentifricio bottiglia cioccolatini cassetto esagonale triangolare prisma diamante cestino manico mailer spedizioni petali regalo dimensioni larghezza profondità altezza automatica',
 html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profondità e Altezza in mm e scegli il tipo. La fustella viene creata in una nuova scheda.</p>
 <ul><li><b>Scatola americana (RSC)</b>: 4 pareti con aletta di incollaggio, alette sopra e sotto separate da tagli.</li>
 <li><b>Astuccio con coperchio a incastro</b>: a ogni estremità due alette antipolvere sui fianchi, un coperchio pieno (L×P) e una linguetta rastremata che si infila dentro la parete opposta. Lo stesso schema vale per giocattoli, dentifricio e bottiglia.</li>
@@ -15545,6 +15638,14 @@ html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profo
 <li><b>Scatola mailer per spedizioni</b>: vassoio con coperchio incernierato sul retro, alette laterali e linguetta che entra sul davanti (tipo e-commerce).</li>
 <li><b>Scatola regalo con chiusura a petali</b>: tubo con fondo incollato e quattro petali curvi che si chiudono al centro.</li>
 <li><b>Fogli e oggetti in carta</b> (in fondo all'elenco, non sono scatole): <b>biglietto pieghevole a 2 ante</b>; <b>pieghevole a 3 ante</b> a portafoglio (l'anta interna è 2 mm più stretta); <b>pieghevole a fisarmonica</b> a 4 ante con pieghe alternate monte/valle; <b>busta da lettera</b> con alette laterali, fondo incollato e aletta di chiusura; <b>cartellina con tasca</b> (P = altezza della tasca, alette di colla sulla copertina destra); <b>segnaposto da tavolo</b> a prisma triangolare con aletta di colla; <b>segnalibro</b> con foro per il nastrino; <b>bustina porta CD</b> con alette di colla e aletta di chiusura che resta fuori. Anche questi si vedono piegati nell'anteprima 3D.</li>
+<li><b>Giochi da tavolo</b> (gruppo in fondo all'elenco): ogni gioco esce su un foglio con la <b>grafica</b> (ruolo Disegno), i contorni da <b>tagliare</b> (Taglio) e la <b>piega</b> del tabellone, che si chiude a libro:
+<ul><li><b>Scacchi</b>: scacchiera 8×8 con le coordinate (a–h, 1–8) e i 32 pezzi tondi con i simboli (L = lato del tabellone, H = diametro dei pezzi);</li>
+<li><b>Dama</b>: tabellone 8×8, 12 pedine chiare, 12 scure e 4 dame di ricambio;</li>
+<li><b>Dama cinese</b>: stella a sei punte colorate con 121 fori e 60 pedine in 6 colori;</li>
+<li><b>Gioco delle proprietà (tipo Monopoli)</b>: tabellone con 40 caselle (VIA, prigione, parcheggio, stazioni, servizi, tasse, Sorpresa e Opportunità), 16 carte Sorpresa, 16 Opportunità, 28 contratti con gli affitti, 6 pedine e 2 dadi da costruire. Nomi delle vie, testi e grafica sono inventati (non è il gioco originale): modificali come vuoi;</li>
+<li><b>Mazzo di carte francesi</b>: 52 carte e 2 jolly con angoli arrotondati (L × H = misura di una carta: poker 63 × 88, bridge 57 × 88), un modello del retro e la scatola a incastro su misura del mazzo;</li>
+<li><b>Dado a 6 facce</b>: croce da piegare con i punti, le facce opposte sommano 7, con alette di colla; si vede chiuso nell'anteprima 3D.</li></ul>
+Il foglio prende la misura di tutto il materiale: per stamparlo su fogli più piccoli usa l'<a data-topic="imposizione">imposizione</a> o il PDF multi-pagina. La scatola del gioco si fa con <b>Scatola con coperchio</b> (fondo e coperchio).</li>
 <li><b>Piramide a base quadrata</b>: base di lato L, altezza H; le pieghe hanno già gli angoli giusti (non 90°) e le alette di incollaggio stanno dentro.</li></ul>
 <p>Per vassoi, scatole con coperchio e piramidi l'<a data-topic="anteprima-3d">anteprima 3D</a> mostra il fondo in basso e le pareti che salgono.</p>
 <p><b>Spessore del cartone</b>: con 0 le misure sono quelle delle linee. Con uno spessore (es. 0,5 mm cartoncino, 3 mm ondulato onda B, 4 mm onda C) le misure scritte diventano <b>interne</b>: lunghezza e profondità crescono di uno spessore, l'altezza di due.</p>
@@ -15837,6 +15938,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.70</b> — <a data-topic="genera-scatola">Giochi da tavolo</a> nel generatore: scacchi, dama, dama cinese, gioco delle proprietà (tipo Monopoli, con carte e contratti), mazzo di carte francesi con scatola e dado da costruire.</li>
 <li><b>2.69</b> — Griglia, calamita, punti, quote e unità ricordati anche nell'account. Accesso che resta (30 giorni, si rinnova da solo; Esci chiude solo quel browser). <a data-topic="copia">Primo piano / avanti / indietro</a> funzionano su tutti gli oggetti che si toccano, anche le immagini e tra livelli. L'<a data-topic="amministrazione">amministratore</a> può eliminare i progetti degli altri utenti.</li>
 <li><b>2.68</b> — Pulsante <b>🔗 Condividi</b> nella barra in alto per il <a data-topic="link-pubblico">link pubblico</a>.</li>
 <li><b>2.67</b> — <a data-topic="immagine-forma">Forma dell'immagine</a>: le immagini (importate, incollate o catturate) si ritagliano con una qualunque delle Forme pronte, e la forma può diventare la linea di taglio.</li>
@@ -16834,7 +16936,255 @@ function genCDSleeve(L, H){ // bustina: davanti, retro con alette di colla, alet
   shapes.push(glueZoneShape(g+L+1, H+3+g, g-3, H-g*1.6), glueZoneShape(2, H+3+g, g-3, H-g*1.6));
   return {shapes, totalW: L + 2*g, totalH: 2*H + fl, rootHint: [g + L/2, H/2]};
 }
+// ---------- giochi da tavolo: tabelloni, pedine, carte (grafica + linee di taglio) ----------
+// Tutto su un foglio: grafica (ruolo Disegno), contorni da tagliare (Taglio) e pieghe del tabellone (Piega).
+const GM = {
+  st: (fill, stroke, sw)=> ({role:'design', stroke: stroke || 'none', hasRealStroke: !!stroke, fill: fill || 'none', fillOpacity: 1, strokeWidth: sw || 0.3, dash:'none'}),
+  rect: (x, y, w, h, fill, stroke, sw)=> makeShape('rect', {x, y, w, h, rotation:0, style: GM.st(fill, stroke, sw)}),
+  poly: (pts, fill, stroke, sw)=> makeShape('path', {points: pts.map(p=>[p[0],p[1]]), closed:true, noAngles:true, style: GM.st(fill, stroke, sw)}),
+  circ: (cx, cy, r, fill, stroke, sw)=> makeShape('ellipse', {x: cx-r, y: cy-r, w: 2*r, h: 2*r, rotation:0, style: GM.st(fill, stroke, sw)}),
+  text: (cx, cy, str, fs, color, o)=> makeShape('text', {x: cx, y: cy + fs*0.35, text: str, fontSize: fs, align: 'center', fontWeight: (o && o.weight) || 400,
+    rotation: (o && o.rot) || 0, fontFamily: o && o.font ? o.font : undefined, style: {role:'design', stroke: color || '#111111', strokeOpacity: 1, fill:'none', strokeWidth: 0, dash:'none', hasRealStroke: false}}),
+  cutCirc: (cx, cy, r)=> makeShape('ellipse', {x: cx-r, y: cy-r, w: 2*r, h: 2*r, rotation:0, style: Object.assign(newStyle('cut'), {hasRealStroke:true})}),
+  roundRect: (x, y, w, h, r)=>{ r = Math.min(r, w/2, h/2); const pts = [];
+    [[x+w-r, y+r, -90], [x+w-r, y+h-r, 0], [x+r, y+h-r, 90], [x+r, y+r, 180]].forEach(([cx, cy, a0])=>{ for(let k=0;k<=6;k++){ const a = (a0 + k*15)*Math.PI/180; pts.push([cx + r*Math.cos(a), cy + r*Math.sin(a)]); } });
+    return pts; },
+  cutRound: (x, y, w, h, r)=> Object.assign(boxPolyShape(GM.roundRect(x, y, w, h, r), 'cut'), {noAngles:true}),
+  rot: (p, c, deg)=>{ const a = deg*Math.PI/180, dx = p[0]-c[0], dy = p[1]-c[1]; return [c[0] + dx*Math.cos(a) - dy*Math.sin(a), c[1] + dx*Math.sin(a) + dy*Math.cos(a)]; },
+};
+const SYMBOL_FONT = 'builtin:"Segoe UI Symbol", "DejaVu Sans", "Noto Sans Symbols 2", "Apple Symbols", sans-serif';
+// tabellone a scacchi 8×8 con coordinate, pieghevole a metà; restituisce il lato esterno
+function gameCheckerBoard(shapes, x0, y0, side, light, dark, coords){
+  const m = coords ? side*0.06 : side*0.03, cell = (side - 2*m)/8;
+  shapes.push(GM.rect(x0, y0, side, side, '#5a3a22'));                               // cornice
+  for(let r=0;r<8;r++) for(let c=0;c<8;c++) shapes.push(GM.rect(x0 + m + c*cell, y0 + m + r*cell, cell, cell, (r+c)%2 ? dark : light));
+  if(coords){ const fs = m*0.45;
+    for(let i=0;i<8;i++){
+      shapes.push(GM.text(x0 + m + (i+0.5)*cell, y0 + side - m/2, 'abcdefgh'[i], fs, '#f3e6cf'), GM.text(x0 + m + (i+0.5)*cell, y0 + m/2, 'abcdefgh'[i], fs, '#f3e6cf', {rot:180}));
+      shapes.push(GM.text(x0 + m/2, y0 + m + (i+0.5)*cell, String(8-i), fs, '#f3e6cf'), GM.text(x0 + side - m/2, y0 + m + (i+0.5)*cell, String(8-i), fs, '#f3e6cf', {rot:180}));
+    } }
+  shapes.push(boxPolyShape([[x0,y0],[x0+side,y0],[x0+side,y0+side],[x0,y0+side]], 'cut'));
+  shapes.push(mkFold([x0 + side/2, y0], [x0 + side/2, y0 + side], 1, 180, 'valley'));   // si chiude a libro, la grafica dentro
+  return {cell, m};
+}
+// pedine tonde: [{fill, ink, label}] in righe da `perRow`
+function gameTokens(shapes, x0, y0, d, list, perRow, gap){
+  gap = gap || d*0.25;
+  list.forEach((t, i)=>{
+    const cx = x0 + (i % perRow)*(d + gap) + d/2, cy = y0 + Math.floor(i/perRow)*(d + gap) + d/2;
+    shapes.push(GM.circ(cx, cy, d/2, t.fill, t.ring || '#555555', 0.4));
+    if(t.inner) shapes.push(GM.circ(cx, cy, d*0.36, 'none', t.inner, 0.5));
+    if(t.label) shapes.push(GM.text(cx, cy, t.label, d*(t.scale || 0.62), t.ink || '#111111', {font: t.font}));
+    shapes.push(GM.cutCirc(cx, cy, d/2));
+  });
+  const rows = Math.ceil(list.length/perRow);
+  return {w: perRow*(d + gap) - gap, h: rows*(d + gap) - gap};
+}
+function genChess(L, H){
+  const shapes = [], side = L, d = H;
+  gameCheckerBoard(shapes, 0, 0, side, '#f0d9b5', '#b58863', true);
+  const W = '♔♕♖♖♗♗♘♘♙♙♙♙♙♙♙♙', B = '♚♛♜♜♝♝♞♞♟♟♟♟♟♟♟♟';
+  const list = [...W].map(ch=>({fill:'#fbf7ee', ink:'#1b1b1b', label: ch, font: SYMBOL_FONT, inner:'#c9b48a'}))
+    .concat([...B].map(ch=>({fill:'#2a2a2a', ink:'#f5efe2', label: ch, font: SYMBOL_FONT, inner:'#6b5a3a'})));
+  const tk = gameTokens(shapes, 0, side + 12, d, list, Math.max(4, Math.floor((side + d*0.25)/(d*1.25))));
+  shapes.push(GM.text(side/2, side + 6, 'Scacchi · 16 pezzi bianchi e 16 neri: incollali su cartone e ritagliali', 4, '#555555'));
+  return {shapes, totalW: Math.max(side, tk.w), totalH: side + 12 + tk.h};
+}
+function genCheckers(L, H){
+  const shapes = [], side = L, d = H;
+  gameCheckerBoard(shapes, 0, 0, side, '#f3ecd8', '#2e6b3a', false);
+  const list = Array.from({length:12}, ()=>({fill:'#f7f2e6', inner:'#b8a57a'})).concat(Array.from({length:12}, ()=>({fill:'#1f1f1f', inner:'#555555'})))
+    .concat([{fill:'#f7f2e6', inner:'#b8a57a', label:'♛', font: SYMBOL_FONT, ink:'#8a6d1f'}, {fill:'#1f1f1f', inner:'#555555', label:'♛', font: SYMBOL_FONT, ink:'#e5c46a'},
+             {fill:'#f7f2e6', inner:'#b8a57a', label:'♛', font: SYMBOL_FONT, ink:'#8a6d1f'}, {fill:'#1f1f1f', inner:'#555555', label:'♛', font: SYMBOL_FONT, ink:'#e5c46a'}]);
+  const tk = gameTokens(shapes, 0, side + 12, d, list, Math.max(4, Math.floor((side + d*0.25)/(d*1.25))));
+  shapes.push(GM.text(side/2, side + 6, 'Dama · 12 pedine chiare e 12 scure, più 4 dame di ricambio', 4, '#555555'));
+  return {shapes, totalW: Math.max(side, tk.w), totalH: side + 12 + tk.h};
+}
+// Dama cinese: stella a 6 punte con 121 fori (esagono centrale da 61 + 6 punte da 10), 60 pedine in 6 colori
+function genChineseCheckers(L, H){
+  const shapes = [], R = L/2, cx = R, cy = R;
+  const d = L/19.5, h = d*Math.sqrt(3)/2, pts = new Map();
+  const add = (x, y)=>{ const k = Math.round(x*100) + ',' + Math.round(y*100); if(!pts.has(k)) pts.set(k, [x, y]); };
+  for(let r=0;r<13;r++) for(let k=0;k<=r;k++) add((k - r/2)*d, r*h);           // triangolo verso l'alto
+  for(let r=0;r<13;r++) for(let k=0;k<13-r;k++) add((k - (12-r)/2)*d, (r+4)*h);  // triangolo verso il basso
+  const all = [...pts.values()], my = 8*h;                                       // centro della stella
+  const cols = ['#d1402c','#e8a52a','#3fa34d','#2f9e9a','#3572d6','#8a4fbf'];
+  shapes.push(GM.circ(cx, cy, R, '#e9dcc0', '#8b5a2b', 0.8));
+  // le sei punte colorate (triangoli) sotto ai fori
+  const star = [];
+  for(let i=0;i<6;i++){ const aT = (-90 + i*60)*Math.PI/180, aV = (-60 + i*60)*Math.PI/180;
+    star.push([cx + Math.cos(aT)*(8*h + 0.9*d), cy + Math.sin(aT)*(8*h + 0.9*d)], [cx + Math.cos(aV)*4.7*d, cy + Math.sin(aV)*4.7*d]); }
+  shapes.push(GM.poly(star, '#f6eedd', '#8b5a2b', 0.5));
+  for(let i=0;i<6;i++){ const a0 = (-90 + i*60)*Math.PI/180, aL = (-120 + i*60)*Math.PI/180, aR = (-60 + i*60)*Math.PI/180;
+    shapes.push(GM.poly([[cx + Math.cos(a0)*(8*h + 0.9*d), cy + Math.sin(a0)*(8*h + 0.9*d)], [cx + Math.cos(aR)*4.7*d, cy + Math.sin(aR)*4.7*d], [cx + Math.cos(aL)*4.7*d, cy + Math.sin(aL)*4.7*d]], cols[i], null)); }
+  all.forEach(p=>{
+    const x = cx + p[0], y = cy + p[1] - my;
+    shapes.push(GM.circ(x, y, d*0.22, '#5a3a22'));
+  });
+  shapes.push(GM.cutCirc(cx, cy, R));
+  const list = []; cols.forEach(c=>{ for(let k=0;k<10;k++) list.push({fill: c, ring:'#333333', inner:'#ffffff'}); });
+  const tk = gameTokens(shapes, 0, L + 12, H, list, 10);
+  shapes.push(GM.text(L/2, L + 6, 'Dama cinese · 121 fori, 60 pedine in 6 colori (10 per colore)', 4, '#555555'));
+  return {shapes, totalW: Math.max(L, tk.w), totalH: L + 12 + tk.h};
+}
+// Gioco delle proprietà (tipo Monopoli, nomi e grafica inventati): tabellone con 40 caselle, carte Sorpresa e
+// Opportunità, contratti delle proprietà, pedine e due dadi da costruire
+const PROP_GROUPS = {br:'#8b5a2b', lb:'#8fd3f4', pk:'#d6409f', or:'#f28c28', rd:'#d1402c', ye:'#f2c230', gr:'#2f9e5a', db:'#1f4fa0'};
+const PROP_SQUARES = [
+  ['corner','VIA','Ritira 200 passando'], ['prop','Via dei Gerani',60,'br'], ['chest','Opportunità'], ['prop','Via delle Rose',60,'br'], ['tax','Tassa','Paga 200'],
+  ['station','Stazione Sud',200], ['prop','Viale dei Tigli',100,'lb'], ['chance','Sorpresa'], ['prop','Via dei Pini',100,'lb'], ['prop','Corso dei Cedri',120,'lb'],
+  ['corner','PRIGIONE','Solo in visita'], ['prop','Piazza degli Ulivi',140,'pk'], ['util','Centrale Elettrica',150], ['prop','Via dei Mandorli',140,'pk'], ['prop','Via delle Viole',160,'pk'],
+  ['station','Stazione Ovest',200], ['prop','Via dei Gigli',180,'or'], ['chest','Opportunità'], ['prop','Largo dei Glicini',180,'or'], ['prop','Via delle Ortensie',200,'or'],
+  ['corner','PARCHEGGIO','Libero'], ['prop','Viale delle Magnolie',220,'rd'], ['chance','Sorpresa'], ['prop','Via dei Ciliegi',220,'rd'], ['prop','Corso dei Castagni',240,'rd'],
+  ['station','Stazione Nord',200], ['prop','Via degli Abeti',260,'ye'], ['prop','Piazza dei Faggi',260,'ye'], ['util','Acquedotto',150], ['prop','Via delle Querce',280,'ye'],
+  ['corner','IN PRIGIONE!','Vai direttamente'], ['prop','Viale dei Platani',300,'gr'], ['prop','Via dei Salici',300,'gr'], ['chest','Opportunità'], ['prop','Corso delle Betulle',320,'gr'],
+  ['station','Stazione Est',200], ['chance','Sorpresa'], ['prop','Piazza dei Cipressi',350,'db'], ['tax','Tassa di lusso','Paga 100'], ['prop','Viale delle Palme',400,'db'],
+];
+const PROP_CHANCE = ['Vai avanti fino al VIA e ritira 200','Vai alla stazione più vicina','Torna indietro di 3 caselle','Vai in prigione senza passare dal VIA','Esci gratis di prigione','La banca ti paga un dividendo di 50','Multa per eccesso di velocità: paga 15','Vai a Viale delle Palme','Vai a Piazza degli Ulivi','Lavori in casa: paga 25 per casa, 100 per albergo','Sei eletto presidente: paga 50 a ogni giocatore','Hai vinto un concorso: ritira 100','Rimborso dell\'assicurazione: ritira 150','Vai alla Stazione Sud','Gita fuori porta: avanza di 5 caselle','Paga la scuola: 150'];
+const PROP_CHEST = ['Errore della banca a tuo favore: ritira 200','Parcella del medico: paga 50','Vendita di azioni: ritira 50','Esci gratis di prigione','Vai in prigione senza passare dal VIA','È il tuo compleanno: ogni giocatore ti dà 10','Rimborso tasse: ritira 20','Assicurazione sulla vita: ritira 100','Ospedale: paga 100','Premio di bellezza: ritira 10','Eredità: ritira 100','Consulenza: ritira 25','Riparazioni stradali: 40 per casa, 115 per albergo','Vai avanti fino al VIA','Interessi sul conto: ritira 25','Contributo scolastico: paga 50'];
+function genPropertyGame(L, H){
+  const shapes = [], B = L, c = B*0.13, w = (B - 2*c)/9, C = [B/2, B/2], line = '#222222';
+  shapes.push(GM.rect(0, 0, B, B, '#d9ecd6', line, 0.6));
+  const fsN = Math.max(2.2, w*0.13);
+  const wrap = (t, n)=>{ const out = []; let cur = ''; t.split(' ').forEach(wd=>{ if((cur + ' ' + wd).trim().length > n && cur){ out.push(cur); cur = wd; } else cur = (cur + ' ' + wd).trim(); }); if(cur) out.push(cur); return out; };
+  PROP_SQUARES.forEach((sq, i)=>{
+    const side = Math.floor(i/10), k = i % 10, deg = side*90;
+    // casella nella fila in basso (da destra a sinistra), poi ruotata attorno al centro del tabellone
+    let x, y, ww, hh;
+    if(k===0){ x = B - c; y = B - c; ww = c; hh = c; } else { x = B - c - k*w; y = B - c; ww = w; hh = c; }
+    const R = p=> GM.rot(p, C, deg);
+    shapes.push(GM.poly([[x,y],[x+ww,y],[x+ww,y+hh],[x,y+hh]].map(R), sq[0]==='corner' ? '#e6f2e2' : '#f7fbf4', line, 0.35));
+    const T = (px, py, str, fs, col, weight)=>{ const p = R([px, py]); shapes.push(GM.text(p[0], p[1], str, fs, col || '#111111', {rot: deg, weight})); };
+    if(sq[0]==='corner'){
+      T(x + ww/2, y + hh*0.42, sq[1], c*0.12, '#a3261b', 700); T(x + ww/2, y + hh*0.62, sq[2], c*0.075);
+      return;
+    }
+    if(sq[0]==='prop'){
+      shapes.push(GM.poly([[x,y],[x+ww,y],[x+ww,y+hh*0.2],[x,y+hh*0.2]].map(R), PROP_GROUPS[sq[3]], line, 0.35));
+      wrap(sq[1], 11).forEach((ln, j)=> T(x + ww/2, y + hh*0.3 + j*fsN*1.15, ln, fsN, '#111111', 600));
+      T(x + ww/2, y + hh*0.86, sq[2] + ' €', fsN);
+    } else if(sq[0]==='station'){
+      T(x + ww/2, y + hh*0.18, 'STAZIONE', fsN, '#111111', 700); T(x + ww/2, y + hh*0.45, '🚂', w*0.35); T(x + ww/2, y + hh*0.7, sq[1].replace('Stazione ', ''), fsN); T(x + ww/2, y + hh*0.86, sq[2] + ' €', fsN);
+    } else if(sq[0]==='util'){
+      wrap(sq[1], 11).forEach((ln, j)=> T(x + ww/2, y + hh*0.18 + j*fsN*1.15, ln, fsN, '#111111', 600)); T(x + ww/2, y + hh*0.52, sq[1].indexOf('Acqu')===0 ? '🚰' : '💡', w*0.35); T(x + ww/2, y + hh*0.86, sq[2] + ' €', fsN);
+    } else if(sq[0]==='tax'){
+      wrap(sq[1].toUpperCase(), 10).forEach((ln, j)=> T(x + ww/2, y + hh*0.2 + j*fsN*1.15, ln, fsN, '#111111', 700)); T(x + ww/2, y + hh*0.55, '💰', w*0.35); T(x + ww/2, y + hh*0.86, sq[2], fsN);
+    } else {
+      const ch = sq[0]==='chance';
+      T(x + ww/2, y + hh*0.2, sq[1].toUpperCase(), fsN, ch ? '#d1402c' : '#1f4fa0', 700); T(x + ww/2, y + hh*0.55, ch ? '?' : '★', w*0.45, ch ? '#d1402c' : '#1f4fa0', 700);
+    }
+  });
+  // centro: titolo e spazi per i due mazzi
+  const t = GM.text(B/2, B/2, 'IL GIOCO DELLE PROPRIETÀ', B*0.055, '#a3261b', {rot:-45, weight:800}); shapes.push(t);
+  const cw = B*0.2, ch = B*0.13;
+  const deck = (dx, dy, label, col)=>{ const pts = [[-cw/2,-ch/2],[cw/2,-ch/2],[cw/2,ch/2],[-cw/2,ch/2]].map(p=> GM.rot([C[0] + dx + p[0], C[1] + dy + p[1]], [C[0]+dx, C[1]+dy], -45));
+    shapes.push(GM.poly(pts, 'none', col, 0.6)); const p = [C[0] + dx, C[1] + dy]; shapes.push(GM.text(p[0], p[1], label, B*0.022, col, {rot:-45, weight:700})); };
+  deck(-B*0.17, -B*0.17, 'SORPRESA', '#d1402c'); deck(B*0.17, B*0.17, 'OPPORTUNITÀ', '#1f4fa0');
+  shapes.push(boxPolyShape([[0,0],[B,0],[B,B],[0,B]], 'cut'));
+  shapes.push(mkFold([B/2, 0], [B/2, B], 1, 180, 'valley'));
+  // --- materiali, a destra del tabellone
+  let X = B + 15, Y = 0;
+  const cardW = 57, cardH = 89, gap = 4, perRow = 6;
+  const cardsArea = (title, items, draw)=>{
+    shapes.push(GM.text(X + (perRow*(cardW+gap))/2, Y + 4, title, 5, '#333333', {weight:700})); Y += 9;
+    items.forEach((it, i)=>{ const cx = X + (i % perRow)*(cardW + gap), cy = Y + Math.floor(i/perRow)*(cardH + gap); draw(it, cx, cy); shapes.push(GM.cutRound(cx, cy, cardW, cardH, 3)); });
+    Y += Math.ceil(items.length/perRow)*(cardH + gap) + 6;
+  };
+  const evCard = (col, label)=> (txt, x, y)=>{ shapes.push(GM.rect(x, y, cardW, cardH, '#ffffff', col, 0.6), GM.rect(x + 3, y + 3, cardW - 6, 14, col));
+    shapes.push(GM.text(x + cardW/2, y + 10, label, 4.2, '#ffffff', {weight:800}));
+    wrap(txt, 22).forEach((ln, j)=> shapes.push(GM.text(x + cardW/2, y + 34 + j*5.2, ln, 3.6, '#111111'))); };
+  cardsArea('Carte SORPRESA (16)', PROP_CHANCE, evCard('#d1402c', 'SORPRESA'));
+  cardsArea('Carte OPPORTUNITÀ (16)', PROP_CHEST, evCard('#1f4fa0', 'OPPORTUNITÀ'));
+  const deeds = PROP_SQUARES.filter(s=> s[0]==='prop' || s[0]==='station' || s[0]==='util');
+  cardsArea('Contratti delle proprietà (28)', deeds, (sq, x, y)=>{
+    const col = sq[0]==='prop' ? PROP_GROUPS[sq[3]] : '#555555';
+    shapes.push(GM.rect(x, y, cardW, cardH, '#ffffff', '#333333', 0.5), GM.rect(x + 3, y + 3, cardW - 6, 18, col));
+    shapes.push(GM.text(x + cardW/2, y + 8, 'CONTRATTO', 2.6, sq[3]==='lb' || sq[3]==='ye' ? '#111111' : '#ffffff', {weight:700}));
+    wrap(sq[1].toUpperCase(), 20).forEach((ln, j)=> shapes.push(GM.text(x + cardW/2, y + 14 + j*4, ln, 3.3, sq[3]==='lb' || sq[3]==='ye' ? '#111111' : '#ffffff', {weight:800})));
+    const p = sq[2], rows = sq[0]==='prop' ? [['Affitto', Math.round(p/10)], ['Con 1 casa', Math.round(p/2)], ['Con 2 case', Math.round(p*1.5)], ['Con 3 case', Math.round(p*4)], ['Con 4 case', Math.round(p*5.5)], ['Con albergo', Math.round(p*7)], ['Costo di una casa', Math.round(50 + Math.floor(PROP_SQUARES.indexOf(sq)/10)*50)]]
+      : sq[0]==='station' ? [['Affitto', 25], ['Con 2 stazioni', 50], ['Con 3 stazioni', 100], ['Con 4 stazioni', 200]] : [['Con 1 servizio', '4 × dadi'], ['Con 2 servizi', '10 × dadi']];
+    rows.forEach((r, j)=>{ shapes.push(GM.text(x + 16, y + 32 + j*6.5, r[0], 3, '#111111')); shapes.push(GM.text(x + cardW - 10, y + 32 + j*6.5, String(r[1]), 3, '#111111', {weight:700})); });
+    shapes.push(GM.text(x + cardW/2, y + cardH - 6, 'Valore ' + p + ' €', 3.2, '#333333'));
+  });
+  // pedine da tenere in piedi (6) e dadi
+  shapes.push(GM.text(X + 60, Y + 4, 'Pedine (6) e due dadi da costruire', 5, '#333333', {weight:700})); Y += 10;
+  const tk = gameTokens(shapes, X, Y, 22, ['🚗','🎩','🐶','🚢','👞','🌂'].map((e, i)=>({fill:['#f2c230','#d1402c','#3572d6','#3fa34d','#8a4fbf','#e8732a'][i], label:e, scale:0.55})), 6, 6);
+  const die = genDie(18); offsetShapes(die.shapes, X + tk.w + 12, Y); shapes.push(...die.shapes);
+  const die2 = genDie(18); offsetShapes(die2.shapes, X + tk.w + 12 + die.totalW + 8, Y); shapes.push(...die2.shapes);
+  Y += Math.max(tk.h, die.totalH);
+  return {shapes, totalW: X + Math.max(perRow*(cardW + gap), tk.w + 20 + 2*die.totalW), totalH: Math.max(B, Y)};
+}
+// Dado a 6 facce da piegare (croce), con i punti e alette di colla; facce opposte sommano 7
+function genDie(L){
+  const s = L, f = Math.min(9, s*0.22), shapes = [];
+  const faces = {top:[s,0], front:[s,s], bottom:[s,2*s], back:[s,3*s], left:[0,s], right:[2*s,s]};
+  const val = {top:2, front:1, bottom:5, back:6, left:3, right:4};
+  const outline = [[s,0],[2*s,0],[2*s,s],[3*s,s],[3*s,2*s],[2*s,2*s],[2*s,4*s],[s,4*s],[s,2*s],[0,2*s],[0,s],[s,s]];
+  // contorno con le alette: aggiungo le alette sui lati liberi scelti (sinistra e destra: su, giù, fuori; retro: in fondo)
+  const flapEdges = [[[0,s],[s,s]], [[0,2*s],[0,s]], [[s,2*s],[0,2*s]], [[2*s,s],[3*s,s]], [[3*s,s],[3*s,2*s]], [[3*s,2*s],[2*s,2*s]], [[2*s,4*s],[s,4*s]]];
+  const P = [];
+  for(let i=0;i<outline.length;i++){
+    const a = outline[i], b = outline[(i+1)%outline.length];
+    P.push(a);
+    const fe = flapEdges.find(e=> (e[0][0]===a[0] && e[0][1]===a[1] && e[1][0]===b[0] && e[1][1]===b[1]));
+    if(fe){ const fl = flapPts(a, b, f, [s*1.5, s*1.5]); P.push(fl[1], fl[2]); shapes.push(mkFold(a, b, 1, 90)); }
+  }
+  shapes.unshift(boxPolyShape(P, 'cut'));
+  [[[s,s],[2*s,s]], [[s,2*s],[2*s,2*s]], [[s,3*s],[2*s,3*s]], [[s,s],[s,2*s]], [[2*s,s],[2*s,2*s]]].forEach(([a,b])=> shapes.push(mkFold(a, b, 2, 90)));
+  const pip = {1:[[.5,.5]], 2:[[.25,.25],[.75,.75]], 3:[[.25,.25],[.5,.5],[.75,.75]], 4:[[.25,.25],[.75,.25],[.25,.75],[.75,.75]], 5:[[.25,.25],[.75,.25],[.5,.5],[.25,.75],[.75,.75]], 6:[[.25,.22],[.75,.22],[.25,.5],[.75,.5],[.25,.78],[.75,.78]]};
+  Object.keys(faces).forEach(k=>{ const [x, y] = faces[k]; pip[val[k]].forEach(q=> shapes.push(GM.circ(x + q[0]*s, y + q[1]*s, s*0.085, val[k]===1 ? '#d1402c' : '#111111'))); });
+  // la croce sporge a sinistra delle alette: sposto tutto in positivo
+  const xs = P.map(q=>q[0]), ys = P.map(q=>q[1]), mx = Math.min(...xs), my = Math.min(...ys);
+  offsetShapes(shapes, -mx, -my);
+  return {shapes, totalW: Math.max(...xs) - mx, totalH: Math.max(...ys) - my, rootHint: [s*1.5 - mx, s*1.5 - my]};
+}
+// Mazzo di carte francesi (52 + 2 jolly) con la scatola a incastro per contenerlo
+function genCardDeck(L, H){
+  const shapes = [], cw = L, ch = H, gap = 4, perRow = 9, r = Math.min(3.5, cw*0.06);
+  const suits = [['♠','#111111'],['♥','#c8102e'],['♦','#c8102e'],['♣','#111111']], ranks = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+  const cards = []; suits.forEach(su=> ranks.forEach(rk=> cards.push({rk, su: su[0], col: su[1]}))); cards.push({joker:true, col:'#c8102e'}, {joker:true, col:'#111111'});
+  const cfs = cw*0.16;
+  cards.forEach((cd, i)=>{
+    const x = (i % perRow)*(cw + gap), y = Math.floor(i/perRow)*(ch + gap);
+    shapes.push(GM.poly(GM.roundRect(x, y, cw, ch, r), '#ffffff', '#bbbbbb', 0.25));
+    if(cd.joker){
+      shapes.push(GM.text(x + cw/2, y + ch/2, '🃏', cw*0.45, cd.col, {font: SYMBOL_FONT}), GM.text(x + cw/2, y + ch*0.82, 'JOLLY', cfs*0.8, cd.col, {weight:800}));
+      shapes.push(GM.text(x + cfs*0.75, y + cfs*1.1, 'J', cfs, cd.col, {weight:800}), GM.text(x + cw - cfs*0.75, y + ch - cfs*1.1, 'J', cfs, cd.col, {weight:800, rot:180}));
+    } else {
+      shapes.push(GM.text(x + cfs*0.75, y + cfs*0.95, cd.rk, cfs, cd.col, {weight:700}), GM.text(x + cfs*0.75, y + cfs*2.05, cd.su, cfs*0.95, cd.col, {font: SYMBOL_FONT}));
+      shapes.push(GM.text(x + cw - cfs*0.75, y + ch - cfs*0.95, cd.rk, cfs, cd.col, {weight:700, rot:180}), GM.text(x + cw - cfs*0.75, y + ch - cfs*2.05, cd.su, cfs*0.95, cd.col, {rot:180, font: SYMBOL_FONT}));
+      const court = {J:'♞', Q:'♛', K:'♚'}[cd.rk];
+      if(court){ shapes.push(GM.rect(x + cw*0.22, y + ch*0.18, cw*0.56, ch*0.64, 'none', cd.col, 0.4), GM.text(x + cw/2, y + ch*0.42, court, cw*0.32, cd.col, {font: SYMBOL_FONT}), GM.text(x + cw/2, y + ch*0.66, cd.su, cw*0.22, cd.col, {font: SYMBOL_FONT})); }
+      else if(cd.rk==='A') shapes.push(GM.text(x + cw/2, y + ch/2, cd.su, cw*0.5, cd.col, {font: SYMBOL_FONT}));
+      else { // semi disposti come nelle carte vere
+        const n = parseInt(cd.rk, 10), A = 0.31, Bx = 0.69, two = [[A,.2],[Bx,.2],[A,.8],[Bx,.8]];
+        const lay = {2:[[.5,.2],[.5,.8]], 3:[[.5,.2],[.5,.5],[.5,.8]], 4:two, 5:two.concat([[.5,.5]]), 6:two.concat([[A,.5],[Bx,.5]]),
+          7:two.concat([[A,.5],[Bx,.5],[.5,.35]]), 8:two.concat([[A,.5],[Bx,.5],[.5,.35],[.5,.65]]),
+          9:[[A,.2],[Bx,.2],[A,.4],[Bx,.4],[A,.6],[Bx,.6],[A,.8],[Bx,.8],[.5,.5]], 10:[[A,.2],[Bx,.2],[A,.4],[Bx,.4],[A,.6],[Bx,.6],[A,.8],[Bx,.8],[.5,.3],[.5,.7]]}[n] || [];
+        lay.forEach(q=> shapes.push(GM.text(x + q[0]*cw, y + q[1]*ch, cd.su, cw*0.19, cd.col, {rot: q[1] > 0.55 ? 180 : 0, font: SYMBOL_FONT})));
+      }
+    }
+    shapes.push(GM.cutRound(x, y, cw, ch, r));
+  });
+  // retro (da stampare sul retro del foglio, oppure come modello)
+  const rows = Math.ceil(cards.length/perRow), yb = rows*(ch + gap) + 6;
+  shapes.push(GM.text(perRow*(cw+gap)/2, yb, 'Retro delle carte (modello) e scatola a incastro per il mazzo', 5, '#333333', {weight:700}));
+  const bx = 0, by = yb + 6;
+  shapes.push(GM.poly(GM.roundRect(bx, by, cw, ch, r), '#1f4fa0', '#1f4fa0', 0.3), GM.poly(GM.roundRect(bx + 3, by + 3, cw - 6, ch - 6, r*0.7), 'none', '#ffffff', 0.6));
+  for(let k=1;k<6;k++) shapes.push(GM.poly([[bx + cw/2, by + k*ch/6 - 4], [bx + cw/2 + 4, by + k*ch/6], [bx + cw/2, by + k*ch/6 + 4], [bx + cw/2 - 4, by + k*ch/6]], '#f2c230'));
+  shapes.push(GM.cutRound(bx, by, cw, ch, r));
+  const deckT = Math.max(15, Math.round(cards.length*0.31) + 2);                  // spessore del mazzo (≈0,3 mm per carta) + gioco
+  const box = generateTuckBox(cw + 2, deckT, ch + 2);
+  offsetShapes(box.shapes, cw + 20, by); shapes.push(...box.shapes);
+  return {shapes, totalW: Math.max(perRow*(cw + gap), cw + 20 + box.totalW), totalH: by + Math.max(ch, box.totalH)};
+}
 const BOX_TEMPLATES = {
+  chess: {label:'Scacchi (tabellone e pezzi)', defaults:[320, 0, 26], note:'L = lato del tabellone, H = diametro dei pezzi; P non si usa. Tabellone pieghevole con coordinate e 32 pezzi tondi da ritagliare.', gen:(L, W, H)=> genChess(L, H)},
+  checkers: {label:'Dama (tabellone e pedine)', defaults:[320, 0, 30], note:'L = lato del tabellone, H = diametro delle pedine; P non si usa. 24 pedine più 4 dame di ricambio.', gen:(L, W, H)=> genCheckers(L, H)},
+  chinesecheckers: {label:'Dama cinese', defaults:[300, 0, 14], note:'L = diametro del tabellone, H = diametro delle pedine; P non si usa. Stella con 121 fori e 60 pedine in 6 colori.', gen:(L, W, H)=> genChineseCheckers(L, H)},
+  propertygame: {dims:'L', label:'Gioco delle proprietà (tipo Monopoli)', defaults:[500, 0, 22], note:'L = lato del tabellone; P e H non si usano. Tabellone con 40 caselle, 32 carte Sorpresa e Opportunità, 28 contratti, pedine e 2 dadi. Nomi e grafica sono inventati: personalizzali come vuoi.', gen:(L)=> genPropertyGame(L)},
+  carddeck: {label:'Mazzo di carte francesi', defaults:[63, 0, 88], note:'L × H = misura di una carta (poker 63 × 88, bridge 57 × 88); P non si usa. 52 carte + 2 jolly, modello del retro e scatola a incastro per il mazzo.', gen:(L, W, H)=> genCardDeck(L, H)},
+  die: {dims:'L', label:'Dado a 6 facce', defaults:[20, 0, 20], note:'L = lato del dado; P e H non si usano. Croce da piegare con i punti (le facce opposte sommano 7) e alette di colla.', gen:(L)=> genDie(L)},
   card2: {label:'Biglietto pieghevole a 2 ante', defaults:[105, 0, 148], note:'L = larghezza del biglietto chiuso, H = altezza; P non si usa. Una piega al centro.', gen:(L, W, H)=> genCardBifold(L, H)},
   trifold: {label:'Pieghevole a 3 ante', defaults:[99, 0, 210], note:'Piegatura a portafoglio: L = larghezza di un’anta, H = altezza; l’anta interna è 2 mm più stretta. P non si usa.', gen:(L, W, H)=> genTrifold(L, H)},
   accordion: {label:'Pieghevole a fisarmonica', defaults:[99, 0, 210], note:'4 ante con pieghe alternate monte/valle. L = larghezza di un’anta, H = altezza; P non si usa.', gen:(L, W, H)=> genAccordion(L, H, 4)},
@@ -20281,7 +20631,8 @@ document.getElementById('boxGenApply').onclick = ()=>{
 
   snapshotActiveDocument();
   const label = BOX_TEMPLATES[type] ? BOX_TEMPLATES[type].label : (type==='tuck' ? 'Astuccio' : 'Scatola americana');
-  const doc = makeNewDocument(tpl('{label} {L}×{W}×{H}', {label:translate(label), L, W, H}));
+  const dims = BOX_TEMPLATES[type] && BOX_TEMPLATES[type].dims, dimTxt = dims==='L' ? String(L) : (dims==='LH' || noW ? L + '×' + H : L + '×' + W + '×' + H);
+  const doc = makeNewDocument(translate(label) + ' ' + dimTxt);
   result.shapes.forEach(s=> s.layerId = doc.activeLayerId); // le forme erano state generate col livello del documento precedente
   doc.shapes = result.shapes;
   doc.page = { w: Math.ceil(result.totalW+10), h: Math.ceil(result.totalH+10), bg:'#ffffff' };
