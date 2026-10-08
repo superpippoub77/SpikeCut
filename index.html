@@ -992,7 +992,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.70</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.71</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1596,6 +1596,17 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
             <option value="propertygame">Gioco delle proprietà (tipo Monopoli)</option>
             <option value="carddeck">Mazzo di carte francesi con scatola</option>
             <option value="die">Dado a 6 facce da costruire</option>
+            <option value="goose">Gioco dell'oca</option>
+            <option value="snakes">Scale e serpenti</option>
+            <option value="tictactoe">Tris</option>
+            <option value="connect4">Forza 4</option>
+            <option value="battleship">Battaglia navale</option>
+            <option value="memory">Memory (12 coppie)</option>
+            <option value="tangram">Tangram</option>
+            <option value="jigsaw">Puzzle a incastro</option>
+            <option value="domino">Domino</option>
+            <option value="morris">Filetto (mulino)</option>
+            <option value="backgammon">Tavola reale (backgammon)</option>
           </optgroup>
         </select>
         <div class="hint" id="boxGenNote" style="margin-top:4px;"></div>
@@ -2340,6 +2351,29 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Gioco dell'oca": "Game of the Goose",
+    "Scale e serpenti": "Snakes and ladders",
+    "Tris": "Tic-tac-toe",
+    "Forza 4": "Four in a row",
+    "Battaglia navale": "Battleship",
+    "Memory (12 coppie)": "Memory (12 pairs)",
+    "Memory": "Memory",
+    "Tangram": "Tangram",
+    "Puzzle a incastro": "Jigsaw puzzle",
+    "Domino": "Dominoes",
+    "Filetto (mulino)": "Nine men's morris",
+    "Tavola reale (backgammon)": "Backgammon",
+    "L = lato del tabellone, H = diametro delle pedine; P non si usa. Spirale di 64 caselle con oche, ponte, locanda, pozzo, labirinto, prigione e scheletro.": "L = board side, H = token diameter; D is not used. Spiral of 64 squares with geese, bridge, inn, well, maze, prison and skeleton.",
+    "L = lato del tabellone, H = diametro delle pedine; P non si usa. Caselle da 1 a 100, 8 scale e 8 serpenti.": "L = board side, H = token diameter; D is not used. Squares 1 to 100, 8 ladders and 8 snakes.",
+    "L = lato della griglia, H = diametro delle pedine; P non si usa. 5 pedine X e 5 O.": "L = grid side, H = token diameter; D is not used. 5 X and 5 O tokens.",
+    "L = larghezza del tabellone, H = diametro dei gettoni; P non si usa. Griglia 7 × 6, 21 gettoni rossi e 21 gialli.": "L = board width, H = counter diameter; D is not used. 7 × 6 grid, 21 red and 21 yellow counters.",
+    "L = lato di una griglia; P e H non si usano. Per ogni giocatore la griglia della flotta e quella dei colpi (A–J, 1–10).": "L = side of one grid; D and H are not used. For each player the fleet grid and the shots grid (A–J, 1–10).",
+    "L × H = misura di una carta; P non si usa. 12 coppie di figure e il modello del retro.": "L × H = size of one card; D is not used. 12 pairs of pictures and the back template.",
+    "L = lato del quadrato; P e H non si usano. I 7 pezzi classici, colorati e con il contorno di taglio.": "L = side of the square; D and H are not used. The 7 classic pieces, coloured and with their cut outline.",
+    "L × H = misura del puzzle, P = misura di un pezzo (circa). Metti la tua immagine sotto alle linee di taglio.": "L × H = puzzle size, D = size of one piece (approx.). Put your image under the cut lines.",
+    "L × H = misura di una tessera; P non si usa. Le 28 tessere dal doppio 0 al doppio 6.": "L × H = size of one tile; D is not used. The 28 tiles from double 0 to double 6.",
+    "L = lato del tabellone, H = diametro delle pedine; P non si usa. Tre quadrati con 24 punti e 9 + 9 pedine.": "L = board side, H = token diameter; D is not used. Three squares with 24 points and 9 + 9 tokens.",
+    "L = larghezza del tabellone, H = diametro delle pedine; P non si usa. 24 punte, barra centrale e 15 + 15 pedine.": "L = board width, H = checker diameter; D is not used. 24 points, central bar and 15 + 15 checkers.",
     "Giochi da tavolo": "Board games",
     "Scacchi (tabellone pieghevole e 32 pezzi)": "Chess (folding board and 32 pieces)",
     "Dama (tabellone e pedine)": "Draughts (board and pieces)",
@@ -4128,6 +4162,29 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Gioco dell'oca": "Gänsespiel",
+    "Scale e serpenti": "Leiterspiel (Schlangen und Leitern)",
+    "Tris": "Tic-Tac-Toe",
+    "Forza 4": "Vier gewinnt",
+    "Battaglia navale": "Schiffe versenken",
+    "Memory (12 coppie)": "Memory (12 Paare)",
+    "Memory": "Memory",
+    "Tangram": "Tangram",
+    "Puzzle a incastro": "Puzzle",
+    "Domino": "Domino",
+    "Filetto (mulino)": "Mühle",
+    "Tavola reale (backgammon)": "Backgammon (Puff)",
+    "L = lato del tabellone, H = diametro delle pedine; P non si usa. Spirale di 64 caselle con oche, ponte, locanda, pozzo, labirinto, prigione e scheletro.": "L = Brettseite, H = Spielfigurdurchmesser; T wird nicht verwendet. Spirale mit 64 Feldern mit Gänsen, Brücke, Wirtshaus, Brunnen, Labyrinth, Gefängnis und Skelett.",
+    "L = lato del tabellone, H = diametro delle pedine; P non si usa. Caselle da 1 a 100, 8 scale e 8 serpenti.": "L = Brettseite, H = Spielfigurdurchmesser; T wird nicht verwendet. Felder 1 bis 100, 8 Leitern und 8 Schlangen.",
+    "L = lato della griglia, H = diametro delle pedine; P non si usa. 5 pedine X e 5 O.": "L = Rasterseite, H = Spielsteindurchmesser; T wird nicht verwendet. 5 X- und 5 O-Steine.",
+    "L = larghezza del tabellone, H = diametro dei gettoni; P non si usa. Griglia 7 × 6, 21 gettoni rossi e 21 gialli.": "L = Brettbreite, H = Chipdurchmesser; T wird nicht verwendet. 7 × 6 Raster, 21 rote und 21 gelbe Chips.",
+    "L = lato di una griglia; P e H non si usano. Per ogni giocatore la griglia della flotta e quella dei colpi (A–J, 1–10).": "L = Seite eines Rasters; T und H werden nicht verwendet. Für jeden Spieler das Flotten- und das Schussraster (A–J, 1–10).",
+    "L × H = misura di una carta; P non si usa. 12 coppie di figure e il modello del retro.": "L × H = Größe einer Karte; T wird nicht verwendet. 12 Bildpaare und die Rückseitenvorlage.",
+    "L = lato del quadrato; P e H non si usano. I 7 pezzi classici, colorati e con il contorno di taglio.": "L = Quadratseite; T und H werden nicht verwendet. Die 7 klassischen Teile, farbig und mit Schnittkontur.",
+    "L × H = misura del puzzle, P = misura di un pezzo (circa). Metti la tua immagine sotto alle linee di taglio.": "L × H = Puzzlegröße, T = Größe eines Teils (ca.). Lege dein Bild unter die Schnittlinien.",
+    "L × H = misura di una tessera; P non si usa. Le 28 tessere dal doppio 0 al doppio 6.": "L × H = Größe eines Steins; T wird nicht verwendet. Die 28 Steine von Doppel-0 bis Doppel-6.",
+    "L = lato del tabellone, H = diametro delle pedine; P non si usa. Tre quadrati con 24 punti e 9 + 9 pedine.": "L = Brettseite, H = Steindurchmesser; T wird nicht verwendet. Drei Quadrate mit 24 Punkten und 9 + 9 Steinen.",
+    "L = larghezza del tabellone, H = diametro delle pedine; P non si usa. 24 punte, barra centrale e 15 + 15 pedine.": "L = Brettbreite, H = Steindurchmesser; T wird nicht verwendet. 24 Zungen, Mittelbalken und 15 + 15 Steine.",
     "Giochi da tavolo": "Brettspiele",
     "Scacchi (tabellone pieghevole e 32 pezzi)": "Schach (Klappbrett und 32 Figuren)",
     "Dama (tabellone e pedine)": "Dame (Brett und Steine)",
@@ -5916,6 +5973,29 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Gioco dell'oca": "Juego de la oca",
+    "Scale e serpenti": "Serpientes y escaleras",
+    "Tris": "Tres en raya",
+    "Forza 4": "Cuatro en raya",
+    "Battaglia navale": "Hundir la flota",
+    "Memory (12 coppie)": "Memoria (12 parejas)",
+    "Memory": "Memoria",
+    "Tangram": "Tangram",
+    "Puzzle a incastro": "Rompecabezas",
+    "Domino": "Dominó",
+    "Filetto (mulino)": "Molino (tres en línea)",
+    "Tavola reale (backgammon)": "Backgammon",
+    "L = lato del tabellone, H = diametro delle pedine; P non si usa. Spirale di 64 caselle con oche, ponte, locanda, pozzo, labirinto, prigione e scheletro.": "L = lado del tablero, H = diámetro de las fichas; P no se usa. Espiral de 64 casillas con ocas, puente, posada, pozo, laberinto, cárcel y calavera.",
+    "L = lato del tabellone, H = diametro delle pedine; P non si usa. Caselle da 1 a 100, 8 scale e 8 serpenti.": "L = lado del tablero, H = diámetro de las fichas; P no se usa. Casillas del 1 al 100, 8 escaleras y 8 serpientes.",
+    "L = lato della griglia, H = diametro delle pedine; P non si usa. 5 pedine X e 5 O.": "L = lado de la cuadrícula, H = diámetro de las fichas; P no se usa. 5 fichas X y 5 O.",
+    "L = larghezza del tabellone, H = diametro dei gettoni; P non si usa. Griglia 7 × 6, 21 gettoni rossi e 21 gialli.": "L = ancho del tablero, H = diámetro de las fichas; P no se usa. Cuadrícula 7 × 6, 21 fichas rojas y 21 amarillas.",
+    "L = lato di una griglia; P e H non si usano. Per ogni giocatore la griglia della flotta e quella dei colpi (A–J, 1–10).": "L = lado de una cuadrícula; P y H no se usan. Para cada jugador la cuadrícula de la flota y la de los disparos (A–J, 1–10).",
+    "L × H = misura di una carta; P non si usa. 12 coppie di figure e il modello del retro.": "L × H = tamaño de una carta; P no se usa. 12 parejas de figuras y el modelo del reverso.",
+    "L = lato del quadrato; P e H non si usano. I 7 pezzi classici, colorati e con il contorno di taglio.": "L = lado del cuadrado; P y H no se usan. Las 7 piezas clásicas, coloreadas y con su contorno de corte.",
+    "L × H = misura del puzzle, P = misura di un pezzo (circa). Metti la tua immagine sotto alle linee di taglio.": "L × H = tamaño del puzle, P = tamaño de una pieza (aprox.). Pon tu imagen debajo de las líneas de corte.",
+    "L × H = misura di una tessera; P non si usa. Le 28 tessere dal doppio 0 al doppio 6.": "L × H = tamaño de una ficha; P no se usa. Las 28 fichas del doble 0 al doble 6.",
+    "L = lato del tabellone, H = diametro delle pedine; P non si usa. Tre quadrati con 24 punti e 9 + 9 pedine.": "L = lado del tablero, H = diámetro de las fichas; P no se usa. Tres cuadrados con 24 puntos y 9 + 9 fichas.",
+    "L = larghezza del tabellone, H = diametro delle pedine; P non si usa. 24 punte, barra centrale e 15 + 15 pedine.": "L = ancho del tablero, H = diámetro de las fichas; P no se usa. 24 puntas, barra central y 15 + 15 fichas.",
     "Giochi da tavolo": "Juegos de mesa",
     "Scacchi (tabellone pieghevole e 32 pezzi)": "Ajedrez (tablero plegable y 32 piezas)",
     "Dama (tabellone e pedine)": "Damas (tablero y fichas)",
@@ -7704,6 +7784,29 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Gioco dell'oca": "鹅棋",
+    "Scale e serpenti": "蛇梯棋",
+    "Tris": "井字棋",
+    "Forza 4": "四子棋",
+    "Battaglia navale": "海战棋",
+    "Memory (12 coppie)": "记忆配对（12 对）",
+    "Memory": "记忆配对",
+    "Tangram": "七巧板",
+    "Puzzle a incastro": "拼图",
+    "Domino": "多米诺骨牌",
+    "Filetto (mulino)": "九子棋（直棋）",
+    "Tavola reale (backgammon)": "双陆棋",
+    "L = lato del tabellone, H = diametro delle pedine; P non si usa. Spirale di 64 caselle con oche, ponte, locanda, pozzo, labirinto, prigione e scheletro.": "L = 棋盘边长，H = 棋子直径；不使用 P。64 格螺旋，含鹅、桥、旅店、井、迷宫、监狱和骷髅。",
+    "L = lato del tabellone, H = diametro delle pedine; P non si usa. Caselle da 1 a 100, 8 scale e 8 serpenti.": "L = 棋盘边长，H = 棋子直径；不使用 P。1 至 100 格，8 架梯子和 8 条蛇。",
+    "L = lato della griglia, H = diametro delle pedine; P non si usa. 5 pedine X e 5 O.": "L = 网格边长，H = 棋子直径；不使用 P。5 枚 X 和 5 枚 O。",
+    "L = larghezza del tabellone, H = diametro dei gettoni; P non si usa. Griglia 7 × 6, 21 gettoni rossi e 21 gialli.": "L = 棋盘宽度，H = 棋子直径；不使用 P。7 × 6 网格，21 枚红色和 21 枚黄色棋子。",
+    "L = lato di una griglia; P e H non si usano. Per ogni giocatore la griglia della flotta e quella dei colpi (A–J, 1–10).": "L = 单个网格边长；不使用 P 和 H。每位玩家一张舰队网格和一张射击网格（A–J，1–10）。",
+    "L × H = misura di una carta; P non si usa. 12 coppie di figure e il modello del retro.": "L × H = 单张卡片尺寸；不使用 P。12 对图案和背面模板。",
+    "L = lato del quadrato; P e H non si usano. I 7 pezzi classici, colorati e con il contorno di taglio.": "L = 正方形边长；不使用 P 和 H。7 块经典拼板，带颜色和切割轮廓。",
+    "L × H = misura del puzzle, P = misura di un pezzo (circa). Metti la tua immagine sotto alle linee di taglio.": "L × H = 拼图尺寸，P = 单块尺寸（约）。把你的图片放在切割线下面。",
+    "L × H = misura di una tessera; P non si usa. Le 28 tessere dal doppio 0 al doppio 6.": "L × H = 单张骨牌尺寸；不使用 P。从双 0 到双 6 共 28 张。",
+    "L = lato del tabellone, H = diametro delle pedine; P non si usa. Tre quadrati con 24 punti e 9 + 9 pedine.": "L = 棋盘边长，H = 棋子直径；不使用 P。三个正方形共 24 个点，9 + 9 枚棋子。",
+    "L = larghezza del tabellone, H = diametro delle pedine; P non si usa. 24 punte, barra centrale e 15 + 15 pedine.": "L = 棋盘宽度，H = 棋子直径；不使用 P。24 个尖角、中间隔条和 15 + 15 枚棋子。",
     "Giochi da tavolo": "桌游",
     "Scacchi (tabellone pieghevole e 32 pezzi)": "国际象棋（折叠棋盘和 32 枚棋子）",
     "Dama (tabellone e pedine)": "跳棋（棋盘和棋子）",
@@ -9492,6 +9595,29 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Gioco dell'oca": "Jeu de l'oie",
+    "Scale e serpenti": "Serpents et échelles",
+    "Tris": "Morpion",
+    "Forza 4": "Puissance 4",
+    "Battaglia navale": "Bataille navale",
+    "Memory (12 coppie)": "Memory (12 paires)",
+    "Memory": "Memory",
+    "Tangram": "Tangram",
+    "Puzzle a incastro": "Puzzle",
+    "Domino": "Dominos",
+    "Filetto (mulino)": "Jeu du moulin",
+    "Tavola reale (backgammon)": "Backgammon (trictrac)",
+    "L = lato del tabellone, H = diametro delle pedine; P non si usa. Spirale di 64 caselle con oche, ponte, locanda, pozzo, labirinto, prigione e scheletro.": "L = côté du plateau, H = diamètre des pions ; P n'est pas utilisé. Spirale de 64 cases avec oies, pont, auberge, puits, labyrinthe, prison et squelette.",
+    "L = lato del tabellone, H = diametro delle pedine; P non si usa. Caselle da 1 a 100, 8 scale e 8 serpenti.": "L = côté du plateau, H = diamètre des pions ; P n'est pas utilisé. Cases de 1 à 100, 8 échelles et 8 serpents.",
+    "L = lato della griglia, H = diametro delle pedine; P non si usa. 5 pedine X e 5 O.": "L = côté de la grille, H = diamètre des pions ; P n'est pas utilisé. 5 pions X et 5 O.",
+    "L = larghezza del tabellone, H = diametro dei gettoni; P non si usa. Griglia 7 × 6, 21 gettoni rossi e 21 gialli.": "L = largeur du plateau, H = diamètre des jetons ; P n'est pas utilisé. Grille 7 × 6, 21 jetons rouges et 21 jaunes.",
+    "L = lato di una griglia; P e H non si usano. Per ogni giocatore la griglia della flotta e quella dei colpi (A–J, 1–10).": "L = côté d'une grille ; P et H ne sont pas utilisés. Pour chaque joueur la grille de la flotte et celle des tirs (A–J, 1–10).",
+    "L × H = misura di una carta; P non si usa. 12 coppie di figure e il modello del retro.": "L × H = taille d'une carte ; P n'est pas utilisé. 12 paires d'images et le modèle du dos.",
+    "L = lato del quadrato; P e H non si usano. I 7 pezzi classici, colorati e con il contorno di taglio.": "L = côté du carré ; P et H ne sont pas utilisés. Les 7 pièces classiques, colorées et avec leur contour de découpe.",
+    "L × H = misura del puzzle, P = misura di un pezzo (circa). Metti la tua immagine sotto alle linee di taglio.": "L × H = taille du puzzle, P = taille d'une pièce (environ). Placez votre image sous les lignes de découpe.",
+    "L × H = misura di una tessera; P non si usa. Le 28 tessere dal doppio 0 al doppio 6.": "L × H = taille d'un domino ; P n'est pas utilisé. Les 28 dominos du double 0 au double 6.",
+    "L = lato del tabellone, H = diametro delle pedine; P non si usa. Tre quadrati con 24 punti e 9 + 9 pedine.": "L = côté du plateau, H = diamètre des pions ; P n'est pas utilisé. Trois carrés avec 24 points et 9 + 9 pions.",
+    "L = larghezza del tabellone, H = diametro delle pedine; P non si usa. 24 punte, barra centrale e 15 + 15 pedine.": "L = largeur du plateau, H = diamètre des pions ; P n'est pas utilisé. 24 flèches, barre centrale et 15 + 15 pions.",
     "Giochi da tavolo": "Jeux de société",
     "Scacchi (tabellone pieghevole e 32 pezzi)": "Échecs (plateau pliant et 32 pièces)",
     "Dama (tabellone e pedine)": "Dames (plateau et pions)",
@@ -12504,6 +12630,7 @@ function renderEndpointMarkers(){
   for(const s of state.shapes){
     if(!s.points || !isShapeEffVisible(s) || s.closed) continue;
     if(s.points.length<2) continue;
+    if(s.noAngles && s.style && s.style.role==='design') continue; // grafica dei giochi (scale, serpenti, linee): niente pallini
     [0, s.points.length-1].forEach(idx=>{
       const p = s.points[idx];
       const hasMatch = isVertexLinked(s, idx, allPoints);
@@ -15365,7 +15492,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.70';
+const GUIDE_VERSION = '2.71';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -15620,7 +15747,7 @@ html:`<p>Ogni piega ha un numero di <b>passo</b>: nella simulazione 3D si chiudo
 <li>il pannello che si piega è colorato pieno, i pannelli attaccati a lui (che si muovono insieme) più tenui; l'evidenziazione si vede anche quando il pezzo è dietro ad altri pannelli;</li>
 <li>al contrario, <b>clic su un pannello nel 3D</b>: viene evidenziata la piega su cui si chiude e in basso compare "Passo 2 di 4 · piega a monte 90° · lunga …"; se la sequenza è aperta, la voce corrispondente si accende. Il pannello di base viene indicato come tale; un clic fuori dalla scatola toglie l'evidenziazione.</li></ul>` },
 
-{ id:'genera-scatola', cat:'Fustella e scatole', title:'Genera scatola', keys:'genera scatola americana rsc astuccio tuck box giochi gioco tavolo scacchi dama cinese monopoli proprietà carte mazzo poker dado tabellone pedine biglietto pieghevole brochure fisarmonica busta cartellina tasca segnaposto segnalibro bustina cd fogli oggetti carta giocattoli mattoncini dentifricio bottiglia cioccolatini cassetto esagonale triangolare prisma diamante cestino manico mailer spedizioni petali regalo dimensioni larghezza profondità altezza automatica',
+{ id:'genera-scatola', cat:'Fustella e scatole', title:'Genera scatola', keys:'genera scatola americana rsc astuccio tuck box giochi gioco tavolo scacchi dama cinese monopoli proprietà carte mazzo poker dado tabellone pedine oca scale serpenti tris forza 4 battaglia navale memory tangram puzzle domino filetto mulino tavola reale backgammon biglietto pieghevole brochure fisarmonica busta cartellina tasca segnaposto segnalibro bustina cd fogli oggetti carta giocattoli mattoncini dentifricio bottiglia cioccolatini cassetto esagonale triangolare prisma diamante cestino manico mailer spedizioni petali regalo dimensioni larghezza profondità altezza automatica',
 html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profondità e Altezza in mm e scegli il tipo. La fustella viene creata in una nuova scheda.</p>
 <ul><li><b>Scatola americana (RSC)</b>: 4 pareti con aletta di incollaggio, alette sopra e sotto separate da tagli.</li>
 <li><b>Astuccio con coperchio a incastro</b>: a ogni estremità due alette antipolvere sui fianchi, un coperchio pieno (L×P) e una linguetta rastremata che si infila dentro la parete opposta. Lo stesso schema vale per giocattoli, dentifricio e bottiglia.</li>
@@ -15644,7 +15771,18 @@ html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profo
 <li><b>Dama cinese</b>: stella a sei punte colorate con 121 fori e 60 pedine in 6 colori;</li>
 <li><b>Gioco delle proprietà (tipo Monopoli)</b>: tabellone con 40 caselle (VIA, prigione, parcheggio, stazioni, servizi, tasse, Sorpresa e Opportunità), 16 carte Sorpresa, 16 Opportunità, 28 contratti con gli affitti, 6 pedine e 2 dadi da costruire. Nomi delle vie, testi e grafica sono inventati (non è il gioco originale): modificali come vuoi;</li>
 <li><b>Mazzo di carte francesi</b>: 52 carte e 2 jolly con angoli arrotondati (L × H = misura di una carta: poker 63 × 88, bridge 57 × 88), un modello del retro e la scatola a incastro su misura del mazzo;</li>
-<li><b>Dado a 6 facce</b>: croce da piegare con i punti, le facce opposte sommano 7, con alette di colla; si vede chiuso nell'anteprima 3D.</li></ul>
+<li><b>Dado a 6 facce</b>: croce da piegare con i punti, le facce opposte sommano 7, con alette di colla; si vede chiuso nell'anteprima 3D;</li>
+<li><b>Gioco dell'oca</b>: spirale di 64 caselle (partenza, oche che raddoppiano, ponte, locanda, pozzo, labirinto, prigione, scheletro, arrivo) e 6 pedine;</li>
+<li><b>Scale e serpenti</b>: caselle da 1 a 100 a serpentina, 8 scale e 8 serpenti, 6 pedine;</li>
+<li><b>Tris</b>: griglia 3×3 con 5 pedine X e 5 O;</li>
+<li><b>Forza 4</b>: griglia 7×6 numerata, 21 gettoni rossi e 21 gialli;</li>
+<li><b>Battaglia navale</b>: per ognuno dei due giocatori la griglia della flotta e quella dei colpi (A–J, 1–10), con l'elenco delle navi;</li>
+<li><b>Memory</b>: 12 coppie di carte con animali e il modello del retro (L × H = una carta);</li>
+<li><b>Tangram</b>: i 7 pezzi classici colorati, ognuno con il suo contorno di taglio;</li>
+<li><b>Puzzle a incastro</b>: L × H = misura del puzzle, P = misura di un pezzo; le linee di taglio con le linguette tonde vanno sopra a un'immagine che inserisci tu (Importa un'immagine così com'è e mandala sotto);</li>
+<li><b>Domino</b>: le 28 tessere dal doppio 0 al doppio 6 (L × H = una tessera);</li>
+<li><b>Filetto (mulino)</b>: tre quadrati con 24 punti e 9 + 9 pedine;</li>
+<li><b>Tavola reale (backgammon)</b>: 24 punte, barra centrale, 15 + 15 pedine; i dadi si costruiscono con «Dado a 6 facce».</li></ul>
 Il foglio prende la misura di tutto il materiale: per stamparlo su fogli più piccoli usa l'<a data-topic="imposizione">imposizione</a> o il PDF multi-pagina. La scatola del gioco si fa con <b>Scatola con coperchio</b> (fondo e coperchio).</li>
 <li><b>Piramide a base quadrata</b>: base di lato L, altezza H; le pieghe hanno già gli angoli giusti (non 90°) e le alette di incollaggio stanno dentro.</li></ul>
 <p>Per vassoi, scatole con coperchio e piramidi l'<a data-topic="anteprima-3d">anteprima 3D</a> mostra il fondo in basso e le pareti che salgono.</p>
@@ -15938,6 +16076,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.71</b> — Altri <a data-topic="genera-scatola">giochi di carta</a>: gioco dell'oca, scale e serpenti, tris, forza 4, battaglia navale, memory, tangram, puzzle a incastro, domino, filetto (mulino) e tavola reale.</li>
 <li><b>2.70</b> — <a data-topic="genera-scatola">Giochi da tavolo</a> nel generatore: scacchi, dama, dama cinese, gioco delle proprietà (tipo Monopoli, con carte e contratti), mazzo di carte francesi con scatola e dado da costruire.</li>
 <li><b>2.69</b> — Griglia, calamita, punti, quote e unità ricordati anche nell'account. Accesso che resta (30 giorni, si rinnova da solo; Esci chiude solo quel browser). <a data-topic="copia">Primo piano / avanti / indietro</a> funzionano su tutti gli oggetti che si toccano, anche le immagini e tra livelli. L'<a data-topic="amministrazione">amministratore</a> può eliminare i progetti degli altri utenti.</li>
 <li><b>2.68</b> — Pulsante <b>🔗 Condividi</b> nella barra in alto per il <a data-topic="link-pubblico">link pubblico</a>.</li>
@@ -17178,7 +17317,196 @@ function genCardDeck(L, H){
   offsetShapes(box.shapes, cw + 20, by); shapes.push(...box.shapes);
   return {shapes, totalW: Math.max(perRow*(cw + gap), cw + 20 + box.totalW), totalH: by + Math.max(ch, box.totalH)};
 }
+// ---------- altri giochi di carta ----------
+GM.line = (pts, color, w)=> makeShape('path', {points: pts.map(p=>[p[0],p[1]]), closed:false, noAngles:true, style: GM.st('none', color || '#111111', w || 0.5)});
+GM.curve = (pts, color, w)=> makeShape('path', {points: pts.map(p=>[p[0],p[1]]), closed:false, noAngles:true, smooth: pts.map((p,i)=> i===0 || i===pts.length-1 ? 0 : 4), style: GM.st('none', color || '#111111', w || 0.5)});
+GM.cutLine = pts=> Object.assign(makeShape('path', {points: pts.map(p=>[p[0],p[1]]), closed:false, noAngles:true, style: Object.assign(newStyle('cut'), {hasRealStroke:true})}), {});
+const GAME_COLORS = ['#d1402c','#e8732a','#f2c230','#3fa34d','#2f9e9a','#3572d6','#6b4fbf','#c2477d'];
+function gameFrame(shapes, w, h, fill){ shapes.push(GM.rect(0, 0, w, h, fill || '#fbf6ea', '#5a3a22', 0.8)); shapes.push(boxPolyShape([[0,0],[w,0],[w,h],[0,h]], 'cut')); }
+function gameFold(shapes, w, h){ shapes.push(mkFold([w/2, 0], [w/2, h], 1, 180, 'valley')); }
+// Gioco dell'oca: spirale di 64 caselle (0 partenza … 63 arrivo) dall'esterno verso il centro
+function genGoose(L, H){
+  const shapes = [], n = 8, m = L*0.04, cell = (L - 2*m)/n;
+  gameFrame(shapes, L, L, '#f6edd6');
+  const order = []; let top = 0, left = 0, bottom = n-1, right = n-1;
+  while(top<=bottom && left<=right){
+    for(let c=left;c<=right;c++) order.push([bottom, c]); bottom--;
+    for(let r=bottom;r>=top;r--) order.push([r, right]); right--;
+    if(top<=bottom){ for(let c=right;c>=left;c--) order.push([top, c]); top++; }
+    if(left<=right){ for(let r=top;r<=bottom;r++) order.push([r, left]); left++; }
+  }
+  const goose = new Set([5,9,14,18,23,27,32,36,41,45,50,54,59]);
+  const special = {6:['🌉','Ponte: vai al 12'], 19:['🏨','Locanda: fermo 1 turno'], 31:['⛲','Pozzo: aspetta'], 42:['🌀','Labirinto: torna al 39'], 52:['⛓','Prigione: aspetta'], 58:['💀','Scheletro: torna all\'inizio']};
+  order.forEach(([r, c], i)=>{
+    const x = m + c*cell, y = m + r*cell, col = i===0 ? '#bfe3b4' : i===63 ? '#f2c230' : goose.has(i) ? '#ffffff' : (i%2 ? '#f9d8a8' : '#cfe4f5');
+    shapes.push(GM.rect(x, y, cell, cell, col, '#5a3a22', 0.4));
+    shapes.push(GM.text(x + cell*0.2, y + cell*0.17, String(i), cell*0.16, '#5a3a22', {weight:700}));
+    const sym = i===0 ? '🚩' : i===63 ? '🏆' : goose.has(i) ? '🦢' : special[i] ? special[i][0] : '';
+    if(sym) shapes.push(GM.text(x + cell/2, y + cell*0.52, sym, cell*0.38));
+    const lab = i===0 ? 'PARTENZA' : i===63 ? 'ARRIVO' : goose.has(i) ? 'Oca: raddoppia' : special[i] ? special[i][1] : '';
+    if(lab) lab.split(': ').forEach((ln, j)=> shapes.push(GM.text(x + cell/2, y + cell*(0.82 + j*0.1), ln, cell*0.075, '#333333')));
+  });
+  gameFold(shapes, L, L);
+  const tk = gameTokens(shapes, 0, L + 12, H, GAME_COLORS.slice(0, 6).map(c=>({fill:c})), 6);
+  shapes.push(GM.text(L/2, L + 6, 'Gioco dell\'oca · 6 pedine; serve un dado (puoi costruirlo con «Dado a 6 facce»)', 4, '#555555'));
+  return {shapes, totalW: Math.max(L, tk.w), totalH: L + 12 + tk.h};
+}
+// Scale e serpenti: 10×10, da 1 a 100 a serpentina, con scale (salgono) e serpenti (scendono)
+function genSnakes(L, H){
+  const shapes = [], n = 10, m = L*0.03, cell = (L - 2*m)/n;
+  gameFrame(shapes, L, L, '#fbf6ea');
+  const pos = k=>{ const r = Math.floor((k-1)/n), c = r%2 ? n-1-((k-1)%n) : (k-1)%n; return [m + (c + 0.5)*cell, m + (n - 1 - r + 0.5)*cell]; };
+  for(let k=1;k<=100;k++){ const [cx, cy] = pos(k); const r = Math.floor((k-1)/n), c = Math.round((cx - m)/cell - 0.5);
+    shapes.push(GM.rect(cx - cell/2, cy - cell/2, cell, cell, (r + c)%2 ? '#fde7b0' : '#cfe8d0', '#7a6a4a', 0.3));
+    shapes.push(GM.text(cx - cell*0.3, cy - cell*0.3, String(k), cell*0.17, '#5a4a2a', {weight:700})); }
+  const ladders = [[4,14],[9,31],[20,38],[28,84],[40,59],[51,67],[63,81],[71,91]], snakes = [[17,7],[54,34],[62,19],[64,60],[87,24],[93,73],[95,75],[99,78]];
+  ladders.forEach(([a, b])=>{ const A = pos(a), B = pos(b), dx = B[0]-A[0], dy = B[1]-A[1], l = Math.hypot(dx, dy), nx = -dy/l*cell*0.13, ny = dx/l*cell*0.13;
+    shapes.push(GM.line([[A[0]+nx, A[1]+ny],[B[0]+nx, B[1]+ny]], '#8b5a2b', 1.2), GM.line([[A[0]-nx, A[1]-ny],[B[0]-nx, B[1]-ny]], '#8b5a2b', 1.2));
+    const steps = Math.max(2, Math.round(l/(cell*0.35)));
+    for(let k=1;k<steps;k++){ const t = k/steps, px = A[0] + dx*t, py = A[1] + dy*t; shapes.push(GM.line([[px+nx, py+ny],[px-nx, py-ny]], '#8b5a2b', 0.8)); } });
+  snakes.forEach(([a, b], si)=>{ const A = pos(a), B = pos(b), dx = B[0]-A[0], dy = B[1]-A[1], l = Math.hypot(dx, dy), nx = -dy/l, ny = dx/l, pts = [];
+    const waves = Math.max(2, Math.round(l/(cell*0.9)));
+    for(let k=0;k<=waves*2;k++){ const t = k/(waves*2), w = (k===0 || k===waves*2) ? 0 : (k%2 ? 1 : -1)*cell*0.25; pts.push([A[0] + dx*t + nx*w, A[1] + dy*t + ny*w]); }
+    const col = ['#3fa34d','#d1402c','#6b4fbf','#e8732a'][si%4];
+    shapes.push(GM.curve(pts, col, 2.2)); shapes.push(GM.circ(A[0], A[1], cell*0.14, col)); shapes.push(GM.circ(A[0] - cell*0.05, A[1] - cell*0.04, cell*0.03, '#ffffff')); });
+  gameFold(shapes, L, L);
+  const tk = gameTokens(shapes, 0, L + 12, H, GAME_COLORS.slice(0, 6).map(c=>({fill:c})), 6);
+  shapes.push(GM.text(L/2, L + 6, 'Scale e serpenti · le scale fanno salire, i serpenti scendere · 6 pedine e un dado', 4, '#555555'));
+  return {shapes, totalW: Math.max(L, tk.w), totalH: L + 12 + tk.h};
+}
+// Tris: griglia 3×3 e 5 pedine X + 5 O
+function genTicTacToe(L, H){
+  const shapes = [], m = L*0.08, c = (L - 2*m)/3;
+  gameFrame(shapes, L, L, '#ffffff');
+  [1,2].forEach(k=>{ shapes.push(GM.line([[m + k*c, m],[m + k*c, L - m]], '#222222', 2), GM.line([[m, m + k*c],[L - m, m + k*c]], '#222222', 2)); });
+  const list = Array.from({length:5}, ()=>({fill:'#fde2dd', ring:'#d1402c', label:'X', ink:'#d1402c'})).concat(Array.from({length:5}, ()=>({fill:'#dde8fd', ring:'#3572d6', label:'O', ink:'#3572d6'})));
+  const tk = gameTokens(shapes, 0, L + 12, H, list, 5);
+  shapes.push(GM.text(L/2, L + 6, 'Tris · 5 pedine X e 5 pedine O', 4, '#555555'));
+  return {shapes, totalW: Math.max(L, tk.w), totalH: L + 12 + tk.h};
+}
+// Forza 4: griglia 7 × 6 e 21 + 21 gettoni
+function genConnectFour(L, H){
+  const shapes = [], cols = 7, rows = 6, m = L*0.05, c = (L - 2*m)/cols, h = rows*c + 2*m;
+  shapes.push(GM.rect(0, 0, L, h, '#2a5bd7', '#1a3a8a', 0.8)); shapes.push(boxPolyShape([[0,0],[L,0],[L,h],[0,h]], 'cut'));
+  for(let r=0;r<rows;r++) for(let k=0;k<cols;k++) shapes.push(GM.circ(m + (k + 0.5)*c, m + (r + 0.5)*c, c*0.4, '#ffffff', '#1a3a8a', 0.4));
+  for(let k=0;k<cols;k++) shapes.push(GM.text(m + (k + 0.5)*c, h - m*0.45, String(k+1), m*0.6, '#ffffff', {weight:700}));
+  const list = Array.from({length:21}, ()=>({fill:'#d1402c', inner:'#ffffff'})).concat(Array.from({length:21}, ()=>({fill:'#f2c230', inner:'#ffffff'})));
+  const tk = gameTokens(shapes, 0, h + 12, H, list, 7);
+  shapes.push(GM.text(L/2, h + 6, 'Forza 4 · si gioca a turno partendo dalla fila in basso di ogni colonna · 21 gettoni per colore', 4, '#555555'));
+  return {shapes, totalW: Math.max(L, tk.w), totalH: h + 12 + tk.h};
+}
+// Battaglia navale: per ogni giocatore la sua flotta e la griglia del tiro (10 × 10, A–J, 1–10)
+function genBattleship(L){
+  const shapes = [], g = L, cell = g/11, gap = g*0.12, W = 2*g + gap, Ht = g + 30;
+  const grid = (x0, y0, title, col)=>{
+    shapes.push(GM.text(x0 + g/2, y0 - 6, title, 5, col, {weight:800}));
+    for(let i=0;i<10;i++){ shapes.push(GM.text(x0 + (i + 1.5)*cell, y0 + cell/2, 'ABCDEFGHIJ'[i], cell*0.45, col, {weight:700}), GM.text(x0 + cell/2, y0 + (i + 1.5)*cell, String(i+1), cell*0.42, col, {weight:700})); }
+    for(let r=0;r<10;r++) for(let c=0;c<10;c++) shapes.push(GM.rect(x0 + (c + 1)*cell, y0 + (r + 1)*cell, cell, cell, (r + c)%2 ? '#eaf3fb' : '#ffffff', '#7fa7c9', 0.25));
+  };
+  [0, 1].forEach(pl=>{
+    const y0 = pl*Ht + 10;
+    shapes.push(GM.text(W/2, y0 - 3 + (pl ? 0 : 0), 'GIOCATORE ' + (pl + 1), 6, '#1f4fa0', {weight:800}));
+    grid(0, y0 + 10, 'LA MIA FLOTTA', '#1f4fa0'); grid(g + gap, y0 + 10, 'I MIEI COLPI', '#d1402c');
+    shapes.push(boxPolyShape([[0, y0 - 9],[W, y0 - 9],[W, y0 + 10 + g + 4],[0, y0 + 10 + g + 4]], 'cut'));
+  });
+  const fy = 2*Ht + 14;
+  shapes.push(GM.text(W/2, fy, 'Flotta: 1 portaerei (5) · 1 corazzata (4) · 2 incrociatori (3) · 1 cacciatorpediniere (2) · segna × se colpisci, • se mancato', 4, '#333333'));
+  return {shapes, totalW: W, totalH: fy + 4};
+}
+// Memory: 12 coppie di carte con le figure, più il modello del retro
+function genMemory(L, H){
+  const shapes = [], icons = ['🐶','🐱','🦊','🐸','🐵','🦁','🐼','🐧','🦉','🐢','🐙','🦋'], cw = L, ch = H, gap = 4, perRow = 6, r = Math.min(4, cw*0.08);
+  const all = icons.concat(icons);
+  all.forEach((ic, i)=>{ const x = (i % perRow)*(cw + gap), y = Math.floor(i/perRow)*(ch + gap), col = GAME_COLORS[icons.indexOf(ic) % GAME_COLORS.length];
+    shapes.push(GM.poly(GM.roundRect(x, y, cw, ch, r), '#ffffff', col, 0.8), GM.text(x + cw/2, y + ch/2, ic, Math.min(cw, ch)*0.55));
+    shapes.push(GM.cutRound(x, y, cw, ch, r)); });
+  const by = Math.ceil(all.length/perRow)*(ch + gap) + 10;
+  shapes.push(GM.text(perRow*(cw + gap)/2, by - 4, 'Retro (modello da stampare sul retro del foglio)', 4, '#555555'));
+  shapes.push(GM.poly(GM.roundRect(0, by, cw, ch, r), '#6b4fbf', '#6b4fbf', 0.3), GM.text(cw/2, by + ch/2, '?', ch*0.5, '#ffffff', {weight:800}), GM.cutRound(0, by, cw, ch, r));
+  return {shapes, totalW: perRow*(cw + gap) - gap, totalH: by + ch};
+}
+// Tangram: quadrato tagliato nei 7 pezzi classici, ognuno colorato e con il suo contorno di taglio
+function genTangram(L){
+  const shapes = [], S = L, P = pts=> pts.map(p=>[p[0]*S, p[1]*S]);
+  const pieces = [
+    [[[0,0],[1,0],[0.5,0.5]], '#d1402c'], [[[0,0],[0.5,0.5],[0,1]], '#3572d6'], [[[1,0.5],[1,1],[0.5,1]], '#3fa34d'],
+    [[[0.5,0.5],[0.75,0.25],[0.75,0.75]], '#f2c230'], [[[0,1],[0.25,0.75],[0.5,1]], '#e8732a'],
+    [[[0.5,0.5],[0.75,0.75],[0.5,1],[0.25,0.75]], '#c2477d'], [[[0.75,0.25],[1,0],[1,0.5],[0.75,0.75]], '#2f9e9a']];
+  pieces.forEach(([pts, col])=>{ shapes.push(GM.poly(P(pts), col, '#ffffff', 0.6)); shapes.push(Object.assign(boxPolyShape(P(pts), 'cut'), {noAngles:true})); });
+  shapes.push(GM.text(S/2, S + 8, 'Tangram · 7 pezzi: componi animali, persone e oggetti usando sempre tutti i pezzi', 4, '#555555'));
+  return {shapes, totalW: S, totalH: S + 12};
+}
+// Puzzle a incastro: L × H, pezzi di circa P mm con le linguette tonde (metti sotto la tua immagine)
+function genJigsaw(L, P, H){
+  const shapes = [], size = Math.max(20, P || 40), cols = Math.max(2, Math.round(L/size)), rows = Math.max(2, Math.round(H/size)), cw = L/cols, ch = H/rows;
+  let seed = 7; const rnd = ()=>{ seed = (seed*16807) % 2147483647; return seed/2147483647; };
+  shapes.push(GM.rect(0, 0, L, H, '#f4f0e6'));
+  shapes.push(GM.text(L/2, H/2, 'Metti qui la tua immagine (sotto alle linee di taglio)', Math.min(L, H)*0.04, '#b5ab95'));
+  const edge = (A, B, sgn)=>{ // tratto da A a B con una linguetta tonda verso "sgn"
+    const dx = B[0]-A[0], dy = B[1]-A[1], len = Math.hypot(dx, dy), u = [dx/len, dy/len], nrm = [-u[1]*sgn, u[0]*sgn];
+    const at = (t, o)=> [A[0] + dx*t + nrm[0]*o*len, A[1] + dy*t + nrm[1]*o*len];
+    const pts = [A, at(0.38, 0), at(0.4, 0.06)];
+    const c = [0.5, 0.17], rr = 0.12;
+    for(let k=0;k<=14;k++){ const a = (200 + k*(-220/14))*Math.PI/180; pts.push(at(c[0] + rr*Math.cos(a), c[1] + rr*Math.sin(a))); }
+    pts.push(at(0.6, 0.06), at(0.62, 0), B);
+    return pts;
+  };
+  for(let r=1;r<rows;r++) for(let c=0;c<cols;c++) shapes.push(GM.cutLine(edge([c*cw, r*ch], [(c+1)*cw, r*ch], rnd() < 0.5 ? 1 : -1)));
+  for(let c=1;c<cols;c++) for(let r=0;r<rows;r++) shapes.push(GM.cutLine(edge([c*cw, r*ch], [c*cw, (r+1)*ch], rnd() < 0.5 ? 1 : -1)));
+  shapes.push(boxPolyShape([[0,0],[L,0],[L,H],[0,H]], 'cut'));
+  return {shapes, totalW: L, totalH: H};
+}
+// Domino: 28 tessere dal doppio 0 al doppio 6
+function genDomino(L, H){
+  const shapes = [], tw = L, th = H, gap = 4, perRow = 7, r = Math.min(3, tw*0.1);
+  const pipPos = {0:[], 1:[[.5,.5]], 2:[[.25,.25],[.75,.75]], 3:[[.25,.25],[.5,.5],[.75,.75]], 4:[[.25,.25],[.75,.25],[.25,.75],[.75,.75]], 5:[[.25,.25],[.75,.25],[.5,.5],[.25,.75],[.75,.75]], 6:[[.25,.2],[.75,.2],[.25,.5],[.75,.5],[.25,.8],[.75,.8]]};
+  let i = 0;
+  for(let a=0;a<=6;a++) for(let b=a;b<=6;b++){
+    const x = (i % perRow)*(tw + gap), y = Math.floor(i/perRow)*(th + gap); i++;
+    shapes.push(GM.poly(GM.roundRect(x, y, tw, th, r), '#fbf8f0', '#333333', 0.4), GM.line([[x + tw*0.15, y + th/2],[x + tw*0.85, y + th/2]], '#333333', 0.6));
+    [[a, 0], [b, th/2]].forEach(([v, oy])=> pipPos[v].forEach(q=> shapes.push(GM.circ(x + q[0]*tw, y + oy + q[1]*th/2, Math.min(tw, th/2)*0.085, '#111111'))));
+    shapes.push(GM.cutRound(x, y, tw, th, r));
+  }
+  return {shapes, totalW: perRow*(tw + gap) - gap, totalH: 4*(th + gap) - gap};
+}
+// Filetto (mulino): tre quadrati concentrici, 24 punti e 9 + 9 pedine
+function genMorris(L, H){
+  const shapes = [], m = L*0.08, s = L - 2*m, pts = [];
+  gameFrame(shapes, L, L, '#f3e3c3');
+  [0, 1, 2].forEach(k=>{ const o = m + k*s/6, w = s - k*s/3; shapes.push(GM.line([[o,o],[o+w,o],[o+w,o+w],[o,o+w],[o,o]], '#5a3a22', 1.2));
+    [[0,0],[0.5,0],[1,0],[1,0.5],[1,1],[0.5,1],[0,1],[0,0.5]].forEach(q=> pts.push([o + q[0]*w, o + q[1]*w])); });
+  shapes.push(GM.line([[L/2, m],[L/2, m + s/3]], '#5a3a22', 1.2), GM.line([[L/2, L - m],[L/2, L - m - s/3]], '#5a3a22', 1.2), GM.line([[m, L/2],[m + s/3, L/2]], '#5a3a22', 1.2), GM.line([[L - m, L/2],[L - m - s/3, L/2]], '#5a3a22', 1.2));
+  pts.forEach(p=> shapes.push(GM.circ(p[0], p[1], L*0.018, '#5a3a22')));
+  const list = Array.from({length:9}, ()=>({fill:'#fbf7ee', inner:'#c9b48a'})).concat(Array.from({length:9}, ()=>({fill:'#2a2a2a', inner:'#6b5a3a'})));
+  const tk = gameTokens(shapes, 0, L + 12, H, list, 9);
+  shapes.push(GM.text(L/2, L + 6, 'Filetto (mulino) · 9 pedine chiare e 9 scure: fai tre in fila per togliere una pedina all\'avversario', 4, '#555555'));
+  return {shapes, totalW: Math.max(L, tk.w), totalH: L + 12 + tk.h};
+}
+// Tavola reale (backgammon): 24 punte, barra centrale, 15 + 15 pedine
+function genBackgammon(L, H){
+  const shapes = [], W = L, Ht = L*0.72, m = W*0.04, bar = W*0.06, pw = (W - 2*m - bar)/12, ph = (Ht - 2*m)*0.42;
+  gameFrame(shapes, W, Ht, '#6b4226');
+  shapes.push(GM.rect(m, m, W - 2*m, Ht - 2*m, '#e9d6ad'), GM.rect(W/2 - bar/2, m, bar, Ht - 2*m, '#6b4226'));
+  for(let k=0;k<12;k++){ const x = m + k*pw + (k>=6 ? bar : 0), col = k%2 ? '#1f4f3a' : '#a3261b';
+    shapes.push(GM.poly([[x, m],[x + pw, m],[x + pw/2, m + ph]], col), GM.poly([[x, Ht - m],[x + pw, Ht - m],[x + pw/2, Ht - m - ph]], k%2 ? '#a3261b' : '#1f4f3a')); }
+  gameFold(shapes, W, Ht);
+  const list = Array.from({length:15}, ()=>({fill:'#fbf7ee', inner:'#c9b48a'})).concat(Array.from({length:15}, ()=>({fill:'#2a2a2a', inner:'#6b5a3a'})));
+  const tk = gameTokens(shapes, 0, Ht + 12, H, list, 15);
+  shapes.push(GM.text(W/2, Ht + 6, 'Tavola reale (backgammon) · 15 pedine chiare e 15 scure · servono due dadi', 4, '#555555'));
+  return {shapes, totalW: Math.max(W, tk.w), totalH: Ht + 12 + tk.h};
+}
 const BOX_TEMPLATES = {
+  goose: {label:'Gioco dell\'oca', defaults:[400, 0, 20], note:'L = lato del tabellone, H = diametro delle pedine; P non si usa. Spirale di 64 caselle con oche, ponte, locanda, pozzo, labirinto, prigione e scheletro.', gen:(L, W, H)=> genGoose(L, H)},
+  snakes: {label:'Scale e serpenti', defaults:[400, 0, 20], note:'L = lato del tabellone, H = diametro delle pedine; P non si usa. Caselle da 1 a 100, 8 scale e 8 serpenti.', gen:(L, W, H)=> genSnakes(L, H)},
+  tictactoe: {label:'Tris', defaults:[150, 0, 34], note:'L = lato della griglia, H = diametro delle pedine; P non si usa. 5 pedine X e 5 O.', gen:(L, W, H)=> genTicTacToe(L, H)},
+  connect4: {label:'Forza 4', defaults:[240, 0, 26], note:'L = larghezza del tabellone, H = diametro dei gettoni; P non si usa. Griglia 7 × 6, 21 gettoni rossi e 21 gialli.', gen:(L, W, H)=> genConnectFour(L, H)},
+  battleship: {dims:'L', label:'Battaglia navale', defaults:[130, 0, 20], note:'L = lato di una griglia; P e H non si usano. Per ogni giocatore la griglia della flotta e quella dei colpi (A–J, 1–10).', gen:(L)=> genBattleship(L)},
+  memory: {label:'Memory', defaults:[60, 0, 60], note:'L × H = misura di una carta; P non si usa. 12 coppie di figure e il modello del retro.', gen:(L, W, H)=> genMemory(L, H)},
+  tangram: {dims:'L', label:'Tangram', defaults:[200, 0, 20], note:'L = lato del quadrato; P e H non si usano. I 7 pezzi classici, colorati e con il contorno di taglio.', gen:(L)=> genTangram(L)},
+  jigsaw: {label:'Puzzle a incastro', defaults:[300, 40, 200], note:'L × H = misura del puzzle, P = misura di un pezzo (circa). Metti la tua immagine sotto alle linee di taglio.', gen:(L, W, H)=> genJigsaw(L, W, H)},
+  domino: {label:'Domino', defaults:[25, 0, 50], note:'L × H = misura di una tessera; P non si usa. Le 28 tessere dal doppio 0 al doppio 6.', gen:(L, W, H)=> genDomino(L, H)},
+  morris: {label:'Filetto (mulino)', defaults:[260, 0, 22], note:'L = lato del tabellone, H = diametro delle pedine; P non si usa. Tre quadrati con 24 punti e 9 + 9 pedine.', gen:(L, W, H)=> genMorris(L, H)},
+  backgammon: {label:'Tavola reale (backgammon)', defaults:[420, 0, 22], note:'L = larghezza del tabellone, H = diametro delle pedine; P non si usa. 24 punte, barra centrale e 15 + 15 pedine.', gen:(L, W, H)=> genBackgammon(L, H)},
   chess: {label:'Scacchi (tabellone e pezzi)', defaults:[320, 0, 26], note:'L = lato del tabellone, H = diametro dei pezzi; P non si usa. Tabellone pieghevole con coordinate e 32 pezzi tondi da ritagliare.', gen:(L, W, H)=> genChess(L, H)},
   checkers: {label:'Dama (tabellone e pedine)', defaults:[320, 0, 30], note:'L = lato del tabellone, H = diametro delle pedine; P non si usa. 24 pedine più 4 dame di ricambio.', gen:(L, W, H)=> genCheckers(L, H)},
   chinesecheckers: {label:'Dama cinese', defaults:[300, 0, 14], note:'L = diametro del tabellone, H = diametro delle pedine; P non si usa. Stella con 121 fori e 60 pedine in 6 colori.', gen:(L, W, H)=> genChineseCheckers(L, H)},
