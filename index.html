@@ -992,7 +992,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.71</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.72</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -15492,7 +15492,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.71';
+const GUIDE_VERSION = '2.72';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -15748,7 +15748,7 @@ html:`<p>Ogni piega ha un numero di <b>passo</b>: nella simulazione 3D si chiudo
 <li>al contrario, <b>clic su un pannello nel 3D</b>: viene evidenziata la piega su cui si chiude e in basso compare "Passo 2 di 4 · piega a monte 90° · lunga …"; se la sequenza è aperta, la voce corrispondente si accende. Il pannello di base viene indicato come tale; un clic fuori dalla scatola toglie l'evidenziazione.</li></ul>` },
 
 { id:'genera-scatola', cat:'Fustella e scatole', title:'Genera scatola', keys:'genera scatola americana rsc astuccio tuck box giochi gioco tavolo scacchi dama cinese monopoli proprietà carte mazzo poker dado tabellone pedine oca scale serpenti tris forza 4 battaglia navale memory tangram puzzle domino filetto mulino tavola reale backgammon biglietto pieghevole brochure fisarmonica busta cartellina tasca segnaposto segnalibro bustina cd fogli oggetti carta giocattoli mattoncini dentifricio bottiglia cioccolatini cassetto esagonale triangolare prisma diamante cestino manico mailer spedizioni petali regalo dimensioni larghezza profondità altezza automatica',
-html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profondità e Altezza in mm e scegli il tipo. La fustella viene creata in una nuova scheda.</p>
+html:`<p>Menu <b>File → 📦 Genera scatola…</b>: inserisci Larghezza, Profondità e Altezza in mm e scegli il tipo. La fustella viene creata in una nuova scheda; se la scheda attiva è un disegno vuoto mai toccato, la scatola prende il suo posto. Aprire la finestra non crea nessuna scheda.</p>
 <ul><li><b>Scatola americana (RSC)</b>: 4 pareti con aletta di incollaggio, alette sopra e sotto separate da tagli.</li>
 <li><b>Astuccio con coperchio a incastro</b>: a ogni estremità due alette antipolvere sui fianchi, un coperchio pieno (L×P) e una linguetta rastremata che si infila dentro la parete opposta. Lo stesso schema vale per giocattoli, dentifricio e bottiglia.</li>
 <li><b>Vassoio con alette d'angolo</b>: fondo L×P, pareti alte H; le alette d'angolo stanno sulle pareti corte e si incollano dentro le lunghe.</li>
@@ -16076,6 +16076,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.72</b> — <a data-topic="genera-scatola">Genera scatola</a> non crea più una scheda "Disegno" vuota: la scheda nasce solo quando premi Crea, e un disegno vuoto viene sostituito.</li>
 <li><b>2.71</b> — Altri <a data-topic="genera-scatola">giochi di carta</a>: gioco dell'oca, scale e serpenti, tris, forza 4, battaglia navale, memory, tangram, puzzle a incastro, domino, filetto (mulino) e tavola reale.</li>
 <li><b>2.70</b> — <a data-topic="genera-scatola">Giochi da tavolo</a> nel generatore: scacchi, dama, dama cinese, gioco delle proprietà (tipo Monopoli, con carte e contratti), mazzo di carte francesi con scatola e dado da costruire.</li>
 <li><b>2.69</b> — Griglia, calamita, punti, quote e unità ricordati anche nell'account. Accesso che resta (30 giorni, si rinnova da solo; Esci chiude solo quel browser). <a data-topic="copia">Primo piano / avanti / indietro</a> funzionano su tutti gli oggetti che si toccano, anche le immagini e tra livelli. L'<a data-topic="amministrazione">amministratore</a> può eliminare i progetti degli altri utenti.</li>
@@ -19514,7 +19515,7 @@ wireMenuButton('btnToolsMenu', 'toolsMenu');
 document.addEventListener('click', closeAllMenus);
 function handleMenuAction(e){
   const action = e.target.dataset.action; if(!action) return;
-  ensureDocumentOpen(); // con tutte le schede chiuse, un comando apre prima un disegno nuovo
+  if(action!=='generate-box') ensureDocumentOpen(); // con tutte le schede chiuse, un comando apre prima un disegno nuovo (Genera scatola crea già la sua scheda)
   // i comandi della fustella e delle esportazioni si lavorano dal lato esterno (l'interno viene aggiunto da loro dove serve)
   if(['export-svg','export-pdf','export-pdf-print','export-pdf-tiled','export-image','export-cad','blade-report','export-silhouette','print-proof',
       'fold-3d','fold-sequence','imposition','bleed','preflight','cut-preview','check-closures','check-overlaps','weld-points','close-all-paths','symmetry','scale-drawing'].includes(action)) ensureOutsideView();
@@ -20936,7 +20937,6 @@ document.getElementById('boxGenType').addEventListener('change', ()=>{ // misure
   if(tp && tp.defaults){ ['boxGenL','boxGenW','boxGenH'].forEach((id,i)=>{ if(tp.defaults[i]) document.getElementById(id).value = tp.defaults[i]; }); }
 });
 document.getElementById('boxGenApply').onclick = ()=>{
-  ensureDocumentOpen();
   const err = document.getElementById('boxGenError');
   err.style.display = 'none';
   const L = parseFloat(document.getElementById('boxGenL').value);
@@ -20958,6 +20958,9 @@ document.getElementById('boxGenApply').onclick = ()=>{
   const result = generateBoxOfType(type, L + t, W + t, H + 2*t, glueW, t);
 
   snapshotActiveDocument();
+  // una scheda vuota e mai toccata (es. il "Disegno" aperto all'avvio) viene sostituita dalla scatola invece di restare inutile
+  const blank = documents.find(d=>d.id===activeDocId && !(d.shapes||[]).length && !d.libraryId && !d.refImage && (d.history||[]).length<=1);
+  if(blank) documents = documents.filter(d=>d!==blank);
   const label = BOX_TEMPLATES[type] ? BOX_TEMPLATES[type].label : (type==='tuck' ? 'Astuccio' : 'Scatola americana');
   const dims = BOX_TEMPLATES[type] && BOX_TEMPLATES[type].dims, dimTxt = dims==='L' ? String(L) : (dims==='LH' || noW ? L + '×' + H : L + '×' + W + '×' + H);
   const doc = makeNewDocument(translate(label) + ' ' + dimTxt);
@@ -27717,7 +27720,7 @@ document.getElementById('esNew').onclick = addNewDocumentTab;
 document.getElementById('esLib').onclick = ()=> openLibraryModal();
 document.getElementById('esImport').onclick = ()=> openSVGFilePicker();
 document.getElementById('esJson').onclick = ()=> openProjectFilePicker();
-document.getElementById('esBox').onclick = ()=>{ ensureDocumentOpen(); document.querySelector('[data-action="generate-box"]').click(); };
+document.getElementById('esBox').onclick = ()=> openModal('boxGenModal'); // la scheda nasce solo quando la scatola viene generata
 (function(){
   const es = document.getElementById('emptyState');
   es.addEventListener('dragover', e=>{ if(e.dataTransfer && [...e.dataTransfer.types].includes('Files')){ e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; } });
