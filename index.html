@@ -183,6 +183,7 @@ button{font-family:inherit;}
 #rulerV{position:absolute;top:22px;left:0;bottom:0;width:22px;z-index:24;background:var(--bg-1);border-right:1px solid var(--line);overflow:hidden;}
 #rulerH canvas, #rulerV canvas{display:block;width:100%;height:100%;}
 #stage-scroll{position:absolute;top:22px;left:22px;right:0;bottom:0;overflow:auto;}
+#layer-art .die-hl, #layer-art .die-hl *{stroke-width:2.4px;}
 #canvasHolder{position:relative;display:inline-block;margin:60px;}
 svg#stage{
   display:block;
@@ -998,11 +999,12 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="toggle on" id="toggleMagnet" title="Calamita (M)">🧲 calamita</span>
   <span class="toggle on" id="toggleEndpoints" title="Mostra i punti liberi (arancio) e collegati (verde) di ogni percorso aperto">● punti</span>
   <span class="toggle" id="toggleDimensions" title="Mostra/nascondi le quote del disegno e del foglio">📐 quote</span>
+  <span class="toggle" id="toggleDieHL" title="Evidenzia la fustella: la grafica diventa sbiadita, taglio, pieghe e altre linee tecniche vengono disegnate sopra a tutto e più spesse. Solo a schermo (tasto Shift+F).">✂ fustella</span>
   <span class="toggle" id="toggleTileGuides" title="Mostra sul foglio dove cadrebbero i tagli dell'esportazione PDF multi-pagina (usa le impostazioni correnti di quella finestra)">✂ pagine</span>
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.76</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.77</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2367,6 +2369,12 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "✂ fustella": "✂ dieline",
+    "Evidenzia la fustella: la grafica diventa sbiadita, taglio, pieghe e altre linee tecniche vengono disegnate sopra a tutto e più spesse. Solo a schermo (tasto Shift+F).": "Highlight the dieline: artwork is faded, cut, crease and other technical lines are drawn on top of everything and thicker. Screen only (Shift+F).",
+    "Le linee di taglio ({n} tratti) non formano un contorno chiuso: c'è almeno un punto in cui due tratti non si toccano.": "The cut lines ({n} segments) do not form a closed outline: at least one point where two segments do not touch.",
+    "Accendi \"● punti\" nella barra di stato: i capi arancioni sono quelli staccati. Uniscili con Strumenti → \"Salda punti vicini…\" oppure cercali con \"Verifica chiusure percorsi\".": "Turn on \"● points\" in the status bar: orange ends are the detached ones. Join them with Tools → \"Weld nearby points…\" or find them with \"Check path closures\".",
+    "Nessuna linea con ruolo \"Taglio\" nel disegno.": "No line with the \"Cut\" role in the drawing.",
+    "Seleziona il contorno della fustella e assegnagli il ruolo Taglio (pannello Proprietà) per vedere l'anteprima.": "Select the dieline outline and give it the Cut role (Properties panel) to see the preview.",
     "auto": "auto",
     "Colore della griglia automatico: si adatta allo sfondo del foglio (scura sul nero, grigio chiaro sul bianco). Scegliendo un colore a mano si spegne.": "Automatic grid colour: adapts to the sheet background (dark on black, light grey on white). Picking a colour by hand turns it off.",
     "Su nero": "On black",
@@ -4194,6 +4202,12 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "✂ fustella": "✂ Stanzkontur",
+    "Evidenzia la fustella: la grafica diventa sbiadita, taglio, pieghe e altre linee tecniche vengono disegnate sopra a tutto e più spesse. Solo a schermo (tasto Shift+F).": "Stanzkontur hervorheben: die Grafik wird blass, Schnitt-, Rill- und andere technische Linien werden über allem und dicker gezeichnet. Nur am Bildschirm (Umschalt+F).",
+    "Le linee di taglio ({n} tratti) non formano un contorno chiuso: c'è almeno un punto in cui due tratti non si toccano.": "Die Schnittlinien ({n} Abschnitte) bilden keine geschlossene Kontur: an mindestens einer Stelle berühren sich zwei Abschnitte nicht.",
+    "Accendi \"● punti\" nella barra di stato: i capi arancioni sono quelli staccati. Uniscili con Strumenti → \"Salda punti vicini…\" oppure cercali con \"Verifica chiusure percorsi\".": "Schalte \"● Punkte\" in der Statusleiste ein: orange Enden sind die losen. Verbinde sie mit Werkzeuge → \"Nahe Punkte verschweißen…\" oder finde sie mit \"Pfadschlüsse prüfen\".",
+    "Nessuna linea con ruolo \"Taglio\" nel disegno.": "Keine Linie mit der Rolle \"Schnitt\" in der Zeichnung.",
+    "Seleziona il contorno della fustella e assegnagli il ruolo Taglio (pannello Proprietà) per vedere l'anteprima.": "Wähle die Stanzkontur aus und gib ihr die Rolle Schnitt (Eigenschaften), um die Vorschau zu sehen.",
     "auto": "auto",
     "Colore della griglia automatico: si adatta allo sfondo del foglio (scura sul nero, grigio chiaro sul bianco). Scegliendo un colore a mano si spegne.": "Automatische Rasterfarbe: passt sich dem Blatthintergrund an (dunkel auf Schwarz, hellgrau auf Weiß). Wird ausgeschaltet, wenn du selbst eine Farbe wählst.",
     "Su nero": "Auf Schwarz",
@@ -6021,6 +6035,12 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "✂ fustella": "✂ troquel",
+    "Evidenzia la fustella: la grafica diventa sbiadita, taglio, pieghe e altre linee tecniche vengono disegnate sopra a tutto e più spesse. Solo a schermo (tasto Shift+F).": "Resaltar el troquel: el diseño se atenúa, corte, hendido y otras líneas técnicas se dibujan encima de todo y más gruesas. Solo en pantalla (Mayús+F).",
+    "Le linee di taglio ({n} tratti) non formano un contorno chiuso: c'è almeno un punto in cui due tratti non si toccano.": "Las líneas de corte ({n} tramos) no forman un contorno cerrado: hay al menos un punto donde dos tramos no se tocan.",
+    "Accendi \"● punti\" nella barra di stato: i capi arancioni sono quelli staccati. Uniscili con Strumenti → \"Salda punti vicini…\" oppure cercali con \"Verifica chiusure percorsi\".": "Activa \"● puntos\" en la barra de estado: los extremos naranjas son los sueltos. Únelos con Herramientas → \"Soldar puntos cercanos…\" o búscalos con \"Verificar cierres de trazados\".",
+    "Nessuna linea con ruolo \"Taglio\" nel disegno.": "Ninguna línea con el rol \"Corte\" en el dibujo.",
+    "Seleziona il contorno della fustella e assegnagli il ruolo Taglio (pannello Proprietà) per vedere l'anteprima.": "Selecciona el contorno del troquel y asígnale el rol Corte (panel Propiedades) para ver la vista previa.",
     "auto": "auto",
     "Colore della griglia automatico: si adatta allo sfondo del foglio (scura sul nero, grigio chiaro sul bianco). Scegliendo un colore a mano si spegne.": "Color de la cuadrícula automático: se adapta al fondo de la hoja (oscura sobre negro, gris claro sobre blanco). Se desactiva al elegir un color a mano.",
     "Su nero": "Sobre negro",
@@ -7848,6 +7868,12 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "✂ fustella": "✂ 刀模",
+    "Evidenzia la fustella: la grafica diventa sbiadita, taglio, pieghe e altre linee tecniche vengono disegnate sopra a tutto e più spesse. Solo a schermo (tasto Shift+F).": "突出显示刀模：图案变淡，切割、压痕等技术线条以更粗的线显示在最上层。仅屏幕显示（Shift+F）。",
+    "Le linee di taglio ({n} tratti) non formano un contorno chiuso: c'è almeno un punto in cui due tratti non si toccano.": "切割线（{n} 段）未构成闭合轮廓：至少有一处两段线没有相接。",
+    "Accendi \"● punti\" nella barra di stato: i capi arancioni sono quelli staccati. Uniscili con Strumenti → \"Salda punti vicini…\" oppure cercali con \"Verifica chiusure percorsi\".": "在状态栏打开“● 点”：橙色端点就是断开的。用 工具 → “焊接相近点…” 连接，或用“检查路径闭合”查找。",
+    "Nessuna linea con ruolo \"Taglio\" nel disegno.": "图中没有“切割”角色的线条。",
+    "Seleziona il contorno della fustella e assegnagli il ruolo Taglio (pannello Proprietà) per vedere l'anteprima.": "选择刀模轮廓并在属性面板中指定“切割”角色即可查看预览。",
     "auto": "自动",
     "Colore della griglia automatico: si adatta allo sfondo del foglio (scura sul nero, grigio chiaro sul bianco). Scegliendo un colore a mano si spegne.": "网格颜色自动：随页面背景调整（黑底上为深色，白底上为浅灰）。手动选择颜色后关闭。",
     "Su nero": "黑底",
@@ -9675,6 +9701,12 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "✂ fustella": "✂ découpe",
+    "Evidenzia la fustella: la grafica diventa sbiadita, taglio, pieghe e altre linee tecniche vengono disegnate sopra a tutto e più spesse. Solo a schermo (tasto Shift+F).": "Mettre la découpe en évidence : le graphisme s'estompe, coupe, rainage et autres lignes techniques sont dessinés par-dessus tout et plus épais. À l'écran seulement (Maj+F).",
+    "Le linee di taglio ({n} tratti) non formano un contorno chiuso: c'è almeno un punto in cui due tratti non si toccano.": "Les lignes de coupe ({n} segments) ne forment pas un contour fermé : au moins un point où deux segments ne se touchent pas.",
+    "Accendi \"● punti\" nella barra di stato: i capi arancioni sono quelli staccati. Uniscili con Strumenti → \"Salda punti vicini…\" oppure cercali con \"Verifica chiusure percorsi\".": "Activez \"● points\" dans la barre d'état : les extrémités orange sont celles détachées. Reliez-les avec Outils → \"Souder les points proches…\" ou trouvez-les avec \"Vérifier la fermeture des tracés\".",
+    "Nessuna linea con ruolo \"Taglio\" nel disegno.": "Aucune ligne avec le rôle \"Coupe\" dans le dessin.",
+    "Seleziona il contorno della fustella e assegnagli il ruolo Taglio (pannello Proprietà) per vedere l'anteprima.": "Sélectionnez le contour de la découpe et donnez-lui le rôle Coupe (panneau Propriétés) pour voir l'aperçu.",
     "auto": "auto",
     "Colore della griglia automatico: si adatta allo sfondo del foglio (scura sul nero, grigio chiaro sul bianco). Scegliendo un colore a mano si spegne.": "Couleur de grille automatique : s'adapte au fond de la feuille (sombre sur noir, gris clair sur blanc). Se désactive si vous choisissez une couleur à la main.",
     "Su nero": "Sur noir",
@@ -11392,7 +11424,8 @@ const state = {
   snapGrid: true,
   snapMagnet: true,
   transpDark: true,
-  gridAuto: true,            // colore della griglia scelto in automatico in base allo sfondo del foglio          // trasparenza del foglio mostrata su scacchiera scura (preferenza di visione)
+  gridAuto: true,
+  dieHighlight: false,       // vista "fustella": grafica attenuata, taglio e pieghe in evidenza sopra a tutto            // colore della griglia scelto in automatico in base allo sfondo del foglio          // trasparenza del foglio mostrata su scacchiera scura (preferenza di visione)
   magnetPx: 10,                // screen px radius for magnet
   draft: null,                 // in-progress drawing object
   drag: null,                  // active drag operation
@@ -12274,16 +12307,23 @@ function renderShapes(){
     });
     layerArt.appendChild(ref);
   }
-  const pmap = punchMap();
+  const pmap = punchMap(), hlTech = [];
   for(const s of shapesInZOrder()){
     const ps = pmap.get(s.id), node = shapeToNode(s);
+    let out = node;
     if(ps && ps.length && node.getAttribute('display')!=='none'){ // bucato da una forma sopra (Perfora)
       const g = el('g', {}), id = 'pms-' + s.id;
       g.innerHTML = punchMaskSVG(id, ps, state.scale);
       const inner = el('g', {mask:`url(#${id})`}); inner.appendChild(node); g.appendChild(inner);
-      layerArt.appendChild(g);
-    } else layerArt.appendChild(node);
+      out = g;
+    }
+    if(state.dieHighlight){ // vista "fustella": la grafica sbiadisce, le linee tecniche vanno sopra e più spesse
+      if(s.style && s.style.role && s.style.role!=='design' && !s.guide){ out.classList.add('die-hl'); hlTech.push(out); continue; }
+      out.setAttribute('opacity', (parseFloat(out.getAttribute('opacity')) || 1) * 0.22);
+    }
+    layerArt.appendChild(out);
   }
+  hlTech.forEach(n=> layerArt.appendChild(n));
   // I nodi <text> sono ora davvero nel DOM: ne misuro la larghezza resa dal
   // font e dalla dimensione ATTUALI (la stima per numero di caratteri usata
   // come base non tiene conto di font più stretti o più larghi del previsto).
@@ -15601,7 +15641,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.76';
+const GUIDE_VERSION = '2.77';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -15634,7 +15674,8 @@ html:`<ul><li><b>Formato del foglio</b>: dal pannello Proprietà senza selezione
 <li><b>Unità di misura</b> (mm, cm, m, pollici): dalla barra di stato. Tutti i campi numerici usano l'unità scelta.</li>
 <li><b>Griglia</b> millimetrica o centimetrica, con aggancio: tasto <b>G</b> o "▦ griglia" nella barra di stato. Con <b>auto</b> acceso (all'inizio) il colore della griglia si adatta da solo allo sfondo del foglio: grigio scuro e discreto sul nero o sulla trasparenza scura, grigio chiaro sul bianco, una tinta poco più chiara o più scura sugli sfondi colorati. Il quadratino accanto al passo sceglie invece un <b>colore e un'opacità</b> fissi e spegne <b>auto</b>; clicca di nuovo <b>auto</b> per tornare all'automatico. La scelta viene ricordata. Griglia (colore, opacità, passo, attiva o no), calamita, punti, quote e unità di misura <b>vengono ricordati</b>: nel browser e, quando hai fatto l'accesso, anche nel tuo account, così li ritrovi uguali su ogni browser e computer.</li>
 <li><b>Zoom</b>: Ctrl + rotella (centrato sul cursore), oppure <b>+</b>, <b>−</b> e <b>0</b> per reimpostarlo.</li>
-<li><b>Quote</b> (📐) e <b>punti</b> (●) dalla barra di stato: le quote mostrano le misure dei tratti; i punti evidenziano le estremità libere (arancio) o collegate (verde) e gli angoli tra i tratti.</li></ul>` },
+<li><b>Quote</b> (📐) e <b>punti</b> (●) dalla barra di stato: le quote mostrano le misure dei tratti; i punti evidenziano le estremità libere (arancio) o collegate (verde) e gli angoli tra i tratti.</li>
+<li><b>✂ fustella</b> (barra di stato, oppure <b>Shift+F</b>): evidenzia la fustella. La grafica diventa sbiadita e taglio (rosso), pieghe (blu), fustella speciale e incollaggio vengono disegnati sopra a tutto e più spessi, così li vedi anche sotto immagini e sfondi. È solo una vista: esportazioni e stampe non cambiano; viene ricordata.</li></ul>` },
 
 { id:'schermi-piccoli', cat:'Per iniziare', title:'Schermi piccoli, tablet e tocco', keys:'responsive schermo piccolo tablet telefono cellulare tocco dita touch pinch zoom pressione lunga cassetto pannello menu altro puntini pulsanti nascosti',
 html:`<p>L'interfaccia si adatta alla larghezza dello schermo:</p>
@@ -15987,7 +16028,8 @@ html:`<p>Dal menu <b>Strumenti</b>:</p>
 <p>Il controllo più completo per le scatole è quello dell'<a data-topic="controllo-3d">anteprima 3D</a>.</p>` },
 
 { id:'anteprima-taglio', cat:'Fustella e scatole', title:'Anteprima taglio', keys:'anteprima taglio fustella sagoma senza piegature',
-html:`<p>Menu <b>Strumenti → Anteprima taglio (fustella)</b>: mostra la sagoma che si ottiene tagliando i contorni con ruolo Taglio, senza le piegature. Segnala anche i tratti di taglio rimasti aperti.</p>` },
+html:`<p>Menu <b>Strumenti → Anteprima taglio (fustella)</b>: mostra la sagoma che si ottiene tagliando i contorni con ruolo Taglio, senza le piegature. Il contorno può essere un'unica forma chiusa oppure fatto di <b>tante linee separate</b> (come capita con le fustelle importate): i tratti che si toccano agli estremi (entro mezzo millimetro) vengono uniti da soli in una sagoma. Se resta un punto staccato, la finestra lo dice e i tratti aperti sono segnati in rosso tratteggiato: accendi "● punti" (i capi arancioni sono quelli liberi) e uniscili con <b>Salda punti vicini…</b>.</p>
+<p>Se compare "Nessuna linea con ruolo Taglio", il contorno ha ancora il ruolo Disegno: selezionalo e scegli <b>Taglio</b> nel pannello Proprietà.</p>` },
 
 { id:'link-pubblico', cat:'Salvare ed esportare', title:'Link pubblico per far vedere il disegno', keys:'link pubblico condividere mandare cliente visione vedere scaricare pdf png jpeg jpg svg anteprima url indirizzo senza account',
 html:`<p>Per far vedere un disegno a qualcuno (un cliente, la tipografia) senza che debba avere un account: pulsante <b>🔗 Condividi</b> nella barra in alto (oppure menu <b>File → 🔗 Link pubblico per far vedere il disegno…</b>, o menu <b>Stampa</b>). Il disegno deve essere salvato nella tua <a data-topic="libreria">libreria</a>.</p>
@@ -16189,6 +16231,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.77</b> — Interruttore <a data-topic="foglio">✂ fustella</a> (Shift+F) per evidenziare taglio e pieghe sopra la grafica; l'<a data-topic="anteprima-taglio">anteprima taglio</a> funziona anche con fustelle fatte di tante linee separate e spiega cosa manca.</li>
 <li><b>2.76</b> — <a data-topic="foglio">Griglia automatica</a>: il colore si adatta allo sfondo (scura sul nero, chiara sul bianco); interruttore <b>auto</b> nella barra di stato.</li>
 <li><b>2.75</b> — Il <a data-topic="foglio">foglio trasparente</a> si vede su una scacchiera scura (meno abbagliante); casella <b>Su nero</b> per tornare a quella chiara.</li>
 <li><b>2.74</b> — Corretto: generando una scatola o un gioco con tutte le schede chiuse, la scheda nuova restava nascosta dietro "Nessun progetto aperto".</li>
@@ -19356,6 +19399,7 @@ window.addEventListener('keydown', (e)=>{
   const k = e.key.toLowerCase();
   if(!documents.length) return; // nessuna scheda aperta: i tasti non agiscono su un disegno invisibile
   if(e.key==='Escape' && shapesFlyoutOpen()){ toggleShapesFlyout(false); return; }
+  if(k==='f' && e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey){ e.preventDefault(); toggleDieHighlight(); return; } // Shift+F: evidenzia la fustella
   if(k==='f' && !e.ctrlKey && !e.metaKey && !e.altKey){ e.preventDefault(); toggleShapesFlyout(); return; } // F: forme pronte
   if(/^Arrow(Left|Right|Up|Down)$/.test(e.key) && !e.ctrlKey && !e.metaKey && state.tool==='select' && state.selection.size){
     e.preventDefault(); nudgeSelection(e.key, e.shiftKey ? 10 : (e.altKey ? 0.1 : 1)); return; // frecce: 1 mm, Shift 10 mm, Alt 0,1 mm
@@ -19435,14 +19479,14 @@ const PREFS_KEY = 'spikecut-prefs';
 function gatherPrefs(){
   return { gridColor: state.gridColor, gridOpacity: state.gridOpacity!=null ? state.gridOpacity : 1, grid: state.grid,
            snapGrid: !!state.snapGrid, snapMagnet: !!state.snapMagnet, showEndpoints: !!state.showEndpoints, showDimensions: !!state.showDimensions,
-           unit: state.unit, transpDark: !!state.transpDark, gridAuto: !!state.gridAuto, savedAt: Date.now() };
+           unit: state.unit, transpDark: !!state.transpDark, gridAuto: !!state.gridAuto, dieHighlight: !!state.dieHighlight, savedAt: Date.now() };
 }
 function applyPrefs(p){
   if(!p || typeof p!=='object') return;
   if(/^#[0-9a-f]{6}$/i.test(p.gridColor||'')){ state.gridColor = p.gridColor; const g = document.getElementById('gridColor'); if(g) g.value = p.gridColor; }
   if(p.gridOpacity>=0 && p.gridOpacity<=1) state.gridOpacity = p.gridOpacity;
   if(p.grid===1 || p.grid===10){ state.grid = p.grid; const gs = document.getElementById('gridStepSelect'); if(gs) gs.value = String(p.grid); }
-  ['snapGrid','snapMagnet','showEndpoints','showDimensions','transpDark','gridAuto'].forEach(k=>{ if(typeof p[k]==='boolean') state[k] = p[k]; });
+  ['snapGrid','snapMagnet','showEndpoints','showDimensions','transpDark','gridAuto','dieHighlight'].forEach(k=>{ if(typeof p[k]==='boolean') state[k] = p[k]; });
   const td = document.getElementById('pageBgDark'); if(td) td.checked = !!state.transpDark;
   if(p.unit && UNITS[p.unit]){ state.unit = p.unit; const us = document.getElementById('unitSelect'); if(us) us.value = p.unit; if(typeof refreshShapeLibUnit==='function') refreshShapeLibUnit(); }
   try{ if(typeof gridPicker!=='undefined' && gridPicker) gridPicker.syncFromNative(); }catch(e){}
@@ -19471,6 +19515,7 @@ function updateStatusToggles(){
   document.getElementById('toggleGridAuto').classList.toggle('on', !!state.gridAuto);
   document.getElementById('toggleEndpoints').classList.toggle('on', state.showEndpoints);
   document.getElementById('toggleDimensions').classList.toggle('on', state.showDimensions);
+  document.getElementById('toggleDieHL').classList.toggle('on', !!state.dieHighlight);
   document.getElementById('toggleTileGuides').classList.toggle('on', state.showTileGuides);
 }
 document.getElementById('toggleGrid').onclick = toggleGrid;
@@ -19482,6 +19527,8 @@ document.getElementById('toggleEndpoints').onclick = ()=>{
   updateStatusToggles();
   renderCanvasOnly(); savePrefs();
 };
+function toggleDieHighlight(){ state.dieHighlight = !state.dieHighlight; updateStatusToggles(); renderCanvasOnly(); savePrefs(); }
+document.getElementById('toggleDieHL').onclick = toggleDieHighlight;
 document.getElementById('toggleDimensions').onclick = ()=>{
   state.showDimensions = !state.showDimensions;
   updateStatusToggles();
@@ -26184,18 +26231,48 @@ function polygonArea(pts){
 function polygonCentroidApprox(pts){
   let x=0,y=0; pts.forEach(p=>{x+=p[0];y+=p[1];}); return [x/pts.length, y/pts.length];
 }
+// unisce i tratti aperti che si toccano agli estremi (entro tol mm) in percorsi chiusi:
+// una fustella disegnata o importata a pezzi (tante linee separate) diventa una sagoma
+function chainOpenPolylines(lines, tol){
+  const rest = lines.map(l=> l.map(p=>[p[0],p[1]])), loops = [], open = [], near = (a, b)=> Math.hypot(a[0]-b[0], a[1]-b[1]) <= tol;
+  while(rest.length){
+    let chain = rest.shift(), grown = true, flipped = false;
+    while(grown){
+      grown = false;
+      if(chain.length >= 3 && near(chain[0], chain[chain.length-1])) break;
+      const end = chain[chain.length-1];
+      for(let i=0;i<rest.length;i++){
+        const l = rest[i];
+        if(near(end, l[0])){ chain = chain.concat(l.slice(1)); rest.splice(i, 1); grown = true; break; }
+        if(near(end, l[l.length-1])){ chain = chain.concat(l.slice(0, -1).reverse()); rest.splice(i, 1); grown = true; break; }
+      }
+      if(!grown && !flipped){ chain.reverse(); flipped = true; grown = true; } // prova a crescere anche dall'altro capo
+    }
+    if(chain.length >= 4 && near(chain[0], chain[chain.length-1])){ chain.pop(); loops.push(chain); }
+    else open.push(chain);
+  }
+  return {loops, open};
+}
 function buildCutPreview(){
   const cutClosed = [];
   const cutOpenIssues = [];
+  const openLines = [];
   for(const s of state.shapes){
-    if(!isShapeEffVisible(s) || !s.style || s.style.role!=='cut') continue;
+    if(!isShapeEffVisible(s) || s.guide || !s.style || s.style.role!=='cut') continue;
     if(s.type==='rect' || s.type==='ellipse' || (s.points && s.closed && s.points.length>=3)){
       const pts = shapePolygonPoints(s);
       if(pts) cutClosed.push({shape:s, pts, area: polygonArea(pts)});
     } else if(s.points && !s.closed){
-      cutOpenIssues.push(s);
+      shapeToPolylines(s).forEach(pl=> openLines.push(pl.pts));
     }
   }
+  if(openLines.length){
+    const {loops, open} = chainOpenPolylines(openLines, 0.5);
+    loops.forEach(pts=> cutClosed.push({shape:null, pts, area: Math.abs(polygonArea(pts))}));
+    open.forEach(pts=> cutOpenIssues.push({points: pts}));
+  }
+  const slits = [];
+  cutClosed.forEach(c=> c.area = Math.abs(c.area));
   cutClosed.sort((a,b)=> b.area - a.area);
   const placed = [];
   for(const c of cutClosed){
@@ -26206,14 +26283,23 @@ function buildCutPreview(){
     }
     placed.push(Object.assign({isHole}, c));
   }
-  return {placed, cutOpenIssues};
+  // un tratto aperto che sta dentro un pezzo è un taglio interno normale (feritoia, incastro): non è un errore
+  const issues = cutOpenIssues.filter(o=>{
+    const pts = o.points, mid = pts.length > 2 ? pts[Math.floor(pts.length/2)] : [(pts[0][0]+pts[pts.length-1][0])/2, (pts[0][1]+pts[pts.length-1][1])/2];
+    const inside = placed.some(p=> !p.isHole && pointInPoly(mid, p.pts));
+    if(inside) slits.push(o);
+    return !inside;
+  });
+  return {placed, cutOpenIssues: placed.length ? issues : cutOpenIssues, slits};
 }
 function openCutPreview(){
-  const {placed, cutOpenIssues} = buildCutPreview();
+  const {placed, cutOpenIssues, slits} = buildCutPreview();
   const body = document.getElementById('cutPreviewBody');
   body.innerHTML = '';
   if(!placed.length){
-    body.innerHTML = '<div class="emptystate">Nessun percorso chiuso con ruolo "Taglio" trovato.<br>Disegna e chiudi almeno una forma con ruolo Taglio per vedere l\'anteprima.</div>';
+    body.innerHTML = cutOpenIssues.length
+      ? '<div class="emptystate">' + escapeHTML(tpl('Le linee di taglio ({n} tratti) non formano un contorno chiuso: c\'è almeno un punto in cui due tratti non si toccano.', {n: cutOpenIssues.length})) + '<br>' + escapeHTML(translate('Accendi "● punti" nella barra di stato: i capi arancioni sono quelli staccati. Uniscili con Strumenti → "Salda punti vicini…" oppure cercali con "Verifica chiusure percorsi".')) + '</div>'
+      : '<div class="emptystate">' + escapeHTML(translate('Nessuna linea con ruolo "Taglio" nel disegno.')) + '<br>' + escapeHTML(translate('Seleziona il contorno della fustella e assegnagli il ruolo Taglio (pannello Proprietà) per vedere l\'anteprima.')) + '</div>';
     openModal('cutPreviewModal');
     return;
   }
@@ -26247,6 +26333,7 @@ function openCutPreview(){
     const local = pts.map(toLocal);
     svg.appendChild(el('path', {d:pathD(local, closed), fill:'none', stroke:s.style.stroke, 'stroke-width':Math.max(0.3, s.style.strokeWidth*0.6), 'stroke-dasharray': s.style.dash && s.style.dash!=='none' ? s.style.dash : ''}));
   });
+  (slits || []).forEach(s=> svg.appendChild(el('path', {d:pathD(s.points.map(toLocal), false), fill:'none', stroke:'#7a5c2e', 'stroke-width':0.6})));
   cutOpenIssues.forEach(s=>{
     const local = s.points.map(toLocal);
     svg.appendChild(el('path', {d:pathD(local,false), fill:'none', stroke:'#ff3b30', 'stroke-width':0.8, 'stroke-dasharray':'2,1.5'}));
