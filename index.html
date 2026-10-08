@@ -994,6 +994,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
     <option value="10" selected>1 cm</option>
   </select>
   <input type="color" id="gridColor" value="#ffffff" title="Colore della griglia" style="width:22px;height:18px;padding:0 1px;margin-left:-4px;cursor:pointer;">
+  <span class="toggle on" id="toggleGridAuto" title="Colore della griglia automatico: si adatta allo sfondo del foglio (scura sul nero, grigio chiaro sul bianco). Scegliendo un colore a mano si spegne.">auto</span>
   <span class="toggle on" id="toggleMagnet" title="Calamita (M)">🧲 calamita</span>
   <span class="toggle on" id="toggleEndpoints" title="Mostra i punti liberi (arancio) e collegati (verde) di ogni percorso aperto">● punti</span>
   <span class="toggle" id="toggleDimensions" title="Mostra/nascondi le quote del disegno e del foglio">📐 quote</span>
@@ -1001,7 +1002,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.75</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.76</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2366,6 +2367,8 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "auto": "auto",
+    "Colore della griglia automatico: si adatta allo sfondo del foglio (scura sul nero, grigio chiaro sul bianco). Scegliendo un colore a mano si spegne.": "Automatic grid colour: adapts to the sheet background (dark on black, light grey on white). Picking a colour by hand turns it off.",
     "Su nero": "On black",
     "Mostra la trasparenza su fondo scuro invece della scacchiera chiara: meno abbagliante. Solo a schermo, non cambia esportazioni e stampe.": "Show transparency on a dark background instead of the light checkerboard: less glare. Screen only, exports and prints are unchanged.",
     "Carte napoletane (40)": "Neapolitan cards (40)",
@@ -4191,6 +4194,8 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "auto": "auto",
+    "Colore della griglia automatico: si adatta allo sfondo del foglio (scura sul nero, grigio chiaro sul bianco). Scegliendo un colore a mano si spegne.": "Automatische Rasterfarbe: passt sich dem Blatthintergrund an (dunkel auf Schwarz, hellgrau auf Weiß). Wird ausgeschaltet, wenn du selbst eine Farbe wählst.",
     "Su nero": "Auf Schwarz",
     "Mostra la trasparenza su fondo scuro invece della scacchiera chiara: meno abbagliante. Solo a schermo, non cambia esportazioni e stampe.": "Transparenz auf dunklem Grund statt auf dem hellen Schachbrett zeigen: blendet weniger. Nur am Bildschirm, Exporte und Ausdrucke bleiben unverändert.",
     "Carte napoletane (40)": "Neapolitanische Karten (40)",
@@ -6016,6 +6021,8 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "auto": "auto",
+    "Colore della griglia automatico: si adatta allo sfondo del foglio (scura sul nero, grigio chiaro sul bianco). Scegliendo un colore a mano si spegne.": "Color de la cuadrícula automático: se adapta al fondo de la hoja (oscura sobre negro, gris claro sobre blanco). Se desactiva al elegir un color a mano.",
     "Su nero": "Sobre negro",
     "Mostra la trasparenza su fondo scuro invece della scacchiera chiara: meno abbagliante. Solo a schermo, non cambia esportazioni e stampe.": "Mostrar la transparencia sobre fondo oscuro en lugar del tablero claro: deslumbra menos. Solo en pantalla, no cambia exportaciones ni impresiones.",
     "Carte napoletane (40)": "Naipes napolitanos (40)",
@@ -7841,6 +7848,8 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "auto": "自动",
+    "Colore della griglia automatico: si adatta allo sfondo del foglio (scura sul nero, grigio chiaro sul bianco). Scegliendo un colore a mano si spegne.": "网格颜色自动：随页面背景调整（黑底上为深色，白底上为浅灰）。手动选择颜色后关闭。",
     "Su nero": "黑底",
     "Mostra la trasparenza su fondo scuro invece della scacchiera chiara: meno abbagliante. Solo a schermo, non cambia esportazioni e stampe.": "在深色背景上显示透明，而不是浅色棋盘格：更不刺眼。仅在屏幕上，不影响导出和打印。",
     "Carte napoletane (40)": "那不勒斯纸牌（40 张）",
@@ -9666,6 +9675,8 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "auto": "auto",
+    "Colore della griglia automatico: si adatta allo sfondo del foglio (scura sul nero, grigio chiaro sul bianco). Scegliendo un colore a mano si spegne.": "Couleur de grille automatique : s'adapte au fond de la feuille (sombre sur noir, gris clair sur blanc). Se désactive si vous choisissez une couleur à la main.",
     "Su nero": "Sur noir",
     "Mostra la trasparenza su fondo scuro invece della scacchiera chiara: meno abbagliante. Solo a schermo, non cambia esportazioni e stampe.": "Afficher la transparence sur fond sombre au lieu du damier clair : moins éblouissant. À l'écran seulement, exports et impressions inchangés.",
     "Carte napoletane (40)": "Cartes napolitaines (40)",
@@ -11380,7 +11391,8 @@ const state = {
   grid: 10,                   // mm
   snapGrid: true,
   snapMagnet: true,
-  transpDark: true,          // trasparenza del foglio mostrata su scacchiera scura (preferenza di visione)
+  transpDark: true,
+  gridAuto: true,            // colore della griglia scelto in automatico in base allo sfondo del foglio          // trasparenza del foglio mostrata su scacchiera scura (preferenza di visione)
   magnetPx: 10,                // screen px radius for magnet
   draft: null,                 // in-progress drawing object
   drag: null,                  // active drag operation
@@ -11561,16 +11573,27 @@ function setStageSize(){
   if(bg!=='transparent') layerBg.appendChild(el('rect', {x:0,y:0,width:w,height:h,fill:bg,'fill-opacity':bgA}));
 }
 
+// griglia automatica: il colore dello sfondo che si vede, schiarito se è scuro o scurito se è chiaro (così la griglia resta discreta)
+function autoGridColor(){
+  const vs = state.viewSide==='inside' ? 'inside' : 'outside', bg = pageBgOf(vs), a = pageBgOpacityOf(vs);
+  const hex = c=> /^#[0-9a-f]{6}$/i.test(c||'') ? [1,3,5].map(i=> parseInt(c.substr(i, 2), 16)) : null;
+  const under = hex(state.transpDark ? '#17181a' : '#dcdcdc');                    // la scacchiera della trasparenza
+  const top = bg==='transparent' ? null : hex(bg);
+  const rgb = top ? top.map((v, i)=> v*a + under[i]*(1 - a)) : under;
+  const lum = (0.299*rgb[0] + 0.587*rgb[1] + 0.114*rgb[2])/255, k = 0.16, to = lum < 0.5 ? 255 : 0;
+  return '#' + rgb.map(v=> Math.round(v + (to - v)*k).toString(16).padStart(2, '0')).join('');
+}
 function drawGrid(){
   layerGrid.innerHTML = '';
   if(!state.grid) return;
   const w = state.page.w, h = state.page.h, g = state.grid;
-  const grp = el('g', {stroke:'var(--grid)', 'stroke-width':1, 'stroke-opacity': state.gridOpacity!=null ? state.gridOpacity : 1, 'shape-rendering':'crispEdges'});
+  const col = state.gridAuto ? autoGridColor() : state.gridColor, op = state.gridAuto ? 1 : (state.gridOpacity!=null ? state.gridOpacity : 1);
+  const grp = el('g', {stroke:'var(--grid)', 'stroke-width':1, 'stroke-opacity': op, 'shape-rendering':'crispEdges'});
   for(let x=0; x<=w; x+=g){
-    grp.appendChild(el('line', {x1:mmToPx(x),y1:0,x2:mmToPx(x),y2:mmToPx(h), stroke:state.gridColor}));
+    grp.appendChild(el('line', {x1:mmToPx(x),y1:0,x2:mmToPx(x),y2:mmToPx(h), stroke:col}));
   }
   for(let y=0; y<=h; y+=g){
-    grp.appendChild(el('line', {x1:0,y1:mmToPx(y),x2:mmToPx(w),y2:mmToPx(y), stroke:state.gridColor}));
+    grp.appendChild(el('line', {x1:0,y1:mmToPx(y),x2:mmToPx(w),y2:mmToPx(y), stroke:col}));
   }
   layerGrid.appendChild(grp);
   layerGrid.style.display = state.snapGrid ? '' : 'none';
@@ -15578,7 +15601,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.75';
+const GUIDE_VERSION = '2.76';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -15609,7 +15632,7 @@ html:`<p><b>Chiudere le schede</b>: la ✕ di ogni scheda la chiude; il pulsante
 { id:'foglio', cat:'Per iniziare', title:'Foglio, unità, griglia, righelli e zoom', keys:'pagina formato dimensione sfondo trasparente unità mm cm pollici griglia passo righello zoom rotella',
 html:`<ul><li><b>Formato del foglio</b>: dal pannello Proprietà senza selezione, oppure trascinando la maniglia nell'angolo del foglio. Lo sfondo può avere un colore (anche semitrasparente, vedi <a data-topic="selettore-colore">colore e trasparenza</a>) o essere trasparente (<b>Trasp.</b>). Il trasparente si vede come una scacchiera <b>scura</b>, quasi nera come l'area di lavoro, così non abbaglia; togli la spunta <b>Su nero</b> per la scacchiera chiara classica. È solo una preferenza di visione (viene ricordata) e non cambia esportazioni e stampe. Attenzione: sulla scacchiera scura i tratti neri si vedono poco. La casella <b>Applica</b> accanto al colore decide se lo sfondo entra anche in esportazioni, stampe e nella grafica dell'<a data-topic="grafica-3d">anteprima 3D</a>: senza spunta il colore si vede solo mentre disegni.</li>
 <li><b>Unità di misura</b> (mm, cm, m, pollici): dalla barra di stato. Tutti i campi numerici usano l'unità scelta.</li>
-<li><b>Griglia</b> millimetrica o centimetrica, con aggancio: tasto <b>G</b> o "▦ griglia" nella barra di stato. Il quadratino accanto al passo sceglie <b>colore e opacità</b> delle linee della griglia (bianco all'inizio: si vede sugli sfondi colorati); la scelta viene ricordata. Griglia (colore, opacità, passo, attiva o no), calamita, punti, quote e unità di misura <b>vengono ricordati</b>: nel browser e, quando hai fatto l'accesso, anche nel tuo account, così li ritrovi uguali su ogni browser e computer.</li>
+<li><b>Griglia</b> millimetrica o centimetrica, con aggancio: tasto <b>G</b> o "▦ griglia" nella barra di stato. Con <b>auto</b> acceso (all'inizio) il colore della griglia si adatta da solo allo sfondo del foglio: grigio scuro e discreto sul nero o sulla trasparenza scura, grigio chiaro sul bianco, una tinta poco più chiara o più scura sugli sfondi colorati. Il quadratino accanto al passo sceglie invece un <b>colore e un'opacità</b> fissi e spegne <b>auto</b>; clicca di nuovo <b>auto</b> per tornare all'automatico. La scelta viene ricordata. Griglia (colore, opacità, passo, attiva o no), calamita, punti, quote e unità di misura <b>vengono ricordati</b>: nel browser e, quando hai fatto l'accesso, anche nel tuo account, così li ritrovi uguali su ogni browser e computer.</li>
 <li><b>Zoom</b>: Ctrl + rotella (centrato sul cursore), oppure <b>+</b>, <b>−</b> e <b>0</b> per reimpostarlo.</li>
 <li><b>Quote</b> (📐) e <b>punti</b> (●) dalla barra di stato: le quote mostrano le misure dei tratti; i punti evidenziano le estremità libere (arancio) o collegate (verde) e gli angoli tra i tratti.</li></ul>` },
 
@@ -16166,6 +16189,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.76</b> — <a data-topic="foglio">Griglia automatica</a>: il colore si adatta allo sfondo (scura sul nero, chiara sul bianco); interruttore <b>auto</b> nella barra di stato.</li>
 <li><b>2.75</b> — Il <a data-topic="foglio">foglio trasparente</a> si vede su una scacchiera scura (meno abbagliante); casella <b>Su nero</b> per tornare a quella chiara.</li>
 <li><b>2.74</b> — Corretto: generando una scatola o un gioco con tutte le schede chiuse, la scheda nuova restava nascosta dietro "Nessun progetto aperto".</li>
 <li><b>2.73</b> — Nuovi <a data-topic="genera-scatola">mazzi di carte</a>: napoletane, piacentine, siciliane, tarocchi, carte colori (tipo UNO) e carte vuote da personalizzare, ognuno con retro e scatola.</li>
@@ -19411,14 +19435,14 @@ const PREFS_KEY = 'spikecut-prefs';
 function gatherPrefs(){
   return { gridColor: state.gridColor, gridOpacity: state.gridOpacity!=null ? state.gridOpacity : 1, grid: state.grid,
            snapGrid: !!state.snapGrid, snapMagnet: !!state.snapMagnet, showEndpoints: !!state.showEndpoints, showDimensions: !!state.showDimensions,
-           unit: state.unit, transpDark: !!state.transpDark, savedAt: Date.now() };
+           unit: state.unit, transpDark: !!state.transpDark, gridAuto: !!state.gridAuto, savedAt: Date.now() };
 }
 function applyPrefs(p){
   if(!p || typeof p!=='object') return;
   if(/^#[0-9a-f]{6}$/i.test(p.gridColor||'')){ state.gridColor = p.gridColor; const g = document.getElementById('gridColor'); if(g) g.value = p.gridColor; }
   if(p.gridOpacity>=0 && p.gridOpacity<=1) state.gridOpacity = p.gridOpacity;
   if(p.grid===1 || p.grid===10){ state.grid = p.grid; const gs = document.getElementById('gridStepSelect'); if(gs) gs.value = String(p.grid); }
-  ['snapGrid','snapMagnet','showEndpoints','showDimensions','transpDark'].forEach(k=>{ if(typeof p[k]==='boolean') state[k] = p[k]; });
+  ['snapGrid','snapMagnet','showEndpoints','showDimensions','transpDark','gridAuto'].forEach(k=>{ if(typeof p[k]==='boolean') state[k] = p[k]; });
   const td = document.getElementById('pageBgDark'); if(td) td.checked = !!state.transpDark;
   if(p.unit && UNITS[p.unit]){ state.unit = p.unit; const us = document.getElementById('unitSelect'); if(us) us.value = p.unit; if(typeof refreshShapeLibUnit==='function') refreshShapeLibUnit(); }
   try{ if(typeof gridPicker!=='undefined' && gridPicker) gridPicker.syncFromNative(); }catch(e){}
@@ -19444,6 +19468,7 @@ function toggleMagnet(){ state.snapMagnet = !state.snapMagnet; updateStatusToggl
 function updateStatusToggles(){
   document.getElementById('toggleGrid').classList.toggle('on', state.snapGrid);
   document.getElementById('toggleMagnet').classList.toggle('on', state.snapMagnet);
+  document.getElementById('toggleGridAuto').classList.toggle('on', !!state.gridAuto);
   document.getElementById('toggleEndpoints').classList.toggle('on', state.showEndpoints);
   document.getElementById('toggleDimensions').classList.toggle('on', state.showDimensions);
   document.getElementById('toggleTileGuides').classList.toggle('on', state.showTileGuides);
@@ -19451,6 +19476,7 @@ function updateStatusToggles(){
 document.getElementById('toggleGrid').onclick = toggleGrid;
 document.getElementById('toggleSide').onclick = ()=> setViewSide(state.viewSide==='inside' ? 'outside' : 'inside');
 document.getElementById('toggleMagnet').onclick = toggleMagnet;
+document.getElementById('toggleGridAuto').onclick = ()=>{ state.gridAuto = !state.gridAuto; updateStatusToggles(); savePrefs(); drawGrid(); };
 document.getElementById('toggleEndpoints').onclick = ()=>{
   state.showEndpoints = !state.showEndpoints;
   updateStatusToggles();
@@ -21885,6 +21911,7 @@ document.getElementById('langSelect').addEventListener('change', (e)=>{ setLang(
 var gridPicker = attachColorAlpha('gridColor', ()=> state.gridOpacity!=null ? state.gridOpacity : 1, a=>{ state.gridOpacity = a; }, 'Colore e opacità della griglia');
 document.getElementById('gridColor').addEventListener('input', (e)=>{
   state.gridColor = e.target.value;
+  if(state.gridAuto){ state.gridAuto = false; updateStatusToggles(); } // colore scelto a mano: niente più automatico
   try{ localStorage.setItem('spikecut-gridcolor', state.gridColor); localStorage.setItem('spikecut-gridopacity', String(state.gridOpacity!=null ? state.gridOpacity : 1)); }catch(err){ /* best-effort */ }
   savePrefs();
   renderCanvasOnly();
