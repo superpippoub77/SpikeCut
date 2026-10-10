@@ -1004,7 +1004,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.80</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.81</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2369,6 +2369,7 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Unisci le estremità vicine delle linee selezionate (apre la finestra Unisci punti)": "Join the nearby ends of the selected lines (opens the Join points window)",
     "🗑 Elimina questo tratto": "🗑 Delete this segment",
     "Toglie solo questo tratto (anche con il tasto Canc mentre è evidenziato): una figura chiusa si apre qui, una linea si divide in due": "Removes only this segment (also with the Delete key while highlighted): a closed shape opens here, a line splits in two",
     "Tratto eliminato.": "Segment deleted.",
@@ -4215,6 +4216,7 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Unisci le estremità vicine delle linee selezionate (apre la finestra Unisci punti)": "Nahe Enden der ausgewählten Linien verbinden (öffnet das Fenster Punkte verbinden)",
     "🗑 Elimina questo tratto": "🗑 Dieses Segment löschen",
     "Toglie solo questo tratto (anche con il tasto Canc mentre è evidenziato): una figura chiusa si apre qui, una linea si divide in due": "Entfernt nur dieses Segment (auch mit der Entf-Taste, solange es hervorgehoben ist): eine geschlossene Form öffnet sich hier, eine Linie teilt sich in zwei",
     "Tratto eliminato.": "Segment gelöscht.",
@@ -6061,6 +6063,7 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Unisci le estremità vicine delle linee selezionate (apre la finestra Unisci punti)": "Unir los extremos cercanos de las líneas seleccionadas (abre la ventana Unir puntos)",
     "🗑 Elimina questo tratto": "🗑 Eliminar este tramo",
     "Toglie solo questo tratto (anche con il tasto Canc mentre è evidenziato): una figura chiusa si apre qui, una linea si divide in due": "Quita solo este tramo (también con la tecla Supr mientras está resaltado): una figura cerrada se abre aquí, una línea se divide en dos",
     "Tratto eliminato.": "Tramo eliminado.",
@@ -7907,6 +7910,7 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Unisci le estremità vicine delle linee selezionate (apre la finestra Unisci punti)": "连接所选线条相近的端点（打开“连接端点”窗口）",
     "🗑 Elimina questo tratto": "🗑 删除此线段",
     "Toglie solo questo tratto (anche con il tasto Canc mentre è evidenziato): una figura chiusa si apre qui, una linea si divide in due": "只删除此线段（高亮时也可按 Delete 键）：闭合图形在此处打开，线条一分为二",
     "Tratto eliminato.": "线段已删除。",
@@ -9753,6 +9757,7 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Unisci le estremità vicine delle linee selezionate (apre la finestra Unisci punti)": "Joindre les extrémités proches des lignes sélectionnées (ouvre la fenêtre Joindre les points)",
     "🗑 Elimina questo tratto": "🗑 Supprimer ce segment",
     "Toglie solo questo tratto (anche con il tasto Canc mentre è evidenziato): una figura chiusa si apre qui, una linea si divide in due": "Retire seulement ce segment (aussi avec la touche Suppr tant qu'il est en surbrillance) : une forme fermée s'ouvre ici, une ligne se coupe en deux",
     "Tratto eliminato.": "Segment supprimé.",
@@ -15713,7 +15718,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.80';
+const GUIDE_VERSION = '2.81';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -15912,7 +15917,7 @@ html:`<p><b>Spostare un blocco</b>: con più oggetti selezionati (riquadro, Shif
 <p><b>Frecce della tastiera</b>: con lo strumento di selezione spostano la selezione di <b>1 mm</b>, <b>10 mm</b> con Shift, <b>0,1 mm</b> con Alt. Una serie di pressioni si annulla con un solo Ctrl+Z.</p>` },
 
 { id:'gruppi', cat:'Modificare', title:'Raggruppare e separare', keys:'gruppo raggruppa raggruppare separa separare sciogliere ctrl+g unire oggetti insieme',
-html:`<ul><li><b>Raggruppa</b>: seleziona due o più oggetti e premi <b>Ctrl+G</b>, oppure "⧉ Raggruppa" nel pannello Proprietà o nel tasto destro. Un clic su uno qualsiasi degli oggetti seleziona tutto il gruppo, che si sposta, ruota, copia ed elimina insieme. Intorno al gruppo selezionato compare un riquadro viola tratteggiato con la scritta "Gruppo".</li>
+html:`<ul><li><b>Raggruppa</b>: seleziona due o più oggetti e premi <b>Ctrl+G</b>, oppure "⧉ Raggruppa" nel pannello Proprietà o nel tasto destro (il tasto destro su un oggetto già selezionato non cambia la selezione). Nella barra Azioni c'è anche <b>🔗 Unisci punti</b>, per unire le estremità vicine delle linee selezionate. Un clic su uno qualsiasi degli oggetti seleziona tutto il gruppo, che si sposta, ruota, copia ed elimina insieme. Intorno al gruppo selezionato compare un riquadro viola tratteggiato con la scritta "Gruppo".</li>
 <li><b>Un solo elemento</b>: <b>Ctrl+clic</b> su un oggetto del gruppo seleziona solo quello, per modificarlo senza sciogliere il gruppo (il riquadro diventa puntinato: "Elemento di un gruppo").</li>
 <li><b>Separa gruppo</b>: <b>Ctrl+Shift+G</b>, oppure "⧈ Separa gruppo": gli oggetti tornano indipendenti.</li></ul>
 <p>Il rettangolo di selezione e il <a data-topic="selezione">lazo</a> prendono sempre i gruppi interi. Copia e incolla, Duplica e la <a data-topic="simmetria">Simmetria</a> creano un gruppo nuovo, indipendente dall'originale. Raggruppando oggetti che fanno già parte di un gruppo, si forma un unico gruppo nuovo. I gruppi vengono salvati con il progetto; Ctrl+Z annulla raggruppamenti e separazioni.</p>` },
@@ -16305,6 +16310,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.81</b> — Corretti: il tasto destro non toglie più la selezione (Raggruppa dal menu prende tutti gli oggetti); gli oggetti incollati restano nel livello dell'originale e quindi sopra di lui, così si trascina la copia e non l'originale. Pulsante <b>🔗 Unisci punti</b> nella barra Azioni.</li>
 <li><b>2.80</b> — <b>Elimina un solo tratto</b>: doppio clic sul tratto e "🗑 Elimina questo tratto" oppure Canc; la forma si apre o si divide lì.</li>
 <li><b>2.79</b> — Nuova forma <b>rettangolo bombato</b> (schermo TV) per ritagliare le immagini e tra le Forme pronte; <b>bordo delle immagini</b> con spessore, colore e tipo di linea.</li>
 <li><b>2.78</b> — Corretto: salvando (per esempio dopo aver scritto una voce nelle Cose da fare) il browser proponeva di salvare una password con valori sbagliati. I campi di accesso ora sono separati dal resto e la password viene cancellata quando chiudi la finestra Account.</li>
@@ -18484,6 +18490,7 @@ stage.addEventListener('mousedown', (e)=>{
       return;
     }
     e.preventDefault(); // evita che il browser avvii una selezione testo/trascinamento nativa sul canvas
+    if(e.button===2) return; // tasto destro: lo gestisce il menu contestuale, senza cambiare la selezione (es. per Raggruppa)
     if(seqRec && e.button===0){ seqRecClickCanvas(clientToMM(e.clientX,e.clientY), e); return; } // registrazione della sequenza a clic
 
     // Rilevamento MANUALE del doppio clic (invece di affidarsi all'evento nativo
@@ -18675,7 +18682,10 @@ function pasteClipboardShapesAt(mm){
     copy.id = uid();
     if(copy.points) copy.points = copy.points.map(p=>[p[0]+dx, p[1]+dy]);
     else if(copy.x!=null){ copy.x += dx; copy.y += dy; }
-    copy.layerId = state.activeLayerId;
+    // la copia resta nel livello dell'originale (se esiste ancora ed è modificabile): nel livello attivo potrebbe
+    // finire SOTTO l'originale, e cliccandola si prenderebbe l'originale
+    const L = state.layers.find(l=> l.id===copy.layerId);
+    if(!L || L.locked || L.visible===false) copy.layerId = state.activeLayerId;
     return copy;
   });
   remapGroupIds(newShapes); // le copie formano un gruppo nuovo, indipendente dall'originale
@@ -22275,6 +22285,7 @@ function renderSelectionActions(host, ids){
     b.onclick = ()=>{ fn(); renderPropPanel(); }; grid.appendChild(b); };
   add('⧉', 'Raggruppa', 'Raggruppa gli oggetti selezionati (Ctrl+G)', unlocked.length>1 && !allSameGroup, groupSelection);
   add('⧈', 'Separa', 'Separa il gruppo (Ctrl+Shift+G)', gids.length>0, ungroupSelection);
+  add('🔗', 'Unisci punti', 'Unisci le estremità vicine delle linee selezionate (apre la finestra Unisci punti)', unlocked.length>0 && computeJoinCandidates().length>=2, ()=> openJoinDialog());
   add('⎘', 'Duplica', 'Duplica la selezione, spostata di 5 mm', unlocked.length>0, duplicateSelectionOffset);
   add('⇋', 'Rifletti ↔', 'Rifletti in orizzontale', unlocked.length>0, ()=> flipSelection('h'));
   add('⇵', 'Rifletti ↕', 'Rifletti in verticale', unlocked.length>0, ()=> flipSelection('v'));
