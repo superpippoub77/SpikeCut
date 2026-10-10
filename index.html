@@ -1004,7 +1004,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.79</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.80</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2369,6 +2369,10 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "🗑 Elimina questo tratto": "🗑 Delete this segment",
+    "Toglie solo questo tratto (anche con il tasto Canc mentre è evidenziato): una figura chiusa si apre qui, una linea si divide in due": "Removes only this segment (also with the Delete key while highlighted): a closed shape opens here, a line splits in two",
+    "Tratto eliminato.": "Segment deleted.",
+    "Tratto eliminato: della linea non resta niente.": "Segment deleted: nothing is left of the line.",
     "Rettangolo bombato (schermo TV)": "Bulged rectangle (TV screen)",
     "▢ Bordo dell'immagine": "▢ Image border",
     "Spessore del bordo in mm (0 = nessun bordo)": "Border thickness in mm (0 = no border)",
@@ -4211,6 +4215,10 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "🗑 Elimina questo tratto": "🗑 Dieses Segment löschen",
+    "Toglie solo questo tratto (anche con il tasto Canc mentre è evidenziato): una figura chiusa si apre qui, una linea si divide in due": "Entfernt nur dieses Segment (auch mit der Entf-Taste, solange es hervorgehoben ist): eine geschlossene Form öffnet sich hier, eine Linie teilt sich in zwei",
+    "Tratto eliminato.": "Segment gelöscht.",
+    "Tratto eliminato: della linea non resta niente.": "Segment gelöscht: von der Linie bleibt nichts übrig.",
     "Rettangolo bombato (schermo TV)": "Gewölbtes Rechteck (Bildschirm)",
     "▢ Bordo dell'immagine": "▢ Bildrahmen",
     "Spessore del bordo in mm (0 = nessun bordo)": "Rahmenstärke in mm (0 = kein Rahmen)",
@@ -6053,6 +6061,10 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "🗑 Elimina questo tratto": "🗑 Eliminar este tramo",
+    "Toglie solo questo tratto (anche con il tasto Canc mentre è evidenziato): una figura chiusa si apre qui, una linea si divide in due": "Quita solo este tramo (también con la tecla Supr mientras está resaltado): una figura cerrada se abre aquí, una línea se divide en dos",
+    "Tratto eliminato.": "Tramo eliminado.",
+    "Tratto eliminato: della linea non resta niente.": "Tramo eliminado: no queda nada de la línea.",
     "Rettangolo bombato (schermo TV)": "Rectángulo abombado (pantalla de TV)",
     "▢ Bordo dell'immagine": "▢ Borde de la imagen",
     "Spessore del bordo in mm (0 = nessun bordo)": "Grosor del borde en mm (0 = sin borde)",
@@ -7895,6 +7907,10 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "🗑 Elimina questo tratto": "🗑 删除此线段",
+    "Toglie solo questo tratto (anche con il tasto Canc mentre è evidenziato): una figura chiusa si apre qui, una linea si divide in due": "只删除此线段（高亮时也可按 Delete 键）：闭合图形在此处打开，线条一分为二",
+    "Tratto eliminato.": "线段已删除。",
+    "Tratto eliminato: della linea non resta niente.": "线段已删除：该线条已无剩余部分。",
     "Rettangolo bombato (schermo TV)": "鼓形矩形（电视屏幕）",
     "▢ Bordo dell'immagine": "▢ 图片边框",
     "Spessore del bordo in mm (0 = nessun bordo)": "边框粗细（mm，0 = 无边框）",
@@ -9737,6 +9753,10 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "🗑 Elimina questo tratto": "🗑 Supprimer ce segment",
+    "Toglie solo questo tratto (anche con il tasto Canc mentre è evidenziato): una figura chiusa si apre qui, una linea si divide in due": "Retire seulement ce segment (aussi avec la touche Suppr tant qu'il est en surbrillance) : une forme fermée s'ouvre ici, une ligne se coupe en deux",
+    "Tratto eliminato.": "Segment supprimé.",
+    "Tratto eliminato: della linea non resta niente.": "Segment supprimé : il ne reste rien de la ligne.",
     "Rettangolo bombato (schermo TV)": "Rectangle bombé (écran TV)",
     "▢ Bordo dell'immagine": "▢ Bordure de l'image",
     "Spessore del bordo in mm (0 = nessun bordo)": "Épaisseur de la bordure en mm (0 = aucune)",
@@ -15693,7 +15713,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.79';
+const GUIDE_VERSION = '2.80';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -16046,6 +16066,7 @@ html:`<p>Lo strumento <b>Inserisci punto (I)</b>, nella sezione Modifica della b
 <p>Gli stessi comandi ci sono col <b>tasto destro su un tratto</b> di una linea o di una figura (oppure col <b>doppio clic</b> sul tratto):</p>
 <ul><li><b>➕ Aggiungi un punto qui</b>: il tratto diventa due tratti uniti nel nuovo punto, che si trova esattamente sulla linea (anche se hai fatto clic un po' di lato); poi puoi trascinarlo.</li>
 <li><b>✂ Spezza la linea qui</b>: la linea diventa <b>due linee separate unite nel punto</b> (ognuna può avere un ruolo diverso: taglio, piega…). Su una figura chiusa la "apre" in quel punto; spezzandola di nuovo ottieni due pezzi.</li>
+<li><b>🗑 Elimina questo tratto</b> (oppure il tasto <b>Canc</b> mentre il tratto è evidenziato in giallo): toglie <b>solo quel tratto</b> tra i due punti, non tutta la forma. Una figura chiusa si apre lì; una linea aperta si divide in due linee; se un pezzo resta con un solo punto, sparisce. Si annulla con Ctrl+Z. Senza un tratto evidenziato, Canc elimina come sempre le forme selezionate.</li>
 <li><b>⋯ Dividi il tratto in parti uguali…</b>: mette punti equidistanti (2, 3, 4… parti).</li></ul>
 <p>Col tasto destro su un <b>punto</b> esistente c'è anche <b>✂ Spezza la linea nel punto</b>. Per dividere un'intera forma in tutti i suoi lati c'è <b>Dividi in segmenti</b> nella barra a sinistra. Gli archi si modificano con il rombo al centro: per mettere punti su un arco trasformalo prima con Dividi in segmenti.</p>` },
 
@@ -16284,6 +16305,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.80</b> — <b>Elimina un solo tratto</b>: doppio clic sul tratto e "🗑 Elimina questo tratto" oppure Canc; la forma si apre o si divide lì.</li>
 <li><b>2.79</b> — Nuova forma <b>rettangolo bombato</b> (schermo TV) per ritagliare le immagini e tra le Forme pronte; <b>bordo delle immagini</b> con spessore, colore e tipo di linea.</li>
 <li><b>2.78</b> — Corretto: salvando (per esempio dopo aver scritto una voce nelle Cose da fare) il browser proponeva di salvare una password con valori sbagliati. I campi di accesso ora sono separati dal resto e la password viene cancellata quando chiudi la finestra Account.</li>
 <li><b>2.77</b> — Interruttore <a data-topic="foglio">✂ fustella</a> (Shift+F) per evidenziare taglio e pieghe sopra la grafica; l'<a data-topic="anteprima-taglio">anteprima taglio</a> funziona anche con fustelle fatte di tante linee separate e spiega cosa manca.</li>
@@ -16564,6 +16586,30 @@ function splitPathAtVertex(s, k){
   delete s.arc; delete B.arc;
   state.shapes.splice(state.shapes.indexOf(s)+1, 0, B);
   return [s, B];
+}
+// elimina solo il tratto idx→idx+1 di un percorso: una figura chiusa si apre lì, una linea aperta si divide in due
+// (i pezzi rimasti con un solo punto spariscono)
+function deleteSegment(s, idx){
+  if(!s || !s.points || s.locked) return;
+  if(s.arc){ showToast('Un arco non si spezza direttamente: trasformalo prima con «Dividi in segmenti».', true); return; }
+  const n = s.points.length;
+  const dropLast = sh=>{ sh.points.pop(); if(sh.smooth){ sh.smooth.pop(); if(sh.smooth.length) sh.smooth[sh.smooth.length-1] = 0; }
+    if(sh.detached){ sh.detached = sh.detached.filter(i=> i < sh.points.length); if(!sh.detached.length) delete sh.detached; } };
+  const removeShape = sh=>{ state.shapes = state.shapes.filter(x=> x!==sh); };
+  let keep = [];
+  if(s.closed){
+    if(n < 3){ removeShape(s); }
+    else { const res = splitPathAtVertex(s, (idx+1) % n); dropLast(res[0]); keep = [res[0]]; }
+  } else {
+    if(idx < 0 || idx >= n-1) return;
+    let A = s, B = null;
+    if(idx+1 < n-1){ const res = splitPathAtVertex(s, idx+1); A = res[0]; B = res[1]; }
+    dropLast(A); // A finiva con il punto idx+1: tolgo il tratto idx→idx+1
+    [A, B].forEach(sh=>{ if(!sh) return; if(sh.points.length < 2) removeShape(sh); else keep.push(sh); });
+  }
+  state.selection = new Set(keep.map(x=>x.id)); state.activeVertex = null; state.hoverSegment = null;
+  pushHistory(); renderAll();
+  showToast(keep.length ? translate('Tratto eliminato.') : translate('Tratto eliminato: della linea non resta niente.'), false);
 }
 function splitLineAt(s, mm, vertexIdx){
   if(s.arc){ showToast('Un arco non si spezza direttamente: trasformalo prima con «Dividi in segmenti».', true); return; }
@@ -19127,12 +19173,13 @@ function handleDblClick(mm, e){
    lì sul posto lunghezza e curvatura modificabili direttamente,
    senza dover cercare il blocco corrispondente nella barra laterale.
 ============================================================ */
-let segEditorEl = null;
+let segEditorEl = null, segEditorTarget = null;
 function segEditorOutsideClick(e){
   if(segEditorEl && !segEditorEl.contains(e.target)) closeSegmentInlineEditor();
 }
 function closeSegmentInlineEditor(){
   if(segEditorEl){ segEditorEl.remove(); segEditorEl = null; }
+  segEditorTarget = null;
   document.removeEventListener('mousedown', segEditorOutsideClick, true);
   if(state.hoverSegment){ state.hoverSegment = null; renderSelectionHandles(); }
 }
@@ -19158,6 +19205,7 @@ function openSegmentInlineEditor(s, idx, clickMM, clientX, clientY){
     <button class="btn" id="segEditAddVertex" style="margin-top:2px;">➕ Aggiungi un punto qui</button>
     <button class="btn" id="segEditSplit" style="margin-top:4px;">✂ Spezza la linea qui</button>
     <button class="btn" id="segEditDivide" style="margin-top:4px;">⋯ Dividi in parti uguali…</button>
+    <button class="btn" id="segEditDelete" style="margin-top:4px;" title="Toglie solo questo tratto (anche con il tasto Canc mentre è evidenziato): una figura chiusa si apre qui, una linea si divide in due">🗑 Elimina questo tratto</button>
   `;
   document.body.appendChild(box);
   segEditorEl = box;
@@ -19197,7 +19245,9 @@ function openSegmentInlineEditor(s, idx, clickMM, clientX, clientY){
   box.querySelector('#segEditAddVertex').onclick = ()=>{ closeSegmentInlineEditor(); addPointAt(s, clickMM); };
   box.querySelector('#segEditSplit').onclick = ()=>{ closeSegmentInlineEditor(); splitLineAt(s, clickMM); };
   box.querySelector('#segEditDivide').onclick = ()=>{ closeSegmentInlineEditor(); divideSegmentPrompt(s, clickMM, idx); };
-  if(s.arc) ['segEditAddVertex','segEditSplit','segEditDivide'].forEach(id=> box.querySelector('#'+id).style.display = 'none');
+  box.querySelector('#segEditDelete').onclick = ()=>{ closeSegmentInlineEditor(); deleteSegment(s, idx); };
+  segEditorTarget = {s, idx};
+  if(s.arc) ['segEditAddVertex','segEditSplit','segEditDivide','segEditDelete'].forEach(id=> box.querySelector('#'+id).style.display = 'none');
 
   state.hoverSegment = {shapeId:s.id, idx:idx};
   renderSelectionHandles();
@@ -19500,6 +19550,7 @@ window.addEventListener('keydown', (e)=>{
   if(map[k]){ setTool(map[k]); return; }
   if(k==='delete' || k==='backspace'){
     e.preventDefault();
+    if(segEditorEl && segEditorTarget){ const t = segEditorTarget; closeSegmentInlineEditor(); deleteSegment(t.s, t.idx); return; } // tratto evidenziato: via solo quello
     if(state.refImageSelected && state.selection.size===0){
       state.refImage=null; state.refImageSelected=false; renderAll(); refreshImageTabPreview();
     } else deleteSelection();
