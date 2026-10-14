@@ -1004,7 +1004,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.82</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.83</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -11662,10 +11662,12 @@ function restoreLayersFromProject(proj){
 function restoreFontsFromProject(proj){
   const incoming = proj.customFonts || [];
   incoming.forEach(font=>{
-    if(!state.customFonts.some(f=>f.id===font.id)){
-      state.customFonts.push(font);
-      injectFontFace(font);
-    }
+    const have = state.customFonts.find(f=>f.id===font.id);
+    if(!have){ state.customFonts.push(font); injectFontFace(font); return; }
+    // già nell'elenco ma magari mai caricato nel browser (es. ripristinato all'avvio con tutte le schede chiuse)
+    // o salvato senza dati: lo completo e lo carico, altrimenti i testi userebbero il carattere standard
+    if(!have.dataUrl && font.dataUrl){ have.dataUrl = font.dataUrl; have.format = font.format; have.external = font.external; injectFontFace(have); }
+    else if(!document.getElementById('fontface-'+have.id)) injectFontFace(have);
   });
 }
 
@@ -15738,7 +15740,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.82';
+const GUIDE_VERSION = '2.83';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -16331,6 +16333,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.83</b> — Corretto: aprendo dalla libreria un progetto con testi in un font importato (per esempio su un livello nascosto e poi reso visibile) a volte compariva il carattere standard del programma invece di quello scelto.</li>
 <li><b>2.82</b> — <b>Separa questo tratto</b> (doppio clic sul tratto o tasto destro): il tratto diventa una linea a sé.</li>
 <li><b>2.81</b> — Corretti: il tasto destro non toglie più la selezione (Raggruppa dal menu prende tutti gli oggetti); gli oggetti incollati restano nel livello dell'originale e quindi sopra di lui, così si trascina la copia e non l'originale. Pulsante <b>🔗 Unisci punti</b> nella barra Azioni.</li>
 <li><b>2.80</b> — <b>Elimina un solo tratto</b>: doppio clic sul tratto e "🗑 Elimina questo tratto" oppure Canc; la forma si apre o si divide lì.</li>
@@ -26280,6 +26283,9 @@ function fontFormatFromName(name){
   return FONT_FORMATS[ext] || null;
 }
 function cssFontName(font){ return `cf-${font.id}`; }
+// quando un font finisce di caricarsi (es. un testo su un livello appena reso visibile) ridisegno:
+// le misure dei testi prese prima erano quelle del carattere di riserva
+if(document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', ()=>{ try{ if(documents.length) renderCanvasOnly(); }catch(e){} });
 function injectFontFace(font){
   const old = document.getElementById('fontface-'+font.id);
   if(old) old.remove();
@@ -27930,6 +27936,7 @@ function restoreFromPayload(raw){
   const data = JSON.parse(raw);
   if(Array.isArray(data.documents) && !data.documents.length && data.savedAt){ // tutte le schede erano state chiuse
     documents = []; activeDocId = null; localSave.at = data.savedAt; state.customFonts = data.customFonts || [];
+    state.customFonts.forEach(injectFontFace); // anche senza schede aperte: i progetti aperti dopo devono trovarli pronti
     return true;
   }
   if(Array.isArray(data.documents) && data.documents.length){
