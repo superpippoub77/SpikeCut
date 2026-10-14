@@ -1004,7 +1004,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.85</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.86</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2375,6 +2375,7 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Attenzione: è più largo di 30 cm in entrambe le direzioni e non entra nella Cameo (larghezza massima di taglio 12 pollici, circa 30 cm): dividilo in più pezzi.": "Warning: it is wider than 30 cm in both directions and does not fit the Cameo (maximum cutting width 12 inches, about 30 cm): split it into several pieces.",
     "Tipo di linee nel DXF": "Line type in the DXF",
     "Linee singole (LINE): il formato più sicuro per Silhouette Studio": "Single lines (LINE): the safest format for Silhouette Studio",
     "Percorsi continui (POLYLINE): ogni contorno resta un pezzo unico": "Continuous paths (POLYLINE): each outline stays one piece",
@@ -4239,6 +4240,7 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Attenzione: è più largo di 30 cm in entrambe le direzioni e non entra nella Cameo (larghezza massima di taglio 12 pollici, circa 30 cm): dividilo in più pezzi.": "Achtung: es ist in beiden Richtungen breiter als 30 cm und passt nicht in die Cameo (maximale Schnittbreite 12 Zoll, etwa 30 cm): teile es in mehrere Stücke.",
     "Tipo di linee nel DXF": "Linienart im DXF",
     "Linee singole (LINE): il formato più sicuro per Silhouette Studio": "Einzelne Linien (LINE): das sicherste Format für Silhouette Studio",
     "Percorsi continui (POLYLINE): ogni contorno resta un pezzo unico": "Durchgehende Pfade (POLYLINE): jede Kontur bleibt ein Stück",
@@ -6103,6 +6105,7 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Attenzione: è più largo di 30 cm in entrambe le direzioni e non entra nella Cameo (larghezza massima di taglio 12 pollici, circa 30 cm): dividilo in più pezzi.": "Atención: mide más de 30 cm en ambas direcciones y no cabe en la Cameo (ancho máximo de corte 12 pulgadas, unos 30 cm): divídelo en varias piezas.",
     "Tipo di linee nel DXF": "Tipo de líneas en el DXF",
     "Linee singole (LINE): il formato più sicuro per Silhouette Studio": "Líneas sueltas (LINE): el formato más seguro para Silhouette Studio",
     "Percorsi continui (POLYLINE): ogni contorno resta un pezzo unico": "Trazados continuos (POLYLINE): cada contorno queda en una sola pieza",
@@ -7967,6 +7970,7 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Attenzione: è più largo di 30 cm in entrambe le direzioni e non entra nella Cameo (larghezza massima di taglio 12 pollici, circa 30 cm): dividilo in più pezzi.": "注意：两个方向都超过 30 cm，放不进 Cameo（最大切割宽度 12 英寸，约 30 cm）：请分成几块。",
     "Tipo di linee nel DXF": "DXF 中的线条类型",
     "Linee singole (LINE): il formato più sicuro per Silhouette Studio": "单独线段（LINE）：Silhouette Studio 最稳妥的格式",
     "Percorsi continui (POLYLINE): ogni contorno resta un pezzo unico": "连续路径（POLYLINE）：每个轮廓保持为一整段",
@@ -9831,6 +9835,7 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Attenzione: è più largo di 30 cm in entrambe le direzioni e non entra nella Cameo (larghezza massima di taglio 12 pollici, circa 30 cm): dividilo in più pezzi.": "Attention : il dépasse 30 cm dans les deux sens et n'entre pas dans la Cameo (largeur de coupe maximale 12 pouces, environ 30 cm) : divisez-le en plusieurs morceaux.",
     "Tipo di linee nel DXF": "Type de lignes dans le DXF",
     "Linee singole (LINE): il formato più sicuro per Silhouette Studio": "Lignes simples (LINE) : le format le plus sûr pour Silhouette Studio",
     "Percorsi continui (POLYLINE): ogni contorno resta un pezzo unico": "Tracés continus (POLYLINE) : chaque contour reste d'un seul tenant",
@@ -15792,6 +15797,10 @@ function silhouettePlan(){
       else if(mode==='perforate') pls.forEach(pl=> perforatePolyline(pl, cut, gap).forEach(d=> cutPolys.push(Object.assign(d, {layer:'PIEGA_TRATTEGGIATA', color:5}))));
     } else pls.forEach(pl=> cutPolys.push(Object.assign(pl, {layer: role==='diecut' ? 'FUSTELLA_SPECIALE' : 'TAGLIO', color: role==='diecut' ? 3 : 1})));
   });
+  // le pieghe vanno prima nel file: si cordonano (o perforano) mentre il foglio è ancora intero; tagliando prima
+  // il contorno il pezzo potrebbe spostarsi sul tappetino (in Studio usa l'ordine "Non ordinare" o mettile prime)
+  const isFold = x=> x.layer==='PIEGA' || x.layer==='PIEGA_TRATTEGGIATA';
+  cutPolys.sort((a, b)=> (isFold(a) ? 0 : 1) - (isFold(b) ? 0 : 1));
   return {mode, cutPolys, foldPolys, skipped, nCut: vis.filter(s=>s.style.role==='cut'||s.style.role==='diecut').length, nFold: vis.filter(s=>s.style.role==='fold').length};
 }
 function silRefresh(){
@@ -15811,7 +15820,7 @@ function silRefresh(){
       const w = Math.max(...all.map(q=>q[0])) - Math.min(...all.map(q=>q[0])), h = Math.max(...all.map(q=>q[1])) - Math.min(...all.map(q=>q[1]));
       const W = Math.min(w, h), Hh = Math.max(w, h);
       t += ' ' + tpl('Ingombro: {w} × {h} mm.', {w: Math.round(w), h: Math.round(h)});
-      if(W > 300) t += ' ' + translate('Attenzione: è più largo di 30 cm in entrambe le direzioni e non entra nella Cameo (larghezza di taglio circa 30 cm): dividilo in più pezzi.');
+      if(W > 300) t += ' ' + translate('Attenzione: è più largo di 30 cm in entrambe le direzioni e non entra nella Cameo (larghezza massima di taglio 12 pollici, circa 30 cm): dividilo in più pezzi.');
       else if(Hh > 600) t += ' ' + translate('È più lungo di 61 cm: serve il materiale in rotolo senza tappetino (oppure dividilo in più pezzi).');
       else if(Hh > 300) t += ' ' + translate('È più lungo di 30 cm: usa il tappetino da 12×24 pollici (30,5 × 61 cm) e orienta il lato lungo nel senso di avanzamento.');
     }
@@ -15841,7 +15850,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.85';
+const GUIDE_VERSION = '2.86';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -16365,7 +16374,17 @@ html:`<p>Menu <b>Stampa → ✂ Esporta per Silhouette Cameo (DXF)…</b>. Crea 
 <li><b>Velocità</b>: da 1 a 10 (10–100 cm/s); per cartoncino spesso o disegni fitti usa velocità basse.</li>
 <li><b>Doppio passaggio</b>: per materiali spessi.</li>
 <li><b>Segmento di sovrataglio</b>: angoli più netti sui materiali densi.</li>
-<li><b>Taglio di prova</b>: sempre, prima del lavoro vero, su uno scarto dello stesso materiale.</li></ul>
+<li><b>Taglio di prova</b>: sempre, prima del lavoro vero, su uno scarto dello stesso materiale.</li>
+<li><b>Intelligent Path Technology</b> (Studio 5): evita che il foglio si sposti o che la carta sottile si strappi durante il taglio. Attivala per scatole con tanti tagli.</li></ul>
+<p><b>Cameo con due portautensili</b> (dal manuale di Studio 5): taglio e cordonatura si fanno <b>nello stesso lavoro</b>.</p>
+<ol><li>Esporta le pieghe come <b>Piega da cordonare</b>, nel file del taglio.</li>
+<li>In Studio apri Invia → modalità avanzata → <b>per colore della linea</b>.</li>
+<li>Assegna il <b>rosso</b> (taglio) al <b>Portautensili 1</b> con la lama automatica.</li>
+<li>Assegna il <b>blu</b> (pieghe) al <b>Portautensili 2</b> con lo strumento di cordonatura o di goffratura.</li>
+<li>Metti il blu <b>prima</b> del rosso: si cordona mentre il foglio è ancora intero. SpikeCut scrive già le pieghe per prime nel file.</li></ol>
+<p>Con più di due utensili aggiungi una pausa tra un colore e l'altro (tasto destro sul colore). In alternativa alle pieghe tratteggiate di SpikeCut, Studio può tagliare una linea con lo <b>stile tratteggiato</b> (Opzioni stile linea).</p>
+<p>Il <b>limite di larghezza</b> è di 12 pollici (circa 30 cm). L'affiancamento automatico dei lavori più grandi c'è solo in Studio Business Edition, quindi conviene dividere il disegno già in SpikeCut.</p>
+<p><b>Collegamento diretto al plotter</b>: non è previsto. La licenza di Silhouette Studio vieta di ricostruire o imitare il modo in cui il programma comunica con il firmware della macchina. SpikeCut prepara il file e il taglio si manda da Studio.</p>
 <p>Il Print &amp; Cut (crocini di registro) non è supportato dal DXF: per stampa e taglio usa i crocini di Studio.</p>` },
 
 { id:'pdf-stampa', cat:'Salvare ed esportare', title:'PDF per la stampa (CutContour, sovrastampa)', keys:'pdf stampa tipografia vettoriale tinta piatta spot cutcontour crease thru-cut kiss-cut sovrastampa overprint print and cut roland mimaki summa hp plotter',
@@ -16452,6 +16471,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.86</b> — <a data-topic="silhouette">Silhouette Cameo</a>, dal manuale di Studio 5: nel DXF le pieghe vengono prima del taglio (si cordonano a foglio intero); guida al taglio e cordonatura nello stesso lavoro con i due portautensili; Intelligent Path; limite di 12 pollici.</li>
 <li><b>2.85</b> — <a data-topic="silhouette">Silhouette Cameo</a>, dal manuale di Silhouette Studio: DXF con linee singole (LINE, il formato più compatibile; i percorsi continui restano un'opzione), controllo dell'ingombro rispetto all'area di taglio e ai tappetini, guida alle impostazioni di Studio (azione per colore della linea, contorni interni prima, forza, velocità, doppio passaggio).</li>
 <li><b>2.84</b> — <a data-topic="silhouette">Silhouette Cameo</a>: pieghe tratteggiate centrate con un ponte a ogni estremità (il bordo non si strappa), opzioni più chiare tra piega perforata e piega da cordonare, scelte ricordate, spiegazioni su colori per ruolo e spessore delle linee.</li>
 <li><b>2.83</b> — Corretto: aprendo dalla libreria un progetto con testi in un font importato (per esempio su un livello nascosto e poi reso visibile) a volte compariva il carattere standard del programma invece di quello scelto.</li>
