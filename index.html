@@ -1004,7 +1004,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.84</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.85</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1311,6 +1311,12 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
           <span>taglio</span><input type="number" id="silCut" value="1.5" step="0.5" min="0.2" style="width:70px;"><span>mm</span>
           <span style="margin-left:8px;">ponte</span><input type="number" id="silGap" value="1.5" step="0.5" min="0.2" style="width:70px;"><span>mm</span>
         </div></div>
+ <div class="field"><label>Tipo di linee nel DXF</label>
+        <select id="silEntity">
+          <option value="line">Linee singole (LINE): il formato più sicuro per Silhouette Studio</option>
+          <option value="polyline">Percorsi continui (POLYLINE): ogni contorno resta un pezzo unico</option>
+        </select>
+        <div class="hint">Il manuale di Silhouette Studio indica le entità DXF che il programma sa leggere (archi, cerchi, ellissi, linee, polilinee leggere, spline, testi). Le linee singole sono le più compatibili; prova i percorsi continui solo se il tuo Studio li apre correttamente.</div></div>
       <div id="silSummary" class="hint" style="margin-top:10px;padding:8px;border-radius:6px;background:rgba(201,151,63,0.12);font-weight:600;"></div>
       <div class="hint" style="margin-top:8px;">In Silhouette Studio: File → Apri, scegli il DXF, seleziona tutto e verifica che nel pannello Invia le linee siano impostate su "Taglio". Controlla le misure con il righello prima di tagliare e fai una prova su uno scarto dello stesso materiale. Nel DXF c'è solo il percorso delle linee: lo spessore con cui le vedi nel disegno non conta, la lama segue la linea centrale. Le linee hanno un colore per ruolo (taglio rosso, fustella speciale verde, pieghe blu): in Studio puoi usare "taglia per colore della linea" per dare a ciascun gruppo un'azione diversa.</div>
       <button class="btn primary" id="silExport" style="width:100%;margin-top:12px;">Esporta</button>
@@ -2369,6 +2375,14 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Tipo di linee nel DXF": "Line type in the DXF",
+    "Linee singole (LINE): il formato più sicuro per Silhouette Studio": "Single lines (LINE): the safest format for Silhouette Studio",
+    "Percorsi continui (POLYLINE): ogni contorno resta un pezzo unico": "Continuous paths (POLYLINE): each outline stays one piece",
+    "Il manuale di Silhouette Studio indica le entità DXF che il programma sa leggere (archi, cerchi, ellissi, linee, polilinee leggere, spline, testi). Le linee singole sono le più compatibili; prova i percorsi continui solo se il tuo Studio li apre correttamente.": "The Silhouette Studio manual lists the DXF entities the program can read (arcs, circles, ellipses, lines, lightweight polylines, splines, texts). Single lines are the most compatible; try continuous paths only if your Studio opens them correctly.",
+    "Ingombro: {w} × {h} mm.": "Size: {w} × {h} mm.",
+    "Attenzione: è più largo di 30 cm in entrambe le direzioni e non entra nella Cameo (larghezza di taglio circa 30 cm): dividilo in più pezzi.": "Warning: it is wider than 30 cm in both directions and does not fit the Cameo (cutting width about 30 cm): split it into several pieces.",
+    "È più lungo di 61 cm: serve il materiale in rotolo senza tappetino (oppure dividilo in più pezzi).": "It is longer than 61 cm: you need roll material without a mat (or split it into several pieces).",
+    "È più lungo di 30 cm: usa il tappetino da 12×24 pollici (30,5 × 61 cm) e orienta il lato lungo nel senso di avanzamento.": "It is longer than 30 cm: use the 12×24 inch mat (30.5 × 61 cm) with the long side in the feed direction.",
     "Piega perforata: tratteggiata nel file del taglio (la lama fa piccoli tagli con ponticelli; si piega a mano)": "Perforated fold: dashed in the cut file (the blade makes small cuts with bridges; fold by hand)",
     "Piega da cordonare: linea continua nel file del taglio (in Studio assegnala allo strumento di cordonatura)": "Fold to score: continuous line in the cut file (in Studio assign it to the scoring tool)",
     "Piega da cordonare in un file separato \"_pieghe.dxf\" (da passare in un secondo momento)": "Fold to score in a separate \"_pieghe.dxf\" file (to run afterwards)",
@@ -4225,6 +4239,14 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Tipo di linee nel DXF": "Linienart im DXF",
+    "Linee singole (LINE): il formato più sicuro per Silhouette Studio": "Einzelne Linien (LINE): das sicherste Format für Silhouette Studio",
+    "Percorsi continui (POLYLINE): ogni contorno resta un pezzo unico": "Durchgehende Pfade (POLYLINE): jede Kontur bleibt ein Stück",
+    "Il manuale di Silhouette Studio indica le entità DXF che il programma sa leggere (archi, cerchi, ellissi, linee, polilinee leggere, spline, testi). Le linee singole sono le più compatibili; prova i percorsi continui solo se il tuo Studio li apre correttamente.": "Das Handbuch von Silhouette Studio nennt die DXF-Elemente, die das Programm lesen kann (Bögen, Kreise, Ellipsen, Linien, leichte Polylinien, Splines, Texte). Einzelne Linien sind am kompatibelsten; probiere durchgehende Pfade nur, wenn dein Studio sie richtig öffnet.",
+    "Ingombro: {w} × {h} mm.": "Abmessungen: {w} × {h} mm.",
+    "Attenzione: è più largo di 30 cm in entrambe le direzioni e non entra nella Cameo (larghezza di taglio circa 30 cm): dividilo in più pezzi.": "Achtung: es ist in beiden Richtungen breiter als 30 cm und passt nicht in die Cameo (Schnittbreite etwa 30 cm): teile es in mehrere Stücke.",
+    "È più lungo di 61 cm: serve il materiale in rotolo senza tappetino (oppure dividilo in più pezzi).": "Es ist länger als 61 cm: du brauchst Rollenmaterial ohne Matte (oder teile es in mehrere Stücke).",
+    "È più lungo di 30 cm: usa il tappetino da 12×24 pollici (30,5 × 61 cm) e orienta il lato lungo nel senso di avanzamento.": "Es ist länger als 30 cm: verwende die 12×24-Zoll-Matte (30,5 × 61 cm) und richte die lange Seite in Vorschubrichtung aus.",
     "Piega perforata: tratteggiata nel file del taglio (la lama fa piccoli tagli con ponticelli; si piega a mano)": "Perforierte Falz: gestrichelt in der Schnittdatei (die Klinge macht kleine Schnitte mit Stegen; von Hand falten)",
     "Piega da cordonare: linea continua nel file del taglio (in Studio assegnala allo strumento di cordonatura)": "Rillfalz: durchgehende Linie in der Schnittdatei (in Studio dem Rillwerkzeug zuweisen)",
     "Piega da cordonare in un file separato \"_pieghe.dxf\" (da passare in un secondo momento)": "Rillfalz in einer eigenen Datei \"_pieghe.dxf\" (in einem zweiten Durchgang)",
@@ -6081,6 +6103,14 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Tipo di linee nel DXF": "Tipo de líneas en el DXF",
+    "Linee singole (LINE): il formato più sicuro per Silhouette Studio": "Líneas sueltas (LINE): el formato más seguro para Silhouette Studio",
+    "Percorsi continui (POLYLINE): ogni contorno resta un pezzo unico": "Trazados continuos (POLYLINE): cada contorno queda en una sola pieza",
+    "Il manuale di Silhouette Studio indica le entità DXF che il programma sa leggere (archi, cerchi, ellissi, linee, polilinee leggere, spline, testi). Le linee singole sono le più compatibili; prova i percorsi continui solo se il tuo Studio li apre correttamente.": "El manual de Silhouette Studio indica las entidades DXF que el programa sabe leer (arcos, círculos, elipses, líneas, polilíneas ligeras, splines, textos). Las líneas sueltas son las más compatibles; prueba los trazados continuos solo si tu Studio los abre bien.",
+    "Ingombro: {w} × {h} mm.": "Tamaño: {w} × {h} mm.",
+    "Attenzione: è più largo di 30 cm in entrambe le direzioni e non entra nella Cameo (larghezza di taglio circa 30 cm): dividilo in più pezzi.": "Atención: mide más de 30 cm en ambas direcciones y no cabe en la Cameo (ancho de corte de unos 30 cm): divídelo en varias piezas.",
+    "È più lungo di 61 cm: serve il materiale in rotolo senza tappetino (oppure dividilo in più pezzi).": "Mide más de 61 cm: necesitas material en rollo sin base (o divídelo en varias piezas).",
+    "È più lungo di 30 cm: usa il tappetino da 12×24 pollici (30,5 × 61 cm) e orienta il lato lungo nel senso di avanzamento.": "Mide más de 30 cm: usa la base de 12×24 pulgadas (30,5 × 61 cm) con el lado largo en el sentido de avance.",
     "Piega perforata: tratteggiata nel file del taglio (la lama fa piccoli tagli con ponticelli; si piega a mano)": "Pliegue perforado: discontinuo en el archivo de corte (la cuchilla hace pequeños cortes con puentes; se dobla a mano)",
     "Piega da cordonare: linea continua nel file del taglio (in Studio assegnala allo strumento di cordonatura)": "Pliegue para hendir: línea continua en el archivo de corte (en Studio asígnala a la herramienta de hendido)",
     "Piega da cordonare in un file separato \"_pieghe.dxf\" (da passare in un secondo momento)": "Pliegue para hendir en un archivo aparte \"_pieghe.dxf\" (para pasar después)",
@@ -7937,6 +7967,14 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Tipo di linee nel DXF": "DXF 中的线条类型",
+    "Linee singole (LINE): il formato più sicuro per Silhouette Studio": "单独线段（LINE）：Silhouette Studio 最稳妥的格式",
+    "Percorsi continui (POLYLINE): ogni contorno resta un pezzo unico": "连续路径（POLYLINE）：每个轮廓保持为一整段",
+    "Il manuale di Silhouette Studio indica le entità DXF che il programma sa leggere (archi, cerchi, ellissi, linee, polilinee leggere, spline, testi). Le linee singole sono le più compatibili; prova i percorsi continui solo se il tuo Studio li apre correttamente.": "Silhouette Studio 手册列出了程序能读取的 DXF 实体（圆弧、圆、椭圆、直线、轻量多段线、样条、文字）。单独线段兼容性最好；只有当你的 Studio 能正确打开时才尝试连续路径。",
+    "Ingombro: {w} × {h} mm.": "尺寸：{w} × {h} mm。",
+    "Attenzione: è più largo di 30 cm in entrambe le direzioni e non entra nella Cameo (larghezza di taglio circa 30 cm): dividilo in più pezzi.": "注意：两个方向都超过 30 cm，放不进 Cameo（切割宽度约 30 cm）：请分成几块。",
+    "È più lungo di 61 cm: serve il materiale in rotolo senza tappetino (oppure dividilo in più pezzi).": "长度超过 61 cm：需要不用垫板的卷材（或分成几块）。",
+    "È più lungo di 30 cm: usa il tappetino da 12×24 pollici (30,5 × 61 cm) e orienta il lato lungo nel senso di avanzamento.": "长度超过 30 cm：使用 12×24 英寸垫板（30.5 × 61 cm），长边沿进纸方向放置。",
     "Piega perforata: tratteggiata nel file del taglio (la lama fa piccoli tagli con ponticelli; si piega a mano)": "打孔折线：在切割文件中为虚线（刀片切出带连接点的小切口，手动折叠）",
     "Piega da cordonare: linea continua nel file del taglio (in Studio assegnala allo strumento di cordonatura)": "压痕折线：切割文件中的连续线（在 Studio 中指定给压痕工具）",
     "Piega da cordonare in un file separato \"_pieghe.dxf\" (da passare in un secondo momento)": "压痕折线放在单独文件“_pieghe.dxf”中（之后再处理）",
@@ -9793,6 +9831,14 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Tipo di linee nel DXF": "Type de lignes dans le DXF",
+    "Linee singole (LINE): il formato più sicuro per Silhouette Studio": "Lignes simples (LINE) : le format le plus sûr pour Silhouette Studio",
+    "Percorsi continui (POLYLINE): ogni contorno resta un pezzo unico": "Tracés continus (POLYLINE) : chaque contour reste d'un seul tenant",
+    "Il manuale di Silhouette Studio indica le entità DXF che il programma sa leggere (archi, cerchi, ellissi, linee, polilinee leggere, spline, testi). Le linee singole sono le più compatibili; prova i percorsi continui solo se il tuo Studio li apre correttamente.": "Le manuel de Silhouette Studio indique les entités DXF que le programme sait lire (arcs, cercles, ellipses, lignes, polylignes légères, splines, textes). Les lignes simples sont les plus compatibles ; essayez les tracés continus seulement si votre Studio les ouvre correctement.",
+    "Ingombro: {w} × {h} mm.": "Encombrement : {w} × {h} mm.",
+    "Attenzione: è più largo di 30 cm in entrambe le direzioni e non entra nella Cameo (larghezza di taglio circa 30 cm): dividilo in più pezzi.": "Attention : il dépasse 30 cm dans les deux sens et n'entre pas dans la Cameo (largeur de coupe d'environ 30 cm) : divisez-le en plusieurs morceaux.",
+    "È più lungo di 61 cm: serve il materiale in rotolo senza tappetino (oppure dividilo in più pezzi).": "Il dépasse 61 cm : il faut du matériau en rouleau sans tapis (ou le diviser en plusieurs morceaux).",
+    "È più lungo di 30 cm: usa il tappetino da 12×24 pollici (30,5 × 61 cm) e orienta il lato lungo nel senso di avanzamento.": "Il dépasse 30 cm : utilisez le tapis de 12×24 pouces (30,5 × 61 cm) avec le grand côté dans le sens d'avance.",
     "Piega perforata: tratteggiata nel file del taglio (la lama fa piccoli tagli con ponticelli; si piega a mano)": "Pli perforé : en pointillé dans le fichier de coupe (la lame fait de petites coupes avec des ponts ; pliage à la main)",
     "Piega da cordonare: linea continua nel file del taglio (in Studio assegnala allo strumento di cordonatura)": "Pli à rainer : ligne continue dans le fichier de coupe (dans Studio, attribuez-la à l'outil de rainage)",
     "Piega da cordonare in un file separato \"_pieghe.dxf\" (da passare in un secondo momento)": "Pli à rainer dans un fichier séparé \"_pieghe.dxf\" (à passer ensuite)",
@@ -15694,7 +15740,9 @@ function perforatePolyline(pl, cut, gap){
   if(cur && cur.length>1) out.push({pts:cur, closed:false});
   return out;
 }
-function buildDXF(polys){
+// entities: 'line' = ogni tratto è una LINE (il manuale di Silhouette Studio elenca LINE tra le poche entità DXF
+// che legge: è la scelta più sicura); 'polyline' = un POLYLINE per contorno (percorsi continui)
+function buildDXF(polys, entities){
   const H = state.page.h, L = [];
   const g = (code, val)=>{ L.push(String(code)); L.push(String(val)); };
   const f = v=> (Math.round(v*10000)/10000).toString();
@@ -15711,6 +15759,14 @@ function buildDXF(polys){
   g(0,'ENDTAB'); g(0,'ENDSEC');
   g(0,'SECTION'); g(2,'ENTITIES');
   polys.forEach(pl=>{
+    if(entities==='line'){
+      const pts = pl.closed ? pl.pts.concat([pl.pts[0]]) : pl.pts;
+      for(let i=0;i<pts.length-1;i++){
+        const a = pts[i], b = pts[i+1]; if(Math.hypot(b[0]-a[0], b[1]-a[1]) < 1e-6) continue;
+        g(0,'LINE'); g(8,pl.layer); g(62,pl.color); g(10,f(a[0])); g(20,f(H - a[1])); g(30,'0.0'); g(11,f(b[0])); g(21,f(H - b[1])); g(31,'0.0');
+      }
+      return;
+    }
     g(0,'POLYLINE'); g(8,pl.layer); g(62,pl.color); g(66,1); g(10,'0.0'); g(20,'0.0'); g(30,'0.0'); g(70, pl.closed ? 1 : 0);
     pl.pts.forEach(q=>{ g(0,'VERTEX'); g(8,pl.layer); g(10,f(q[0])); g(20,f(H - q[1])); g(30,'0.0'); }); // DXF ha l'asse Y verso l'alto
     g(0,'SEQEND'); g(8,pl.layer);
@@ -15749,6 +15805,17 @@ function silRefresh(){
   if(pl.mode==='separate') t += ' ' + tpl('File "_pieghe.dxf": {n} pieghe. Studio apre ogni file per conto suo: per allinearle al taglio copia le pieghe nel documento del taglio e posizionale con le coordinate (il file delle pieghe è più piccolo, quindi non allinearlo per i bordi).', {n:pl.nFold});
   if(pl.skipped) t += ' ' + tpl('{n} elementi con ruolo Taglio o Piega non sono linee o forme geometriche e non vengono esportati.', {n:pl.skipped});
   if(!pl.nCut) t += ' ' + translate('Attenzione: non ci sono linee di taglio visibili.');
+  { // ingombro rispetto all'area di taglio della Cameo (larga circa 30 cm; il tappetino 12×12" è 30,5 × 30,5 cm, quello 12×24" 30,5 × 61 cm)
+    const all = pl.cutPolys.concat(pl.foldPolys).flatMap(x=> x.pts);
+    if(all.length){
+      const w = Math.max(...all.map(q=>q[0])) - Math.min(...all.map(q=>q[0])), h = Math.max(...all.map(q=>q[1])) - Math.min(...all.map(q=>q[1]));
+      const W = Math.min(w, h), Hh = Math.max(w, h);
+      t += ' ' + tpl('Ingombro: {w} × {h} mm.', {w: Math.round(w), h: Math.round(h)});
+      if(W > 300) t += ' ' + translate('Attenzione: è più largo di 30 cm in entrambe le direzioni e non entra nella Cameo (larghezza di taglio circa 30 cm): dividilo in più pezzi.');
+      else if(Hh > 600) t += ' ' + translate('È più lungo di 61 cm: serve il materiale in rotolo senza tappetino (oppure dividilo in più pezzi).');
+      else if(Hh > 300) t += ' ' + translate('È più lungo di 30 cm: usa il tappetino da 12×24 pollici (30,5 × 61 cm) e orienta il lato lungo nel senso di avanzamento.');
+    }
+  }
   document.getElementById('silSummary').textContent = t;
 }
 function openSilhouetteExport(){ openModal('silModal'); silRefresh(); }
@@ -15762,8 +15829,9 @@ function doSilhouetteExport(){
   const pl = silhouettePlan();
   if(!pl.cutPolys.length && !pl.foldPolys.length){ showToast('Niente da esportare: non ci sono linee di taglio o piega visibili.', true); return; }
   const base = (document.getElementById('filename').value || 'disegno').replace(/[\\/:*?"<>|]+/g,'_');
-  if(pl.cutPolys.length) downloadText(buildDXF(pl.cutPolys), base + '_taglio.dxf', 'application/dxf');
-  if(pl.mode==='separate' && pl.foldPolys.length) setTimeout(()=> downloadText(buildDXF(pl.foldPolys), base + '_pieghe.dxf', 'application/dxf'), 400);
+  const ent = document.getElementById('silEntity').value;
+  if(pl.cutPolys.length) downloadText(buildDXF(pl.cutPolys, ent), base + '_taglio.dxf', 'application/dxf');
+  if(pl.mode==='separate' && pl.foldPolys.length) setTimeout(()=> downloadText(buildDXF(pl.foldPolys, ent), base + '_pieghe.dxf', 'application/dxf'), 400);
   document.getElementById('silModal').classList.remove('open');
   showToast(pl.mode==='separate' && pl.foldPolys.length ? translate('Esportati due file DXF: taglio e pieghe.') : translate('File DXF esportato.'), false);
 }
@@ -15773,7 +15841,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.84';
+const GUIDE_VERSION = '2.85';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -16284,7 +16352,21 @@ html:`<p>Menu <b>Stampa → ✂ Esporta per Silhouette Cameo (DXF)…</b>. Crea 
 <li><b>Piega da cordonare</b>: la piega resta una <b>linea continua</b>, nel file del taglio oppure in un file separato "_pieghe.dxf". In Studio la assegni allo strumento di cordonatura, oppure a una pressione bassa che segna senza tagliare. Attenzione: se la lasci su "Taglio", la Cameo la taglia per tutta la lunghezza.</li></ul>
 <p>Puoi anche non esportare le pieghe. La scelta, la lunghezza del tratto e quella del ponte vengono ricordate.</p>
 <p>Nel DXF ogni ruolo ha il suo livello e il suo colore: <b>TAGLIO</b> rosso, <b>FUSTELLA_SPECIALE</b> verde, <b>PIEGA</b> / <b>PIEGA_TRATTEGGIATA</b> blu. In Studio puoi usare il taglio per colore della linea per dare a ciascun gruppo un'azione diversa (lama, pressione, cordonatura). Nel file c'è solo il <b>percorso</b> delle linee: lo spessore con cui le vedi nel disegno non conta, la lama segue la linea centrale. La grafica stampata non entra mai nel DXF.</p>
-<p>In Studio: File → Apri, seleziona tutto, verifica nel pannello Invia che le linee siano su "Taglio", controlla le misure con un segmento di lunghezza nota e fai una prova su uno scarto dello stesso materiale. Il Print &amp; Cut non è supportato.</p>` },
+<p><b>Tipo di linee nel DXF</b>: il manuale di Silhouette Studio elenca le sole entità DXF che il programma legge (archi, cerchi, ellissi, linee, polilinee leggere, spline, testi). Per questo l'impostazione predefinita è <b>Linee singole (LINE)</b>, la più compatibile. <b>Percorsi continui</b> tiene ogni contorno in un pezzo unico: usalo solo se il tuo Studio lo apre bene.</p>
+<p>La finestra mostra anche l'<b>ingombro</b> del disegno e avvisa se non entra nella Cameo:</p>
+<ul><li>più di 30 cm di lato: il tappetino da 12×12" (30,5 × 30,5 cm) non basta;</li>
+<li>più di 61 cm: neanche quello da 12×24" basta e serve il rotolo;</li>
+<li>più di 30 cm in entrambe le direzioni: va diviso in più pezzi.</li></ul>
+<p><b>In Silhouette Studio</b> (dal manuale):</p>
+<ul><li><b>Aprire</b>: File → Apri, oppure trascina il DXF nell'area di lavoro; File → Unisci lo aggiunge al documento aperto. Controlla le misure con un segmento di lunghezza nota.</li>
+<li><b>Azione per colore della linea</b> (anche nell'edizione Basic): nel pannello Invia ogni colore ha la sua riga. Puoi attivarla o disattivarla, sceglierne l'ordine e aggiungere una <b>pausa</b> (tasto destro sul colore) per cambiare lama o mettere lo strumento di cordonatura. Il taglio per livello invece è solo nella Designer Edition. Per questo nel DXF di SpikeCut conta il <b>colore</b>: taglio rosso, fustella speciale verde, pieghe blu.</li>
+<li><b>Ordine</b>: in Invia → Avanzate attiva <b>"Ordina prima i contorni interni"</b>, così fori e finestre vengono tagliati prima del contorno esterno e il pezzo non si sposta.</li>
+<li><b>Forza</b> (Spessore): 33 livelli, circa 7 g ciascuno. Più è spesso il cartoncino, più alto il livello.</li>
+<li><b>Velocità</b>: da 1 a 10 (10–100 cm/s); per cartoncino spesso o disegni fitti usa velocità basse.</li>
+<li><b>Doppio passaggio</b>: per materiali spessi.</li>
+<li><b>Segmento di sovrataglio</b>: angoli più netti sui materiali densi.</li>
+<li><b>Taglio di prova</b>: sempre, prima del lavoro vero, su uno scarto dello stesso materiale.</li></ul>
+<p>Il Print &amp; Cut (crocini di registro) non è supportato dal DXF: per stampa e taglio usa i crocini di Studio.</p>` },
 
 { id:'pdf-stampa', cat:'Salvare ed esportare', title:'PDF per la stampa (CutContour, sovrastampa)', keys:'pdf stampa tipografia vettoriale tinta piatta spot cutcontour crease thru-cut kiss-cut sovrastampa overprint print and cut roland mimaki summa hp plotter',
 html:`<p>Menu <b>Stampa → 📄 Esporta PDF per la stampa…</b>. È il file da mandare a tipografie e plotter <b>print&amp;cut</b> (Roland, Mimaki, Summa, HP…):</p>
@@ -16370,6 +16452,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.85</b> — <a data-topic="silhouette">Silhouette Cameo</a>, dal manuale di Silhouette Studio: DXF con linee singole (LINE, il formato più compatibile; i percorsi continui restano un'opzione), controllo dell'ingombro rispetto all'area di taglio e ai tappetini, guida alle impostazioni di Studio (azione per colore della linea, contorni interni prima, forza, velocità, doppio passaggio).</li>
 <li><b>2.84</b> — <a data-topic="silhouette">Silhouette Cameo</a>: pieghe tratteggiate centrate con un ponte a ogni estremità (il bordo non si strappa), opzioni più chiare tra piega perforata e piega da cordonare, scelte ricordate, spiegazioni su colori per ruolo e spessore delle linee.</li>
 <li><b>2.83</b> — Corretto: aprendo dalla libreria un progetto con testi in un font importato (per esempio su un livello nascosto e poi reso visibile) a volte compariva il carattere standard del programma invece di quello scelto.</li>
 <li><b>2.82</b> — <b>Separa questo tratto</b> (doppio clic sul tratto o tasto destro): il tratto diventa una linea a sé.</li>
@@ -21319,7 +21402,7 @@ document.getElementById('symCenter').onclick = ()=>{ symCenterOnScope(); symRefr
 document.getElementById('symApply').onclick = applySymmetry;
 document.getElementById('silModalClose').onclick = ()=> document.getElementById('silModal').classList.remove('open');
 setupOverlayClickClose(document.getElementById('silModal'), ()=> document.getElementById('silModal').classList.remove('open'));
-['silFolds','silCut','silGap'].forEach(id=>{ const e=document.getElementById(id);
+['silFolds','silCut','silGap','silEntity'].forEach(id=>{ const e=document.getElementById(id);
   try{ const v = localStorage.getItem('spikecut-' + id); if(v!=null && v!=='') e.value = v; }catch(err){} // ricordo l'ultima scelta (dipende dal materiale)
   const save = ()=>{ try{ localStorage.setItem('spikecut-' + id, e.value); }catch(err){} silRefresh(); };
   e.onchange = save; e.oninput = save; });
