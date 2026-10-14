@@ -1004,7 +1004,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.83</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.84</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1301,9 +1301,9 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
         <div class="hint">Taglio e Fustella speciale, in un file "_taglio.dxf".</div></div>
       <div class="field"><label>Pieghe</label>
         <select id="silFolds">
-          <option value="perforate">Tratteggiate nel file del taglio (taglio a tratti: pronte da tagliare, si piegano a mano)</option>
-          <option value="same">Nel file del taglio, come linee continue (in Studio le selezioni e le assegni alla cordonatura)</option>
-          <option value="separate">In un file separato "_pieghe.dxf" (da passare in un secondo momento)</option>
+          <option value="perforate">Piega perforata: tratteggiata nel file del taglio (la lama fa piccoli tagli con ponticelli; si piega a mano)</option>
+          <option value="same">Piega da cordonare: linea continua nel file del taglio (in Studio assegnala allo strumento di cordonatura)</option>
+          <option value="separate">Piega da cordonare in un file separato "_pieghe.dxf" (da passare in un secondo momento)</option>
           <option value="none">Non esportarle</option>
         </select></div>
       <div id="silPerfRow" class="field" style="display:none;"><label>Tratteggio delle pieghe</label>
@@ -1312,7 +1312,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
           <span style="margin-left:8px;">ponte</span><input type="number" id="silGap" value="1.5" step="0.5" min="0.2" style="width:70px;"><span>mm</span>
         </div></div>
       <div id="silSummary" class="hint" style="margin-top:10px;padding:8px;border-radius:6px;background:rgba(201,151,63,0.12);font-weight:600;"></div>
-      <div class="hint" style="margin-top:8px;">In Silhouette Studio: File → Apri, scegli il DXF, seleziona tutto e verifica che nel pannello Invia le linee siano impostate su "Taglio". Controlla le misure con il righello prima di tagliare.</div>
+      <div class="hint" style="margin-top:8px;">In Silhouette Studio: File → Apri, scegli il DXF, seleziona tutto e verifica che nel pannello Invia le linee siano impostate su "Taglio". Controlla le misure con il righello prima di tagliare e fai una prova su uno scarto dello stesso materiale. Nel DXF c'è solo il percorso delle linee: lo spessore con cui le vedi nel disegno non conta, la lama segue la linea centrale. Le linee hanno un colore per ruolo (taglio rosso, fustella speciale verde, pieghe blu): in Studio puoi usare "taglia per colore della linea" per dare a ciascun gruppo un'azione diversa.</div>
       <button class="btn primary" id="silExport" style="width:100%;margin-top:12px;">Esporta</button>
     </div>
   </div>
@@ -2369,6 +2369,11 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Piega perforata: tratteggiata nel file del taglio (la lama fa piccoli tagli con ponticelli; si piega a mano)": "Perforated fold: dashed in the cut file (the blade makes small cuts with bridges; fold by hand)",
+    "Piega da cordonare: linea continua nel file del taglio (in Studio assegnala allo strumento di cordonatura)": "Fold to score: continuous line in the cut file (in Studio assign it to the scoring tool)",
+    "Piega da cordonare in un file separato \"_pieghe.dxf\" (da passare in un secondo momento)": "Fold to score in a separate \"_pieghe.dxf\" file (to run afterwards)",
+    "Ogni tratto è un piccolo taglio vero: va bene per una piega perforata, non per una cordonatura continua (per quella scegli \"Piega da cordonare\"). Il tratteggio è centrato e lascia un ponte a ogni estremità, così il bordo non si strappa.": "Each dash is a real small cut: fine for a perforated fold, not for continuous scoring (for that choose \"Fold to score\"). The dashes are centred and leave a bridge at each end, so the edge does not tear.",
+    "In Silhouette Studio: File → Apri, scegli il DXF, seleziona tutto e verifica che nel pannello Invia le linee siano impostate su \"Taglio\". Controlla le misure con il righello prima di tagliare e fai una prova su uno scarto dello stesso materiale. Nel DXF c'è solo il percorso delle linee: lo spessore con cui le vedi nel disegno non conta, la lama segue la linea centrale. Le linee hanno un colore per ruolo (taglio rosso, fustella speciale verde, pieghe blu): in Studio puoi usare \"taglia per colore della linea\" per dare a ciascun gruppo un'azione diversa.": "In Silhouette Studio: File → Open, choose the DXF, select all and check in the Send panel that the lines are set to \"Cut\". Check the measurements with the ruler before cutting and test on a scrap of the same material. The DXF contains only the path of the lines: the thickness you see in the drawing does not matter, the blade follows the centre line. Lines have a colour per role (cut red, special die-cut green, folds blue): in Studio you can use \"cut by line colour\" to give each group a different action.",
     "⤧ Separa questo tratto": "⤧ Detach this segment",
     "Spezza la linea ai due capi di questo tratto: il tratto diventa una linea a sé (per esempio per dargli un altro ruolo)": "Splits the line at both ends of this segment: the segment becomes a separate line (for example to give it another role)",
     "Questa linea ha un solo tratto: è già separata.": "This line has only one segment: it is already separate.",
@@ -4220,6 +4225,11 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Piega perforata: tratteggiata nel file del taglio (la lama fa piccoli tagli con ponticelli; si piega a mano)": "Perforierte Falz: gestrichelt in der Schnittdatei (die Klinge macht kleine Schnitte mit Stegen; von Hand falten)",
+    "Piega da cordonare: linea continua nel file del taglio (in Studio assegnala allo strumento di cordonatura)": "Rillfalz: durchgehende Linie in der Schnittdatei (in Studio dem Rillwerkzeug zuweisen)",
+    "Piega da cordonare in un file separato \"_pieghe.dxf\" (da passare in un secondo momento)": "Rillfalz in einer eigenen Datei \"_pieghe.dxf\" (in einem zweiten Durchgang)",
+    "Ogni tratto è un piccolo taglio vero: va bene per una piega perforata, non per una cordonatura continua (per quella scegli \"Piega da cordonare\"). Il tratteggio è centrato e lascia un ponte a ogni estremità, così il bordo non si strappa.": "Jeder Strich ist ein echter kleiner Schnitt: gut für eine perforierte Falz, nicht für eine durchgehende Rillung (dafür \"Rillfalz\" wählen). Die Striche sind zentriert und lassen an jedem Ende einen Steg, damit der Rand nicht einreißt.",
+    "In Silhouette Studio: File → Apri, scegli il DXF, seleziona tutto e verifica che nel pannello Invia le linee siano impostate su \"Taglio\". Controlla le misure con il righello prima di tagliare e fai una prova su uno scarto dello stesso materiale. Nel DXF c'è solo il percorso delle linee: lo spessore con cui le vedi nel disegno non conta, la lama segue la linea centrale. Le linee hanno un colore per ruolo (taglio rosso, fustella speciale verde, pieghe blu): in Studio puoi usare \"taglia per colore della linea\" per dare a ciascun gruppo un'azione diversa.": "In Silhouette Studio: Datei → Öffnen, DXF wählen, alles auswählen und im Senden-Bereich prüfen, dass die Linien auf \"Schneiden\" stehen. Vor dem Schneiden die Maße mit dem Lineal prüfen und an einem Rest desselben Materials testen. Das DXF enthält nur den Linienverlauf: die im Entwurf sichtbare Stärke zählt nicht, die Klinge folgt der Mittellinie. Die Linien haben eine Farbe pro Rolle (Schnitt rot, Sonderstanzung grün, Falze blau): in Studio kannst du \"nach Linienfarbe schneiden\" nutzen, um jeder Gruppe eine andere Aktion zu geben.",
     "⤧ Separa questo tratto": "⤧ Dieses Segment abtrennen",
     "Spezza la linea ai due capi di questo tratto: il tratto diventa una linea a sé (per esempio per dargli un altro ruolo)": "Teilt die Linie an beiden Enden dieses Segments: das Segment wird eine eigene Linie (z. B. um ihm eine andere Rolle zu geben)",
     "Questa linea ha un solo tratto: è già separata.": "Diese Linie hat nur ein Segment: sie ist bereits getrennt.",
@@ -6071,6 +6081,11 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Piega perforata: tratteggiata nel file del taglio (la lama fa piccoli tagli con ponticelli; si piega a mano)": "Pliegue perforado: discontinuo en el archivo de corte (la cuchilla hace pequeños cortes con puentes; se dobla a mano)",
+    "Piega da cordonare: linea continua nel file del taglio (in Studio assegnala allo strumento di cordonatura)": "Pliegue para hendir: línea continua en el archivo de corte (en Studio asígnala a la herramienta de hendido)",
+    "Piega da cordonare in un file separato \"_pieghe.dxf\" (da passare in un secondo momento)": "Pliegue para hendir en un archivo aparte \"_pieghe.dxf\" (para pasar después)",
+    "Ogni tratto è un piccolo taglio vero: va bene per una piega perforata, non per una cordonatura continua (per quella scegli \"Piega da cordonare\"). Il tratteggio è centrato e lascia un ponte a ogni estremità, così il bordo non si strappa.": "Cada trazo es un pequeño corte real: sirve para un pliegue perforado, no para un hendido continuo (para eso elige \"Pliegue para hendir\"). Los trazos están centrados y dejan un puente en cada extremo, así el borde no se rasga.",
+    "In Silhouette Studio: File → Apri, scegli il DXF, seleziona tutto e verifica che nel pannello Invia le linee siano impostate su \"Taglio\". Controlla le misure con il righello prima di tagliare e fai una prova su uno scarto dello stesso materiale. Nel DXF c'è solo il percorso delle linee: lo spessore con cui le vedi nel disegno non conta, la lama segue la linea centrale. Le linee hanno un colore per ruolo (taglio rosso, fustella speciale verde, pieghe blu): in Studio puoi usare \"taglia per colore della linea\" per dare a ciascun gruppo un'azione diversa.": "En Silhouette Studio: Archivo → Abrir, elige el DXF, selecciona todo y comprueba en el panel Enviar que las líneas estén en \"Cortar\". Comprueba las medidas con la regla antes de cortar y haz una prueba en un retal del mismo material. El DXF contiene solo el trazado de las líneas: el grosor con el que las ves en el dibujo no cuenta, la cuchilla sigue la línea central. Las líneas tienen un color por rol (corte rojo, troquel especial verde, pliegues azul): en Studio puedes usar \"cortar por color de línea\" para dar a cada grupo una acción distinta.",
     "⤧ Separa questo tratto": "⤧ Separar este tramo",
     "Spezza la linea ai due capi di questo tratto: il tratto diventa una linea a sé (per esempio per dargli un altro ruolo)": "Corta la línea en los dos extremos de este tramo: el tramo pasa a ser una línea aparte (por ejemplo para darle otro rol)",
     "Questa linea ha un solo tratto: è già separata.": "Esta línea tiene un solo tramo: ya está separada.",
@@ -7922,6 +7937,11 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Piega perforata: tratteggiata nel file del taglio (la lama fa piccoli tagli con ponticelli; si piega a mano)": "打孔折线：在切割文件中为虚线（刀片切出带连接点的小切口，手动折叠）",
+    "Piega da cordonare: linea continua nel file del taglio (in Studio assegnala allo strumento di cordonatura)": "压痕折线：切割文件中的连续线（在 Studio 中指定给压痕工具）",
+    "Piega da cordonare in un file separato \"_pieghe.dxf\" (da passare in un secondo momento)": "压痕折线放在单独文件“_pieghe.dxf”中（之后再处理）",
+    "Ogni tratto è un piccolo taglio vero: va bene per una piega perforata, non per una cordonatura continua (per quella scegli \"Piega da cordonare\"). Il tratteggio è centrato e lascia un ponte a ogni estremità, così il bordo non si strappa.": "每一段都是真正的小切口：适合打孔折线，不适合连续压痕（压痕请选“压痕折线”）。虚线居中，两端各留一个连接点，边缘不会撕裂。",
+    "In Silhouette Studio: File → Apri, scegli il DXF, seleziona tutto e verifica che nel pannello Invia le linee siano impostate su \"Taglio\". Controlla le misure con il righello prima di tagliare e fai una prova su uno scarto dello stesso materiale. Nel DXF c'è solo il percorso delle linee: lo spessore con cui le vedi nel disegno non conta, la lama segue la linea centrale. Le linee hanno un colore per ruolo (taglio rosso, fustella speciale verde, pieghe blu): in Studio puoi usare \"taglia per colore della linea\" per dare a ciascun gruppo un'azione diversa.": "在 Silhouette Studio 中：文件 → 打开，选择 DXF，全选并在“发送”面板中确认线条设为“切割”。切割前用标尺检查尺寸，并在同种材料的边角料上试切。DXF 只包含线条路径：图中看到的线宽不起作用，刀片沿中心线走。每种角色有自己的颜色（切割红色、特殊刀模绿色、折线蓝色）：在 Studio 中可用“按线条颜色切割”为每组设置不同的操作。",
     "⤧ Separa questo tratto": "⤧ 分离此线段",
     "Spezza la linea ai due capi di questo tratto: il tratto diventa una linea a sé (per esempio per dargli un altro ruolo)": "在此线段两端断开线条：该线段成为独立线条（例如可赋予其他角色）",
     "Questa linea ha un solo tratto: è già separata.": "此线条只有一段：已经是独立的。",
@@ -9773,6 +9793,11 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Piega perforata: tratteggiata nel file del taglio (la lama fa piccoli tagli con ponticelli; si piega a mano)": "Pli perforé : en pointillé dans le fichier de coupe (la lame fait de petites coupes avec des ponts ; pliage à la main)",
+    "Piega da cordonare: linea continua nel file del taglio (in Studio assegnala allo strumento di cordonatura)": "Pli à rainer : ligne continue dans le fichier de coupe (dans Studio, attribuez-la à l'outil de rainage)",
+    "Piega da cordonare in un file separato \"_pieghe.dxf\" (da passare in un secondo momento)": "Pli à rainer dans un fichier séparé \"_pieghe.dxf\" (à passer ensuite)",
+    "Ogni tratto è un piccolo taglio vero: va bene per una piega perforata, non per una cordonatura continua (per quella scegli \"Piega da cordonare\"). Il tratteggio è centrato e lascia un ponte a ogni estremità, così il bordo non si strappa.": "Chaque trait est une vraie petite coupe : bien pour un pli perforé, pas pour un rainage continu (pour cela choisissez \"Pli à rainer\"). Les traits sont centrés et laissent un pont à chaque extrémité, le bord ne se déchire donc pas.",
+    "In Silhouette Studio: File → Apri, scegli il DXF, seleziona tutto e verifica che nel pannello Invia le linee siano impostate su \"Taglio\". Controlla le misure con il righello prima di tagliare e fai una prova su uno scarto dello stesso materiale. Nel DXF c'è solo il percorso delle linee: lo spessore con cui le vedi nel disegno non conta, la lama segue la linea centrale. Le linee hanno un colore per ruolo (taglio rosso, fustella speciale verde, pieghe blu): in Studio puoi usare \"taglia per colore della linea\" per dare a ciascun gruppo un'azione diversa.": "Dans Silhouette Studio : Fichier → Ouvrir, choisissez le DXF, sélectionnez tout et vérifiez dans le panneau Envoyer que les lignes sont sur \"Couper\". Vérifiez les mesures avec la règle avant de couper et faites un essai sur une chute du même matériau. Le DXF ne contient que le tracé des lignes : l'épaisseur visible dans le dessin ne compte pas, la lame suit la ligne centrale. Les lignes ont une couleur par rôle (coupe rouge, découpe spéciale verte, plis bleus) : dans Studio vous pouvez utiliser \"couper par couleur de ligne\" pour donner à chaque groupe une action différente.",
     "⤧ Separa questo tratto": "⤧ Détacher ce segment",
     "Spezza la linea ai due capi di questo tratto: il tratto diventa una linea a sé (per esempio per dargli un altro ruolo)": "Coupe la ligne aux deux extrémités de ce segment : le segment devient une ligne à part (par exemple pour lui donner un autre rôle)",
     "Questa linea ha un solo tratto: è già separata.": "Cette ligne n'a qu'un segment : elle est déjà séparée.",
@@ -15648,7 +15673,14 @@ function shapeToPolylines(s){
 // piega tratteggiata: tratti di taglio lunghi "cut" separati da ponti lunghi "gap", lungo tutta la linea
 function perforatePolyline(pl, cut, gap){
   const pts = pl.closed ? pl.pts.concat([pl.pts[0]]) : pl.pts;
-  const out = []; let cur = null, phase = 0, onCut = true;
+  const out = []; let cur = null, phase = 0, onCut = true, maxCuts = Infinity;
+  // linea aperta: tratteggio centrato, con un ponte (almeno mezzo) a ogni estremità. Le pieghe di solito finiscono
+  // sul bordo di taglio: un tratto che parte proprio dal bordo lo indebolirebbe e il cartoncino si strapperebbe lì
+  if(!pl.closed){
+    let len = 0; for(let i=0;i<pts.length-1;i++) len += dist(pts[i], pts[i+1]);
+    const n = Math.max(1, Math.floor((len - gap)/(cut + gap)));
+    if(len > cut + gap){ const margin = (len - (n*cut + (n-1)*gap))/2; onCut = false; phase = gap - margin; maxCuts = n; }
+  }
   for(let i=0;i<pts.length-1;i++){
     const a = pts[i], b = pts[i+1], L = dist(a,b); let t = 0;
     while(t < L - 1e-9){
@@ -15656,7 +15688,7 @@ function perforatePolyline(pl, cut, gap){
       const P = [a[0]+(b[0]-a[0])*t/L, a[1]+(b[1]-a[1])*t/L], Q = [a[0]+(b[0]-a[0])*(t+step)/L, a[1]+(b[1]-a[1])*(t+step)/L];
       if(onCut){ if(!cur){ cur = [P]; } cur.push(Q); }
       t += step; phase += step;
-      if(phase >= (onCut ? cut : gap) - 1e-9){ if(onCut && cur){ out.push({pts:cur, closed:false}); cur = null; } onCut = !onCut; phase = 0; }
+      if(phase >= (onCut ? cut : gap) - 1e-9){ if(onCut && cur){ out.push({pts:cur, closed:false}); cur = null; if(out.length >= maxCuts) return out; } onCut = !onCut; phase = 0; }
     }
   }
   if(cur && cur.length>1) out.push({pts:cur, closed:false});
@@ -15712,6 +15744,7 @@ function silRefresh(){
   let t = tpl('File "_taglio.dxf": {n} linee di taglio', {n:pl.nCut});
   if(pl.mode==='perforate') t += ' ' + tpl('+ {n} pieghe tratteggiate ({d} tratti)', {n:pl.nFold, d:pl.cutPolys.filter(x=>x.layer==='PIEGA_TRATTEGGIATA').length});
   t += '.';
+  if(pl.mode==='perforate' && pl.nFold) t += ' ' + translate('Ogni tratto è un piccolo taglio vero: va bene per una piega perforata, non per una cordonatura continua (per quella scegli "Piega da cordonare"). Il tratteggio è centrato e lascia un ponte a ogni estremità, così il bordo non si strappa.');
   if(pl.mode==='same') t += ' ' + tpl('+ {n} pieghe come linee continue (livello PIEGA, colore blu): in Silhouette Studio selezionale e assegnale alla cordonatura o a una pressione ridotta, altrimenti verrebbero tagliate.', {n:pl.nFold});
   if(pl.mode==='separate') t += ' ' + tpl('File "_pieghe.dxf": {n} pieghe. Studio apre ogni file per conto suo: per allinearle al taglio copia le pieghe nel documento del taglio e posizionale con le coordinate (il file delle pieghe è più piccolo, quindi non allinearlo per i bordi).', {n:pl.nFold});
   if(pl.skipped) t += ' ' + tpl('{n} elementi con ruolo Taglio o Piega non sono linee o forme geometriche e non vengono esportati.', {n:pl.skipped});
@@ -15740,7 +15773,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.83';
+const GUIDE_VERSION = '2.84';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -16246,8 +16279,12 @@ html:`<p>Dal menu <b>Stampa</b>:</p>
 
 { id:'silhouette', cat:'Salvare ed esportare', title:'Silhouette Cameo', keys:'silhouette cameo plotter dxf taglio studio cordonatura perforazione tratteggio',
 html:`<p>Menu <b>Stampa → ✂ Esporta per Silhouette Cameo (DXF)…</b>. Crea un file DXF in millimetri reali, che Silhouette Studio apre anche nell'edizione gratuita con le linee pronte per il taglio (gli SVG richiedono la Designer Edition). Contiene solo le linee tecniche dei livelli visibili.</p>
-<p>Per le pieghe scegli: <b>tratteggiate</b> (taglio a tratti, lunghezza di tratto e ponte regolabili: pronte da tagliare), <b>nel file del taglio come linee continue</b> (in Studio vanno assegnate alla cordonatura), <b>in un file separato</b>, oppure non esportarle.</p>
-<p>In Studio: File → Apri, seleziona tutto, verifica nel pannello Invia che le linee siano su "Taglio" e controlla le misure prima di tagliare. Il Print &amp; Cut non è supportato.</p>` },
+<p>Per le pieghe ci sono due modi di lavorare, da non confondere:</p>
+<ul><li><b>Piega perforata</b>: la piega diventa un tratteggio di <b>tagli veri</b> (lunghezza del tratto e del ponte regolabili). La lama fa tanti piccoli tagli lasciando ponticelli di materiale, e poi si piega a mano. Il tratteggio è <b>centrato</b> e lascia un ponte a ogni estremità, così il bordo dove la piega incontra il taglio non si strappa. È normale che 12 pieghe diventino centinaia di tratti. Tratti e ponti vanno scelti in base al cartoncino: più è spesso, più lunghi i tratti; fai una prova su uno scarto.</li>
+<li><b>Piega da cordonare</b>: la piega resta una <b>linea continua</b>, nel file del taglio oppure in un file separato "_pieghe.dxf". In Studio la assegni allo strumento di cordonatura, oppure a una pressione bassa che segna senza tagliare. Attenzione: se la lasci su "Taglio", la Cameo la taglia per tutta la lunghezza.</li></ul>
+<p>Puoi anche non esportare le pieghe. La scelta, la lunghezza del tratto e quella del ponte vengono ricordate.</p>
+<p>Nel DXF ogni ruolo ha il suo livello e il suo colore: <b>TAGLIO</b> rosso, <b>FUSTELLA_SPECIALE</b> verde, <b>PIEGA</b> / <b>PIEGA_TRATTEGGIATA</b> blu. In Studio puoi usare il taglio per colore della linea per dare a ciascun gruppo un'azione diversa (lama, pressione, cordonatura). Nel file c'è solo il <b>percorso</b> delle linee: lo spessore con cui le vedi nel disegno non conta, la lama segue la linea centrale. La grafica stampata non entra mai nel DXF.</p>
+<p>In Studio: File → Apri, seleziona tutto, verifica nel pannello Invia che le linee siano su "Taglio", controlla le misure con un segmento di lunghezza nota e fai una prova su uno scarto dello stesso materiale. Il Print &amp; Cut non è supportato.</p>` },
 
 { id:'pdf-stampa', cat:'Salvare ed esportare', title:'PDF per la stampa (CutContour, sovrastampa)', keys:'pdf stampa tipografia vettoriale tinta piatta spot cutcontour crease thru-cut kiss-cut sovrastampa overprint print and cut roland mimaki summa hp plotter',
 html:`<p>Menu <b>Stampa → 📄 Esporta PDF per la stampa…</b>. È il file da mandare a tipografie e plotter <b>print&amp;cut</b> (Roland, Mimaki, Summa, HP…):</p>
@@ -16333,6 +16370,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.84</b> — <a data-topic="silhouette">Silhouette Cameo</a>: pieghe tratteggiate centrate con un ponte a ogni estremità (il bordo non si strappa), opzioni più chiare tra piega perforata e piega da cordonare, scelte ricordate, spiegazioni su colori per ruolo e spessore delle linee.</li>
 <li><b>2.83</b> — Corretto: aprendo dalla libreria un progetto con testi in un font importato (per esempio su un livello nascosto e poi reso visibile) a volte compariva il carattere standard del programma invece di quello scelto.</li>
 <li><b>2.82</b> — <b>Separa questo tratto</b> (doppio clic sul tratto o tasto destro): il tratto diventa una linea a sé.</li>
 <li><b>2.81</b> — Corretti: il tasto destro non toglie più la selezione (Raggruppa dal menu prende tutti gli oggetti); gli oggetti incollati restano nel livello dell'originale e quindi sopra di lui, così si trascina la copia e non l'originale. Pulsante <b>🔗 Unisci punti</b> nella barra Azioni.</li>
@@ -21281,7 +21319,10 @@ document.getElementById('symCenter').onclick = ()=>{ symCenterOnScope(); symRefr
 document.getElementById('symApply').onclick = applySymmetry;
 document.getElementById('silModalClose').onclick = ()=> document.getElementById('silModal').classList.remove('open');
 setupOverlayClickClose(document.getElementById('silModal'), ()=> document.getElementById('silModal').classList.remove('open'));
-['silFolds','silCut','silGap'].forEach(id=>{ const e=document.getElementById(id); e.onchange = silRefresh; e.oninput = silRefresh; });
+['silFolds','silCut','silGap'].forEach(id=>{ const e=document.getElementById(id);
+  try{ const v = localStorage.getItem('spikecut-' + id); if(v!=null && v!=='') e.value = v; }catch(err){} // ricordo l'ultima scelta (dipende dal materiale)
+  const save = ()=>{ try{ localStorage.setItem('spikecut-' + id, e.value); }catch(err){} silRefresh(); };
+  e.onchange = save; e.oninput = save; });
 document.getElementById('silExport').onclick = doSilhouetteExport;
 document.getElementById('pdfImportClose').onclick = ()=> document.getElementById('pdfImportModal').classList.remove('open');
 setupOverlayClickClose(document.getElementById('pdfImportModal'), ()=> document.getElementById('pdfImportModal').classList.remove('open'));
