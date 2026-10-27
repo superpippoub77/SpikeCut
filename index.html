@@ -859,6 +859,8 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <div class="grp menuwrap">
     <button class="btn primary" style="width:auto;margin:0;padding:7px 14px;" id="btnPrintMenu">Stampa ▾</button>
     <div class="dropdown-menu" id="printMenu">
+      <button data-action="toggle-art-only" id="artOnlyMenuItem" title="Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova. Non tocca DXF, CAD e Silhouette, che servono proprio per tagliare.">☐ Solo grafica: esporta senza linee di taglio e pieghe</button>
+      <div class="menu-sep"></div>
       <button data-action="export-svg">Esporta SVG (taglio/stampa)</button>
       <button data-action="export-pdf-print">📄 Esporta PDF per la stampa (vettoriale, CutContour)…</button>
       <button data-action="export-pdf">Esporta PDF (anteprima, immagine)</button>
@@ -1004,7 +1006,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.86</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.87</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2375,6 +2377,11 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "☐ Solo grafica: esporta senza linee di taglio e pieghe": "☐ Artwork only: export without cut and fold lines",
+    "Solo grafica: esporta senza linee di taglio e pieghe": "Artwork only: export without cut and fold lines",
+    "Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova. Non tocca DXF, CAD e Silhouette, che servono proprio per tagliare.": "Applies to SVG, PDF, print PDF, multi-page PDF, image and proof print. It does not affect DXF, CAD and Silhouette, which are meant for cutting.",
+    "Esportazioni grafiche senza linee di taglio e pieghe (solo grafica).": "Graphic exports without cut and fold lines (artwork only).",
+    "Esportazioni grafiche di nuovo con le linee di taglio e pieghe.": "Graphic exports include cut and fold lines again.",
     "Attenzione: è più largo di 30 cm in entrambe le direzioni e non entra nella Cameo (larghezza massima di taglio 12 pollici, circa 30 cm): dividilo in più pezzi.": "Warning: it is wider than 30 cm in both directions and does not fit the Cameo (maximum cutting width 12 inches, about 30 cm): split it into several pieces.",
     "Tipo di linee nel DXF": "Line type in the DXF",
     "Linee singole (LINE): il formato più sicuro per Silhouette Studio": "Single lines (LINE): the safest format for Silhouette Studio",
@@ -4240,6 +4247,11 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "☐ Solo grafica: esporta senza linee di taglio e pieghe": "☐ Nur Grafik: ohne Schnitt- und Falzlinien exportieren",
+    "Solo grafica: esporta senza linee di taglio e pieghe": "Nur Grafik: ohne Schnitt- und Falzlinien exportieren",
+    "Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova. Non tocca DXF, CAD e Silhouette, che servono proprio per tagliare.": "Gilt für SVG, PDF, Druck-PDF, mehrseitiges PDF, Bild und Probedruck. DXF, CAD und Silhouette bleiben unverändert, da sie zum Schneiden dienen.",
+    "Esportazioni grafiche senza linee di taglio e pieghe (solo grafica).": "Grafik-Exporte ohne Schnitt- und Falzlinien (nur Grafik).",
+    "Esportazioni grafiche di nuovo con le linee di taglio e pieghe.": "Grafik-Exporte wieder mit Schnitt- und Falzlinien.",
     "Attenzione: è più largo di 30 cm in entrambe le direzioni e non entra nella Cameo (larghezza massima di taglio 12 pollici, circa 30 cm): dividilo in più pezzi.": "Achtung: es ist in beiden Richtungen breiter als 30 cm und passt nicht in die Cameo (maximale Schnittbreite 12 Zoll, etwa 30 cm): teile es in mehrere Stücke.",
     "Tipo di linee nel DXF": "Linienart im DXF",
     "Linee singole (LINE): il formato più sicuro per Silhouette Studio": "Einzelne Linien (LINE): das sicherste Format für Silhouette Studio",
@@ -6105,6 +6117,11 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "☐ Solo grafica: esporta senza linee di taglio e pieghe": "☐ Solo gráfica: exportar sin líneas de corte y pliegue",
+    "Solo grafica: esporta senza linee di taglio e pieghe": "Solo gráfica: exportar sin líneas de corte y pliegue",
+    "Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova. Non tocca DXF, CAD e Silhouette, che servono proprio per tagliare.": "Vale para SVG, PDF, PDF de impresión, PDF multipágina, imagen e impresión de prueba. No afecta a DXF, CAD y Silhouette, que sirven precisamente para cortar.",
+    "Esportazioni grafiche senza linee di taglio e pieghe (solo grafica).": "Exportaciones gráficas sin líneas de corte y pliegue (solo gráfica).",
+    "Esportazioni grafiche di nuovo con le linee di taglio e pieghe.": "Las exportaciones gráficas vuelven a incluir las líneas de corte y pliegue.",
     "Attenzione: è più largo di 30 cm in entrambe le direzioni e non entra nella Cameo (larghezza massima di taglio 12 pollici, circa 30 cm): dividilo in più pezzi.": "Atención: mide más de 30 cm en ambas direcciones y no cabe en la Cameo (ancho máximo de corte 12 pulgadas, unos 30 cm): divídelo en varias piezas.",
     "Tipo di linee nel DXF": "Tipo de líneas en el DXF",
     "Linee singole (LINE): il formato più sicuro per Silhouette Studio": "Líneas sueltas (LINE): el formato más seguro para Silhouette Studio",
@@ -7970,6 +7987,11 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "☐ Solo grafica: esporta senza linee di taglio e pieghe": "☐ 仅图案：导出时不含切割线和折线",
+    "Solo grafica: esporta senza linee di taglio e pieghe": "仅图案：导出时不含切割线和折线",
+    "Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova. Non tocca DXF, CAD e Silhouette, che servono proprio per tagliare.": "适用于 SVG、PDF、印刷 PDF、多页 PDF、图片和打样。不影响用于切割的 DXF、CAD 和 Silhouette。",
+    "Esportazioni grafiche senza linee di taglio e pieghe (solo grafica).": "图形导出不含切割线和折线（仅图案）。",
+    "Esportazioni grafiche di nuovo con le linee di taglio e pieghe.": "图形导出重新包含切割线和折线。",
     "Attenzione: è più largo di 30 cm in entrambe le direzioni e non entra nella Cameo (larghezza massima di taglio 12 pollici, circa 30 cm): dividilo in più pezzi.": "注意：两个方向都超过 30 cm，放不进 Cameo（最大切割宽度 12 英寸，约 30 cm）：请分成几块。",
     "Tipo di linee nel DXF": "DXF 中的线条类型",
     "Linee singole (LINE): il formato più sicuro per Silhouette Studio": "单独线段（LINE）：Silhouette Studio 最稳妥的格式",
@@ -9835,6 +9857,11 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "☐ Solo grafica: esporta senza linee di taglio e pieghe": "☐ Graphisme seul : exporter sans lignes de coupe et de pli",
+    "Solo grafica: esporta senza linee di taglio e pieghe": "Graphisme seul : exporter sans lignes de coupe et de pli",
+    "Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova. Non tocca DXF, CAD e Silhouette, che servono proprio per tagliare.": "S'applique au SVG, PDF, PDF d'impression, PDF multipage, image et épreuve. N'affecte pas DXF, CAO et Silhouette, qui servent justement à découper.",
+    "Esportazioni grafiche senza linee di taglio e pieghe (solo grafica).": "Exports graphiques sans lignes de coupe et de pli (graphisme seul).",
+    "Esportazioni grafiche di nuovo con le linee di taglio e pieghe.": "Les exports graphiques incluent de nouveau les lignes de coupe et de pli.",
     "Attenzione: è più largo di 30 cm in entrambe le direzioni e non entra nella Cameo (larghezza massima di taglio 12 pollici, circa 30 cm): dividilo in più pezzi.": "Attention : il dépasse 30 cm dans les deux sens et n'entre pas dans la Cameo (largeur de coupe maximale 12 pouces, environ 30 cm) : divisez-le en plusieurs morceaux.",
     "Tipo di linee nel DXF": "Type de lignes dans le DXF",
     "Linee singole (LINE): il formato più sicuro per Silhouette Studio": "Lignes simples (LINE) : le format le plus sûr pour Silhouette Studio",
@@ -11437,6 +11464,7 @@ function setLang(lang){
   currentLang = lang;
   try{ localStorage.setItem('spikecut-lang', lang); }catch(err){ /* best-effort */ }
   applyI18n(document.body);
+  if(typeof refreshArtOnlyMenu==='function') refreshArtOnlyMenu(); // la voce mostra ☐/☑: va riscritta dopo la traduzione
   updateRailTitles(); // i tooltip degli strumenti sono costruiti concatenando etichetta+tasto: vanno aggiornati a parte
   renderAll(); // rigenera pannello proprietà, libreria, ecc. con la lingua nuova
   layoutBars(); // le parole hanno lunghezze diverse: la barra si ricalcola
@@ -11591,7 +11619,8 @@ const state = {
   snapMagnet: true,
   transpDark: true,
   gridAuto: true,
-  dieHighlight: false,       // vista "fustella": grafica attenuata, taglio e pieghe in evidenza sopra a tutto            // colore della griglia scelto in automatico in base allo sfondo del foglio          // trasparenza del foglio mostrata su scacchiera scura (preferenza di visione)
+  dieHighlight: false,
+  exportArtOnly: false,      // esportazioni grafiche (SVG, PDF, immagine, stampa) senza linee di taglio, piega, fustella e colla       // vista "fustella": grafica attenuata, taglio e pieghe in evidenza sopra a tutto            // colore della griglia scelto in automatico in base allo sfondo del foglio          // trasparenza del foglio mostrata su scacchiera scura (preferenza di visione)
   magnetPx: 10,                // screen px radius for magnet
   draft: null,                 // in-progress drawing object
   drag: null,                  // active drag operation
@@ -15850,7 +15879,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.86';
+const GUIDE_VERSION = '2.87';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -16387,13 +16416,14 @@ html:`<p>Menu <b>Stampa → ✂ Esporta per Silhouette Cameo (DXF)…</b>. Crea 
 <p><b>Collegamento diretto al plotter</b>: non è previsto. La licenza di Silhouette Studio vieta di ricostruire o imitare il modo in cui il programma comunica con il firmware della macchina. SpikeCut prepara il file e il taglio si manda da Studio.</p>
 <p>Il Print &amp; Cut (crocini di registro) non è supportato dal DXF: per stampa e taglio usa i crocini di Studio.</p>` },
 
-{ id:'pdf-stampa', cat:'Salvare ed esportare', title:'PDF per la stampa (CutContour, sovrastampa)', keys:'pdf stampa tipografia vettoriale tinta piatta spot cutcontour crease thru-cut kiss-cut sovrastampa overprint print and cut roland mimaki summa hp plotter',
+{ id:'pdf-stampa', cat:'Salvare ed esportare', title:'PDF per la stampa (CutContour, sovrastampa)', keys:'solo grafica senza linee taglio pieghe pdf stampa tipografia vettoriale tinta piatta spot cutcontour crease thru-cut kiss-cut sovrastampa overprint print and cut roland mimaki summa hp plotter',
 html:`<p>Menu <b>Stampa → 📄 Esporta PDF per la stampa…</b>. È il file da mandare a tipografie e plotter <b>print&amp;cut</b> (Roland, Mimaki, Summa, HP…):</p>
 <ul><li>la <b>grafica</b> (sfondo, immagini, testi, disegni) è un'immagine alla risoluzione scelta (150, 300 o 450 DPI);</li>
 <li>le <b>linee tecniche</b> sono vettoriali, ognuna in una <b>tinta piatta</b> con un nome (CutContour per il taglio, Crease per le pieghe, Perf per la fustella speciale, Glue per l'incollaggio): la macchina le riconosce dal nome;</li>
 <li>sono in <b>sovrastampa</b>, quindi non "bucano" la grafica sotto;</li>
 <li>spessore delle linee regolabile (0,25 pt è il valore tipico), misura reale, un foglio.</li></ul>
-<p>I nomi si cambiano nella finestra e vengono ricordati: chiedi alla tipografia quali usa (es. Thru-cut, Kiss-cut, Creasing). Togli la spunta a una linea per non esportarla.</p>` },
+<p>I nomi si cambiano nella finestra e vengono ricordati: chiedi alla tipografia quali usa (es. Thru-cut, Kiss-cut, Creasing). Togli la spunta a una linea per non esportarla.</p>
+<p><b>Solo grafica</b>: nel menu <b>Stampa</b> la prima voce, <b>☐ Solo grafica: esporta senza linee di taglio e pieghe</b>, toglie in un colpo solo taglio, pieghe, fustella speciale e colla da <b>tutte</b> le esportazioni grafiche: SVG (anche la legenda), PDF anteprima, PDF per la stampa, PDF multi-pagina, immagine PNG/JPG, retro e stampa di prova. Con la spunta (☑) esce solo la grafica: utile per la tipografia, per un'anteprima pulita o per un catalogo. La scelta viene ricordata; clicca di nuovo la voce per rimettere le linee. Non tocca le esportazioni DXF, CAD e Silhouette, che servono proprio per tagliare.</p>` },
 { id:'esporta-immagine', cat:'Salvare ed esportare', title:'Esportare un\'immagine (PNG/JPG)', keys:'png jpg jpeg immagine esportare dpi risoluzione anteprima ecommerce catalogo',
 html:`<p>Menu <b>Stampa → 🖼 Esporta immagine…</b>: il foglio in scala reale come PNG o JPG a 96, 150, 300 o 600 DPI, con o senza le linee di taglio e piega. La risoluzione viene scritta nel file, così stampandolo esce della misura giusta. Il PNG mantiene la trasparenza (se lo sfondo non è applicato); il JPG ha sempre il fondo bianco. Per fogli molto grandi la risoluzione viene ridotta quanto basta a stare nei limiti del browser (la finestra lo dice).</p>` },
 { id:'cad', cat:'Salvare ed esportare', title:'CAD, plotter e fustellatori (DXF, PLT, CF2) e metri di lama', keys:'dxf cad autocad artioscad librecad lightburn laser hpgl plt cf2 kongsberg elitron fustellatore fustella lama metri preventivo livelli cut crease perf',
@@ -16471,6 +16501,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.87</b> — Menu Stampa → <a data-topic="pdf-stampa">Solo grafica</a>: esporta SVG, PDF e immagini senza linee di taglio e pieghe.</li>
 <li><b>2.86</b> — <a data-topic="silhouette">Silhouette Cameo</a>, dal manuale di Studio 5: nel DXF le pieghe vengono prima del taglio (si cordonano a foglio intero); guida al taglio e cordonatura nello stesso lavoro con i due portautensili; Intelligent Path; limite di 12 pollici.</li>
 <li><b>2.85</b> — <a data-topic="silhouette">Silhouette Cameo</a>, dal manuale di Silhouette Studio: DXF con linee singole (LINE, il formato più compatibile; i percorsi continui restano un'opzione), controllo dell'ingombro rispetto all'area di taglio e ai tappetini, guida alle impostazioni di Studio (azione per colore della linea, contorni interni prima, forza, velocità, doppio passaggio).</li>
 <li><b>2.84</b> — <a data-topic="silhouette">Silhouette Cameo</a>: pieghe tratteggiate centrate con un ponte a ogni estremità (il bordo non si strappa), opzioni più chiare tra piega perforata e piega da cordonare, scelte ricordate, spiegazioni su colori per ruolo e spessore delle linee.</li>
@@ -19792,14 +19823,15 @@ const PREFS_KEY = 'spikecut-prefs';
 function gatherPrefs(){
   return { gridColor: state.gridColor, gridOpacity: state.gridOpacity!=null ? state.gridOpacity : 1, grid: state.grid,
            snapGrid: !!state.snapGrid, snapMagnet: !!state.snapMagnet, showEndpoints: !!state.showEndpoints, showDimensions: !!state.showDimensions,
-           unit: state.unit, transpDark: !!state.transpDark, gridAuto: !!state.gridAuto, dieHighlight: !!state.dieHighlight, savedAt: Date.now() };
+           unit: state.unit, transpDark: !!state.transpDark, gridAuto: !!state.gridAuto, dieHighlight: !!state.dieHighlight, exportArtOnly: !!state.exportArtOnly, savedAt: Date.now() };
 }
 function applyPrefs(p){
   if(!p || typeof p!=='object') return;
   if(/^#[0-9a-f]{6}$/i.test(p.gridColor||'')){ state.gridColor = p.gridColor; const g = document.getElementById('gridColor'); if(g) g.value = p.gridColor; }
   if(p.gridOpacity>=0 && p.gridOpacity<=1) state.gridOpacity = p.gridOpacity;
   if(p.grid===1 || p.grid===10){ state.grid = p.grid; const gs = document.getElementById('gridStepSelect'); if(gs) gs.value = String(p.grid); }
-  ['snapGrid','snapMagnet','showEndpoints','showDimensions','transpDark','gridAuto','dieHighlight'].forEach(k=>{ if(typeof p[k]==='boolean') state[k] = p[k]; });
+  ['snapGrid','snapMagnet','showEndpoints','showDimensions','transpDark','gridAuto','dieHighlight','exportArtOnly'].forEach(k=>{ if(typeof p[k]==='boolean') state[k] = p[k]; });
+  if(typeof refreshArtOnlyMenu==='function') refreshArtOnlyMenu();
   const td = document.getElementById('pageBgDark'); if(td) td.checked = !!state.transpDark;
   if(p.unit && UNITS[p.unit]){ state.unit = p.unit; const us = document.getElementById('unitSelect'); if(us) us.value = p.unit; if(typeof refreshShapeLibUnit==='function') refreshShapeLibUnit(); }
   try{ if(typeof gridPicker!=='undefined' && gridPicker) gridPicker.syncFromNative(); }catch(e){}
@@ -19840,6 +19872,10 @@ document.getElementById('toggleEndpoints').onclick = ()=>{
   updateStatusToggles();
   renderCanvasOnly(); savePrefs();
 };
+function refreshArtOnlyMenu(){
+  const b = document.getElementById('artOnlyMenuItem'); if(!b) return;
+  b.textContent = (state.exportArtOnly ? '☑ ' : '☐ ') + translate('Solo grafica: esporta senza linee di taglio e pieghe');
+}
 function toggleDieHighlight(){ state.dieHighlight = !state.dieHighlight; updateStatusToggles(); renderCanvasOnly(); savePrefs(); }
 document.getElementById('toggleDieHL').onclick = toggleDieHighlight;
 document.getElementById('toggleDimensions').onclick = ()=>{
@@ -20137,6 +20173,8 @@ wireMenuButton('btnToolsMenu', 'toolsMenu');
 document.addEventListener('click', closeAllMenus);
 function handleMenuAction(e){
   const action = e.target.dataset.action; if(!action) return;
+  if(action==='toggle-art-only'){ state.exportArtOnly = !state.exportArtOnly; refreshArtOnlyMenu(); savePrefs();
+    showToast(state.exportArtOnly ? translate('Esportazioni grafiche senza linee di taglio e pieghe (solo grafica).') : translate('Esportazioni grafiche di nuovo con le linee di taglio e pieghe.'), false); return; }
   if(action!=='generate-box') ensureDocumentOpen(); // con tutte le schede chiuse, un comando apre prima un disegno nuovo (Genera scatola crea già la sua scheda)
   // i comandi della fustella e delle esportazioni si lavorano dal lato esterno (l'interno viene aggiunto da loro dove serve)
   if(['export-svg','export-pdf','export-pdf-print','export-pdf-tiled','export-image','export-cad','blade-report','export-silhouette','print-proof',
@@ -26696,7 +26734,8 @@ setupOverlayClickClose(document.getElementById('cutPreviewModal'), ()=> document
 function buildDrawingGroupsSVG(){
   let body = `<style>${buildFontFaceCSS()}</style>\n`;
   const groups = {design:[],cut:[],fold:[],diecut:[],glue:[]};
-  state.shapes.forEach(s=>{ if(isShapeEffVisible(s) && !s.guide) (groups[s.style.role]||groups.design).push(s); }); // le guide (abbondanza, zona sicura) non escono
+  const artOnly = !!state.exportArtOnly; // "Solo grafica": niente taglio, piega, fustella speciale e colla
+  state.shapes.forEach(s=>{ if(isShapeEffVisible(s) && !s.guide && !(artOnly && s.style && s.style.role && s.style.role!=='design')) (groups[s.style.role]||groups.design).push(s); }); // le guide (abbondanza, zona sicura) non escono
   Object.keys(ROLE_STYLE).forEach(roleKey=>{
     const list = groups[roleKey];
     if(!list.length) return;
@@ -27200,6 +27239,7 @@ function exportImageSVG(withLines){
 // retro: grafica dei livelli interni (coordinate già "viste dall'interno") e, se richiesto, la fustella specchiata come riferimento
 function buildInsideSVG(withDie){
   const w = state.page.w, h = state.page.h;
+  if(state.exportArtOnly) withDie = false;
   const art = withSide('inside', ()=>{ const bg = exportPageBg(); return (bg ? `<rect x="0" y="0" width="${w}" height="${h}" fill="${bg}"${exportPageBgOpacity()}/>` : '') + buildDrawingGroupsSVG().body; });
   let die = '';
   if(withDie) die = withSide('outside', ()=> `<g id="fustella-riferimento" transform="translate(${w},0) scale(-1,1)" opacity="0.8">` + state.shapes.filter(x=> isShapeEffVisible(x) && !x.guide && x.style && x.style.role!=='design').map(exportNode).join('\n') + `</g>`);
@@ -27303,7 +27343,7 @@ async function doPrintPDF(){
   const btn = document.getElementById('pdfPrintGo'), label = btn.textContent;
   const spots = [];
   document.querySelectorAll('#pdfSpotTable input[data-role]').forEach(cb=>{
-    if(!cb.checked) return;
+    if(!cb.checked || state.exportArtOnly) return; // "Solo grafica": nessuna linea tecnica
     const role = cb.dataset.role, name = (document.querySelector(`#pdfSpotTable input[data-spot="${role}"]`).value || '').trim() || role;
     spots.push({role, name, alt: PDF_SPOT_ALT[role], geo: techGeometry([role])});
   });
