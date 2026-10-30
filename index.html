@@ -1017,7 +1017,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.89</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.90</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -15951,7 +15951,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.89';
+const GUIDE_VERSION = '2.90';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -16498,7 +16498,7 @@ html:`<p>Menu <b>Stampa → 📄 Esporta PDF per la stampa…</b>. È il file da
 <li>spessore delle linee regolabile (0,25 pt è il valore tipico), misura reale, un foglio.</li></ul>
 <p>I nomi si cambiano nella finestra e vengono ricordati: chiedi alla tipografia quali usa (es. Thru-cut, Kiss-cut, Creasing). Togli la spunta a una linea per non esportarla.</p>
 <p><b>Solo grafica</b>: nel menu <b>Stampa</b> la prima voce, <b>☐ Solo grafica: esporta senza linee di taglio e pieghe</b>, toglie in un colpo solo taglio, pieghe, fustella speciale e colla da <b>tutte</b> le esportazioni grafiche: SVG (anche la legenda), PDF anteprima, PDF per la stampa, PDF multi-pagina, immagine PNG/JPG, retro e stampa di prova. Con la spunta (☑) esce solo la grafica: utile per la tipografia, per un'anteprima pulita o per un catalogo. La scelta viene ricordata; clicca di nuovo la voce per rimettere le linee. Non tocca le esportazioni DXF, CAD e Silhouette, che servono proprio per tagliare.</p>
-<p><b>Segni di taglio</b>: nel menu <b>Stampa</b> la voce <b>☐ Segni di taglio agli angoli del disegno</b> aggiunge i <b>crocini di rifilo</b>. Ai quattro angoli dell'ingombro del disegno compaiono due trattini neri sottili che prolungano i bordi, staccati di 3 mm e lunghi 6 mm: tagliando il foglio stampato lungo l'allineamento dei segni ottieni esattamente la misura del disegno. Valgono per SVG, PDF anteprima, PDF per la stampa, PDF multi-pagina, immagine PNG/JPG e stampa di prova. Se intorno al disegno non c'è spazio per i segni, il foglio esportato viene <b>allargato</b> quanto basta: il disegno si sposta ma le misure restano reali, e il tuo progetto non cambia. Con <b>Solo grafica</b> attivo i segni seguono l'ingombro della sola grafica. La scelta viene ricordata.</p>` },
+<p><b>Segni di taglio</b>: nel menu <b>Stampa</b> la voce <b>☐ Segni di taglio agli angoli del disegno</b> aggiunge i <b>crocini di rifilo</b>. Ai quattro angoli dell'ingombro del disegno compaiono due trattini neri sottili che prolungano i bordi, staccati di 3 mm e lunghi 6 mm: tagliando il foglio stampato lungo l'allineamento dei segni ottieni esattamente la misura del disegno. Valgono per SVG, PDF anteprima, PDF per la stampa, PDF multi-pagina, immagine PNG/JPG e stampa di prova. Se intorno al disegno non c'è spazio per i segni, il foglio esportato viene <b>allargato</b> quanto basta: il disegno si sposta ma le misure restano reali, e il tuo progetto non cambia. Con i segni di taglio attivi si esporta <b>solo la grafica e i segni</b>: niente bordo del foglio e niente linee di taglio o piega, perché il taglio lo indicano i segni. I segni seguono quindi l'ingombro della grafica. La scelta viene ricordata.</p>` },
 { id:'esporta-immagine', cat:'Salvare ed esportare', title:'Esportare un\'immagine (PNG/JPG)', keys:'png jpg jpeg immagine esportare dpi risoluzione anteprima ecommerce catalogo',
 html:`<p>Menu <b>Stampa → 🖼 Esporta immagine…</b>: il foglio in scala reale come PNG o JPG a 96, 150, 300 o 600 DPI, con o senza le linee di taglio e piega. La risoluzione viene scritta nel file, così stampandolo esce della misura giusta. Il PNG mantiene la trasparenza (se lo sfondo non è applicato); il JPG ha sempre il fondo bianco. Per fogli molto grandi la risoluzione viene ridotta quanto basta a stare nei limiti del browser (la finestra lo dice).</p>` },
 { id:'cad', cat:'Salvare ed esportare', title:'CAD, plotter e fustellatori (DXF, PLT, CF2) e metri di lama', keys:'dxf cad autocad artioscad librecad lightburn laser hpgl plt cf2 kongsberg elitron fustellatore fustella lama metri preventivo livelli cut crease perf',
@@ -16576,6 +16576,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.90</b> — Segni di taglio: si esportano solo la grafica e i segni, senza bordo del foglio né linee di taglio e piega.</li>
 <li><b>2.89</b> — Menu Stampa → <a data-topic="pdf-stampa">Segni di taglio</a>: crocini di rifilo agli angoli del disegno in SVG, PDF e immagini.</li>
 <li><b>2.88</b> — <a data-topic="selettore-colore">Selettore colore completo</a>: area colore con barra delle tinte, tavolozza estesa, colori recenti e del documento, contagocce; pulsante "🎨 Tutti i colori…" nel riempimento.</li>
 <li><b>2.87</b> — Menu Stampa → <a data-topic="pdf-stampa">Solo grafica</a>: esporta SVG, PDF e immagini senza linee di taglio e pieghe.</li>
@@ -19966,7 +19967,9 @@ function cropMarkBox(){
 }
 function withCropMarks(fn){
   if(!state.cropMarks || cropTempActive) return fn();
-  const box = withSide('outside', ()=> cropMarkBox()); if(!box) return fn();
+  // con i segni di taglio si stampa solo la grafica: niente bordo del foglio né linee di taglio/piega (il taglio lo danno i segni)
+  const savedArtOnly = state.exportArtOnly; state.exportArtOnly = true;
+  const box = withSide('outside', ()=> cropMarkBox()); if(!box){ try{ return fn(); } finally{ state.exportArtOnly = savedArtOnly; } }
   const need = CROP.gap + CROP.len + 2;
   const L = Math.max(0, need - box.x0), T = Math.max(0, need - box.y0), R = Math.max(0, box.x1 + need - state.page.w), B = Math.max(0, box.y1 + need - state.page.h);
   const savedShapes = state.shapes, savedPage = state.page;
@@ -19980,7 +19983,7 @@ function withCropMarks(fn){
     mark([x0-g-n, y1], [x0-g, y1]), mark([x0, y1+g], [x0, y1+g+n]),
     mark([x1+g, y1], [x1+g+n, y1]), mark([x1, y1+g], [x1, y1+g+n]));
   state.shapes = shapes; state.page = Object.assign({}, savedPage, {w: savedPage.w + L + R, h: savedPage.h + T + B}); cropTempActive = true;
-  const restore = ()=>{ state.shapes = savedShapes; state.page = savedPage; cropTempActive = false; };
+  const restore = ()=>{ state.shapes = savedShapes; state.page = savedPage; cropTempActive = false; state.exportArtOnly = savedArtOnly; };
   let res;
   try{ res = fn(); }catch(e){ restore(); throw e; }
   if(res && typeof res.then==='function') return res.finally(restore);
@@ -22263,7 +22266,7 @@ function buildProofSVG(l){
   const pageBg = exportPageBg() || '#ffffff'; // la carta stampata non può essere "trasparente"
   let body = `<style>${buildFontFaceCSS()}</style><rect x="0" y="0" width="${sN(l.pw)}" height="${sN(l.ph)}" fill="#ffffff"/>`;
   body += `<g transform="translate(${sN(offX)},${sN(offY)}) scale(${sN(l.scale)})">`;
-  body += `<rect x="0" y="0" width="${sN(l.dw)}" height="${sN(l.dh)}" fill="${pageBg}"${exportPageBg() ? exportPageBgOpacity() : ''} stroke="#cfcfcf" stroke-width="${sN(0.4/l.scale)}"/>`;
+  body += `<rect x="0" y="0" width="${sN(l.dw)}" height="${sN(l.dh)}" fill="${pageBg}"${exportPageBg() ? exportPageBgOpacity() : ''}${cropTempActive ? '' : ` stroke="#cfcfcf" stroke-width="${sN(0.4/l.scale)}"`}/>`;
   const groups = {design:[],cut:[],fold:[],diecut:[],glue:[]};
   state.shapes.forEach(s=>{ if(isShapeEffVisible(s)) (groups[s.style.role]||groups.design).push(s); });
   Object.keys(ROLE_STYLE).forEach(roleKey=> groups[roleKey].forEach(s=> body += exportNode(s)));
