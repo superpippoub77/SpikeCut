@@ -438,14 +438,24 @@ hr.sep{border:none;border-top:1px solid var(--line-soft);margin:14px 0;}
 .cswatch .chip i, .cpop .prev i{position:absolute;inset:0;}
 .cswatch.small{padding:1px;border-radius:4px;}
 .cswatch.small .chip{width:20px;height:14px;}
-.cpop{position:fixed;z-index:10000;width:236px;padding:10px;background:var(--bg-2);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.45);color:var(--ink);font-size:12px;}
+.cpop{position:fixed;z-index:10000;width:256px;padding:10px;background:var(--bg-2);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.45);color:var(--ink);font-size:12px;}
 .cpop .r{display:flex;gap:6px;align-items:center;margin-top:8px;}
 .cpop label{font-size:10.5px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.04em;}
 .cpop input[type=number], .cpop input[type=text]{width:100%;min-width:0;padding:3px 5px;font:12px var(--mono);}
 .cpop input[type=color]{width:100%;height:34px;padding:2px;cursor:pointer;}
 .cpop .prev{width:48px;height:34px;flex:none;}
-.cpop .sw{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-top:8px;}
-.cpop .sw button{height:18px;border-radius:3px;border:1px solid rgba(0,0,0,.35);cursor:pointer;padding:0;}
+.cpop .sw, .cpop .swx{display:grid;grid-template-columns:repeat(12,1fr);gap:2px;margin-top:4px;}
+.cpop .sw button, .cpop .swx button{height:15px;border-radius:2px;border:1px solid rgba(0,0,0,.35);cursor:pointer;padding:0;}
+.cpop .sv{position:relative;height:140px;border-radius:6px;cursor:crosshair;touch-action:none;
+  background:linear-gradient(to top,#000,transparent),linear-gradient(to right,#fff,transparent);}
+.cpop .sv b, .cpop .hue b{position:absolute;pointer-events:none;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.6);}
+.cpop .sv b{width:12px;height:12px;border-radius:50%;transform:translate(-6px,-6px);}
+.cpop .hue{position:relative;height:12px;border-radius:6px;cursor:pointer;touch-action:none;margin-top:8px;
+  background:linear-gradient(to right,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);}
+.cpop .hue b{top:-2px;width:6px;height:12px;border-radius:3px;transform:translateX(-3px);}
+.cpop .sec{font-size:10px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.04em;margin-top:8px;}
+.cpop .nat{width:34px!important;height:30px!important;flex:none;}
+.cpop .eyed{width:auto;margin:0;padding:4px 8px;flex:none;}
 .cpop .col{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;}
 #ctxMenu{
   position:fixed;min-width:200px;
@@ -1006,7 +1016,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.87</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.88</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2377,6 +2387,13 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Tavolozza": "Palette",
+    "Recenti": "Recent",
+    "Colori del documento": "Document colours",
+    "Selettore di colore del sistema": "System colour picker",
+    "Contagocce: prendi un colore dallo schermo": "Eyedropper: pick a colour from the screen",
+    "🎨 Tutti i colori…": "🎨 All colours…",
+    "Tavolozza completa, sfumature, codice HEX/RGB, contagocce e colori recenti": "Full palette, shades, HEX/RGB code, eyedropper and recent colours",
     "☐ Solo grafica: esporta senza linee di taglio e pieghe": "☐ Artwork only: export without cut and fold lines",
     "Solo grafica: esporta senza linee di taglio e pieghe": "Artwork only: export without cut and fold lines",
     "Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova. Non tocca DXF, CAD e Silhouette, che servono proprio per tagliare.": "Applies to SVG, PDF, print PDF, multi-page PDF, image and proof print. It does not affect DXF, CAD and Silhouette, which are meant for cutting.",
@@ -4247,6 +4264,13 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Tavolozza": "Palette",
+    "Recenti": "Zuletzt",
+    "Colori del documento": "Dokumentfarben",
+    "Selettore di colore del sistema": "System-Farbwähler",
+    "Contagocce: prendi un colore dallo schermo": "Pipette: eine Farbe vom Bildschirm aufnehmen",
+    "🎨 Tutti i colori…": "🎨 Alle Farben…",
+    "Tavolozza completa, sfumature, codice HEX/RGB, contagocce e colori recenti": "Vollständige Palette, Abstufungen, HEX/RGB-Code, Pipette und zuletzt verwendete Farben",
     "☐ Solo grafica: esporta senza linee di taglio e pieghe": "☐ Nur Grafik: ohne Schnitt- und Falzlinien exportieren",
     "Solo grafica: esporta senza linee di taglio e pieghe": "Nur Grafik: ohne Schnitt- und Falzlinien exportieren",
     "Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova. Non tocca DXF, CAD e Silhouette, che servono proprio per tagliare.": "Gilt für SVG, PDF, Druck-PDF, mehrseitiges PDF, Bild und Probedruck. DXF, CAD und Silhouette bleiben unverändert, da sie zum Schneiden dienen.",
@@ -6117,6 +6141,13 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Tavolozza": "Paleta",
+    "Recenti": "Recientes",
+    "Colori del documento": "Colores del documento",
+    "Selettore di colore del sistema": "Selector de color del sistema",
+    "Contagocce: prendi un colore dallo schermo": "Cuentagotas: toma un color de la pantalla",
+    "🎨 Tutti i colori…": "🎨 Todos los colores…",
+    "Tavolozza completa, sfumature, codice HEX/RGB, contagocce e colori recenti": "Paleta completa, tonos, código HEX/RGB, cuentagotas y colores recientes",
     "☐ Solo grafica: esporta senza linee di taglio e pieghe": "☐ Solo gráfica: exportar sin líneas de corte y pliegue",
     "Solo grafica: esporta senza linee di taglio e pieghe": "Solo gráfica: exportar sin líneas de corte y pliegue",
     "Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova. Non tocca DXF, CAD e Silhouette, che servono proprio per tagliare.": "Vale para SVG, PDF, PDF de impresión, PDF multipágina, imagen e impresión de prueba. No afecta a DXF, CAD y Silhouette, que sirven precisamente para cortar.",
@@ -7987,6 +8018,13 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Tavolozza": "调色板",
+    "Recenti": "最近",
+    "Colori del documento": "文档颜色",
+    "Selettore di colore del sistema": "系统取色器",
+    "Contagocce: prendi un colore dallo schermo": "吸管：从屏幕取色",
+    "🎨 Tutti i colori…": "🎨 全部颜色…",
+    "Tavolozza completa, sfumature, codice HEX/RGB, contagocce e colori recenti": "完整调色板、色阶、HEX/RGB 代码、吸管和最近使用的颜色",
     "☐ Solo grafica: esporta senza linee di taglio e pieghe": "☐ 仅图案：导出时不含切割线和折线",
     "Solo grafica: esporta senza linee di taglio e pieghe": "仅图案：导出时不含切割线和折线",
     "Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova. Non tocca DXF, CAD e Silhouette, che servono proprio per tagliare.": "适用于 SVG、PDF、印刷 PDF、多页 PDF、图片和打样。不影响用于切割的 DXF、CAD 和 Silhouette。",
@@ -9857,6 +9895,13 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Tavolozza": "Palette",
+    "Recenti": "Récents",
+    "Colori del documento": "Couleurs du document",
+    "Selettore di colore del sistema": "Sélecteur de couleur du système",
+    "Contagocce: prendi un colore dallo schermo": "Pipette : prendre une couleur à l'écran",
+    "🎨 Tutti i colori…": "🎨 Toutes les couleurs…",
+    "Tavolozza completa, sfumature, codice HEX/RGB, contagocce e colori recenti": "Palette complète, nuances, code HEX/RVB, pipette et couleurs récentes",
     "☐ Solo grafica: esporta senza linee di taglio e pieghe": "☐ Graphisme seul : exporter sans lignes de coupe et de pli",
     "Solo grafica: esporta senza linee di taglio e pieghe": "Graphisme seul : exporter sans lignes de coupe et de pli",
     "Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova. Non tocca DXF, CAD e Silhouette, che servono proprio per tagliare.": "S'applique au SVG, PDF, PDF d'impression, PDF multipage, image et épreuve. N'affecte pas DXF, CAO et Silhouette, qui servent justement à découper.",
@@ -15879,7 +15924,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.87';
+const GUIDE_VERSION = '2.88';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -16208,10 +16253,12 @@ html:`<p>Quando due o più immagini si sovrappongono, quella sopra può <b>forar
 <li>Premi <b>Fora le immagini sotto</b>.</li></ul>
 <p>Il foro diventa parte dell'immagine, quindi vale uguale in esportazioni, stampe e 3D, anche se poi sposti l'oggetto sopra. Ctrl+Z annulla; selezionando l'immagine forata, nella sezione Immagine, <b>Ripristina l'immagine originale</b> toglie tutti i fori. Le immagini solo collegate a un sito esterno non si possono forare: salvale e importale.</p>` },
 { id:'selettore-colore', cat:'Disegnare', title:'Colore e trasparenza', keys:'colore trasparenza opacità alfa hex rgb selettore colore linea riempimento sfondo griglia',
-html:`<p>Il colore della <b>linea</b>, del <b>riempimento</b>, dello <b>sfondo del foglio</b> e della <b>griglia</b> si sceglie con un quadratino (con la scacchiera sotto, per vedere la trasparenza). Cliccandolo si apre un pannellino:</p>
-<ul><li>il selettore del sistema, il codice <b>HEX</b> e i valori <b>R G B</b> (0–255);</li>
+html:`<p>Il colore della <b>linea</b>, del <b>riempimento</b>, dello <b>sfondo del foglio</b> e della <b>griglia</b> si sceglie con un quadratino (con la scacchiera sotto, per vedere la trasparenza). Cliccandolo (oppure, per il riempimento, con il pulsante <b>🎨 Tutti i colori…</b>) si apre il selettore completo, come nei normali programmi di grafica:</p>
+<ul><li>un'<b>area colore</b> (clicca o trascina per scegliere chiaro/scuro e intensità) con sotto la <b>barra delle tinte</b> (rosso, giallo, verde, azzurro, blu, viola);</li>
+<li>il codice <b>HEX</b>, i valori <b>R G B</b> (0–255), il selettore del sistema e, nei browser che lo permettono (Chrome, Edge), il <b>contagocce 💧</b> per prendere un colore da qualsiasi punto dello schermo;</li>
 <li>l'<b>opacità</b> con cursore e numero in %;</li>
-<li>alcuni colori pronti.</li></ul>
+<li>la <b>tavolozza</b>: una riga di grigi e 12 tinte in 6 gradazioni;</li>
+<li>i <b>colori recenti</b> (gli ultimi 12 scelti, ricordati) e i <b>colori del documento</b> (quelli già usati nel disegno).</li></ul>
 <p>Il disegno cambia mentre scegli; <b>OK</b> o un clic fuori confermano, <b>Esc</b> o <b>Annulla</b> tornano al colore di prima. L'opacità vale anche in esportazioni e stampe.</p>` },
 { id:'codici', cat:'Disegnare', title:'QR code e codici a barre', keys:'qr code codice a barre barcode ean ean13 ean8 upc code128 itf14 prodotto scanner',
 html:`<p>Menu <b>Strumenti → 🔳 QR code e codici a barre…</b>. Scegli il tipo, scrivi il contenuto e la misura: l'anteprima si aggiorna mentre scrivi.</p>
@@ -16501,6 +16548,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.88</b> — <a data-topic="selettore-colore">Selettore colore completo</a>: area colore con barra delle tinte, tavolozza estesa, colori recenti e del documento, contagocce; pulsante "🎨 Tutti i colori…" nel riempimento.</li>
 <li><b>2.87</b> — Menu Stampa → <a data-topic="pdf-stampa">Solo grafica</a>: esporta SVG, PDF e immagini senza linee di taglio e pieghe.</li>
 <li><b>2.86</b> — <a data-topic="silhouette">Silhouette Cameo</a>, dal manuale di Studio 5: nel DXF le pieghe vengono prima del taglio (si cordonano a foglio intero); guida al taglio e cordonatura nello stesso lavoro con i due portautensili; Intelligent Path; limite di 12 pollici.</li>
 <li><b>2.85</b> — <a data-topic="silhouette">Silhouette Cameo</a>, dal manuale di Silhouette Studio: DXF con linee singole (LINE, il formato più compatibile; i percorsi continui restano un'opzione), controllo dell'ingombro rispetto all'area di taglio e ai tappetini, guida alle impostazioni di Studio (azione per colore della linea, contorni interni prima, forza, velocità, doppio passaggio).</li>
@@ -23373,6 +23421,21 @@ function allSelectedHaveRole(ids, role){
    si aggiorna solo il disegno (onInput); alla chiusura si registra la modifica (onChange). */
 function hexToRgb(h){ const m = /^#?([0-9a-f]{6})$/i.exec(String(h||'').trim()); if(!m) return null; const v = parseInt(m[1],16); return [v>>16 & 255, v>>8 & 255, v & 255]; }
 function rgbToHex(r,g,b){ return '#' + [r,g,b].map(v=> Math.max(0,Math.min(255,Math.round(v||0))).toString(16).padStart(2,'0')).join(''); }
+function rgbToHsv(r,g,b){ r/=255; g/=255; b/=255; const mx = Math.max(r,g,b), mn = Math.min(r,g,b), d = mx-mn; let h = 0;
+  if(d){ h = mx===r ? ((g-b)/d) % 6 : mx===g ? (b-r)/d + 2 : (r-g)/d + 4; h = (h*60 + 360) % 360; } return [h, mx ? d/mx : 0, mx]; }
+function hsvToRgb(h,s,v){ const c = v*s, x = c*(1 - Math.abs((h/60) % 2 - 1)), m = v - c;
+  const [r,g,b] = h<60 ? [c,x,0] : h<120 ? [x,c,0] : h<180 ? [0,c,x] : h<240 ? [0,x,c] : h<300 ? [x,0,c] : [c,0,x]; return [(r+m)*255, (g+m)*255, (b+m)*255]; }
+// tavolozza completa: una riga di grigi e 12 tinte in 6 gradazioni (dalla più chiara alla più scura)
+const COLOR_PALETTE = (()=>{ const out = []; for(let i=0;i<12;i++) out.push(rgbToHex(...Array(3).fill(Math.round(255*(1 - i/11)))));
+  [[95,0.12],[88,0.3],[75,0.6],[62,0.85],[45,0.85],[28,0.7]].forEach(([l, sat])=>{ for(let i=0;i<12;i++){ const h = i*30;
+    const v = Math.min(1, l/100 + sat*Math.min(l/100, 1-l/100)), sv = v ? 2*(1 - (l/100)/v) : 0; out.push(rgbToHex(...hsvToRgb(h, sv, v))); } });
+  return out; })();
+function recentColors(){ try{ return (JSON.parse(localStorage.getItem('spikecut-recent-colors') || '[]') || []).filter(c=> hexToRgb(c)).slice(0, 12); }catch(e){ return []; } }
+function rememberColor(c){ if(!hexToRgb(c)) return; c = c.toLowerCase(); try{ localStorage.setItem('spikecut-recent-colors', JSON.stringify([c, ...recentColors().filter(x=> x!==c)].slice(0, 12))); }catch(e){} }
+function documentColors(){ // i colori già usati nel disegno (riempimenti, linee di disegno, testi), al massimo 24
+  const set = new Set();
+  (state.shapes||[]).forEach(x=>{ const st = x.style || {}; [st.fill, st.role==='design' ? st.stroke : null].forEach(c=>{ if(c && hexToRgb(c)) set.add(c.toLowerCase()); }); });
+  return [...set].slice(0, 24); }
 let colorPopClose = null;
 function makeColorAlpha(o){
   // o: {color, alpha (0..1), noAlpha, small, title, onInput(color, alpha), onChange(color, alpha), disabled}
@@ -23390,11 +23453,12 @@ function makeColorAlpha(o){
     if(colorPopClose) colorPopClose();
     const start = {color: st.color, alpha: st.alpha};
     const pop = document.createElement('div'); pop.className = 'cpop';
-    pop.innerHTML = `<div class="r" style="margin-top:0"><input type="color" class="nat"><span class="prev"><i></i></span></div>
-      <div class="r"><div class="col"><label>HEX</label><input type="text" class="hex" maxlength="7" spellcheck="false"></div></div>
+    pop.innerHTML = `<div class="sv"><b></b></div><div class="hue"><b></b></div>
+      <div class="r"><span class="prev"><i></i></span><div class="col"><label>HEX</label><input type="text" class="hex" maxlength="7" spellcheck="false"></div>
+        <input type="color" class="nat" title="${escapeHTML(translate('Selettore di colore del sistema'))}">${window.EyeDropper ? `<button type="button" class="btn eyed" title="${escapeHTML(translate('Contagocce: prendi un colore dallo schermo'))}">💧</button>` : ''}</div>
       <div class="r"><div class="col"><label>R</label><input type="number" class="cr" min="0" max="255"></div><div class="col"><label>G</label><input type="number" class="cg" min="0" max="255"></div><div class="col"><label>B</label><input type="number" class="cb" min="0" max="255"></div></div>`
       + (o.noAlpha ? '' : `<div class="r"><div class="col" style="flex:3"><label>${escapeHTML(translate('Opacità'))}</label><input type="range" class="ar" min="0" max="100" step="1"></div><div class="col"><label>%</label><input type="number" class="an" min="0" max="100"></div></div>`)
-      + `<div class="sw"></div><div class="r" style="justify-content:flex-end"><button type="button" class="btn cancel" style="width:auto;margin:0">${escapeHTML(translate('Annulla'))}</button><button type="button" class="btn primary ok" style="width:auto;margin:0">OK</button></div>`;
+      + `<div class="sec">${escapeHTML(translate('Tavolozza'))}</div><div class="sw"></div><div class="rec"></div><div class="doc"></div><div class="r" style="justify-content:flex-end"><button type="button" class="btn cancel" style="width:auto;margin:0">${escapeHTML(translate('Annulla'))}</button><button type="button" class="btn primary ok" style="width:auto;margin:0">OK</button></div>`;
     const q = c=> pop.querySelector(c);
     const sync = (skip)=>{
       const rgb = hexToRgb(st.color);
@@ -23403,8 +23467,13 @@ function makeColorAlpha(o){
       if(skip!=='rgb'){ q('.cr').value = rgb[0]; q('.cg').value = rgb[1]; q('.cb').value = rgb[2]; }
       if(!o.noAlpha){ if(skip!=='ar') q('.ar').value = Math.round(st.alpha*100); if(skip!=='an') q('.an').value = Math.round(st.alpha*100); }
       q('.prev i').style.background = st.color; q('.prev i').style.opacity = st.alpha;
+      if(skip!=='sv'){ const hv = rgbToHsv(...rgb); if(hv[1] > 0 && hv[2] > 0) hsv.h = hv[0]; hsv.s = hv[1]; hsv.v = hv[2]; }
+      q('.sv').style.backgroundColor = `hsl(${hsv.h},100%,50%)`;
+      q('.sv b').style.left = (hsv.s*100) + '%'; q('.sv b').style.top = ((1-hsv.v)*100) + '%';
+      q('.hue b').style.left = (hsv.h/360*100) + '%';
       paint();
     };
+    const hsv = {h:0, s:0, v:0};
     const live = (skip)=>{ sync(skip); if(o.onInput) o.onInput(st.color, st.alpha); };
     q('.nat').addEventListener('input', ()=>{ st.color = q('.nat').value; live('nat'); });
     q('.hex').addEventListener('input', ()=>{ let v = q('.hex').value.trim(); if(!v.startsWith('#')) v = '#' + v; if(hexToRgb(v)){ st.color = v.toLowerCase(); live('hex'); } });
@@ -23413,7 +23482,19 @@ function makeColorAlpha(o){
       q('.ar').addEventListener('input', ()=>{ st.alpha = +q('.ar').value/100; live('ar'); });
       q('.an').addEventListener('input', ()=>{ const v = parseFloat(q('.an').value); if(!isNaN(v)){ st.alpha = Math.max(0, Math.min(100, v))/100; live('an'); } });
     }
-    FILL_SWATCHES.forEach(c=>{ const b = document.createElement('button'); b.type='button'; b.style.background = c; b.title = c; b.onclick = ()=>{ st.color = c; live(); }; q('.sw').appendChild(b); });
+    // area colore (saturazione/luminosità) e barra delle tinte, come nei programmi di grafica
+    const drag = (el, fn)=> el.addEventListener('pointerdown', ev=>{ ev.preventDefault(); el.setPointerCapture(ev.pointerId); fn(ev);
+      const mv = e=> fn(e), up = ()=>{ el.removeEventListener('pointermove', mv); el.removeEventListener('pointerup', up); };
+      el.addEventListener('pointermove', mv); el.addEventListener('pointerup', up); });
+    const fromHsv = ()=>{ st.color = rgbToHex(...hsvToRgb(hsv.h, hsv.s, hsv.v)); live('sv'); };
+    drag(q('.sv'), ev=>{ const rc = q('.sv').getBoundingClientRect(); hsv.s = Math.max(0, Math.min(1, (ev.clientX-rc.left)/rc.width)); hsv.v = Math.max(0, Math.min(1, 1-(ev.clientY-rc.top)/rc.height)); fromHsv(); });
+    drag(q('.hue'), ev=>{ const rc = q('.hue').getBoundingClientRect(); hsv.h = Math.max(0, Math.min(359.9, (ev.clientX-rc.left)/rc.width*360)); if(hsv.s===0 && hsv.v===0){ hsv.s = 1; hsv.v = 1; } fromHsv(); });
+    if(q('.eyed')) q('.eyed').onclick = async ()=>{ try{ const r = await new window.EyeDropper().open(); if(r && hexToRgb(r.sRGBHex)){ st.color = r.sRGBHex.toLowerCase(); live(); } }catch(err){} };
+    const swBtn = (host, c)=>{ const b = document.createElement('button'); b.type='button'; b.style.background = c; b.title = c.toUpperCase(); b.onclick = ()=>{ st.color = c; live(); }; host.appendChild(b); };
+    COLOR_PALETTE.forEach(c=> swBtn(q('.sw'), c));
+    const rec = recentColors(), docC = documentColors();
+    if(rec.length){ q('.rec').innerHTML = `<div class="sec">${escapeHTML(translate('Recenti'))}</div><div class="swx"></div>`; rec.forEach(c=> swBtn(q('.rec .swx'), c)); }
+    if(docC.length){ q('.doc').innerHTML = `<div class="sec">${escapeHTML(translate('Colori del documento'))}</div><div class="swx"></div>`; docC.forEach(c=> swBtn(q('.doc .swx'), c)); }
     pop.addEventListener('keydown', ev=>{ ev.stopPropagation(); if(ev.key==='Enter'){ ev.preventDefault(); close(true); } if(ev.key==='Escape'){ ev.preventDefault(); close(false); } });
     pop.addEventListener('mousedown', ev=> ev.stopPropagation());
     const outside = ev=>{ if(!pop.contains(ev.target) && ev.target!==btn) close(true); };
@@ -23421,6 +23502,7 @@ function makeColorAlpha(o){
       if(!pop.isConnected) return;
       pop.remove(); document.removeEventListener('mousedown', outside, true); colorPopClose = null;
       if(!keep){ st.color = start.color; st.alpha = start.alpha; paint(); if(o.onInput) o.onInput(st.color, st.alpha); }
+      if(keep && st.color!==start.color) rememberColor(st.color);
       if(keep && (st.color!==start.color || st.alpha!==start.alpha) && o.onChange) o.onChange(st.color, st.alpha);
     };
     colorPopClose = ()=> close(true);
@@ -23700,6 +23782,9 @@ function renderFillSection(host, ids){
       if(col.toLowerCase()===String(cur).toLowerCase() && curOp>0) b.classList.add('active');
       b.onclick = ()=>{ state.lastFill = col; apply(x=>{ x.style.fill = col; if(!(x.style.fillOpacity>0)) x.style.fillOpacity = 1; }, true); }; sw.appendChild(b); });
     row.append(inp, sw); f.appendChild(row);
+    const all = document.createElement('button'); all.type = 'button'; all.className = 'btn'; all.style.marginTop = '6px';
+    all.textContent = translate('🎨 Tutti i colori…'); all.title = translate('Tavolozza completa, sfumature, codice HEX/RGB, contagocce e colori recenti');
+    all.onclick = (e)=>{ e.stopPropagation(); inp.click(); }; f.appendChild(all);
     // gradazione di opacità del riempimento
     const ol = document.createElement('label'); ol.style.cssText='margin-top:8px;display:flex;justify-content:space-between;text-transform:none;letter-spacing:0;';
     const ov = document.createElement('span'); ov.style.color='var(--ink-dim)'; ov.textContent = Math.round(curOp*100) + '%';
