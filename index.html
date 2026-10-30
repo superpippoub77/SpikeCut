@@ -870,6 +870,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
     <button class="btn primary" style="width:auto;margin:0;padding:7px 14px;" id="btnPrintMenu">Stampa ▾</button>
     <div class="dropdown-menu" id="printMenu">
       <button data-action="toggle-art-only" id="artOnlyMenuItem" title="Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova. Non tocca DXF, CAD e Silhouette, che servono proprio per tagliare.">☐ Solo grafica: esporta senza linee di taglio e pieghe</button>
+      <button data-action="toggle-crop-marks" id="cropMarksMenuItem" title="Aggiunge agli angoli del disegno i segni di taglio (crocini di rifilo) per tagliare il foglio stampato alla misura esatta. Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova.">☐ Segni di taglio agli angoli del disegno</button>
       <div class="menu-sep"></div>
       <button data-action="export-svg">Esporta SVG (taglio/stampa)</button>
       <button data-action="export-pdf-print">📄 Esporta PDF per la stampa (vettoriale, CutContour)…</button>
@@ -1016,7 +1017,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.88</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.89</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2387,6 +2388,11 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "☐ Segni di taglio agli angoli del disegno": "☐ Crop marks at the drawing corners",
+    "Segni di taglio agli angoli del disegno": "Crop marks at the drawing corners",
+    "Aggiunge agli angoli del disegno i segni di taglio (crocini di rifilo) per tagliare il foglio stampato alla misura esatta. Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova.": "Adds crop marks at the corners of the drawing to trim the printed sheet to the exact size. Applies to SVG, PDF, print PDF, multi-page PDF, image and proof print.",
+    "Le esportazioni grafiche avranno i segni di taglio agli angoli del disegno.": "Graphic exports will have crop marks at the drawing corners.",
+    "Segni di taglio disattivati.": "Crop marks turned off.",
     "Tavolozza": "Palette",
     "Recenti": "Recent",
     "Colori del documento": "Document colours",
@@ -4264,6 +4270,11 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "☐ Segni di taglio agli angoli del disegno": "☐ Schnittmarken an den Ecken der Zeichnung",
+    "Segni di taglio agli angoli del disegno": "Schnittmarken an den Ecken der Zeichnung",
+    "Aggiunge agli angoli del disegno i segni di taglio (crocini di rifilo) per tagliare il foglio stampato alla misura esatta. Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova.": "Fügt an den Ecken der Zeichnung Schnittmarken hinzu, um den gedruckten Bogen exakt zuzuschneiden. Gilt für SVG, PDF, Druck-PDF, mehrseitiges PDF, Bild und Probedruck.",
+    "Le esportazioni grafiche avranno i segni di taglio agli angoli del disegno.": "Grafik-Exporte erhalten Schnittmarken an den Ecken der Zeichnung.",
+    "Segni di taglio disattivati.": "Schnittmarken ausgeschaltet.",
     "Tavolozza": "Palette",
     "Recenti": "Zuletzt",
     "Colori del documento": "Dokumentfarben",
@@ -6141,6 +6152,11 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "☐ Segni di taglio agli angoli del disegno": "☐ Marcas de corte en las esquinas del dibujo",
+    "Segni di taglio agli angoli del disegno": "Marcas de corte en las esquinas del dibujo",
+    "Aggiunge agli angoli del disegno i segni di taglio (crocini di rifilo) per tagliare il foglio stampato alla misura esatta. Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova.": "Añade marcas de corte en las esquinas del dibujo para recortar la hoja impresa a la medida exacta. Vale para SVG, PDF, PDF de impresión, PDF multipágina, imagen e impresión de prueba.",
+    "Le esportazioni grafiche avranno i segni di taglio agli angoli del disegno.": "Las exportaciones gráficas tendrán marcas de corte en las esquinas del dibujo.",
+    "Segni di taglio disattivati.": "Marcas de corte desactivadas.",
     "Tavolozza": "Paleta",
     "Recenti": "Recientes",
     "Colori del documento": "Colores del documento",
@@ -8018,6 +8034,11 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "☐ Segni di taglio agli angoli del disegno": "☐ 在图稿四角添加裁切标记",
+    "Segni di taglio agli angoli del disegno": "在图稿四角添加裁切标记",
+    "Aggiunge agli angoli del disegno i segni di taglio (crocini di rifilo) per tagliare il foglio stampato alla misura esatta. Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova.": "在图稿四角添加裁切标记，便于将印好的纸张裁成准确尺寸。适用于 SVG、PDF、印刷 PDF、多页 PDF、图片和打样。",
+    "Le esportazioni grafiche avranno i segni di taglio agli angoli del disegno.": "图形导出将在图稿四角带有裁切标记。",
+    "Segni di taglio disattivati.": "已关闭裁切标记。",
     "Tavolozza": "调色板",
     "Recenti": "最近",
     "Colori del documento": "文档颜色",
@@ -9895,6 +9916,11 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "☐ Segni di taglio agli angoli del disegno": "☐ Traits de coupe aux coins du dessin",
+    "Segni di taglio agli angoli del disegno": "Traits de coupe aux coins du dessin",
+    "Aggiunge agli angoli del disegno i segni di taglio (crocini di rifilo) per tagliare il foglio stampato alla misura esatta. Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova.": "Ajoute des traits de coupe aux coins du dessin pour rogner la feuille imprimée à la taille exacte. S'applique au SVG, PDF, PDF d'impression, PDF multipage, image et épreuve.",
+    "Le esportazioni grafiche avranno i segni di taglio agli angoli del disegno.": "Les exports graphiques auront des traits de coupe aux coins du dessin.",
+    "Segni di taglio disattivati.": "Traits de coupe désactivés.",
     "Tavolozza": "Palette",
     "Recenti": "Récents",
     "Colori del documento": "Couleurs du document",
@@ -11665,7 +11691,8 @@ const state = {
   transpDark: true,
   gridAuto: true,
   dieHighlight: false,
-  exportArtOnly: false,      // esportazioni grafiche (SVG, PDF, immagine, stampa) senza linee di taglio, piega, fustella e colla       // vista "fustella": grafica attenuata, taglio e pieghe in evidenza sopra a tutto            // colore della griglia scelto in automatico in base allo sfondo del foglio          // trasparenza del foglio mostrata su scacchiera scura (preferenza di visione)
+  exportArtOnly: false,
+  cropMarks: false,          // esportazioni grafiche con i segni di taglio (crocini di rifilo) agli angoli del disegno      // esportazioni grafiche (SVG, PDF, immagine, stampa) senza linee di taglio, piega, fustella e colla       // vista "fustella": grafica attenuata, taglio e pieghe in evidenza sopra a tutto            // colore della griglia scelto in automatico in base allo sfondo del foglio          // trasparenza del foglio mostrata su scacchiera scura (preferenza di visione)
   magnetPx: 10,                // screen px radius for magnet
   draft: null,                 // in-progress drawing object
   drag: null,                  // active drag operation
@@ -15924,7 +15951,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.88';
+const GUIDE_VERSION = '2.89';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -16463,14 +16490,15 @@ html:`<p>Menu <b>Stampa → ✂ Esporta per Silhouette Cameo (DXF)…</b>. Crea 
 <p><b>Collegamento diretto al plotter</b>: non è previsto. La licenza di Silhouette Studio vieta di ricostruire o imitare il modo in cui il programma comunica con il firmware della macchina. SpikeCut prepara il file e il taglio si manda da Studio.</p>
 <p>Il Print &amp; Cut (crocini di registro) non è supportato dal DXF: per stampa e taglio usa i crocini di Studio.</p>` },
 
-{ id:'pdf-stampa', cat:'Salvare ed esportare', title:'PDF per la stampa (CutContour, sovrastampa)', keys:'solo grafica senza linee taglio pieghe pdf stampa tipografia vettoriale tinta piatta spot cutcontour crease thru-cut kiss-cut sovrastampa overprint print and cut roland mimaki summa hp plotter',
+{ id:'pdf-stampa', cat:'Salvare ed esportare', title:'PDF per la stampa (CutContour, sovrastampa)', keys:'segni di taglio crocini rifilo crop marks solo grafica senza linee taglio pieghe pdf stampa tipografia vettoriale tinta piatta spot cutcontour crease thru-cut kiss-cut sovrastampa overprint print and cut roland mimaki summa hp plotter',
 html:`<p>Menu <b>Stampa → 📄 Esporta PDF per la stampa…</b>. È il file da mandare a tipografie e plotter <b>print&amp;cut</b> (Roland, Mimaki, Summa, HP…):</p>
 <ul><li>la <b>grafica</b> (sfondo, immagini, testi, disegni) è un'immagine alla risoluzione scelta (150, 300 o 450 DPI);</li>
 <li>le <b>linee tecniche</b> sono vettoriali, ognuna in una <b>tinta piatta</b> con un nome (CutContour per il taglio, Crease per le pieghe, Perf per la fustella speciale, Glue per l'incollaggio): la macchina le riconosce dal nome;</li>
 <li>sono in <b>sovrastampa</b>, quindi non "bucano" la grafica sotto;</li>
 <li>spessore delle linee regolabile (0,25 pt è il valore tipico), misura reale, un foglio.</li></ul>
 <p>I nomi si cambiano nella finestra e vengono ricordati: chiedi alla tipografia quali usa (es. Thru-cut, Kiss-cut, Creasing). Togli la spunta a una linea per non esportarla.</p>
-<p><b>Solo grafica</b>: nel menu <b>Stampa</b> la prima voce, <b>☐ Solo grafica: esporta senza linee di taglio e pieghe</b>, toglie in un colpo solo taglio, pieghe, fustella speciale e colla da <b>tutte</b> le esportazioni grafiche: SVG (anche la legenda), PDF anteprima, PDF per la stampa, PDF multi-pagina, immagine PNG/JPG, retro e stampa di prova. Con la spunta (☑) esce solo la grafica: utile per la tipografia, per un'anteprima pulita o per un catalogo. La scelta viene ricordata; clicca di nuovo la voce per rimettere le linee. Non tocca le esportazioni DXF, CAD e Silhouette, che servono proprio per tagliare.</p>` },
+<p><b>Solo grafica</b>: nel menu <b>Stampa</b> la prima voce, <b>☐ Solo grafica: esporta senza linee di taglio e pieghe</b>, toglie in un colpo solo taglio, pieghe, fustella speciale e colla da <b>tutte</b> le esportazioni grafiche: SVG (anche la legenda), PDF anteprima, PDF per la stampa, PDF multi-pagina, immagine PNG/JPG, retro e stampa di prova. Con la spunta (☑) esce solo la grafica: utile per la tipografia, per un'anteprima pulita o per un catalogo. La scelta viene ricordata; clicca di nuovo la voce per rimettere le linee. Non tocca le esportazioni DXF, CAD e Silhouette, che servono proprio per tagliare.</p>
+<p><b>Segni di taglio</b>: nel menu <b>Stampa</b> la voce <b>☐ Segni di taglio agli angoli del disegno</b> aggiunge i <b>crocini di rifilo</b>. Ai quattro angoli dell'ingombro del disegno compaiono due trattini neri sottili che prolungano i bordi, staccati di 3 mm e lunghi 6 mm: tagliando il foglio stampato lungo l'allineamento dei segni ottieni esattamente la misura del disegno. Valgono per SVG, PDF anteprima, PDF per la stampa, PDF multi-pagina, immagine PNG/JPG e stampa di prova. Se intorno al disegno non c'è spazio per i segni, il foglio esportato viene <b>allargato</b> quanto basta: il disegno si sposta ma le misure restano reali, e il tuo progetto non cambia. Con <b>Solo grafica</b> attivo i segni seguono l'ingombro della sola grafica. La scelta viene ricordata.</p>` },
 { id:'esporta-immagine', cat:'Salvare ed esportare', title:'Esportare un\'immagine (PNG/JPG)', keys:'png jpg jpeg immagine esportare dpi risoluzione anteprima ecommerce catalogo',
 html:`<p>Menu <b>Stampa → 🖼 Esporta immagine…</b>: il foglio in scala reale come PNG o JPG a 96, 150, 300 o 600 DPI, con o senza le linee di taglio e piega. La risoluzione viene scritta nel file, così stampandolo esce della misura giusta. Il PNG mantiene la trasparenza (se lo sfondo non è applicato); il JPG ha sempre il fondo bianco. Per fogli molto grandi la risoluzione viene ridotta quanto basta a stare nei limiti del browser (la finestra lo dice).</p>` },
 { id:'cad', cat:'Salvare ed esportare', title:'CAD, plotter e fustellatori (DXF, PLT, CF2) e metri di lama', keys:'dxf cad autocad artioscad librecad lightburn laser hpgl plt cf2 kongsberg elitron fustellatore fustella lama metri preventivo livelli cut crease perf',
@@ -16548,6 +16576,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.89</b> — Menu Stampa → <a data-topic="pdf-stampa">Segni di taglio</a>: crocini di rifilo agli angoli del disegno in SVG, PDF e immagini.</li>
 <li><b>2.88</b> — <a data-topic="selettore-colore">Selettore colore completo</a>: area colore con barra delle tinte, tavolozza estesa, colori recenti e del documento, contagocce; pulsante "🎨 Tutti i colori…" nel riempimento.</li>
 <li><b>2.87</b> — Menu Stampa → <a data-topic="pdf-stampa">Solo grafica</a>: esporta SVG, PDF e immagini senza linee di taglio e pieghe.</li>
 <li><b>2.86</b> — <a data-topic="silhouette">Silhouette Cameo</a>, dal manuale di Studio 5: nel DXF le pieghe vengono prima del taglio (si cordonano a foglio intero); guida al taglio e cordonatura nello stesso lavoro con i due portautensili; Intelligent Path; limite di 12 pollici.</li>
@@ -19871,14 +19900,14 @@ const PREFS_KEY = 'spikecut-prefs';
 function gatherPrefs(){
   return { gridColor: state.gridColor, gridOpacity: state.gridOpacity!=null ? state.gridOpacity : 1, grid: state.grid,
            snapGrid: !!state.snapGrid, snapMagnet: !!state.snapMagnet, showEndpoints: !!state.showEndpoints, showDimensions: !!state.showDimensions,
-           unit: state.unit, transpDark: !!state.transpDark, gridAuto: !!state.gridAuto, dieHighlight: !!state.dieHighlight, exportArtOnly: !!state.exportArtOnly, savedAt: Date.now() };
+           unit: state.unit, transpDark: !!state.transpDark, gridAuto: !!state.gridAuto, dieHighlight: !!state.dieHighlight, exportArtOnly: !!state.exportArtOnly, cropMarks: !!state.cropMarks, savedAt: Date.now() };
 }
 function applyPrefs(p){
   if(!p || typeof p!=='object') return;
   if(/^#[0-9a-f]{6}$/i.test(p.gridColor||'')){ state.gridColor = p.gridColor; const g = document.getElementById('gridColor'); if(g) g.value = p.gridColor; }
   if(p.gridOpacity>=0 && p.gridOpacity<=1) state.gridOpacity = p.gridOpacity;
   if(p.grid===1 || p.grid===10){ state.grid = p.grid; const gs = document.getElementById('gridStepSelect'); if(gs) gs.value = String(p.grid); }
-  ['snapGrid','snapMagnet','showEndpoints','showDimensions','transpDark','gridAuto','dieHighlight','exportArtOnly'].forEach(k=>{ if(typeof p[k]==='boolean') state[k] = p[k]; });
+  ['snapGrid','snapMagnet','showEndpoints','showDimensions','transpDark','gridAuto','dieHighlight','exportArtOnly','cropMarks'].forEach(k=>{ if(typeof p[k]==='boolean') state[k] = p[k]; });
   if(typeof refreshArtOnlyMenu==='function') refreshArtOnlyMenu();
   const td = document.getElementById('pageBgDark'); if(td) td.checked = !!state.transpDark;
   if(p.unit && UNITS[p.unit]){ state.unit = p.unit; const us = document.getElementById('unitSelect'); if(us) us.value = p.unit; if(typeof refreshShapeLibUnit==='function') refreshShapeLibUnit(); }
@@ -19921,8 +19950,41 @@ document.getElementById('toggleEndpoints').onclick = ()=>{
   renderCanvasOnly(); savePrefs();
 };
 function refreshArtOnlyMenu(){
-  const b = document.getElementById('artOnlyMenuItem'); if(!b) return;
-  b.textContent = (state.exportArtOnly ? '☑ ' : '☐ ') + translate('Solo grafica: esporta senza linee di taglio e pieghe');
+  const b = document.getElementById('artOnlyMenuItem'); if(b) b.textContent = (state.exportArtOnly ? '☑ ' : '☐ ') + translate('Solo grafica: esporta senza linee di taglio e pieghe');
+  const c = document.getElementById('cropMarksMenuItem'); if(c) c.textContent = (state.cropMarks ? '☑ ' : '☐ ') + translate('Segni di taglio agli angoli del disegno');
+}
+/* ---------- segni di taglio (crocini di rifilo) ----------
+   Con l'opzione attiva, le esportazioni grafiche hanno agli angoli dell'ingombro del disegno due trattini che ne
+   prolungano i bordi, staccati di CROP.gap mm: si taglia il foglio stampato unendo i segni. Se attorno al disegno non
+   c'è spazio, il foglio esportato viene allargato quanto basta (il disegno si sposta, le misure restano reali). */
+const CROP = {gap: 3, len: 6, w: 0.25};
+let cropTempActive = false;
+function cropMarkBox(){
+  const bb = state.shapes.filter(x=> isShapeEffVisible(x) && !x.guide && !(state.exportArtOnly && x.style && x.style.role && x.style.role!=='design')).map(shapeBBox).filter(Boolean);
+  if(!bb.length) return null;
+  return {x0: Math.min(...bb.map(b=>b.x)), y0: Math.min(...bb.map(b=>b.y)), x1: Math.max(...bb.map(b=>b.x+b.w)), y1: Math.max(...bb.map(b=>b.y+b.h))};
+}
+function withCropMarks(fn){
+  if(!state.cropMarks || cropTempActive) return fn();
+  const box = withSide('outside', ()=> cropMarkBox()); if(!box) return fn();
+  const need = CROP.gap + CROP.len + 2;
+  const L = Math.max(0, need - box.x0), T = Math.max(0, need - box.y0), R = Math.max(0, box.x1 + need - state.page.w), B = Math.max(0, box.y1 + need - state.page.h);
+  const savedShapes = state.shapes, savedPage = state.page;
+  const shapes = (L || T) ? savedShapes.map(sh=>{ const c = JSON.parse(JSON.stringify(sh)); translateShapeCopy(c, L, T); return c; }) : savedShapes.slice();
+  const x0 = box.x0 + L, y0 = box.y0 + T, x1 = box.x1 + L, y1 = box.y1 + T, g = CROP.gap, n = CROP.len;
+  const layer = (state.layers.find(l=> l.visible!==false && l.side!=='inside') || state.layers[0] || {}).id;
+  const mark = (a, b)=> Object.assign(makeShape('path', {points:[a, b], closed:false, noAngles:true, style: Object.assign(GM.st('none', '#000000', CROP.w), {role:'design'})}), {layerId: layer, cropMark: true});
+  shapes.push(
+    mark([x0-g-n, y0], [x0-g, y0]), mark([x0, y0-g-n], [x0, y0-g]),
+    mark([x1+g, y0], [x1+g+n, y0]), mark([x1, y0-g-n], [x1, y0-g]),
+    mark([x0-g-n, y1], [x0-g, y1]), mark([x0, y1+g], [x0, y1+g+n]),
+    mark([x1+g, y1], [x1+g+n, y1]), mark([x1, y1+g], [x1, y1+g+n]));
+  state.shapes = shapes; state.page = Object.assign({}, savedPage, {w: savedPage.w + L + R, h: savedPage.h + T + B}); cropTempActive = true;
+  const restore = ()=>{ state.shapes = savedShapes; state.page = savedPage; cropTempActive = false; };
+  let res;
+  try{ res = fn(); }catch(e){ restore(); throw e; }
+  if(res && typeof res.then==='function') return res.finally(restore);
+  restore(); return res;
 }
 function toggleDieHighlight(){ state.dieHighlight = !state.dieHighlight; updateStatusToggles(); renderCanvasOnly(); savePrefs(); }
 document.getElementById('toggleDieHL').onclick = toggleDieHighlight;
@@ -20221,13 +20283,15 @@ wireMenuButton('btnToolsMenu', 'toolsMenu');
 document.addEventListener('click', closeAllMenus);
 function handleMenuAction(e){
   const action = e.target.dataset.action; if(!action) return;
+  if(action==='toggle-crop-marks'){ state.cropMarks = !state.cropMarks; refreshArtOnlyMenu(); savePrefs();
+    showToast(state.cropMarks ? translate('Le esportazioni grafiche avranno i segni di taglio agli angoli del disegno.') : translate('Segni di taglio disattivati.'), false); return; }
   if(action==='toggle-art-only'){ state.exportArtOnly = !state.exportArtOnly; refreshArtOnlyMenu(); savePrefs();
     showToast(state.exportArtOnly ? translate('Esportazioni grafiche senza linee di taglio e pieghe (solo grafica).') : translate('Esportazioni grafiche di nuovo con le linee di taglio e pieghe.'), false); return; }
   if(action!=='generate-box') ensureDocumentOpen(); // con tutte le schede chiuse, un comando apre prima un disegno nuovo (Genera scatola crea già la sua scheda)
   // i comandi della fustella e delle esportazioni si lavorano dal lato esterno (l'interno viene aggiunto da loro dove serve)
   if(['export-svg','export-pdf','export-pdf-print','export-pdf-tiled','export-image','export-cad','blade-report','export-silhouette','print-proof',
       'fold-3d','fold-sequence','imposition','bleed','preflight','cut-preview','check-closures','check-overlaps','weld-points','close-all-paths','symmetry','scale-drawing'].includes(action)) ensureOutsideView();
-  if(action==='export-svg') exportSVG();
+  if(action==='export-svg') withCropMarks(exportSVG);
   if(action==='view-link') openViewLinkModal();
   else if(action==='export-silhouette') openSilhouetteExport();
   else if(action==='export-pdf-print') openModal('pdfPrintModal');
@@ -20238,7 +20302,7 @@ function handleMenuAction(e){
   else if(action==='imposition') openImposition();
   else if(action==='export-image'){ openModal('imgExpModal'); imgExpRefresh(); }
   else if(action==='export-cad' || action==='blade-report') openCadExport();
-  else if(action==='export-pdf') exportPDF();
+  else if(action==='export-pdf') withCropMarks(exportPDF);
   else if(action==='export-pdf-tiled') openTilePrintModal();
   else if(action==='print-proof') openPrintProofModal();
   else if(action==='save-project') saveProjectFile();
@@ -21597,7 +21661,7 @@ document.getElementById('fold3dVideo').onclick = fold3DVideo;
 document.getElementById('fold3dGlb').onclick = exportFold3DGLB;
 document.getElementById('fold3dObj').onclick = exportFold3DOBJ;
 try{ const sv = JSON.parse(localStorage.getItem('spikecut-pdfspots') || 'null'); if(Array.isArray(sv)) [...document.querySelectorAll('#pdfSpotTable input')].forEach((i, k)=>{ if(sv[k]==null) return; if(i.type==='checkbox') i.checked = !!sv[k]; else i.value = sv[k]; }); }catch(e){}
-document.getElementById('pdfPrintGo').onclick = doPrintPDF;
+document.getElementById('pdfPrintGo').onclick = ()=> withCropMarks(doPrintPDF);
 ['codeType','codeValue','codeW','codeH','codeEcc','codeText'].forEach(id=>{ const e = document.getElementById(id); e.addEventListener('input', codesRefresh); e.addEventListener('change', codesRefresh); });
 document.getElementById('codeGo').onclick = codesInsert;
 document.getElementById('bleedGo').onclick = ()=> makeBleedGuides(false);
@@ -21608,7 +21672,7 @@ document.getElementById('impSheet').onchange = ()=>{ const v = document.getEleme
 document.getElementById('impGo').onclick = impCreate;
 ['viewLinkModal','imgExpModal','cadModal','pdfPrintModal','bleedModal','preflightModal','impModal','codesModal'].forEach(id=>{ const m = document.getElementById(id); setupOverlayClickClose(m, ()=> m.classList.remove('open')); m.querySelector('[data-close]').onclick = ()=> m.classList.remove('open'); m.addEventListener('keydown', e=> e.stopPropagation()); });
 ['imgExpFmt','imgExpDpi'].forEach(id=> document.getElementById(id).onchange = imgExpRefresh);
-document.getElementById('imgExpGo').onclick = doImageExport;
+document.getElementById('imgExpGo').onclick = ()=> withCropMarks(doImageExport);
 document.getElementById('cadDxf').onclick = ()=> doCadExport('dxf');
 document.getElementById('cadPlt').onclick = ()=> doCadExport('plt');
 document.getElementById('cadCf2').onclick = ()=> doCadExport('cf2');
@@ -22258,7 +22322,7 @@ document.getElementById('printProofClose').onclick = ()=> document.getElementByI
 setupOverlayClickClose(document.getElementById('printProofModal'), ()=> document.getElementById('printProofModal').classList.remove('open'));
 document.getElementById('proofFormat').addEventListener('change', updateProofInfo);
 document.getElementById('proofOrientation').addEventListener('change', updateProofInfo);
-document.getElementById('proofGenerate').onclick = generatePrintProof;
+document.getElementById('proofGenerate').onclick = ()=> withCropMarks(generatePrintProof);
 
 /* ============================================================
    PAGE SIZE
@@ -27149,7 +27213,7 @@ document.getElementById('tilePreviewBtn').onclick = ()=>{
   renderCanvasOnly();
   showToast('Anteprima aggiornata sul foglio: cambia pure le impostazioni qui sopra, si aggiorna in automatico.', false);
 };
-document.getElementById('tileGenerate').onclick = exportTiledPDF;
+document.getElementById('tileGenerate').onclick = ()=> withCropMarks(exportTiledPDF);
 
 /* ============================================================
    ESPORTAZIONI PER CAD, PLOTTER, FUSTELLATORI E IMMAGINI
@@ -28145,6 +28209,7 @@ function autosavePayload(){
 }
 async function doAutosave(){
   if(VIEWER_TOKEN) return;
+  if(cropTempActive){ scheduleAutosave(); return; } // esportazione con i segni di taglio in corso: lo stato è temporaneo
   clearTimeout(state.autosaveTimer);
   let payload;
   try{ payload = autosavePayload(); }catch(err){ localSave.error = err.message; localSave.pending = false; updateSyncChip(); return; }
