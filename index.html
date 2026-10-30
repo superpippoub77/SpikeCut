@@ -870,7 +870,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
     <button class="btn primary" style="width:auto;margin:0;padding:7px 14px;" id="btnPrintMenu">Stampa ▾</button>
     <div class="dropdown-menu" id="printMenu">
       <button data-action="toggle-art-only" id="artOnlyMenuItem" title="Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova. Non tocca DXF, CAD e Silhouette, che servono proprio per tagliare.">☐ Solo grafica: esporta senza linee di taglio e pieghe</button>
-      <button data-action="toggle-crop-marks" id="cropMarksMenuItem" title="Aggiunge agli angoli del disegno i segni di taglio (crocini di rifilo) per tagliare il foglio stampato alla misura esatta. Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova.">☐ Segni di taglio agli angoli del disegno</button>
+      <button data-action="toggle-crop-marks" id="cropMarksMenuItem" title="Aggiunge agli angoli del disegno i segni di taglio (crocini di rifilo) per tagliare il foglio stampato alla misura esatta. Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova.">☐ Segni di taglio…</button>
       <div class="menu-sep"></div>
       <button data-action="export-svg">Esporta SVG (taglio/stampa)</button>
       <button data-action="export-pdf-print">📄 Esporta PDF per la stampa (vettoriale, CutContour)…</button>
@@ -1017,7 +1017,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.91</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.92</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -1451,6 +1451,23 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
       <label style="display:flex;gap:6px;align-items:center;font-size:12.5px;cursor:pointer;margin-top:4px;"><input type="checkbox" id="pdfBack" checked style="width:auto;margin:0;"><span>Aggiungi il retro (grafica interna) come pagina 2, già pronto per la stampa in volta</span></label>
       <div class="hint" style="margin-top:6px;">Nomi più usati: CutContour (Roland, Summa, Mimaki, HP), Thru-cut / Kiss-cut, Crease o Creasing per le pieghe. Chiedi alla tipografia quali usa.</div>
       <button class="btn primary" id="pdfPrintGo" style="width:100%;margin-top:12px;">Esporta PDF</button>
+    </div>
+  </div>
+</div>
+
+<div id="cropModal" class="modal-overlay">
+  <div class="modal-box" style="width:420px;max-width:96vw;">
+    <div class="modal-head"><h3>Segni di taglio</h3><button class="iconbtn" data-close="cropModal" title="Chiudi">✕</button></div>
+    <div class="modal-body">
+      <div class="hint" style="margin-bottom:10px;">Trattini agli angoli per rifilare il foglio stampato alla misura giusta. Nelle esportazioni grafiche (SVG, PDF, immagine, stampa di prova) escono solo la grafica e i segni, senza linee di taglio e pieghe.</div>
+      <label style="display:flex;gap:6px;align-items:center;font-size:12.5px;cursor:pointer;"><input type="checkbox" id="cropOn" style="width:auto;margin:0;"><span>Aggiungi i segni di taglio</span></label>
+      <div style="margin-top:10px;font-size:12.5px;display:flex;flex-direction:column;gap:6px;">
+        <label style="display:flex;gap:6px;align-items:center;cursor:pointer;"><input type="radio" name="cropMode" value="page" style="width:auto;margin:0;"><span>Ai bordi del foglio (la pagina su cui sta il disegno)</span></label>
+        <label style="display:flex;gap:6px;align-items:center;cursor:pointer;flex-wrap:wrap;"><input type="radio" name="cropMode" value="drawing" style="width:auto;margin:0;"><span>Attorno al disegno, con un margine di</span>
+          <input type="number" id="cropMargin" value="0" min="0" max="200" step="0.5" style="width:70px;"><span>mm</span></label>
+      </div>
+      <div class="hint" style="margin-top:8px;">Con "attorno al disegno" i segni seguono la linea di Taglio, se c'è (che non viene stampata), altrimenti l'ingombro della grafica, allargati del margine scelto. Se i segni non entrano nel foglio, il file esportato viene allargato quanto basta.</div>
+      <button class="btn primary" id="cropOk" style="width:100%;margin-top:12px;">OK</button>
     </div>
   </div>
 </div>
@@ -2388,6 +2405,16 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "☐ Segni di taglio…": "☐ Crop marks…",
+    "Segni di taglio…": "Crop marks…",
+    "Segni di taglio": "Crop marks",
+    "Trattini agli angoli per rifilare il foglio stampato alla misura giusta. Nelle esportazioni grafiche (SVG, PDF, immagine, stampa di prova) escono solo la grafica e i segni, senza linee di taglio e pieghe.": "Small lines at the corners to trim the printed sheet to the right size. Graphic exports (SVG, PDF, image, proof) contain only the artwork and the marks, without cut and fold lines.",
+    "Aggiungi i segni di taglio": "Add crop marks",
+    "Ai bordi del foglio (la pagina su cui sta il disegno)": "At the sheet edges (the page the drawing is on)",
+    "Attorno al disegno, con un margine di": "Around the drawing, with a margin of",
+    "Con \"attorno al disegno\" i segni seguono la linea di Taglio, se c'è (che non viene stampata), altrimenti l'ingombro della grafica, allargati del margine scelto. Se i segni non entrano nel foglio, il file esportato viene allargato quanto basta.": "With \"around the drawing\" the marks follow the Cut line, if any (which is not printed), otherwise the artwork bounds, enlarged by the chosen margin. If the marks do not fit on the sheet, the exported file is enlarged as needed.",
+    "Segni di taglio ai bordi del foglio.": "Crop marks at the sheet edges.",
+    "Segni di taglio attorno al disegno, con {n} mm di margine.": "Crop marks around the drawing, with a {n} mm margin.",
     "☐ Segni di taglio agli angoli del disegno": "☐ Crop marks at the drawing corners",
     "Segni di taglio agli angoli del disegno": "Crop marks at the drawing corners",
     "Aggiunge agli angoli del disegno i segni di taglio (crocini di rifilo) per tagliare il foglio stampato alla misura esatta. Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova.": "Adds crop marks at the corners of the drawing to trim the printed sheet to the exact size. Applies to SVG, PDF, print PDF, multi-page PDF, image and proof print.",
@@ -4270,6 +4297,16 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "☐ Segni di taglio…": "☐ Schnittmarken…",
+    "Segni di taglio…": "Schnittmarken…",
+    "Segni di taglio": "Schnittmarken",
+    "Trattini agli angoli per rifilare il foglio stampato alla misura giusta. Nelle esportazioni grafiche (SVG, PDF, immagine, stampa di prova) escono solo la grafica e i segni, senza linee di taglio e pieghe.": "Kurze Striche an den Ecken, um den gedruckten Bogen auf das richtige Maß zuzuschneiden. Grafik-Exporte (SVG, PDF, Bild, Probedruck) enthalten nur Grafik und Marken, ohne Schnitt- und Falzlinien.",
+    "Aggiungi i segni di taglio": "Schnittmarken hinzufügen",
+    "Ai bordi del foglio (la pagina su cui sta il disegno)": "An den Blatträndern (die Seite, auf der die Zeichnung liegt)",
+    "Attorno al disegno, con un margine di": "Um die Zeichnung, mit einem Rand von",
+    "Con \"attorno al disegno\" i segni seguono la linea di Taglio, se c'è (che non viene stampata), altrimenti l'ingombro della grafica, allargati del margine scelto. Se i segni non entrano nel foglio, il file esportato viene allargato quanto basta.": "Bei \"um die Zeichnung\" folgen die Marken der Schnittlinie, falls vorhanden (sie wird nicht gedruckt), sonst den Grenzen der Grafik, vergrößert um den gewählten Rand. Passen die Marken nicht aufs Blatt, wird die exportierte Datei so weit wie nötig vergrößert.",
+    "Segni di taglio ai bordi del foglio.": "Schnittmarken an den Blatträndern.",
+    "Segni di taglio attorno al disegno, con {n} mm di margine.": "Schnittmarken um die Zeichnung, mit {n} mm Rand.",
     "☐ Segni di taglio agli angoli del disegno": "☐ Schnittmarken an den Ecken der Zeichnung",
     "Segni di taglio agli angoli del disegno": "Schnittmarken an den Ecken der Zeichnung",
     "Aggiunge agli angoli del disegno i segni di taglio (crocini di rifilo) per tagliare il foglio stampato alla misura esatta. Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova.": "Fügt an den Ecken der Zeichnung Schnittmarken hinzu, um den gedruckten Bogen exakt zuzuschneiden. Gilt für SVG, PDF, Druck-PDF, mehrseitiges PDF, Bild und Probedruck.",
@@ -6152,6 +6189,16 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "☐ Segni di taglio…": "☐ Marcas de corte…",
+    "Segni di taglio…": "Marcas de corte…",
+    "Segni di taglio": "Marcas de corte",
+    "Trattini agli angoli per rifilare il foglio stampato alla misura giusta. Nelle esportazioni grafiche (SVG, PDF, immagine, stampa di prova) escono solo la grafica e i segni, senza linee di taglio e pieghe.": "Pequeños trazos en las esquinas para recortar la hoja impresa a la medida correcta. Las exportaciones gráficas (SVG, PDF, imagen, prueba) contienen solo la gráfica y las marcas, sin líneas de corte y pliegue.",
+    "Aggiungi i segni di taglio": "Añadir marcas de corte",
+    "Ai bordi del foglio (la pagina su cui sta il disegno)": "En los bordes de la hoja (la página donde está el dibujo)",
+    "Attorno al disegno, con un margine di": "Alrededor del dibujo, con un margen de",
+    "Con \"attorno al disegno\" i segni seguono la linea di Taglio, se c'è (che non viene stampata), altrimenti l'ingombro della grafica, allargati del margine scelto. Se i segni non entrano nel foglio, il file esportato viene allargato quanto basta.": "Con \"alrededor del dibujo\" las marcas siguen la línea de Corte, si la hay (no se imprime), si no los límites de la gráfica, ampliados con el margen elegido. Si las marcas no caben en la hoja, el archivo exportado se amplía lo necesario.",
+    "Segni di taglio ai bordi del foglio.": "Marcas de corte en los bordes de la hoja.",
+    "Segni di taglio attorno al disegno, con {n} mm di margine.": "Marcas de corte alrededor del dibujo, con {n} mm de margen.",
     "☐ Segni di taglio agli angoli del disegno": "☐ Marcas de corte en las esquinas del dibujo",
     "Segni di taglio agli angoli del disegno": "Marcas de corte en las esquinas del dibujo",
     "Aggiunge agli angoli del disegno i segni di taglio (crocini di rifilo) per tagliare il foglio stampato alla misura esatta. Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova.": "Añade marcas de corte en las esquinas del dibujo para recortar la hoja impresa a la medida exacta. Vale para SVG, PDF, PDF de impresión, PDF multipágina, imagen e impresión de prueba.",
@@ -8034,6 +8081,16 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "☐ Segni di taglio…": "☐ 裁切标记…",
+    "Segni di taglio…": "裁切标记…",
+    "Segni di taglio": "裁切标记",
+    "Trattini agli angoli per rifilare il foglio stampato alla misura giusta. Nelle esportazioni grafiche (SVG, PDF, immagine, stampa di prova) escono solo la grafica e i segni, senza linee di taglio e pieghe.": "四角的短线，用于把印好的纸张裁成正确尺寸。图形导出（SVG、PDF、图片、打样）只包含图案和标记，不含切割线和折线。",
+    "Aggiungi i segni di taglio": "添加裁切标记",
+    "Ai bordi del foglio (la pagina su cui sta il disegno)": "在页面边缘（图稿所在的页面）",
+    "Attorno al disegno, con un margine di": "围绕图稿，边距为",
+    "Con \"attorno al disegno\" i segni seguono la linea di Taglio, se c'è (che non viene stampata), altrimenti l'ingombro della grafica, allargati del margine scelto. Se i segni non entrano nel foglio, il file esportato viene allargato quanto basta.": "选择“围绕图稿”时，标记沿切割线（如有，且不打印），否则沿图案边界，并加上所选边距。如果标记放不进页面，导出文件会按需扩大。",
+    "Segni di taglio ai bordi del foglio.": "裁切标记位于页面边缘。",
+    "Segni di taglio attorno al disegno, con {n} mm di margine.": "裁切标记围绕图稿，边距 {n} mm。",
     "☐ Segni di taglio agli angoli del disegno": "☐ 在图稿四角添加裁切标记",
     "Segni di taglio agli angoli del disegno": "在图稿四角添加裁切标记",
     "Aggiunge agli angoli del disegno i segni di taglio (crocini di rifilo) per tagliare il foglio stampato alla misura esatta. Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova.": "在图稿四角添加裁切标记，便于将印好的纸张裁成准确尺寸。适用于 SVG、PDF、印刷 PDF、多页 PDF、图片和打样。",
@@ -9916,6 +9973,16 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "☐ Segni di taglio…": "☐ Traits de coupe…",
+    "Segni di taglio…": "Traits de coupe…",
+    "Segni di taglio": "Traits de coupe",
+    "Trattini agli angoli per rifilare il foglio stampato alla misura giusta. Nelle esportazioni grafiche (SVG, PDF, immagine, stampa di prova) escono solo la grafica e i segni, senza linee di taglio e pieghe.": "Petits traits aux coins pour rogner la feuille imprimée à la bonne taille. Les exports graphiques (SVG, PDF, image, épreuve) ne contiennent que le graphisme et les traits, sans lignes de coupe et de pli.",
+    "Aggiungi i segni di taglio": "Ajouter les traits de coupe",
+    "Ai bordi del foglio (la pagina su cui sta il disegno)": "Aux bords de la feuille (la page où se trouve le dessin)",
+    "Attorno al disegno, con un margine di": "Autour du dessin, avec une marge de",
+    "Con \"attorno al disegno\" i segni seguono la linea di Taglio, se c'è (che non viene stampata), altrimenti l'ingombro della grafica, allargati del margine scelto. Se i segni non entrano nel foglio, il file esportato viene allargato quanto basta.": "Avec \"autour du dessin\" les traits suivent la ligne de Coupe s'il y en a une (elle n'est pas imprimée), sinon les limites du graphisme, agrandies de la marge choisie. Si les traits ne tiennent pas sur la feuille, le fichier exporté est agrandi autant que nécessaire.",
+    "Segni di taglio ai bordi del foglio.": "Traits de coupe aux bords de la feuille.",
+    "Segni di taglio attorno al disegno, con {n} mm di margine.": "Traits de coupe autour du dessin, avec {n} mm de marge.",
     "☐ Segni di taglio agli angoli del disegno": "☐ Traits de coupe aux coins du dessin",
     "Segni di taglio agli angoli del disegno": "Traits de coupe aux coins du dessin",
     "Aggiunge agli angoli del disegno i segni di taglio (crocini di rifilo) per tagliare il foglio stampato alla misura esatta. Vale per SVG, PDF, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova.": "Ajoute des traits de coupe aux coins du dessin pour rogner la feuille imprimée à la taille exacte. S'applique au SVG, PDF, PDF d'impression, PDF multipage, image et épreuve.",
@@ -11692,7 +11759,9 @@ const state = {
   gridAuto: true,
   dieHighlight: false,
   exportArtOnly: false,
-  cropMarks: false,          // esportazioni grafiche con i segni di taglio (crocini di rifilo) agli angoli del disegno      // esportazioni grafiche (SVG, PDF, immagine, stampa) senza linee di taglio, piega, fustella e colla       // vista "fustella": grafica attenuata, taglio e pieghe in evidenza sopra a tutto            // colore della griglia scelto in automatico in base allo sfondo del foglio          // trasparenza del foglio mostrata su scacchiera scura (preferenza di visione)
+  cropMarks: false,
+  cropMode: 'page',          // 'page' = segni ai bordi del foglio; 'drawing' = attorno al disegno con cropMargin mm
+  cropMargin: 0,          // esportazioni grafiche con i segni di taglio (crocini di rifilo) agli angoli del disegno      // esportazioni grafiche (SVG, PDF, immagine, stampa) senza linee di taglio, piega, fustella e colla       // vista "fustella": grafica attenuata, taglio e pieghe in evidenza sopra a tutto            // colore della griglia scelto in automatico in base allo sfondo del foglio          // trasparenza del foglio mostrata su scacchiera scura (preferenza di visione)
   magnetPx: 10,                // screen px radius for magnet
   draft: null,                 // in-progress drawing object
   drag: null,                  // active drag operation
@@ -15951,7 +16020,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.91';
+const GUIDE_VERSION = '2.92';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -16498,7 +16567,10 @@ html:`<p>Menu <b>Stampa → 📄 Esporta PDF per la stampa…</b>. È il file da
 <li>spessore delle linee regolabile (0,25 pt è il valore tipico), misura reale, un foglio.</li></ul>
 <p>I nomi si cambiano nella finestra e vengono ricordati: chiedi alla tipografia quali usa (es. Thru-cut, Kiss-cut, Creasing). Togli la spunta a una linea per non esportarla.</p>
 <p><b>Solo grafica</b>: nel menu <b>Stampa</b> la prima voce, <b>☐ Solo grafica: esporta senza linee di taglio e pieghe</b>, toglie in un colpo solo taglio, pieghe, fustella speciale e colla da <b>tutte</b> le esportazioni grafiche: SVG (anche la legenda), PDF anteprima, PDF per la stampa, PDF multi-pagina, immagine PNG/JPG, retro e stampa di prova. Con la spunta (☑) esce solo la grafica: utile per la tipografia, per un'anteprima pulita o per un catalogo. La scelta viene ricordata; clicca di nuovo la voce per rimettere le linee. Non tocca le esportazioni DXF, CAD e Silhouette, che servono proprio per tagliare.</p>
-<p><b>Segni di taglio</b>: nel menu <b>Stampa</b> la voce <b>☐ Segni di taglio agli angoli del disegno</b> aggiunge i <b>crocini di rifilo</b>. Ai quattro angoli dell'ingombro del disegno compaiono due trattini neri sottili che prolungano i bordi, staccati di 3 mm e lunghi 6 mm: tagliando il foglio stampato lungo l'allineamento dei segni ottieni esattamente la misura del disegno. Valgono per SVG, PDF anteprima, PDF per la stampa, PDF multi-pagina, immagine PNG/JPG e stampa di prova. Se intorno al disegno non c'è spazio per i segni, il foglio esportato viene <b>allargato</b> quanto basta: il disegno si sposta ma le misure restano reali, e il tuo progetto non cambia. Con i segni di taglio attivi si esporta <b>solo la grafica e i segni</b>: niente bordo del foglio e niente linee di taglio o piega, perché il taglio lo indicano i segni. <b>Dove cadono i segni</b>: se nel disegno c'è una linea di <b>Taglio</b> (per esempio un rettangolo attorno alle carte), i segni seguono quella, che però non viene stampata. Se non c'è, seguono l'ingombro della grafica. Un rettangolo con ruolo <b>Disegno</b> invece è grafica e viene stampato: se ti serve solo per indicare la misura, selezionalo e dagli il ruolo <b>Taglio</b>. La scelta viene ricordata.</p>` },
+<p><b>Segni di taglio</b>: menu <b>Stampa → Segni di taglio…</b> apre una piccola finestra: spunta <b>Aggiungi i segni di taglio</b> e scegli dove metterli:</p>
+<ul><li><b>Ai bordi del foglio</b> (predefinito): i segni stanno agli angoli della pagina su cui è il disegno, quindi il margine tra il bordo del foglio e il disegno resta compreso nel pezzo tagliato;</li>
+<li><b>Attorno al disegno, con un margine di N mm</b> (da 0 in su): i segni seguono la linea di <b>Taglio</b> se c'è (che non viene stampata), altrimenti l'ingombro della grafica, allargati di N mm su ogni lato.</li></ul>
+<p>Ogni segno è fatto da due trattini neri sottili che prolungano i bordi, staccati di 3 mm e lunghi 6 mm: tagli unendo i segni. Valgono per SVG, PDF anteprima, PDF per la stampa, PDF multi-pagina, immagine e stampa di prova; in questi file escono <b>solo la grafica e i segni</b>, senza bordo del foglio né linee di taglio e piega. Se i segni non entrano, il file esportato viene allargato quanto basta (le misure restano reali, il progetto non cambia). Un rettangolo con ruolo <b>Disegno</b> è grafica e viene stampato: per usarlo solo come misura dagli il ruolo <b>Taglio</b>. Le scelte vengono ricordate.</p>` },
 { id:'esporta-immagine', cat:'Salvare ed esportare', title:'Esportare un\'immagine (PNG/JPG)', keys:'png jpg jpeg immagine esportare dpi risoluzione anteprima ecommerce catalogo',
 html:`<p>Menu <b>Stampa → 🖼 Esporta immagine…</b>: il foglio in scala reale come PNG o JPG a 96, 150, 300 o 600 DPI, con o senza le linee di taglio e piega. La risoluzione viene scritta nel file, così stampandolo esce della misura giusta. Il PNG mantiene la trasparenza (se lo sfondo non è applicato); il JPG ha sempre il fondo bianco. Per fogli molto grandi la risoluzione viene ridotta quanto basta a stare nei limiti del browser (la finestra lo dice).</p>` },
 { id:'cad', cat:'Salvare ed esportare', title:'CAD, plotter e fustellatori (DXF, PLT, CF2) e metri di lama', keys:'dxf cad autocad artioscad librecad lightburn laser hpgl plt cf2 kongsberg elitron fustellatore fustella lama metri preventivo livelli cut crease perf',
@@ -16576,6 +16648,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.92</b> — <a data-topic="pdf-stampa">Segni di taglio</a>: ai bordi del foglio (predefinito) oppure attorno al disegno con un margine in mm a scelta.</li>
 <li><b>2.91</b> — Segni di taglio: se c'è una linea di Taglio, i segni seguono quella (che non viene stampata).</li>
 <li><b>2.90</b> — Segni di taglio: si esportano solo la grafica e i segni, senza bordo del foglio né linee di taglio e piega.</li>
 <li><b>2.89</b> — Menu Stampa → <a data-topic="pdf-stampa">Segni di taglio</a>: crocini di rifilo agli angoli del disegno in SVG, PDF e immagini.</li>
@@ -19902,7 +19975,7 @@ const PREFS_KEY = 'spikecut-prefs';
 function gatherPrefs(){
   return { gridColor: state.gridColor, gridOpacity: state.gridOpacity!=null ? state.gridOpacity : 1, grid: state.grid,
            snapGrid: !!state.snapGrid, snapMagnet: !!state.snapMagnet, showEndpoints: !!state.showEndpoints, showDimensions: !!state.showDimensions,
-           unit: state.unit, transpDark: !!state.transpDark, gridAuto: !!state.gridAuto, dieHighlight: !!state.dieHighlight, exportArtOnly: !!state.exportArtOnly, cropMarks: !!state.cropMarks, savedAt: Date.now() };
+           unit: state.unit, transpDark: !!state.transpDark, gridAuto: !!state.gridAuto, dieHighlight: !!state.dieHighlight, exportArtOnly: !!state.exportArtOnly, cropMarks: !!state.cropMarks, cropMode: state.cropMode, cropMargin: state.cropMargin || 0, savedAt: Date.now() };
 }
 function applyPrefs(p){
   if(!p || typeof p!=='object') return;
@@ -19910,6 +19983,8 @@ function applyPrefs(p){
   if(p.gridOpacity>=0 && p.gridOpacity<=1) state.gridOpacity = p.gridOpacity;
   if(p.grid===1 || p.grid===10){ state.grid = p.grid; const gs = document.getElementById('gridStepSelect'); if(gs) gs.value = String(p.grid); }
   ['snapGrid','snapMagnet','showEndpoints','showDimensions','transpDark','gridAuto','dieHighlight','exportArtOnly','cropMarks'].forEach(k=>{ if(typeof p[k]==='boolean') state[k] = p[k]; });
+  if(p.cropMode==='page' || p.cropMode==='drawing') state.cropMode = p.cropMode;
+  if(p.cropMargin>=0 && p.cropMargin<=200) state.cropMargin = p.cropMargin;
   if(typeof refreshArtOnlyMenu==='function') refreshArtOnlyMenu();
   const td = document.getElementById('pageBgDark'); if(td) td.checked = !!state.transpDark;
   if(p.unit && UNITS[p.unit]){ state.unit = p.unit; const us = document.getElementById('unitSelect'); if(us) us.value = p.unit; if(typeof refreshShapeLibUnit==='function') refreshShapeLibUnit(); }
@@ -19953,7 +20028,7 @@ document.getElementById('toggleEndpoints').onclick = ()=>{
 };
 function refreshArtOnlyMenu(){
   const b = document.getElementById('artOnlyMenuItem'); if(b) b.textContent = (state.exportArtOnly ? '☑ ' : '☐ ') + translate('Solo grafica: esporta senza linee di taglio e pieghe');
-  const c = document.getElementById('cropMarksMenuItem'); if(c) c.textContent = (state.cropMarks ? '☑ ' : '☐ ') + translate('Segni di taglio agli angoli del disegno');
+  const c = document.getElementById('cropMarksMenuItem'); if(c) c.textContent = (state.cropMarks ? '☑ ' : '☐ ') + translate('Segni di taglio…');
 }
 /* ---------- segni di taglio (crocini di rifilo) ----------
    Con l'opzione attiva, le esportazioni grafiche hanno agli angoli dell'ingombro del disegno due trattini che ne
@@ -19970,11 +20045,28 @@ function cropMarkBox(){
   if(!bb.length) return null;
   return {x0: Math.min(...bb.map(b=>b.x)), y0: Math.min(...bb.map(b=>b.y)), x1: Math.max(...bb.map(b=>b.x+b.w)), y1: Math.max(...bb.map(b=>b.y+b.h))};
 }
+function openCropModal(){
+  document.getElementById('cropOn').checked = !!state.cropMarks;
+  document.querySelectorAll('input[name=cropMode]').forEach(r=> r.checked = r.value===(state.cropMode==='drawing' ? 'drawing' : 'page'));
+  document.getElementById('cropMargin').value = state.cropMargin || 0;
+  openModal('cropModal');
+}
+document.getElementById('cropMargin').addEventListener('input', ()=>{ document.querySelector('input[name=cropMode][value=drawing]').checked = true; });
+document.getElementById('cropOk').onclick = ()=>{
+  state.cropMarks = document.getElementById('cropOn').checked;
+  state.cropMode = (document.querySelector('input[name=cropMode]:checked') || {}).value==='drawing' ? 'drawing' : 'page';
+  state.cropMargin = Math.max(0, Math.min(200, parseFloat(document.getElementById('cropMargin').value) || 0));
+  refreshArtOnlyMenu(); savePrefs();
+  document.getElementById('cropModal').classList.remove('open');
+  showToast(!state.cropMarks ? translate('Segni di taglio disattivati.') : state.cropMode==='page' ? translate('Segni di taglio ai bordi del foglio.') : tpl('Segni di taglio attorno al disegno, con {n} mm di margine.', {n: String(state.cropMargin).replace('.', ',')}), false);
+};
 function withCropMarks(fn){
   if(!state.cropMarks || cropTempActive) return fn();
   // con i segni di taglio si stampa solo la grafica: niente bordo del foglio né linee di taglio/piega (il taglio lo danno i segni)
   const savedArtOnly = state.exportArtOnly; state.exportArtOnly = true;
-  const box = withSide('outside', ()=> cropMarkBox()); if(!box){ try{ return fn(); } finally{ state.exportArtOnly = savedArtOnly; } }
+  let box = state.cropMode==='drawing' ? withSide('outside', ()=> cropMarkBox()) : {x0: 0, y0: 0, x1: state.page.w, y1: state.page.h};
+  if(!box){ try{ return fn(); } finally{ state.exportArtOnly = savedArtOnly; } }
+  if(state.cropMode==='drawing' && state.cropMargin > 0){ const m = state.cropMargin; box = {x0: box.x0 - m, y0: box.y0 - m, x1: box.x1 + m, y1: box.y1 + m}; }
   const need = CROP.gap + CROP.len + 2;
   const L = Math.max(0, need - box.x0), T = Math.max(0, need - box.y0), R = Math.max(0, box.x1 + need - state.page.w), B = Math.max(0, box.y1 + need - state.page.h);
   const savedShapes = state.shapes, savedPage = state.page;
@@ -20291,8 +20383,7 @@ wireMenuButton('btnToolsMenu', 'toolsMenu');
 document.addEventListener('click', closeAllMenus);
 function handleMenuAction(e){
   const action = e.target.dataset.action; if(!action) return;
-  if(action==='toggle-crop-marks'){ state.cropMarks = !state.cropMarks; refreshArtOnlyMenu(); savePrefs();
-    showToast(state.cropMarks ? translate('Le esportazioni grafiche avranno i segni di taglio agli angoli del disegno.') : translate('Segni di taglio disattivati.'), false); return; }
+  if(action==='toggle-crop-marks'){ openCropModal(); return; }
   if(action==='toggle-art-only'){ state.exportArtOnly = !state.exportArtOnly; refreshArtOnlyMenu(); savePrefs();
     showToast(state.exportArtOnly ? translate('Esportazioni grafiche senza linee di taglio e pieghe (solo grafica).') : translate('Esportazioni grafiche di nuovo con le linee di taglio e pieghe.'), false); return; }
   if(action!=='generate-box') ensureDocumentOpen(); // con tutte le schede chiuse, un comando apre prima un disegno nuovo (Genera scatola crea già la sua scheda)
@@ -21678,7 +21769,7 @@ document.getElementById('preflightAgain').onclick = runPreflight;
 document.getElementById('impSheet').onchange = ()=>{ const v = document.getElementById('impSheet').value; if(v!=='custom'){ const [w,h] = v.split('x'); document.getElementById('impW').value = w; document.getElementById('impH').value = h; } impRefresh(); };
 ['impW','impH','impMargin','impGap','impRot','impNest'].forEach(id=>{ const e = document.getElementById(id); e.addEventListener('change', impRefresh); });
 document.getElementById('impGo').onclick = impCreate;
-['viewLinkModal','imgExpModal','cadModal','pdfPrintModal','bleedModal','preflightModal','impModal','codesModal'].forEach(id=>{ const m = document.getElementById(id); setupOverlayClickClose(m, ()=> m.classList.remove('open')); m.querySelector('[data-close]').onclick = ()=> m.classList.remove('open'); m.addEventListener('keydown', e=> e.stopPropagation()); });
+['viewLinkModal','imgExpModal','cadModal','pdfPrintModal','bleedModal','preflightModal','impModal','codesModal','cropModal'].forEach(id=>{ const m = document.getElementById(id); setupOverlayClickClose(m, ()=> m.classList.remove('open')); m.querySelector('[data-close]').onclick = ()=> m.classList.remove('open'); m.addEventListener('keydown', e=> e.stopPropagation()); });
 ['imgExpFmt','imgExpDpi'].forEach(id=> document.getElementById(id).onchange = imgExpRefresh);
 document.getElementById('imgExpGo').onclick = ()=> withCropMarks(doImageExport);
 document.getElementById('cadDxf').onclick = ()=> doCadExport('dxf');
