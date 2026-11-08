@@ -1017,7 +1017,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.94</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.95</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2405,6 +2405,8 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "◜ Raggio degli angoli": "◜ Corner radius",
+    "0 = spigoli vivi. Ogni angolo diventa un arco di questo raggio; i punti della forma restano quelli di prima, quindi puoi cambiarlo quando vuoi. Vale anche in esportazioni, taglio e 3D.": "0 = sharp corners. Each corner becomes an arc of this radius; the shape's points stay as they were, so you can change it any time. Also applies to exports, cutting and 3D.",
     "Per raggruppare seleziona almeno due oggetti: Shift+clic su ognuno, oppure trascina un rettangolo attorno a loro": "To group, select at least two objects: Shift+click each one, or drag a rectangle around them",
     "Quadrato arrotondato": "Rounded square",
     "☐ Segni di taglio…": "☐ Crop marks…",
@@ -4299,6 +4301,8 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "◜ Raggio degli angoli": "◜ Eckenradius",
+    "0 = spigoli vivi. Ogni angolo diventa un arco di questo raggio; i punti della forma restano quelli di prima, quindi puoi cambiarlo quando vuoi. Vale anche in esportazioni, taglio e 3D.": "0 = scharfe Ecken. Jede Ecke wird zu einem Bogen mit diesem Radius; die Punkte der Form bleiben erhalten, du kannst ihn also jederzeit ändern. Gilt auch für Exporte, Schnitt und 3D.",
     "Per raggruppare seleziona almeno due oggetti: Shift+clic su ognuno, oppure trascina un rettangolo attorno a loro": "Zum Gruppieren mindestens zwei Objekte auswählen: Umschalt+Klick auf jedes oder ein Rechteck um sie ziehen",
     "Quadrato arrotondato": "Abgerundetes Quadrat",
     "☐ Segni di taglio…": "☐ Schnittmarken…",
@@ -6193,6 +6197,8 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "◜ Raggio degli angoli": "◜ Radio de las esquinas",
+    "0 = spigoli vivi. Ogni angolo diventa un arco di questo raggio; i punti della forma restano quelli di prima, quindi puoi cambiarlo quando vuoi. Vale anche in esportazioni, taglio e 3D.": "0 = esquinas vivas. Cada esquina se convierte en un arco de este radio; los puntos de la forma no cambian, así que puedes modificarlo cuando quieras. Vale también para exportaciones, corte y 3D.",
     "Per raggruppare seleziona almeno due oggetti: Shift+clic su ognuno, oppure trascina un rettangolo attorno a loro": "Para agrupar selecciona al menos dos objetos: Mayús+clic en cada uno, o arrastra un rectángulo a su alrededor",
     "Quadrato arrotondato": "Cuadrado redondeado",
     "☐ Segni di taglio…": "☐ Marcas de corte…",
@@ -8087,6 +8093,8 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "◜ Raggio degli angoli": "◜ 圆角半径",
+    "0 = spigoli vivi. Ogni angolo diventa un arco di questo raggio; i punti della forma restano quelli di prima, quindi puoi cambiarlo quando vuoi. Vale anche in esportazioni, taglio e 3D.": "0 = 尖角。每个角变成该半径的圆弧；形状的点保持不变，可随时修改。也适用于导出、切割和 3D。",
     "Per raggruppare seleziona almeno due oggetti: Shift+clic su ognuno, oppure trascina un rettangolo attorno a loro": "要编组，请至少选择两个对象：按住 Shift 逐个点击，或拖出一个框包住它们",
     "Quadrato arrotondato": "圆角正方形",
     "☐ Segni di taglio…": "☐ 裁切标记…",
@@ -9981,6 +9989,8 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "◜ Raggio degli angoli": "◜ Rayon des angles",
+    "0 = spigoli vivi. Ogni angolo diventa un arco di questo raggio; i punti della forma restano quelli di prima, quindi puoi cambiarlo quando vuoi. Vale anche in esportazioni, taglio e 3D.": "0 = angles vifs. Chaque angle devient un arc de ce rayon ; les points de la forme restent inchangés, vous pouvez donc le modifier quand vous voulez. S'applique aussi aux exports, à la découpe et à la 3D.",
     "Per raggruppare seleziona almeno due oggetti: Shift+clic su ognuno, oppure trascina un rettangolo attorno a loro": "Pour grouper, sélectionnez au moins deux objets : Maj+clic sur chacun, ou tracez un rectangle autour d'eux",
     "Quadrato arrotondato": "Carré arrondi",
     "☐ Segni di taglio…": "☐ Traits de coupe…",
@@ -12361,6 +12371,7 @@ function imageMaskGeom(s){
   }
   return parts.map(p=> p.ell
     ? {ell:{cx: ox + (p.ell.cx-bb.x0)*sx, cy: oy + (p.ell.cy-bb.y0)*sy, rx: p.ell.w/2*sx, ry: p.ell.h/2*sy}}
+    : p.cornerR ? (q=> ({pts: q, smooth: q.map(()=>0)}))(roundCornersPts(p.pts.map(T), p.cornerR*Math.min(sx, sy)))
     : {pts: p.pts.map(T), smooth: p.smooth ? p.smooth.map(v=> v*Math.min(sx, sy)) : p.pts.map(()=>0)});
 }
 function imageMaskPathD(s, k){
@@ -12461,6 +12472,33 @@ function buildSmoothPathD(points, closed, smoothArr, scale){
   if(closed) d += ' Z';
   return d;
 }
+/* ---------- raggio degli angoli (s.cornerR, mm) ----------
+   Su una figura chiusa (o un rettangolo) ogni spigolo viene arrotondato con un arco vero di raggio cornerR; i punti
+   della forma restano quelli originali (si modificano come sempre) e il raggio si cambia quando si vuole. */
+function roundCornersPts(points, r){
+  const n = points.length; if(n < 3 || !(r > 0)) return points;
+  const out = [];
+  for(let i=0;i<n;i++){
+    const p = points[i], a = points[(i-1+n)%n], b = points[(i+1)%n];
+    const v1 = [a[0]-p[0], a[1]-p[1]], v2 = [b[0]-p[0], b[1]-p[1]], l1 = Math.hypot(v1[0], v1[1]), l2 = Math.hypot(v2[0], v2[1]);
+    if(l1 < 1e-9 || l2 < 1e-9){ out.push(p); continue; }
+    const u1 = [v1[0]/l1, v1[1]/l1], u2 = [v2[0]/l2, v2[1]/l2];
+    const th = Math.acos(Math.max(-1, Math.min(1, u1[0]*u2[0] + u1[1]*u2[1]))); // angolo interno
+    if(th < 1e-3 || Math.PI - th < 1e-3){ out.push(p); continue; }
+    const t = Math.min(r/Math.tan(th/2), l1/2, l2/2), rr = t*Math.tan(th/2);
+    const A = [p[0]+u1[0]*t, p[1]+u1[1]*t], B = [p[0]+u2[0]*t, p[1]+u2[1]*t];
+    const bis = [u1[0]+u2[0], u1[1]+u2[1]], bl = Math.hypot(bis[0], bis[1]) || 1, dc = rr/Math.sin(th/2);
+    const C = [p[0]+bis[0]/bl*dc, p[1]+bis[1]/bl*dc];
+    const a0 = Math.atan2(A[1]-C[1], A[0]-C[0]); let da = Math.atan2(B[1]-C[1], B[0]-C[0]) - a0;
+    while(da > Math.PI) da -= 2*Math.PI; while(da < -Math.PI) da += 2*Math.PI;
+    const seg = Math.max(4, Math.ceil(Math.abs(da)/(Math.PI/24)));
+    for(let k=0;k<=seg;k++){ const g = a0 + da*k/seg; out.push([C[0] + rr*Math.cos(g), C[1] + rr*Math.sin(g)]); }
+  }
+  return out;
+}
+function hasCornerR(s){ return !!s && s.cornerR > 0 && ((s.points && s.closed && s.points.length >= 3) || s.type==='rect'); }
+function outlineArgs(s){ return hasCornerR(s) && s.points ? [roundCornersPts(s.points, s.cornerR), true, null] : [s.points, !!s.closed, s.smooth]; }
+function flatOutline(s){ const [p, c, sm] = outlineArgs(s); return (sm && sm.some(v=>v>0)) ? flattenPathD(buildSmoothPathD(p, c, sm, 1)) : p.map(q=>[q[0], q[1]]); }
 function pathD(points, closed, smoothArr){
   if(!points.length) return '';
   if(smoothArr && smoothArr.some(v=>v>0)) return buildSmoothPathD(points, closed, smoothArr, state.scale);
@@ -12484,9 +12522,10 @@ function shapeToNode(s){
   };
   let node;
   if(s.type==='path' || s.type==='freehand' || s.type==='line'){
-    node = el('path', Object.assign({d: pathD(s.points, !!s.closed, s.smooth)}, common));
+    node = el('path', Object.assign({d: pathD(...outlineArgs(s))}, common));
   } else if(s.type==='rect'){
     node = el('rect', Object.assign({x:s.x*state.scale,y:s.y*state.scale,width:s.w*state.scale,height:s.h*state.scale}, common));
+    if(hasCornerR(s)){ const rr = Math.min(s.cornerR, Math.abs(s.w)/2, Math.abs(s.h)/2)*state.scale; node.setAttribute('rx', rr); node.setAttribute('ry', rr); }
     if(s.rotation){
       const cx=(s.x+s.w/2)*state.scale, cy=(s.y+s.h/2)*state.scale;
       node.setAttribute('transform', `rotate(${s.rotation} ${cx} ${cy})`);
@@ -14043,7 +14082,7 @@ function endFoldCheckOverlay(){
   renderCanvasOnly();
 }
 function shapeOutlineD(s){
-  if(s.points) return pathD(s.points, !!s.closed, s.smooth);
+  if(s.points) return pathD(...outlineArgs(s));
   const r = shapeToRing(s);
   return r ? pathD(r.slice(0,-1), true) : '';
 }
@@ -15044,10 +15083,10 @@ function flattenPathD(d, steps){
 function shapeToRing(s){
   let pts = null;
   if((s.type==='path' || s.type==='freehand') && s.points && s.closed && s.points.length>=3){
-    pts = (s.smooth && s.smooth.some(v=>v>0)) ? flattenPathD(buildSmoothPathD(s.points, true, s.smooth, 1)) : s.points.map(p=>[p[0],p[1]]);
+    pts = flatOutline(s);
   } else if(s.type==='rect' || s.type==='ellipse'){
     const cx = s.x+s.w/2, cy = s.y+s.h/2;
-    if(s.type==='rect') pts = [[s.x,s.y],[s.x+s.w,s.y],[s.x+s.w,s.y+s.h],[s.x,s.y+s.h]];
+    if(s.type==='rect'){ pts = [[s.x,s.y],[s.x+s.w,s.y],[s.x+s.w,s.y+s.h],[s.x,s.y+s.h]]; if(hasCornerR(s)) pts = roundCornersPts(pts, s.cornerR); }
     else { pts = []; for(let k=0;k<96;k++){ const a=k/96*Math.PI*2; pts.push([cx+Math.cos(a)*Math.abs(s.w)/2, cy+Math.sin(a)*Math.abs(s.h)/2]); } }
     if(s.rotation) pts = pts.map(p=>rotatePointAround(p,[cx,cy],s.rotation));
   }
@@ -15897,7 +15936,7 @@ function renderSmartGuides(){
 // forma → spezzate in mm ({pts, closed}); curve e cerchi approssimati con segmenti
 function shapeToPolylines(s){
   if(s.points && s.points.length>=2){
-    const pts = (s.smooth && s.smooth.some(v=>v>0)) ? flattenPathD(buildSmoothPathD(s.points, !!s.closed, s.smooth, 1)) : s.points.map(p=>[p[0],p[1]]);
+    const pts = flatOutline(s);
     return [{pts, closed: !!s.closed}];
   }
   if(s.type==='rect' || s.type==='ellipse'){ const r = shapeToRing(s); if(r) return [{pts: r.slice(0,-1), closed:true}]; }
@@ -16032,7 +16071,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.94';
+const GUIDE_VERSION = '2.95';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -16406,6 +16445,7 @@ html:`<p><b>Secchiello (K)</b>: per colorare una zona chiusa <b>formata da più 
 html:`<p><b>Forme pronte</b>: nella barra a sinistra, sezione <b>Forme pronte</b> (o tasto <b>F</b>), si apre accanto alla barra una galleria con anteprima, divisa per categorie: triangoli e quadrilateri, poligoni regolari (dal pentagono al dodecagono), curve (cerchio, ellisse, semicerchio, spicchio, corona, cuore, mezzaluna…), stelle, frecce e simboli (croce, fumetto, cartellino, ingranaggio…) e pezzi di <b>packaging</b> (aletta, foro europeo, maniglia, linguetta, gancio, foro tondo, asola, finestra, foro a sombrero, tacca a V).</p>
 <ul><li><b>Trascina</b> una forma sul foglio per inserirla in quel punto, oppure <b>fai clic</b> per metterla al centro (sui tablet si usa il clic). La galleria resta aperta per inserirne altre; si chiude con ✕, Esc o di nuovo con F.</li>
 <li>La casella <b>Dimensione</b> indica il lato del quadrato in cui sta la forma; i pezzi di packaging hanno invece <b>misure reali fisse</b>.</li>
+<li><b>Raggio degli angoli</b>: selezionando un rettangolo, un quadrato o una forma chiusa fatta di punti, nel pannello Proprietà compare <b>◜ Raggio degli angoli</b> con cursore e campo in mm. A 0 gli spigoli sono vivi; alzandolo ogni angolo diventa un arco di quel raggio, da appena smussato (le due rette quasi si toccano) a molto tondo. I punti della forma restano quelli originali, quindi il raggio si cambia quando vuoi e la forma si ridimensiona dagli angoli senza deformare le curve. Vale anche in esportazioni, taglio, ritaglio delle immagini e 3D. Il rettangolo e il quadrato arrotondati delle Forme pronte partono già con un raggio, che puoi regolare.</li>
 <li>La forma usa il <b>ruolo linea</b> scelto (Taglio, Piega…), come gli strumenti di disegno; cerchi ed ellissi sono ellissi vere. Le forme in più parti (corona, cartellino, ingranaggio) sono inserite già <a data-topic="gruppi">raggruppate</a>.</li>
 <li>La casella <b>Cerca</b> filtra per nome o categoria (es. "stella", "poligoni").</li>
 <li>Nella categoria <b>Packaging</b> trovi, in misura reale: aletta, foro europeo, foro a sombrero, maniglia, linguetta, gancio, foro tondo, asola, finestra rettangolare, tonda e ovale, fessura per linguetta, foro per cordino, tacca a V e tacca per il pollice.</li></ul>
@@ -16660,6 +16700,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.95</b> — <b>Raggio degli angoli</b> regolabile (cursore e mm nel pannello Proprietà) per rettangoli, quadrati e forme chiuse: da spigolo vivo a molto arrotondato, sempre modificabile.</li>
 <li><b>2.94</b> — Le forme fatte di punti (forme pronte, percorsi, poligoni) si ridimensionano dalle maniglie agli angoli, come rettangoli e immagini (Shift: mantiene le proporzioni).</li>
 <li><b>2.93</b> — <a data-topic="componenti">Forme pronte</a>: il rettangolo arrotondato ora ha lati dritti e solo gli angoli arrotondati; nuovo quadrato arrotondato.</li>
 <li><b>2.92</b> — <a data-topic="pdf-stampa">Segni di taglio</a>: ai bordi del foglio (predefinito) oppure attorno al disegno con un margine in mm a scelta.</li>
@@ -17039,7 +17080,7 @@ function explodeSelectionToSegments(){
   sel.forEach(s=>{
     let pts = null, closed = false;
     if(s.points && s.points.length>=2 && !s.arc){
-      pts = (s.smooth && s.smooth.some(v=>v>0)) ? flattenPathD(buildSmoothPathD(s.points, !!s.closed, s.smooth, 1)) : s.points;
+      pts = flatOutline(s);
       closed = !!s.closed;
     } else if(s.type==='rect'){ const r = shapeToRing(s); if(r){ pts = r.slice(0,-1); closed = true; } }
     const segN = pts ? (closed ? pts.length : pts.length-1) : 0;
@@ -18494,12 +18535,8 @@ const SHAPE_LIBRARY = [
   {key:'square', cat:'Triangoli e quadrilateri', label:'Quadrato', make:S=>SL.poly([[0,0],[S,0],[S,S],[0,S]])},
   {key:'rect', cat:'Triangoli e quadrilateri', label:'Rettangolo', make:S=>SL.poly([[0,0],[S,0],[S,S*0.6],[0,S*0.6]])},
   // lati dritti e solo gli angoli arrotondati (archi veri, raggio = 10% del lato lungo)
-  {key:'rect_round', cat:'Triangoli e quadrilateri', label:'Rettangolo arrotondato', make:S=>{ const w = S, h = S*0.6, r = S*0.1, pts = [];
-    [[w-r, r, -90], [w-r, h-r, 0], [r, h-r, 90], [r, r, 180]].forEach(([cx, cy, a0])=>{ for(let k=0;k<=8;k++){ const a = (a0 + k*90/8)*Math.PI/180; pts.push([cx + r*Math.cos(a), cy + r*Math.sin(a)]); } });
-    return SL.poly(pts, {noAngles:true}); }},
-  {key:'square_round', cat:'Triangoli e quadrilateri', label:'Quadrato arrotondato', make:S=>{ const r = S*0.12, pts = [];
-    [[S-r, r, -90], [S-r, S-r, 0], [r, S-r, 90], [r, r, 180]].forEach(([cx, cy, a0])=>{ for(let k=0;k<=8;k++){ const a = (a0 + k*90/8)*Math.PI/180; pts.push([cx + r*Math.cos(a), cy + r*Math.sin(a)]); } });
-    return SL.poly(pts, {noAngles:true}); }},
+  {key:'rect_round', cat:'Triangoli e quadrilateri', label:'Rettangolo arrotondato', make:S=> SL.poly([[0,0],[S,0],[S,S*0.6],[0,S*0.6]], {cornerR: S*0.1})},
+  {key:'square_round', cat:'Triangoli e quadrilateri', label:'Quadrato arrotondato', make:S=> SL.poly([[0,0],[S,0],[S,S],[0,S]], {cornerR: S*0.12})},
   // rettangolo bombato (schermo TV anni '80): super-ellisse, lati leggermente curvi e angoli molto arrotondati
   {key:'rect_bulge', cat:'Triangoli e quadrilateri', label:'Rettangolo bombato (schermo TV)', make:S=>{ const a = S/2, b = S*0.375, n = 5, pts = [];
     for(let i=0;i<96;i++){ const t = i/96*2*Math.PI, c = Math.cos(t), sn = Math.sin(t); pts.push([a + a*Math.sign(c)*Math.pow(Math.abs(c), 2/n), b + b*Math.sign(sn)*Math.pow(Math.abs(sn), 2/n)]); }
@@ -18585,7 +18622,7 @@ function shapeLibParts(def, S){
   return parts.map(p=>{
     const off = p.at || [0,0];
     if(p.ellipse) return {ell:{cx:off[0], cy:off[1], w:p.ellipse.w, h:p.ellipse.h}};
-    return {pts: p.points.map(q=>[q[0]+off[0], q[1]+off[1]]), closed: p.closed!==false, smooth: p.smooth, noAngles: !!p.noAngles};
+    return {pts: p.points.map(q=>[q[0]+off[0], q[1]+off[1]]), closed: p.closed!==false, smooth: p.smooth, noAngles: !!p.noAngles, cornerR: p.cornerR || 0};
   });
 }
 function shapeLibBBox(parts){
@@ -18605,7 +18642,7 @@ function insertLibraryShape(key, at){
   const dx = c[0] - (bb.x0 + bb.w/2), dy = c[1] - (bb.y0 + bb.h/2);
   const made = parts.map(p=> p.ell
     ? makeShape('ellipse', {x:p.ell.cx - p.ell.w/2 + dx, y:p.ell.cy - p.ell.h/2 + dy, w:p.ell.w, h:p.ell.h})
-    : makeShape('path', Object.assign({points:p.pts.map(q=>[q[0]+dx, q[1]+dy]), closed:p.closed, smooth: p.smooth ? p.smooth.slice() : p.pts.map(()=>0)}, p.noAngles ? {noAngles:true} : {})));
+    : makeShape('path', Object.assign({points:p.pts.map(q=>[q[0]+dx, q[1]+dy]), closed:p.closed, smooth: p.smooth ? p.smooth.slice() : p.pts.map(()=>0)}, p.noAngles ? {noAngles:true} : {}, p.cornerR ? {cornerR: p.cornerR} : {})));
   if(made.length > 1){ const gid = 'g' + uid(); made.forEach(s=> s.groupId = gid); } // forma in più parti: resta unita
   made.forEach(s=> state.shapes.push(s));
   state.selection = new Set(made.map(s=>s.id));
@@ -18619,7 +18656,7 @@ function shapeLibThumb(def){
   const sw = (Math.max(bb.w, bb.h) / 40 * 1.6).toFixed(2);
   const body = parts.map(p=> p.ell
     ? `<ellipse cx="${p.ell.cx}" cy="${p.ell.cy}" rx="${p.ell.w/2}" ry="${p.ell.h/2}"/>`
-    : `<path d="${buildSmoothPathD(p.pts, p.closed, p.smooth || p.pts.map(()=>0), 1)}"/>`).join('');
+    : `<path d="${p.cornerR ? buildSmoothPathD(roundCornersPts(p.pts, p.cornerR), true, null, 1) : buildSmoothPathD(p.pts, p.closed, p.smooth || p.pts.map(()=>0), 1)}"/>`).join('');
   return `<svg viewBox="${vb}" preserveAspectRatio="xMidYMid meet" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linejoin="round">${body}</svg>`;
 }
 function buildShapeGallery(host){
@@ -22834,6 +22871,7 @@ function renderPropPanelInner(){
     none.onclick = ()=>{ ids.forEach(id=>{ const x = state.shapes.find(y=>y.id===id); if(x) x.style.stroke='none'; }); pushHistory(); renderAll(); };
     crow.appendChild(none); cf.appendChild(crow); host.appendChild(cf);
     renderFillSection(host, ids);
+    renderCornerRadiusSection(host, ids);
   }
   renderPunchSection(host, ids);
 
@@ -23725,7 +23763,7 @@ function bucketOutlineToCtx(g, s, k, ox, oy, lwPx){
   if(s.rotation && s.type!=='path'){ const b = shapeBBox(s), cx = b.x+b.w/2, cy = b.y+b.h/2; g.translate(cx, cy); g.rotate(s.rotation*Math.PI/180); g.translate(-cx, -cy); }
   g.lineWidth = lwPx / k;
   if(s.type==='path' && s.points && s.points.length>1){
-    g.stroke(new Path2D(buildSmoothPathD(s.points, s.closed, s.smooth || s.points.map(()=>0), 1)));
+    { const [op, oc, osm] = outlineArgs(s); g.stroke(new Path2D(buildSmoothPathD(op, oc, osm || op.map(()=>0), 1))); }
   } else if(s.type==='rect'){ g.beginPath(); g.rect(s.x, s.y, s.w, s.h); g.stroke(); }
   else if(s.type==='ellipse'){ g.beginPath(); g.ellipse(s.x+s.w/2, s.y+s.h/2, Math.abs(s.w/2), Math.abs(s.h/2), 0, 0, Math.PI*2); g.stroke(); }
   else if(s.type==='tracedpath'){
@@ -23934,6 +23972,27 @@ function renderBucketColorField(host){
   f.appendChild(h); host.appendChild(f);
 }
 
+function renderCornerRadiusSection(host, ids){
+  const sel = ids.map(id=>state.shapes.find(x=>x.id===id)).filter(x=> x && !x.locked && !x.arc && ((x.points && x.closed && x.points.length >= 3 && x.type==='path') || x.type==='rect'));
+  if(!sel.length) return;
+  const s = sel[0], cur = s.cornerR || 0;
+  const bb = shapeBBox(s) || {w: 20, h: 20}, maxR = Math.max(1, Math.round(Math.min(Math.abs(bb.w), Math.abs(bb.h))/2*10)/10);
+  const f = document.createElement('div'); f.className = 'field fill-field';
+  const lab = document.createElement('label'); lab.style.cssText = 'display:flex;justify-content:space-between;text-transform:none;letter-spacing:0;';
+  const lt = document.createElement('span'); lt.textContent = translate('◜ Raggio degli angoli'); lab.appendChild(lt); f.appendChild(lab);
+  const row = document.createElement('div'); row.style.cssText = 'display:flex;gap:8px;align-items:center;';
+  const rng = document.createElement('input'); rng.type = 'range'; rng.min = '0'; rng.max = String(maxR); rng.step = '0.1'; rng.value = Math.min(cur, maxR); rng.style.flex = '1';
+  const num = document.createElement('input'); num.type = 'number'; num.min = '0'; num.step = '0.1'; num.value = Math.round(mmToUnit(cur)*100)/100; num.style.width = '72px';
+  const u = document.createElement('span'); u.className = 'hint'; u.textContent = UNITS[state.unit].label;
+  const set = (v)=>{ v = Math.max(0, v); sel.forEach(x=>{ if(v > 0) x.cornerR = v; else delete x.cornerR; }); renderCanvasOnly(); };
+  rng.oninput = ()=>{ const v = parseFloat(rng.value) || 0; num.value = Math.round(mmToUnit(v)*100)/100; set(v); };
+  num.oninput = ()=>{ const v = unitToMm(parseFloat(num.value) || 0); rng.value = Math.min(v, maxR); set(v); };
+  rng.onchange = num.onchange = ()=>{ pushHistory(); renderAll(); };
+  row.append(rng, num, u); f.appendChild(row);
+  const h = document.createElement('div'); h.className = 'hint'; h.style.marginTop = '4px';
+  h.textContent = translate('0 = spigoli vivi. Ogni angolo diventa un arco di questo raggio; i punti della forma restano quelli di prima, quindi puoi cambiarlo quando vuoi. Vale anche in esportazioni, taglio e 3D.');
+  f.appendChild(h); host.appendChild(f);
+}
 function renderFillSection(host, ids){
   const sel = ids.map(id=>state.shapes.find(x=>x.id===id)).filter(shapeCanFill);
   if(!sel.length) return;
@@ -27090,12 +27149,13 @@ function exportNodeRaw(s){
   const st = s.style;
   const common = `stroke="${st.stroke}" stroke-width="${sN(st.strokeWidth)}"${st.strokeOpacity!=null && st.strokeOpacity<1 ? ` stroke-opacity="${st.strokeOpacity}"` : ''} fill="${st.fill||'none'}" fill-opacity="${st.fillOpacity!=null?st.fillOpacity:1}" ${st.dash&&st.dash!=='none'?`stroke-dasharray="${st.dash}"`:''} stroke-linejoin="round" stroke-linecap="round"`;
   if(s.type==='path'||s.type==='freehand'||s.type==='line'){
-    const d = buildSmoothPathD(s.points, !!s.closed, s.smooth, 1);
+    const d = buildSmoothPathD(...outlineArgs(s), 1);
     return `<path d="${d}" ${common}/>`;
   }
   if(s.type==='rect'){
     const rotAttr = s.rotation ? ` transform="rotate(${sN(s.rotation)} ${sN(s.x+s.w/2)} ${sN(s.y+s.h/2)})"` : '';
-    return `<rect x="${sN(s.x)}" y="${sN(s.y)}" width="${sN(s.w)}" height="${sN(s.h)}" ${common}${rotAttr}/>`;
+    const rxA = hasCornerR(s) ? (v=> ` rx="${v}" ry="${v}"`)(sN(Math.min(s.cornerR, Math.abs(s.w)/2, Math.abs(s.h)/2))) : '';
+    return `<rect x="${sN(s.x)}" y="${sN(s.y)}" width="${sN(s.w)}" height="${sN(s.h)}"${rxA} ${common}${rotAttr}/>`;
   }
   if(s.type==='ellipse'){
     const rotAttr = s.rotation ? ` transform="rotate(${sN(s.rotation)} ${sN(s.x+s.w/2)} ${sN(s.y+s.h/2)})"` : '';
