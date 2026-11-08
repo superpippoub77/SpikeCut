@@ -1017,7 +1017,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.98</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.99</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -12394,7 +12394,27 @@ function imageFilterSVG(s, fid){
    proporzioni della forma, 'stretch' = la allarga a tutto il riquadro). Segue spostamenti, rotazione e ribaltamenti,
    e vale anche in esportazioni, stampe e 3D. */
 function imageMaskDefs(){ return SHAPE_LIBRARY.filter(d=>{ try{ return shapeLibParts(d, d.fixed ? 0 : 100).some(p=> p.ell || (p.closed && p.pts.length>=3)); }catch(e){ return false; } }); }
+const IMG_RECT_MASKS = ['rect', 'square', 'rect_round', 'square_round'];
+// immagine con gli angoli arrotondati (s.imgCornerR, mm): vale senza forma di ritaglio o con una forma rettangolare
+function imageCornerRApplies(s){ return s && s.type==='image' && (!s.maskShape || IMG_RECT_MASKS.includes(s.maskShape)); }
 function imageMaskGeom(s){
+  if(s.imgCornerR > 0 && imageCornerRApplies(s)){
+    let pts = [[s.x, s.y], [s.x+s.w, s.y], [s.x+s.w, s.y+s.h], [s.x, s.y+s.h]];
+    if(s.maskShape){ const g0 = imageMaskGeomBase(s); const q = g0 && g0[0] && g0[0].pts; if(q && q.length){ const xs = q.map(a=>a[0]), ys = q.map(a=>a[1]);
+      const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys); pts = [[x0,y0],[x1,y0],[x1,y1],[x0,y1]]; } }
+    const rp = roundCornersPts(pts, s.imgCornerR);
+    return [{pts: rp, smooth: rp.map(()=>0)}];
+  }
+  return imageMaskGeomBase(s);
+}
+// raggio con cui la forma di ritaglio arrotondata appare ora sull'immagine (per mostrarlo nel cursore)
+function imageMaskDefaultR(s){
+  const def = s.maskShape && SHAPE_LIBRARY.find(d=>d.key===s.maskShape); if(!def) return 0;
+  const parts = shapeLibParts(def, 100); const p = parts[0]; if(!p || !p.cornerR) return 0;
+  const bb = shapeLibBBox(parts); let sx = s.w/bb.w, sy = s.h/bb.h; if(s.maskFit!=='stretch'){ sx = sy = Math.min(sx, sy); }
+  return p.cornerR * Math.min(sx, sy);
+}
+function imageMaskGeomBase(s){
   const def = s.maskShape && SHAPE_LIBRARY.find(d=>d.key===s.maskShape); if(!def) return null;
   const parts = shapeLibParts(def, def.fixed ? 0 : 100).filter(p=> p.ell || (p.closed && p.pts.length>=3));
   if(!parts.length) return null;
@@ -16111,7 +16131,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.98';
+const GUIDE_VERSION = '2.99';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -16428,6 +16448,7 @@ html:`<p>Con il pulsante <b>⇪</b> in alto, trascinando il file sul foglio o <b
 html:`<p>Un'immagine inserita "così com'è" (vedi <a data-topic="importa-immagine">Importare un'immagine</a>) è una forma: selezionala e nel pannello Proprietà trovi la sezione <b>🖼 Immagine</b>.</p>
 <ul><li><b>✂ Ritaglia</b> (oppure <b>doppio clic sull'immagine</b>; un altro doppio clic termina): le maniglie tagliano i bordi invece di ridimensionare; la parte tolta resta visibile in trasparenza e si può rimettere. <b>✔ Fine ritaglio</b> per tornare a ridimensionare; <b>Togli il ritaglio</b> riporta l'immagine intera.</li>
 <li><b>✂ Forma dell'immagine</b>: una griglia con tutte le <a data-topic="componenti">Forme pronte</a> (rettangolo, rettangolo arrotondato, <b>rettangolo bombato</b> come uno schermo TV, ellisse, cerchio, triangoli, poligoni, stelle, cuore, goccia, corona, frecce, fumetto, scudo, ingranaggio, fiore, finestre e fori di packaging…). Scegline una e l'immagine si vede <b>solo dentro quella forma</b>; fuori resta trasparente. Vale per le immagini importate, incollate o catturate. <b>Mantieni le proporzioni</b> centra la forma nel riquadro senza deformarla (un cerchio resta un cerchio); <b>Riempi tutto il riquadro</b> la allarga a tutta l'immagine (il cerchio diventa un'ellisse). La forma segue spostamenti, ridimensionamenti, rotazione e ribaltamenti e vale anche in esportazioni, stampe e 3D. Il primo riquadro tratteggiato toglie la forma. <b>Crea la linea di taglio con questa forma</b> aggiunge una linea di Taglio che segue esattamente il bordo, per fustellatrice o plotter.</li>
+<li><b>◜ Raggio degli angoli</b>: arrotonda gli angoli dell'immagine di quanti mm vuoi (0 = spigoli vivi). Vale per un'immagine senza forma di ritaglio e per le forme rettangolo, quadrato, rettangolo e quadrato arrotondati; bordo e "Crea la linea di taglio con questa forma" seguono gli angoli.</li>
 <li><b>▢ Bordo dell'immagine</b>: spessore in mm (0 = nessun bordo), colore e tipo di linea (continuo, tratteggiato, puntinato). Il bordo segue la forma dell'immagine, anche quella scelta in <b>Forma dell'immagine</b>, ed entra in esportazioni e stampe.</li>
 <li><b>Effetti</b>: opacità, luminosità, contrasto, saturazione, tonalità, bianco e nero, seppia, inversione, sfocatura (in mm), <b>bilanciamento</b> rosso/verde/blu e <b>Ricolora con</b> un colore (l'immagine diventa una tinta di quel colore). Doppio clic su un cursore lo riporta al valore iniziale; <b>Ripristina gli effetti</b> li azzera tutti.</li></ul>
 <p>Ritaglio ed effetti valgono anche in SVG, PDF, immagini, stampe e nel 3D.</p>
@@ -16741,6 +16762,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.99</b> — Immagini: <b>raggio degli angoli</b> regolabile (anche con il ritaglio a rettangolo arrotondato); il bordo e la linea di taglio seguono gli angoli.</li>
 <li><b>2.98</b> — Testo: interlinea anche in millimetri.</li>
 <li><b>2.97</b> — Immagini: <b>doppio clic</b> per entrare e uscire dal ritaglio; dopo l'incolla compare come ritagliarle.</li>
 <li><b>2.96</b> — Pannello Proprietà → <b>📐 Dimensioni</b>: larghezza × altezza esatte della forma o della selezione (angoli arrotondati compresi), con 🔗 per mantenere le proporzioni.</li>
@@ -24247,6 +24269,19 @@ function renderImageShapeSection(host, s){
     const mh = document.createElement('div'); mh.className = 'hint'; mh.style.marginTop = '4px';
     mh.textContent = translate('L\'immagine si vede solo dentro la forma scelta (fuori resta trasparente). La forma segue spostamenti, ridimensionamenti, rotazione e ribaltamenti, e vale anche in esportazioni, stampe e 3D.');
     f.appendChild(mh);
+  }
+  if(imageCornerRApplies(s)){ // raggio degli angoli dell'immagine
+    const cur = s.imgCornerR > 0 ? s.imgCornerR : imageMaskDefaultR(s), maxR = Math.max(1, Math.round(Math.min(Math.abs(s.w), Math.abs(s.h))/2*10)/10);
+    const lab = document.createElement('label'); lab.style.cssText = 'margin-top:10px;display:block;'; lab.textContent = translate('◜ Raggio degli angoli');
+    const row = document.createElement('div'); row.style.cssText = 'display:flex;gap:8px;align-items:center;';
+    const rng = document.createElement('input'); rng.type = 'range'; rng.min = '0'; rng.max = String(maxR); rng.step = '0.1'; rng.value = Math.min(cur, maxR); rng.style.flex = '1';
+    const num = document.createElement('input'); num.type = 'number'; num.min = '0'; num.step = '0.1'; num.value = Math.round(mmToUnit(cur)*100)/100; num.style.width = '72px';
+    const un = document.createElement('span'); un.className = 'hint'; un.textContent = UNITS[state.unit].label;
+    const set = v=>{ v = Math.max(0, v); if(v > 0) s.imgCornerR = v; else { delete s.imgCornerR; if(s.maskShape==='rect_round' || s.maskShape==='square_round') s.maskShape = s.maskShape==='rect_round' ? 'rect' : 'square'; } renderCanvasOnly(); };
+    rng.oninput = ()=>{ const v = parseFloat(rng.value) || 0; num.value = Math.round(mmToUnit(v)*100)/100; set(v); };
+    num.oninput = ()=>{ const v = unitToMm(parseFloat(num.value) || 0); rng.value = Math.min(v, maxR); set(v); };
+    rng.onchange = num.onchange = ()=>{ pushHistory(); renderAll(); };
+    row.append(rng, num, un); f.append(lab, row);
   }
   { // bordo dell'immagine: spessore, colore e tipo di linea; segue la forma di ritaglio
     const bd = Object.assign({w:0, color:'#111111', dash:'solid'}, s.imgBorder || {});
