@@ -1017,7 +1017,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.93</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.94</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2405,6 +2405,7 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Per raggruppare seleziona almeno due oggetti: Shift+clic su ognuno, oppure trascina un rettangolo attorno a loro": "To group, select at least two objects: Shift+click each one, or drag a rectangle around them",
     "Quadrato arrotondato": "Rounded square",
     "☐ Segni di taglio…": "☐ Crop marks…",
     "Segni di taglio…": "Crop marks…",
@@ -4298,6 +4299,7 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Per raggruppare seleziona almeno due oggetti: Shift+clic su ognuno, oppure trascina un rettangolo attorno a loro": "Zum Gruppieren mindestens zwei Objekte auswählen: Umschalt+Klick auf jedes oder ein Rechteck um sie ziehen",
     "Quadrato arrotondato": "Abgerundetes Quadrat",
     "☐ Segni di taglio…": "☐ Schnittmarken…",
     "Segni di taglio…": "Schnittmarken…",
@@ -6191,6 +6193,7 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Per raggruppare seleziona almeno due oggetti: Shift+clic su ognuno, oppure trascina un rettangolo attorno a loro": "Para agrupar selecciona al menos dos objetos: Mayús+clic en cada uno, o arrastra un rectángulo a su alrededor",
     "Quadrato arrotondato": "Cuadrado redondeado",
     "☐ Segni di taglio…": "☐ Marcas de corte…",
     "Segni di taglio…": "Marcas de corte…",
@@ -8084,6 +8087,7 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Per raggruppare seleziona almeno due oggetti: Shift+clic su ognuno, oppure trascina un rettangolo attorno a loro": "要编组，请至少选择两个对象：按住 Shift 逐个点击，或拖出一个框包住它们",
     "Quadrato arrotondato": "圆角正方形",
     "☐ Segni di taglio…": "☐ 裁切标记…",
     "Segni di taglio…": "裁切标记…",
@@ -9977,6 +9981,7 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Per raggruppare seleziona almeno due oggetti: Shift+clic su ognuno, oppure trascina un rettangolo attorno a loro": "Pour grouper, sélectionnez au moins deux objets : Maj+clic sur chacun, ou tracez un rectangle autour d'eux",
     "Quadrato arrotondato": "Carré arrondi",
     "☐ Segni di taglio…": "☐ Traits de coupe…",
     "Segni di taglio…": "Traits de coupe…",
@@ -12718,7 +12723,9 @@ function renderSelectionHandles(){
     }
   }
   if(state.selection.size===0) return;
-  if(state.selection.size > 1 && state.tool==='select' && !state.drag){ // più forme o un gruppo: si ridimensionano insieme
+  const oneShape = state.selection.size===1 ? state.shapes.find(x=> state.selection.has(x.id)) : null;
+  const scaleBox = state.selection.size > 1 || (oneShape && oneShape.points && oneShape.points.length > 2 && !oneShape.arc); // le forme fatte di punti (forme pronte, percorsi) hanno le maniglie per ridimensionare
+  if(scaleBox && state.tool==='select' && !state.drag){ // più forme, un gruppo o una forma fatta di punti: si ridimensionano dagli angoli
     const sel = [...state.selection].map(id=>state.shapes.find(x=>x.id===id)).filter(s=>s && !s.locked && isShapeEffVisible(s));
     const bb = sel.map(shapeBBox).filter(Boolean);
     if(bb.length){
@@ -16025,7 +16032,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.93';
+const GUIDE_VERSION = '2.94';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -16653,6 +16660,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.94</b> — Le forme fatte di punti (forme pronte, percorsi, poligoni) si ridimensionano dalle maniglie agli angoli, come rettangoli e immagini (Shift: mantiene le proporzioni).</li>
 <li><b>2.93</b> — <a data-topic="componenti">Forme pronte</a>: il rettangolo arrotondato ora ha lati dritti e solo gli angoli arrotondati; nuovo quadrato arrotondato.</li>
 <li><b>2.92</b> — <a data-topic="pdf-stampa">Segni di taglio</a>: ai bordi del foglio (predefinito) oppure attorno al disegno con un margine in mm a scelta.</li>
 <li><b>2.91</b> — Segni di taglio: se c'è una linea di Taglio, i segni seguono quella (che non viene stampata).</li>
@@ -22740,7 +22748,7 @@ function renderSelectionActions(host, ids){
   const add = (icon, label, title, on, fn)=>{ const b = document.createElement('button'); b.type='button'; b.disabled = !on;
     b.innerHTML = `<span class="ic">${icon}</span><span>${escapeHTML(translate(label))}</span>`; b.title = translate(title);
     b.onclick = ()=>{ fn(); renderPropPanel(); }; grid.appendChild(b); };
-  add('⧉', 'Raggruppa', 'Raggruppa gli oggetti selezionati (Ctrl+G)', unlocked.length>1 && !allSameGroup, groupSelection);
+  add('⧉', 'Raggruppa', unlocked.length>1 ? 'Raggruppa gli oggetti selezionati (Ctrl+G)' : 'Per raggruppare seleziona almeno due oggetti: Shift+clic su ognuno, oppure trascina un rettangolo attorno a loro', unlocked.length>1 && !allSameGroup, groupSelection);
   add('⧈', 'Separa', 'Separa il gruppo (Ctrl+Shift+G)', gids.length>0, ungroupSelection);
   add('🔗', 'Unisci punti', 'Unisci le estremità vicine delle linee selezionate (apre la finestra Unisci punti)', unlocked.length>0 && computeJoinCandidates().length>=2, ()=> openJoinDialog());
   add('⎘', 'Duplica', 'Duplica la selezione, spostata di 5 mm', unlocked.length>0, duplicateSelectionOffset);
