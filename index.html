@@ -1017,7 +1017,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.92</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.93</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -16020,7 +16020,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.92';
+const GUIDE_VERSION = '2.93';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -16648,6 +16648,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.93</b> — <a data-topic="componenti">Forme pronte</a>: il rettangolo arrotondato ora ha lati dritti e solo gli angoli arrotondati; nuovo quadrato arrotondato.</li>
 <li><b>2.92</b> — <a data-topic="pdf-stampa">Segni di taglio</a>: ai bordi del foglio (predefinito) oppure attorno al disegno con un margine in mm a scelta.</li>
 <li><b>2.91</b> — Segni di taglio: se c'è una linea di Taglio, i segni seguono quella (che non viene stampata).</li>
 <li><b>2.90</b> — Segni di taglio: si esportano solo la grafica e i segni, senza bordo del foglio né linee di taglio e piega.</li>
@@ -18479,11 +18480,17 @@ const SHAPE_LIBRARY = [
   {key:'tri_scal', cat:'Triangoli e quadrilateri', label:'Triangolo scaleno', make:S=>SL.poly([[0,S*0.75],[S*0.3,0],[S,S*0.75]])},
   {key:'square', cat:'Triangoli e quadrilateri', label:'Quadrato', make:S=>SL.poly([[0,0],[S,0],[S,S],[0,S]])},
   {key:'rect', cat:'Triangoli e quadrilateri', label:'Rettangolo', make:S=>SL.poly([[0,0],[S,0],[S,S*0.6],[0,S*0.6]])},
-  {key:'rect_round', cat:'Triangoli e quadrilateri', label:'Rettangolo arrotondato', make:S=>SL.poly([[0,0],[S,0],[S,S*0.6],[0,S*0.6]], {smooth:[S*0.12,S*0.12,S*0.12,S*0.12]})},
+  // lati dritti e solo gli angoli arrotondati (archi veri, raggio = 10% del lato lungo)
+  {key:'rect_round', cat:'Triangoli e quadrilateri', label:'Rettangolo arrotondato', make:S=>{ const w = S, h = S*0.6, r = S*0.1, pts = [];
+    [[w-r, r, -90], [w-r, h-r, 0], [r, h-r, 90], [r, r, 180]].forEach(([cx, cy, a0])=>{ for(let k=0;k<=8;k++){ const a = (a0 + k*90/8)*Math.PI/180; pts.push([cx + r*Math.cos(a), cy + r*Math.sin(a)]); } });
+    return SL.poly(pts, {noAngles:true}); }},
+  {key:'square_round', cat:'Triangoli e quadrilateri', label:'Quadrato arrotondato', make:S=>{ const r = S*0.12, pts = [];
+    [[S-r, r, -90], [S-r, S-r, 0], [r, S-r, 90], [r, r, 180]].forEach(([cx, cy, a0])=>{ for(let k=0;k<=8;k++){ const a = (a0 + k*90/8)*Math.PI/180; pts.push([cx + r*Math.cos(a), cy + r*Math.sin(a)]); } });
+    return SL.poly(pts, {noAngles:true}); }},
   // rettangolo bombato (schermo TV anni '80): super-ellisse, lati leggermente curvi e angoli molto arrotondati
   {key:'rect_bulge', cat:'Triangoli e quadrilateri', label:'Rettangolo bombato (schermo TV)', make:S=>{ const a = S/2, b = S*0.375, n = 5, pts = [];
     for(let i=0;i<96;i++){ const t = i/96*2*Math.PI, c = Math.cos(t), sn = Math.sin(t); pts.push([a + a*Math.sign(c)*Math.pow(Math.abs(c), 2/n), b + b*Math.sign(sn)*Math.pow(Math.abs(sn), 2/n)]); }
-    return SL.poly(pts); }},
+    return SL.poly(pts, {noAngles:true}); }},
   {key:'rhombus', cat:'Triangoli e quadrilateri', label:'Rombo', make:S=>SL.poly([[S/2,0],[S,S*0.35],[S/2,S*0.7],[0,S*0.35]])},
   {key:'parallelogram', cat:'Triangoli e quadrilateri', label:'Parallelogramma', make:S=>SL.poly([[S*0.25,0],[S,0],[S*0.75,S*0.55],[0,S*0.55]])},
   {key:'trap_iso', cat:'Triangoli e quadrilateri', label:'Trapezio isoscele', make:S=>SL.poly([[S*0.2,0],[S*0.8,0],[S,S*0.55],[0,S*0.55]])},
@@ -18565,7 +18572,7 @@ function shapeLibParts(def, S){
   return parts.map(p=>{
     const off = p.at || [0,0];
     if(p.ellipse) return {ell:{cx:off[0], cy:off[1], w:p.ellipse.w, h:p.ellipse.h}};
-    return {pts: p.points.map(q=>[q[0]+off[0], q[1]+off[1]]), closed: p.closed!==false, smooth: p.smooth};
+    return {pts: p.points.map(q=>[q[0]+off[0], q[1]+off[1]]), closed: p.closed!==false, smooth: p.smooth, noAngles: !!p.noAngles};
   });
 }
 function shapeLibBBox(parts){
@@ -18585,7 +18592,7 @@ function insertLibraryShape(key, at){
   const dx = c[0] - (bb.x0 + bb.w/2), dy = c[1] - (bb.y0 + bb.h/2);
   const made = parts.map(p=> p.ell
     ? makeShape('ellipse', {x:p.ell.cx - p.ell.w/2 + dx, y:p.ell.cy - p.ell.h/2 + dy, w:p.ell.w, h:p.ell.h})
-    : makeShape('path', {points:p.pts.map(q=>[q[0]+dx, q[1]+dy]), closed:p.closed, smooth: p.smooth ? p.smooth.slice() : p.pts.map(()=>0)}));
+    : makeShape('path', Object.assign({points:p.pts.map(q=>[q[0]+dx, q[1]+dy]), closed:p.closed, smooth: p.smooth ? p.smooth.slice() : p.pts.map(()=>0)}, p.noAngles ? {noAngles:true} : {})));
   if(made.length > 1){ const gid = 'g' + uid(); made.forEach(s=> s.groupId = gid); } // forma in più parti: resta unita
   made.forEach(s=> state.shapes.push(s));
   state.selection = new Set(made.map(s=>s.id));
