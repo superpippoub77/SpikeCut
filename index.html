@@ -1017,7 +1017,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.96</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 2.98</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2405,6 +2405,10 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Interlinea ({unit})": "Line spacing ({unit})",
+    "Distanza tra una riga e la successiva, misurata da base a base": "Distance from one line to the next, measured baseline to baseline",
+    "Ritaglio: trascina le maniglie sui bordi. Doppio clic o «Fine ritaglio» per terminare.": "Crop: drag the handles on the edges. Double-click or “Finish crop” to end.",
+    "Immagine incollata. Per ritagliarla: doppio clic sull'immagine, oppure ✂ Ritaglia nel pannello Proprietà.": "Image pasted. To crop it: double-click the image, or ✂ Crop in the Properties panel.",
     "📐 Dimensioni ({unit})": "📐 Size ({unit})",
     "Larghezza complessiva": "Overall width",
     "Altezza complessiva": "Overall height",
@@ -4305,6 +4309,10 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Interlinea ({unit})": "Zeilenabstand ({unit})",
+    "Distanza tra una riga e la successiva, misurata da base a base": "Abstand von einer Zeile zur nächsten, von Grundlinie zu Grundlinie gemessen",
+    "Ritaglio: trascina le maniglie sui bordi. Doppio clic o «Fine ritaglio» per terminare.": "Zuschneiden: Griffe an den Rändern ziehen. Doppelklick oder „Zuschneiden beenden“ zum Abschließen.",
+    "Immagine incollata. Per ritagliarla: doppio clic sull'immagine, oppure ✂ Ritaglia nel pannello Proprietà.": "Bild eingefügt. Zum Zuschneiden: Doppelklick auf das Bild oder ✂ Zuschneiden im Eigenschaften-Bereich.",
     "📐 Dimensioni ({unit})": "📐 Abmessungen ({unit})",
     "Larghezza complessiva": "Gesamtbreite",
     "Altezza complessiva": "Gesamthöhe",
@@ -6205,6 +6213,10 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Interlinea ({unit})": "Interlineado ({unit})",
+    "Distanza tra una riga e la successiva, misurata da base a base": "Distancia entre una línea y la siguiente, medida de base a base",
+    "Ritaglio: trascina le maniglie sui bordi. Doppio clic o «Fine ritaglio» per terminare.": "Recorte: arrastra los tiradores de los bordes. Doble clic o «Terminar recorte» para acabar.",
+    "Immagine incollata. Per ritagliarla: doppio clic sull'immagine, oppure ✂ Ritaglia nel pannello Proprietà.": "Imagen pegada. Para recortarla: doble clic en la imagen, o ✂ Recortar en el panel Propiedades.",
     "📐 Dimensioni ({unit})": "📐 Dimensiones ({unit})",
     "Larghezza complessiva": "Ancho total",
     "Altezza complessiva": "Alto total",
@@ -8105,6 +8117,10 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Interlinea ({unit})": "行距（{unit}）",
+    "Distanza tra una riga e la successiva, misurata da base a base": "相邻两行之间的距离，从基线量到基线",
+    "Ritaglio: trascina le maniglie sui bordi. Doppio clic o «Fine ritaglio» per terminare.": "裁剪：拖动边缘的控制点。双击或“完成裁剪”结束。",
+    "Immagine incollata. Per ritagliarla: doppio clic sull'immagine, oppure ✂ Ritaglia nel pannello Proprietà.": "图片已粘贴。要裁剪：双击图片，或在属性面板中点 ✂ 裁剪。",
     "📐 Dimensioni ({unit})": "📐 尺寸（{unit}）",
     "Larghezza complessiva": "总宽度",
     "Altezza complessiva": "总高度",
@@ -10005,6 +10021,10 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Interlinea ({unit})": "Interligne ({unit})",
+    "Distanza tra una riga e la successiva, misurata da base a base": "Distance d'une ligne à la suivante, mesurée de ligne de base à ligne de base",
+    "Ritaglio: trascina le maniglie sui bordi. Doppio clic o «Fine ritaglio» per terminare.": "Recadrage : faites glisser les poignées des bords. Double-clic ou « Terminer le recadrage » pour finir.",
+    "Immagine incollata. Per ritagliarla: doppio clic sull'immagine, oppure ✂ Ritaglia nel pannello Proprietà.": "Image collée. Pour la recadrer : double-clic sur l'image, ou ✂ Recadrer dans le panneau Propriétés.",
     "📐 Dimensioni ({unit})": "📐 Dimensions ({unit})",
     "Larghezza complessiva": "Largeur totale",
     "Altezza complessiva": "Hauteur totale",
@@ -16091,7 +16111,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '2.96';
+const GUIDE_VERSION = '2.98';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -16186,7 +16206,7 @@ html:`<p><b>Più righe</b>: scrivendo un testo, <b>Invio</b> va a capo; per fini
 <li><b>Assottiglia</b>: rende più sottili i tratti delle lettere con qualsiasi font, anche con quelli che hanno un solo spessore (come Hammer Fat, che esiste solo in versione Regular). Vale sullo schermo, nel PDF e nella stampa; è un effetto di disegno, non cambia i contorni per il taglio.</li>
 <li><b>Spaziatura caratteri</b>: negativa per avvicinare le lettere, positiva per allontanarle.</li>
 <li><b>Larghezza caratteri (%)</b>: sotto 100 il carattere diventa più stretto e snello, sopra 100 più largo; l'altezza non cambia.</li>
-<li><b>Interlinea</b>: la distanza tra le righe (1,2 = normale).</li></ul>
+<li><b>Interlinea</b>: la distanza tra le righe, come moltiplicatore (1,2 = normale) oppure direttamente in <b>millimetri</b> (da base a base); i due campi si aggiornano a vicenda.</li></ul>
 <p>Tutte queste impostazioni valgono anche nelle esportazioni SVG, PDF e nella stampa.</p>
 <p><b>Carattere (font)</b>: nel pannello Proprietà del testo selezionato. Con <b>più testi selezionati</b> (anche su livelli diversi) il campo "Font dei testi selezionati" li cambia tutti insieme; i pulsanti <b>A tutti i testi del livello</b> e <b>A tutti i testi del disegno</b> applicano lo stesso carattere a tutti. L'ultimo carattere scelto vale per i <b>nuovi testi</b>, su qualsiasi livello; senza selezione si sceglie in "Font dei nuovi testi".</p>
 <p>Con lo strumento Testo (<b>T</b>) clicca nel punto, scrivi e conferma. Dal pannello Proprietà cambi testo, dimensione e font.</p>
@@ -16406,7 +16426,7 @@ html:`<p>Con il pulsante <b>⇪</b> in alto, trascinando il file sul foglio o <b
 
 { id:'immagine-forma', cat:'Disegnare', title:'Ritagliare e regolare le immagini', keys:'immagine forma maschera sagoma cuore stella cerchio rettangolo arrotondato ellisse taglio incollata catturata ritaglio ritagliare crop effetti opacità luminosità contrasto saturazione tonalità bianco nero seppia inversione negativo sfocatura bilanciamento colore ricolora',
 html:`<p>Un'immagine inserita "così com'è" (vedi <a data-topic="importa-immagine">Importare un'immagine</a>) è una forma: selezionala e nel pannello Proprietà trovi la sezione <b>🖼 Immagine</b>.</p>
-<ul><li><b>✂ Ritaglia</b>: le maniglie tagliano i bordi invece di ridimensionare; la parte tolta resta visibile in trasparenza e si può rimettere. <b>✔ Fine ritaglio</b> per tornare a ridimensionare; <b>Togli il ritaglio</b> riporta l'immagine intera.</li>
+<ul><li><b>✂ Ritaglia</b> (oppure <b>doppio clic sull'immagine</b>; un altro doppio clic termina): le maniglie tagliano i bordi invece di ridimensionare; la parte tolta resta visibile in trasparenza e si può rimettere. <b>✔ Fine ritaglio</b> per tornare a ridimensionare; <b>Togli il ritaglio</b> riporta l'immagine intera.</li>
 <li><b>✂ Forma dell'immagine</b>: una griglia con tutte le <a data-topic="componenti">Forme pronte</a> (rettangolo, rettangolo arrotondato, <b>rettangolo bombato</b> come uno schermo TV, ellisse, cerchio, triangoli, poligoni, stelle, cuore, goccia, corona, frecce, fumetto, scudo, ingranaggio, fiore, finestre e fori di packaging…). Scegline una e l'immagine si vede <b>solo dentro quella forma</b>; fuori resta trasparente. Vale per le immagini importate, incollate o catturate. <b>Mantieni le proporzioni</b> centra la forma nel riquadro senza deformarla (un cerchio resta un cerchio); <b>Riempi tutto il riquadro</b> la allarga a tutta l'immagine (il cerchio diventa un'ellisse). La forma segue spostamenti, ridimensionamenti, rotazione e ribaltamenti e vale anche in esportazioni, stampe e 3D. Il primo riquadro tratteggiato toglie la forma. <b>Crea la linea di taglio con questa forma</b> aggiunge una linea di Taglio che segue esattamente il bordo, per fustellatrice o plotter.</li>
 <li><b>▢ Bordo dell'immagine</b>: spessore in mm (0 = nessun bordo), colore e tipo di linea (continuo, tratteggiato, puntinato). Il bordo segue la forma dell'immagine, anche quella scelta in <b>Forma dell'immagine</b>, ed entra in esportazioni e stampe.</li>
 <li><b>Effetti</b>: opacità, luminosità, contrasto, saturazione, tonalità, bianco e nero, seppia, inversione, sfocatura (in mm), <b>bilanciamento</b> rosso/verde/blu e <b>Ricolora con</b> un colore (l'immagine diventa una tinta di quel colore). Doppio clic su un cursore lo riporta al valore iniziale; <b>Ripristina gli effetti</b> li azzera tutti.</li></ul>
@@ -16721,6 +16741,8 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>2.98</b> — Testo: interlinea anche in millimetri.</li>
+<li><b>2.97</b> — Immagini: <b>doppio clic</b> per entrare e uscire dal ritaglio; dopo l'incolla compare come ritagliarle.</li>
 <li><b>2.96</b> — Pannello Proprietà → <b>📐 Dimensioni</b>: larghezza × altezza esatte della forma o della selezione (angoli arrotondati compresi), con 🔗 per mantenere le proporzioni.</li>
 <li><b>2.95</b> — <b>Raggio degli angoli</b> regolabile (cursore e mm nel pannello Proprietà) per rettangoli, quadrati e forme chiuse: da spigolo vivo a molto arrotondato, sempre modificabile.</li>
 <li><b>2.94</b> — Le forme fatte di punti (forme pronte, percorsi, poligoni) si ridimensionano dalle maniglie agli angoli, come rettangoli e immagini (Shift: mantiene le proporzioni).</li>
@@ -19142,6 +19164,7 @@ function pasteClipboardShapesAt(mm){
     return copy;
   });
   remapGroupIds(newShapes); // le copie formano un gruppo nuovo, indipendente dall'originale
+  if(newShapes.length===1 && newShapes[0].type==='image') setTimeout(()=> showToast(translate('Immagine incollata. Per ritagliarla: doppio clic sull\'immagine, oppure ✂ Ritaglia nel pannello Proprietà.'), false), 50);
   newShapes.forEach(s=> state.shapes.push(s));
   state.selection = new Set(newShapes.map(s=>s.id));
   pushHistory(); renderAll();
@@ -19615,6 +19638,14 @@ function handleDblClick(mm, e){
     // stessa tolleranza generosa del clic singolo di selezione: il doppio clic
     // non deve richiedere di colpire il tratto con precisione al pixel
     const s = topShapeAt(mm);
+    if(s && s.type==='image' && !s.locked){ // doppio clic su un'immagine: entra (o esce) dal ritaglio, come nei programmi d'ufficio
+      const was = state.cropShapeId===s.id;
+      state.selection = new Set([s.id]); state.cropShapeId = was ? null : s.id;
+      if(was) pushHistory();
+      renderAll();
+      if(!was) showToast(translate('Ritaglio: trascina le maniglie sui bordi. Doppio clic o «Fine ritaglio» per terminare.'), false);
+      return;
+    }
     if(s && s.points){
       const n = s.points.length;
       let bestI=0, bd=Infinity;
@@ -22731,10 +22762,20 @@ function renderTextStyleSection(host, s){
   flh.innerHTML = `<label>${escapeHTML(translate('Interlinea'))}</label>`;
   const lh = document.createElement('input'); lh.type='number'; lh.step='0.05'; lh.min='0.6'; lh.max='4'; lh.value = s.lineHeight || 1.2;
   lh.title = translate('Distanza tra le righe, in multipli della dimensione del testo (1,2 = normale)');
-  lh.addEventListener('input', ()=>{ const v = parseFloat(lh.value); if(v >= 0.6 && v <= 4){ s.lineHeight = v; renderCanvasOnly(); } });
+  lh.addEventListener('input', ()=>{ const v = parseFloat(lh.value); if(v >= 0.6 && v <= 4){ s.lineHeight = v; lhmm.value = Math.round(mmToUnit(textLineStep(s))*100)/100; renderCanvasOnly(); } });
   lh.addEventListener('change', ()=> pushHistory());
   lh.addEventListener('keydown', e=> e.stopPropagation());
   flh.appendChild(lh); row2.appendChild(flh);
+  // interlinea in millimetri: la distanza tra le basi di due righe (cambia il moltiplicatore qui accanto)
+  const flm = document.createElement('div'); flm.className='field';
+  flm.innerHTML = `<label>${escapeHTML(tpl('Interlinea ({unit})', {unit: unitLabel()}))}</label>`;
+  const lhmm = document.createElement('input'); lhmm.type='number'; lhmm.step = String(UNITS[state.unit].step || 0.1); lhmm.min = '0';
+  lhmm.value = Math.round(mmToUnit(textLineStep(s))*100)/100;
+  lhmm.title = translate('Distanza tra una riga e la successiva, misurata da base a base');
+  lhmm.addEventListener('input', ()=>{ const v = unitToMm(parseFloat(lhmm.value)); const fs = s.fontSize || 6; if(v > 0){ s.lineHeight = Math.max(0.3, Math.min(8, v/fs)); lh.value = Math.round(s.lineHeight*1000)/1000; renderCanvasOnly(); } });
+  lhmm.addEventListener('change', ()=>{ pushHistory(); renderPropPanel(); });
+  lhmm.addEventListener('keydown', e=> e.stopPropagation());
+  flm.appendChild(lhmm); row2.appendChild(flm);
   host.appendChild(row2);
   // assottiglia: funziona con qualsiasi font, anche con un solo spessore
   const ft = document.createElement('div'); ft.className='field';
