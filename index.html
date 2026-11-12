@@ -184,7 +184,7 @@ button{font-family:inherit;}
 #rulerH canvas, #rulerV canvas{display:block;width:100%;height:100%;}
 #stage-scroll{position:absolute;top:22px;left:22px;right:0;bottom:0;overflow:auto;}
 #layer-art .die-hl, #layer-art .die-hl *{stroke-width:2.4px;}
-body.center-pick #stage, body.center-pick #stage *{cursor:crosshair !important;}
+body.center-pick #stage, body.center-pick #stage *, body.wand-pick #stage, body.wand-pick #stage *{cursor:crosshair !important;}
 #canvasHolder{position:relative;display:inline-block;margin:60px;}
 svg#stage{
   display:block;
@@ -1018,7 +1018,7 @@ body.no-docs #panel .tabpage{ opacity:.35; pointer-events:none; } /* nessun prog
   <span class="spacer"></span>
   <span id="selInfo"></span>
   <span id="saveInfo"></span>
-  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 3.02</span>
+  <span style="color:var(--ink-dim);font-size:10.5px;margin-left:10px;">by SpikeCode AI · Ott 2026 · Ver: 3.03</span>
 </div>
 
 <div id="accountModal" class="modal-overlay">
@@ -2406,6 +2406,18 @@ const I18N = {
     "Forma copiata.": "Shape copied.",
     "Impact (titoli)": "Impact (headings)",
     "Livello ": "Layer ",
+    "Clicca sull'immagine il colore da rendere trasparente (puoi cliccare più zone). Esc o «Fine» per uscire.": "Click the colour on the image to make transparent (you can click several areas). Esc or «Done» to exit.",
+    "Clicca dentro l'immagine.": "Click inside the image.",
+    "Questo punto è già trasparente.": "This point is already transparent.",
+    "Nessun pixel cambiato: prova ad aumentare la tolleranza.": "No pixels changed: try increasing the tolerance.",
+    "Resi trasparenti {n} pixel. Clicca altre zone oppure Esc per finire.": "{n} pixels made transparent. Click other areas or Esc to finish.",
+    "🪄 Trasparenza: tolleranza": "🪄 Transparency: tolerance",
+    "Solo la zona cliccata": "Only the clicked area",
+    "Quel colore ovunque": "That colour everywhere",
+    "Bordi sfumati": "Soft edges",
+    "✔ Fine trasparenza": "✔ Done with transparency",
+    "🪄 Clicca il colore da rendere trasparente": "🪄 Click the colour to make transparent",
+    "Premi il pulsante e clicca sull'immagine: il colore di quel punto diventa trasparente. Tolleranza bassa = solo quel colore esatto; alta = anche le tonalità simili. Ctrl+Z annulla, «Ripristina l'immagine originale» torna all'inizio.": "Press the button and click on the image: the colour at that point becomes transparent. Low tolerance = only that exact colour; high = similar shades too. Ctrl+Z undoes, «Restore the original image» goes back to the start.",
     "Allinea a…": "Align to…",
     "⇤ Allinea a…": "⇤ Align to…",
     "Allinea la selezione a un altro oggetto o al foglio: premi, poi clicca il riferimento e scegli il bordo (sinistro, destro, sopra, sotto) o il centro": "Align the selection to another object or the sheet: press, then click the reference and choose the edge (left, right, top, bottom) or the centre",
@@ -4354,6 +4366,18 @@ const I18N = {
     "Forma copiata.": "Form kopiert.",
     "Impact (titoli)": "Impact (Überschriften)",
     "Livello ": "Ebene ",
+    "Clicca sull'immagine il colore da rendere trasparente (puoi cliccare più zone). Esc o «Fine» per uscire.": "Klicke im Bild auf die Farbe, die transparent werden soll (mehrere Bereiche möglich). Esc oder «Fertig» zum Beenden.",
+    "Clicca dentro l'immagine.": "Klicke in das Bild.",
+    "Questo punto è già trasparente.": "Dieser Punkt ist bereits transparent.",
+    "Nessun pixel cambiato: prova ad aumentare la tolleranza.": "Keine Pixel geändert: versuche, die Toleranz zu erhöhen.",
+    "Resi trasparenti {n} pixel. Clicca altre zone oppure Esc per finire.": "{n} Pixel transparent gemacht. Klicke weitere Bereiche oder Esc zum Beenden.",
+    "🪄 Trasparenza: tolleranza": "🪄 Transparenz: Toleranz",
+    "Solo la zona cliccata": "Nur der angeklickte Bereich",
+    "Quel colore ovunque": "Diese Farbe überall",
+    "Bordi sfumati": "Weiche Kanten",
+    "✔ Fine trasparenza": "✔ Transparenz beenden",
+    "🪄 Clicca il colore da rendere trasparente": "🪄 Farbe anklicken, die transparent werden soll",
+    "Premi il pulsante e clicca sull'immagine: il colore di quel punto diventa trasparente. Tolleranza bassa = solo quel colore esatto; alta = anche le tonalità simili. Ctrl+Z annulla, «Ripristina l'immagine originale» torna all'inizio.": "Drücke die Schaltfläche und klicke ins Bild: Die Farbe an dieser Stelle wird transparent. Niedrige Toleranz = nur genau diese Farbe; hohe = auch ähnliche Töne. Strg+Z macht rückgängig, «Originalbild wiederherstellen» setzt alles zurück.",
     "Allinea a…": "Ausrichten an…",
     "⇤ Allinea a…": "⇤ Ausrichten an…",
     "Allinea la selezione a un altro oggetto o al foglio: premi, poi clicca il riferimento e scegli il bordo (sinistro, destro, sopra, sotto) o il centro": "Auswahl an einem anderen Objekt oder dem Blatt ausrichten: drücken, dann die Referenz anklicken und die Kante (links, rechts, oben, unten) oder die Mitte wählen",
@@ -6302,6 +6326,18 @@ const I18N = {
     "Forma copiata.": "Forma copiada.",
     "Impact (titoli)": "Impact (títulos)",
     "Livello ": "Capa ",
+    "Clicca sull'immagine il colore da rendere trasparente (puoi cliccare più zone). Esc o «Fine» per uscire.": "Haz clic en la imagen sobre el color que quieres volver transparente (puedes hacer clic en varias zonas). Esc o «Fin» para salir.",
+    "Clicca dentro l'immagine.": "Haz clic dentro de la imagen.",
+    "Questo punto è già trasparente.": "Este punto ya es transparente.",
+    "Nessun pixel cambiato: prova ad aumentare la tolleranza.": "Ningún píxel cambiado: prueba a aumentar la tolerancia.",
+    "Resi trasparenti {n} pixel. Clicca altre zone oppure Esc per finire.": "{n} píxeles vueltos transparentes. Haz clic en otras zonas o Esc para terminar.",
+    "🪄 Trasparenza: tolleranza": "🪄 Transparencia: tolerancia",
+    "Solo la zona cliccata": "Solo la zona pulsada",
+    "Quel colore ovunque": "Ese color en todas partes",
+    "Bordi sfumati": "Bordes suavizados",
+    "✔ Fine trasparenza": "✔ Fin de la transparencia",
+    "🪄 Clicca il colore da rendere trasparente": "🪄 Haz clic en el color a volver transparente",
+    "Premi il pulsante e clicca sull'immagine: il colore di quel punto diventa trasparente. Tolleranza bassa = solo quel colore esatto; alta = anche le tonalità simili. Ctrl+Z annulla, «Ripristina l'immagine originale» torna all'inizio.": "Pulsa el botón y haz clic en la imagen: el color de ese punto se vuelve transparente. Tolerancia baja = solo ese color exacto; alta = también los tonos parecidos. Ctrl+Z deshace, «Restaurar la imagen original» vuelve al inicio.",
     "Allinea a…": "Alinear a…",
     "⇤ Allinea a…": "⇤ Alinear a…",
     "Allinea la selezione a un altro oggetto o al foglio: premi, poi clicca il riferimento e scegli il bordo (sinistro, destro, sopra, sotto) o il centro": "Alinea la selección a otro objeto o a la hoja: pulsa, luego haz clic en la referencia y elige el borde (izquierdo, derecho, arriba, abajo) o el centro",
@@ -8250,6 +8286,18 @@ const I18N = {
     "Forma copiata.": "形状已复制。",
     "Impact (titoli)": "Impact（标题）",
     "Livello ": "图层 ",
+    "Clicca sull'immagine il colore da rendere trasparente (puoi cliccare più zone). Esc o «Fine» per uscire.": "在图像上点击要变为透明的颜色（可点击多个区域）。按 Esc 或“完成”退出。",
+    "Clicca dentro l'immagine.": "请在图像内点击。",
+    "Questo punto è già trasparente.": "该点已经是透明的。",
+    "Nessun pixel cambiato: prova ad aumentare la tolleranza.": "没有像素被更改：请尝试提高容差。",
+    "Resi trasparenti {n} pixel. Clicca altre zone oppure Esc per finire.": "已将 {n} 个像素设为透明。点击其他区域或按 Esc 结束。",
+    "🪄 Trasparenza: tolleranza": "🪄 透明：容差",
+    "Solo la zona cliccata": "仅点击的区域",
+    "Quel colore ovunque": "所有该颜色",
+    "Bordi sfumati": "柔化边缘",
+    "✔ Fine trasparenza": "✔ 完成透明",
+    "🪄 Clicca il colore da rendere trasparente": "🪄 点击要变透明的颜色",
+    "Premi il pulsante e clicca sull'immagine: il colore di quel punto diventa trasparente. Tolleranza bassa = solo quel colore esatto; alta = anche le tonalità simili. Ctrl+Z annulla, «Ripristina l'immagine originale» torna all'inizio.": "按下按钮并点击图像：该点的颜色变为透明。低容差 = 仅该精确颜色；高容差 = 也包括相近色调。Ctrl+Z 撤销，“恢复原始图像”可回到初始状态。",
     "Allinea a…": "对齐到…",
     "⇤ Allinea a…": "⇤ 对齐到…",
     "Allinea la selezione a un altro oggetto o al foglio: premi, poi clicca il riferimento e scegli il bordo (sinistro, destro, sopra, sotto) o il centro": "将所选内容对齐到另一个对象或页面：按下后点击参照对象，再选择边（左、右、上、下）或中心",
@@ -10198,6 +10246,18 @@ const I18N = {
     "Forma copiata.": "Forme copiée.",
     "Impact (titoli)": "Impact (titres)",
     "Livello ": "Calque ",
+    "Clicca sull'immagine il colore da rendere trasparente (puoi cliccare più zone). Esc o «Fine» per uscire.": "Cliquez sur l'image sur la couleur à rendre transparente (vous pouvez cliquer plusieurs zones). Échap ou « Terminer » pour sortir.",
+    "Clicca dentro l'immagine.": "Cliquez à l'intérieur de l'image.",
+    "Questo punto è già trasparente.": "Ce point est déjà transparent.",
+    "Nessun pixel cambiato: prova ad aumentare la tolleranza.": "Aucun pixel modifié : essayez d'augmenter la tolérance.",
+    "Resi trasparenti {n} pixel. Clicca altre zone oppure Esc per finire.": "{n} pixels rendus transparents. Cliquez d'autres zones ou Échap pour terminer.",
+    "🪄 Trasparenza: tolleranza": "🪄 Transparence : tolérance",
+    "Solo la zona cliccata": "Seulement la zone cliquée",
+    "Quel colore ovunque": "Cette couleur partout",
+    "Bordi sfumati": "Bords adoucis",
+    "✔ Fine trasparenza": "✔ Terminer la transparence",
+    "🪄 Clicca il colore da rendere trasparente": "🪄 Cliquez la couleur à rendre transparente",
+    "Premi il pulsante e clicca sull'immagine: il colore di quel punto diventa trasparente. Tolleranza bassa = solo quel colore esatto; alta = anche le tonalità simili. Ctrl+Z annulla, «Ripristina l'immagine originale» torna all'inizio.": "Appuyez sur le bouton et cliquez sur l'image : la couleur de ce point devient transparente. Tolérance basse = seulement cette couleur exacte ; haute = aussi les teintes proches. Ctrl+Z annule, « Restaurer l'image d'origine » revient au début.",
     "Allinea a…": "Aligner sur…",
     "⇤ Allinea a…": "⇤ Aligner sur…",
     "Allinea la selezione a un altro oggetto o al foglio: premi, poi clicca il riferimento e scegli il bordo (sinistro, destro, sopra, sotto) o il centro": "Aligner la sélection sur un autre objet ou sur la feuille : appuyez, puis cliquez sur la référence et choisissez le bord (gauche, droit, haut, bas) ou le centre",
@@ -16352,7 +16412,7 @@ function doSilhouetteExport(){
    del programma (anche la sezione "Novità" e GUIDE_VERSION).
    Collegamenti tra argomenti: <a data-topic="id">testo</a>
 ============================================================ */
-const GUIDE_VERSION = '3.02';
+const GUIDE_VERSION = '3.03';
 const GUIDE_TOPICS = [
 /* ---------------- PER INIZIARE ---------------- */
 { id:'intro', cat:'Per iniziare', title:'Cos\'è SpikeCut', keys:'panoramica introduzione cosa fa fustella fustellatura scatola packaging',
@@ -16678,7 +16738,8 @@ html:`<p>Un'immagine inserita "così com'è" (vedi <a data-topic="importa-immagi
 <li><b>✂ Forma dell'immagine</b>: una griglia con tutte le <a data-topic="componenti">Forme pronte</a> (rettangolo, rettangolo arrotondato, <b>rettangolo bombato</b> come uno schermo TV, ellisse, cerchio, triangoli, poligoni, stelle, cuore, goccia, corona, frecce, fumetto, scudo, ingranaggio, fiore, finestre e fori di packaging…). Scegline una e l'immagine si vede <b>solo dentro quella forma</b>; fuori resta trasparente. Vale per le immagini importate, incollate o catturate. <b>Mantieni le proporzioni</b> centra la forma nel riquadro senza deformarla (un cerchio resta un cerchio); <b>Riempi tutto il riquadro</b> la allarga a tutta l'immagine (il cerchio diventa un'ellisse). La forma segue spostamenti, ridimensionamenti, rotazione e ribaltamenti e vale anche in esportazioni, stampe e 3D. Il primo riquadro tratteggiato toglie la forma. <b>Crea la linea di taglio con questa forma</b> aggiunge una linea di Taglio che segue esattamente il bordo, per fustellatrice o plotter.</li>
 <li><b>◜ Raggio degli angoli</b>: arrotonda gli angoli dell'immagine di quanti mm vuoi (0 = spigoli vivi). Vale per un'immagine senza forma di ritaglio e per le forme rettangolo, quadrato, rettangolo e quadrato arrotondati; bordo e "Crea la linea di taglio con questa forma" seguono gli angoli.</li>
 <li><b>▢ Bordo dell'immagine</b>: spessore in mm (0 = nessun bordo), colore e tipo di linea (continuo, tratteggiato, puntinato). Il bordo segue la forma dell'immagine, anche quella scelta in <b>Forma dell'immagine</b>, ed entra in esportazioni e stampe.</li>
-<li><b>Effetti</b>: opacità, luminosità, contrasto, saturazione, tonalità, bianco e nero, seppia, inversione, sfocatura (in mm), <b>bilanciamento</b> rosso/verde/blu e <b>Ricolora con</b> un colore (l'immagine diventa una tinta di quel colore). Doppio clic su un cursore lo riporta al valore iniziale; <b>Ripristina gli effetti</b> li azzera tutti.</li></ul>
+<li><b>Effetti</b>: opacità, luminosità, contrasto, saturazione, tonalità, bianco e nero, seppia, inversione, sfocatura (in mm), <b>bilanciamento</b> rosso/verde/blu e <b>Ricolora con</b> un colore (l'immagine diventa una tinta di quel colore). Doppio clic su un cursore lo riporta al valore iniziale; <b>Ripristina gli effetti</b> li azzera tutti.</li>
+<li><b>🪄 Trasparenza con tolleranza</b>: premi «Clicca il colore da rendere trasparente» e clicca sull'immagine (per esempio lo sfondo bianco): quel colore diventa trasparente. La <b>tolleranza</b> (0–100) decide quanto simili devono essere i colori; scegli <b>Solo la zona cliccata</b> (come una bacchetta magica, si ferma ai bordi) o <b>Quel colore ovunque</b>. Puoi cliccare più zone di fila; Esc o «Fine trasparenza» per uscire. «Ripristina l'immagine originale» toglie tutto.</li></ul>
 <p>Ritaglio ed effetti valgono anche in SVG, PDF, immagini, stampe e nel 3D.</p>
 <p>Per togliere da un'immagine la forma di quella che le sta sopra vedi <a data-topic="estrusione">Estrusione tra immagini</a>.</p>` },
 { id:'estrusione', cat:'Disegnare', title:'Estrusione tra immagini (forare le immagini sotto)', keys:'estrusione forare foro bucare togliere sagoma contorno blocco sovrapposte immagini livelli sotto knockout maschera',
@@ -16990,6 +17051,7 @@ html:`<dl class="guide-faq">
 { id:'novita', cat:'Riferimento', title:'Novità', keys:'novità versioni changelog aggiornamenti modifiche nuove funzioni',
 html:`<p>Versione attuale: <b>${GUIDE_VERSION}</b>.</p>
 <ul>
+<li><b>3.03</b> — <b>🪄 Trasparenza con tolleranza</b> nella sezione Immagine: clicchi un colore dell'immagine (es. lo sfondo) e diventa trasparente.</li>
 <li><b>3.02</b> — <b>⇤ Allinea a…</b> (barra Azioni o tasto destro): allinea la selezione ai bordi o al centro di un altro oggetto o del foglio.</li>
 <li><b>3.01</b> — Testo: <b>Ω Caratteri speciali</b>, elenco di simboli da inserire con un clic.</li>
 <li><b>3.00</b> — <b>⊕ Centra su…</b> (barra Azioni o tasto destro): centra la selezione rispetto a un altro oggetto o al foglio, in orizzontale, in verticale o in entrambe.</li>
@@ -19217,6 +19279,7 @@ stage.addEventListener('mousedown', (e)=>{
     }
     e.preventDefault(); // evita che il browser avvii una selezione testo/trascinamento nativa sul canvas
     if(e.button===2) return; // tasto destro: lo gestisce il menu contestuale, senza cambiare la selezione (es. per Raggruppa)
+    if(state.wandPick && e.button===0){ applyWandAt(clientToMM(e.clientX, e.clientY)); return; } // bacchetta: rende trasparente il colore cliccato
     if(state.centerPick && e.button===0){ handleCenterPick(clientToMM(e.clientX, e.clientY), e); return; } // "Centra su…": questo clic sceglie il riferimento
     if(seqRec && e.button===0){ seqRecClickCanvas(clientToMM(e.clientX,e.clientY), e); return; } // registrazione della sequenza a clic
 
@@ -20308,6 +20371,7 @@ window.addEventListener('keydown', (e)=>{
     } else deleteSelection();
     return;
   }
+  if(k==='escape' && state.wandPick){ endWandPick(); renderAll(); return; }
   if(k==='escape' && state.centerPick){ endCenterPick(); showToast(translate('Centratura annullata.'), false); return; }
   if(k==='escape'){ state.draft=null; state.measure=null; state.selection.clear(); state.refImageSelected=false; renderAll(); return; }
   if(k==='enter' && state.tool==='pen' && state.draft){ finishPenDraft(false); return; }
@@ -23148,6 +23212,42 @@ function startCenterPick(mode){
   state.centerPick = {ids, mode: align ? 'align' : 'center'}; document.body.classList.add('center-pick');
   showToast(translate(align ? 'Ora clicca l\'oggetto a cui allineare (clic su uno spazio vuoto = il foglio). Esc per annullare.' : 'Ora clicca l\'oggetto rispetto a cui centrare (clic su uno spazio vuoto = il foglio). Esc per annullare.'), false);
 }
+/* ---------- bacchetta: rende trasparente il colore cliccato sull'immagine, con tolleranza ---------- */
+function wandPrefs(){ let p = {}; try{ p = JSON.parse(localStorage.getItem('spikecut-wand')||'{}'); }catch(e){} return {tol: p.tol!=null ? p.tol : 20, mode: p.mode || 'contig', soft: p.soft!=null ? p.soft : true}; }
+function saveWandPrefs(p){ try{ localStorage.setItem('spikecut-wand', JSON.stringify(p)); }catch(e){} }
+function startWandPick(id){ state.wandPick = {id}; document.body.classList.add('wand-pick'); showToast(translate('Clicca sull\'immagine il colore da rendere trasparente (puoi cliccare più zone). Esc o «Fine» per uscire.'), false); }
+function endWandPick(){ state.wandPick = null; document.body.classList.remove('wand-pick'); }
+async function applyWandAt(mm){
+  const s = state.shapes.find(x=> state.wandPick && x.id===state.wandPick.id);
+  if(!s || s.type!=='image'){ endWandPick(); renderAll(); return; }
+  const im = await loadImageEl(s.href).catch(()=> null); if(!im) return;
+  const W = im.naturalWidth, H = im.naturalHeight, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const g = cv.getContext('2d', {willReadFrequently: true}); g.drawImage(im, 0, 0);
+  pageToImagePx(g, s, W, H); const pt = g.getTransform().transformPoint(new DOMPoint(mm[0], mm[1])); g.setTransform(1,0,0,1,0,0);
+  const px = Math.floor(pt.x), py = Math.floor(pt.y);
+  if(px<0 || py<0 || px>=W || py>=H){ showToast(translate('Clicca dentro l\'immagine.'), true); return; }
+  let data; try{ data = g.getImageData(0, 0, W, H); }catch(e){ showToast(translate('Alcune immagini collegate a siti esterni non si possono modificare: salvale e importale.'), true); return; }
+  const d = data.data, pr = wandPrefs(), thr = pr.tol*4.42, feather = pr.soft ? Math.max(6, thr*0.35) : 0; // distanza RGB (0–442)
+  const i0 = (py*W+px)*4, R = d[i0], G = d[i0+1], B = d[i0+2];
+  if(d[i0+3] < 8){ showToast(translate('Questo punto è già trasparente.'), false); return; }
+  const dist = i=> Math.hypot(d[i]-R, d[i+1]-G, d[i+2]-B);
+  let n = 0;
+  const hit = i=>{ const k = dist(i); if(k <= thr){ if(d[i+3]){ d[i+3] = 0; n++; } return true; }
+    if(feather && k < thr+feather){ d[i+3] = Math.min(d[i+3], Math.round(255*(k-thr)/feather)); } return false; };
+  if(pr.mode==='all'){ for(let i=0;i<d.length;i+=4) hit(i); }
+  else { // solo la zona collegata al punto cliccato (riempimento a macchia)
+    const seen = new Uint8Array(W*H), st = [py*W+px];
+    while(st.length){ const q = st.pop(); if(seen[q]) continue; seen[q] = 1; const i = q*4;
+      if(!(d[i+3] < 8 && q!==py*W+px) && !hit(i)) continue;
+      const x = q % W, y = (q - x)/W;
+      if(x>0) st.push(q-1); if(x<W-1) st.push(q+1); if(y>0) st.push(q-W); if(y<H-1) st.push(q+W); }
+  }
+  if(!n){ showToast(translate('Nessun pixel cambiato: prova ad aumentare la tolleranza.'), true); return; }
+  g.putImageData(data, 0, 0);
+  if(!s.hrefOriginal) s.hrefOriginal = s.href;
+  s.href = cv.toDataURL('image/png'); pushHistory(); renderAll();
+  showToast(tpl('Resi trasparenti {n} pixel. Clicca altre zone oppure Esc per finire.', {n: n.toLocaleString()}), false);
+}
 function endCenterPick(){ state.centerPick = null; document.body.classList.remove('center-pick'); }
 function handleCenterPick(mm, e){
   const ids = new Set(state.centerPick.ids);
@@ -24683,6 +24783,30 @@ function renderImageShapeSection(host, s){
   ti.oninput = ()=>{ if(tc.checked) setFx('tint', ti.value); };
   ti.onchange = ()=> pushHistory();
   tl.append(tc, document.createTextNode(translate('Ricolora con')), ti); f.appendChild(tl);
+  { // bacchetta della trasparenza
+    const pr = wandPrefs(), on = state.wandPick && state.wandPick.id===s.id;
+    const wl = document.createElement('label'); wl.style.cssText = 'margin-top:12px;display:flex;justify-content:space-between;';
+    const wv = document.createElement('span'); wv.style.color = 'var(--ink-dim)'; wv.textContent = pr.tol;
+    const wt = document.createElement('span'); wt.textContent = translate('🪄 Trasparenza: tolleranza'); wl.append(wt, wv);
+    const wr = document.createElement('input'); wr.type = 'range'; wr.min = '0'; wr.max = '100'; wr.step = '1'; wr.value = pr.tol; wr.style.width = '100%';
+    wr.oninput = ()=>{ wv.textContent = wr.value; saveWandPrefs(Object.assign(wandPrefs(), {tol: parseInt(wr.value,10)})); };
+    const mr = document.createElement('div'); mr.className = 'seg3'; mr.style.marginTop = '6px';
+    [['contig','Solo la zona cliccata'],['all','Quel colore ovunque']].forEach(([v,l])=>{
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = translate(l); if(pr.mode===v) b.classList.add('active');
+      b.onclick = ()=>{ saveWandPrefs(Object.assign(wandPrefs(), {mode: v})); [...mr.children].forEach(x=> x.classList.toggle('active', x===b)); };
+      mr.appendChild(b);
+    });
+    const sl = document.createElement('label'); sl.style.cssText = 'display:flex;align-items:center;gap:8px;cursor:pointer;margin-top:6px;text-transform:none;letter-spacing:0;';
+    const sc = document.createElement('input'); sc.type = 'checkbox'; sc.checked = pr.soft; sc.style.cssText = 'width:auto;margin:0;';
+    sc.onchange = ()=> saveWandPrefs(Object.assign(wandPrefs(), {soft: sc.checked}));
+    sl.append(sc, document.createTextNode(translate('Bordi sfumati')));
+    const wb = document.createElement('button'); wb.className = 'btn' + (on ? ' primary' : ''); wb.style.marginTop = '6px';
+    wb.textContent = translate(on ? '✔ Fine trasparenza' : '🪄 Clicca il colore da rendere trasparente');
+    wb.onclick = ()=>{ if(on) endWandPick(); else startWandPick(s.id); renderAll(); };
+    const wh = document.createElement('div'); wh.className = 'hint'; wh.style.marginTop = '4px';
+    wh.textContent = translate('Premi il pulsante e clicca sull\'immagine: il colore di quel punto diventa trasparente. Tolleranza bassa = solo quel colore esatto; alta = anche le tonalità simili. Ctrl+Z annulla, «Ripristina l\'immagine originale» torna all\'inizio.');
+    f.append(wl, wr, mr, sl, wb, wh);
+  }
   if(s.hrefOriginal){
     const ro = document.createElement('button'); ro.className='btn'; ro.style.marginTop='10px'; ro.textContent = translate('Ripristina l\'immagine originale (togli i fori)');
     ro.onclick = ()=>{ s.href = s.hrefOriginal; delete s.hrefOriginal; pushHistory(); renderAll(); };
